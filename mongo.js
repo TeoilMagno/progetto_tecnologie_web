@@ -11,15 +11,11 @@ const server = http.createServer((req, res) => {
 const mongoose = require('mongoose');
 const dbURI = process.env.DB_URI;
 
-console.log(typeof(dbURI));
-
- // mongoose.connect(dbURI)
- //   .then((result) => {
- //     server.listen(3000, 'localhost', () => {
- //       console.log('listening on port 3000');
- //     })
- //   console.log("connected to db");
- // })
- // .catch((err) => console.log(err));
- //
- //
+ mongoose.connect(dbURI)
+   .then((result) => {
+     server.listen(3000, 'localhost', () => {
+       console.log('listening on port 3000');
+     })
+   console.log("connected to db");
+ })
+ .catch((err) => console.log(err));
