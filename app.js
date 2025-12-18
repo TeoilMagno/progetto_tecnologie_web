@@ -1,4 +1,8 @@
 const http = require('http');
+const express = require('express');
+const Users = require('./model/models');
+
+const app = express();
 
 const server = http.createServer((req, res) => {
   //console.log(req.url, req.method);
@@ -19,3 +23,7 @@ const dbURI = process.env.DB_URI;
    console.log("connected to db");
  })
  .catch((err) => console.log(err));
+
+app.get('add-user', (req, res) => {
+
+})
