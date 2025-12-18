@@ -1,0 +1,17 @@
+obbiettivi:
+
+il sito deve essere appetibile a tutte le fascie di età, ad una famiglia con figli
+a degli anziani, ad una scolaresca, devo tutti voler utilizzare la web app
+
+servizio editor e marketplace: utilizzati solitamente da computer con mouse e tastiera
+servizio navigator: utilizzato solitamente dall'utente finale da telefono
+
+i due servizi devo essere hostati su 2 docker separati
+
+il contenuto degli item va a cura del museo, non del programmatore
+
+in caso di LLM le richieste che si possono fare vengono mappate sulle richieste esisteti
+basate su vocabolario controllato
+
+quindi domande che non si possono ricondurre a quelle di vocabolario controllato
+verranno ignorate
