@@ -1,6 +1,6 @@
 const http = require('http');
 const express = require('express');
-const Users = require('./model/models');
+const Users = require('./models/models');
 
 const app = express();
 
@@ -24,6 +24,22 @@ const dbURI = process.env.DB_URI;
  })
  .catch((err) => console.log(err));
 
-app.get('add-user', (req, res) => {
+app.get('/add-user', (req, res) => {
+  console.log("request arrived");
 
+  const user = new User({
+    ID: '0',
+    Name: 'User0',
+    Surname: 'Prova',
+    Email: 'user0@prova.es',
+    Password: 'dajeRoma123'
+  });
+
+  user.save()
+  .then((result) => {
+    res.send(result);
+  })
+  .catch((err) => {
+      console.log(err);
+    })
 })
