@@ -14,7 +14,7 @@ const userSchema = new Schema({
 //nel cluster progettoTecWeb
 //qui infine diciamo a mongodb che la collezione Users avrà come Schema dei dati contenuti
 //quello sopra definito
-const User = mongoose.model('User',userSchema, 'Users');
+const User = mongoose.model('User', userSchema, 'Users');
 
 //esportiamo per rendere il file richiamabile da altri file .js
 module.exports = User;

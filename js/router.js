@@ -1,4 +1,7 @@
 const express = require('express');
+const path = require('path');
+
+const {saveMuseum} = require ('./controllers/add-museum.js')
 const router = express.Router();
 
 //index
@@ -43,6 +46,13 @@ router.get('/Navigator', (req, res) => {
     </body>
     `);
 });
+
+//Add-museum
+router.get('/add-museum', (req, res) => {
+  res.sendFile(path.join(__dirname,'..','html','add-museum.html'));
+});
+
+router.post('/add-museum', saveMuseum);
 
 module.exports = router;
 
