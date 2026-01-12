@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 
-const {saveMuseum} = require ('./controllers/add-museum.js')
+const {saveMuseum, getAllMuseums} = require ('./controllers/museums.js')
 const router = express.Router();
 
 //index
@@ -53,6 +53,18 @@ router.get('/add-museum', (req, res) => {
 });
 
 router.post('/add-museum', saveMuseum);
+
+//Get-museums
+router.get('/get-museums', async (req,res) => {
+  try {
+      const museums = await getAllMuseums();
+
+    console.log(museums);
+    res.send('lista musei');
+  } catch (err) {
+    res.status(500).json({error: err.message});
+  }
+});
 
 module.exports = router;
 
