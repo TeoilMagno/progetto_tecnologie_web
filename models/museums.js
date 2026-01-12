@@ -16,6 +16,11 @@ const museumSchema = new Schema({
   Image: {
     type: String,
     required: true
+  },
+
+  Tags: {
+    type: [String],
+    trim: true
   }
 });
 
