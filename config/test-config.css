@@ -1,0 +1,7 @@
+:root {
+  --main-theme-color: #000000; /* Valore di default */
+}
+
+body {
+  background-color: var(--main-theme-color);
+}

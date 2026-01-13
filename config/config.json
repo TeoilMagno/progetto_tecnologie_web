@@ -1,0 +1,39 @@
+{
+  "comment": "Possibile esempio di file di configurazione. Non e' finito, va adattato alle esigenze dell'applicazione. probabilmente conviene separare il file di config dell'estetica dal resto",
+  
+  "museum_id": "mus-uffizi-001",
+  "metadata": {
+    "name": "Galleria degli Uffizi",
+    "location": "Firenze, Italia",
+    "contact_email": "info@uffizi.it"
+  },
+  "branding": {
+    "primary_color": "#e24c1186",
+    "secondary_color": "#F5F5DC",
+    "logo_url": "https://cdn.museum.it/uffizi/logo.png",
+    "splash_screen_img": "https://cdn.museum.it/uffizi/entry.jpg"
+  },
+  "content": {
+    "description": "Uno dei musei più famosi al mondo...",
+    "sections": [
+      {
+        "id": "room_1",
+        "title": "Sala Botticelli",
+        "image": "https://cdn.museum.it/uffizi/botticelli.jpg",
+        "audio_guide_url": "/audio/it/botticelli.mp3"
+      }
+    ]
+  },
+  "mapping": {
+    "map_provider": "mapbox",
+    "floor_plans": [
+      { "level": 0, "url": "https://cdn.museum.it/uffizi/floor0.svg" },
+      { "level": 1, "url": "https://cdn.museum.it/uffizi/floor1.svg" }
+    ],
+    "initial_coordinates": [43.7677, 11.2553]
+  },
+  "api_endpoints": {
+    "core_service": "http://servizio-core:8080",
+    "media_service": "http://servizio-media:8081"
+  }
+}

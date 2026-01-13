@@ -1,0 +1,44 @@
+/* html di prova per testare il caricamento del file di configurazione */
+
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8">
+    <title>Test Config</title>
+    <link rel="stylesheet" href="test-config.css">
+  </head>
+  <body>
+    <h1 id="titolo-museo">In attesa di dati...</h1>
+    <p> Locazione: <span id="locazione"></span></p>
+    <p> Email: <span id="email"></span></p>
+
+    <script>
+      async function fetchTestConfig() {
+        try {
+          // fetch del file di configurazione
+          const config = './models/config.json';
+          const response = await fetch(config);
+          
+          if (!response.ok) {
+            throw new Error(`Errore HTTP: ${response.status}`);
+          }
+          
+          const dati = await response.json();
+          console.log("Dati ricevuti:", dati);
+
+          // Aggiornamento del DOM con i dati ricevuti
+          const display = document.getElementById("titolo-museo");
+          display.textContent = dati.metadata.name || "Nome non disponibile";
+          document.getElementById("locazione").textContent = dati.metadata.location || "Locazione non disponibile";
+          document.getElementById("email").textContent = dati.metadata.contact_email || "Email non disponibile";
+          document.documentElement.style.setProperty('--main-theme-color', dati.branding.primary_color || '#ffffff');
+        } catch (error) {
+          console.error('Errore durante il fetch:', error);
+          document.getElementById("titolo-museo").textContent = "Errore di caricamento.";
+        }
+      }
+
+      fetchTestConfig();
+    </script>
+  </body>
+</html>
