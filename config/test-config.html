@@ -5,7 +5,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Test Config</title>
-    <link rel="stylesheet" href="test-config.css">
+    <link rel="stylesheet" href="./test-config.css">
   </head>
   <body>
     <h1 id="titolo-museo">In attesa di dati...</h1>
@@ -16,7 +16,7 @@
       async function fetchTestConfig() {
         try {
           // fetch del file di configurazione
-          const config = './models/config.json';
+          const config = './config.json';
           const response = await fetch(config);
           
           if (!response.ok) {
