@@ -1,13 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+require('dotenv').config();
 
+const DB_URI = process.env.DB_URI;
 const app = express();
 const port = 3000;
 
-// --- 🔴 CONFIGURAZIONE DATABASE ---
-// INCOLLA QUI SOTTO LA STESSA STRINGA DI ATLAS USATA NEL SEED
-const DB_URI = ''; 
 
 // --- MIDDLEWARE ---
 app.use(cors());
