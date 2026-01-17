@@ -3,22 +3,22 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const museumSchema = new Schema({
-  Name: {
+  name: {
     type: String,
     required: true
   },
 
-  Address: {
+  address: {
     type: String,
     required: true
   },
 
-  Image: {
+  image: {
     type: String,
     required: true
   },
 
-  Tags: {
+  tags: {
     type: [String],
     trim: true
   }
