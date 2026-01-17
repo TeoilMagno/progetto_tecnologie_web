@@ -1,21 +1,20 @@
-const Museum = require('../../models/items');
+const Item = require('../../models/items');
 
 exports.saveItem = async (req,res) => {
   try {
-    const {name, address, image_path, tags} = req.body;
+    const {name, price, description, image, museumId, quantity, duration, tone} = req.body;
 
-    console.log(name, address, image_path, tags);
-
-    const tagsArray = tags
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag.length > 0);
+    console.log(name, price, description, image, museumId, quantity, duration, tone);
 
     const item = new Item({
-      Name: name,
-      Address: address,
-      Image: image_path,
-      Tags: tagsArray
+      name: name,
+      price: price,
+      description: description,
+      image: image,
+      museumId: museumId,
+      quantity: quantity,
+      duration: duration,
+      tone: tone
     });
 
     item.save()
@@ -31,9 +30,18 @@ exports.saveItem = async (req,res) => {
   }
 }
 
-exports.getAllMuseums = async () => {
+exports.getItemByMuseum = async (museumId) => {
   try {
-    return await Museum.find();
+    return await Item.find({museumId: museumId});
+  }
+  catch (err) {
+    throw err;
+  }
+}
+
+exports.modofyItemById = async (itemId, updateData) => {
+  try {
+  return await Item.findByIdAndUpdate(itemId, updateData, {new: true});
   }
   catch (err) {
     throw err;

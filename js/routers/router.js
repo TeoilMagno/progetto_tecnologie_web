@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 
-const {saveMuseum, getAllMuseums} = require ('../controllers/museums.js')
+const {saveMuseum, getAllMuseums} = require ('../controllers/museums')
 const router = express.Router();
 
 //index
@@ -45,6 +45,13 @@ router.get('/Navigator', (req, res) => {
       <a href="./">Home</a>
     </body>
     `);
+});
+
+//Get-museums
+router.get('/get-museums', async (req, res) => {
+  const museums = await getAllMuseums();
+  console.log(museums);
+  res.send('<h1>Musei trovati</h1>')
 });
 
 //Add-museum

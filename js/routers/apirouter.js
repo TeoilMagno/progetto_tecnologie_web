@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
 
-const {saveMuseum, getAllMuseums} = require ('../controllers/museums.js')
+const {saveMuseum, getAllMuseums} = require ('../controllers/museums')
+const {saveItem, getItemByMuseum, modifyItemById} = require ('../controllers/items')
 const apiRouter = express.Router();
 
 // 1. Ottieni tutti i musei
@@ -21,7 +22,7 @@ apiRouter.get('/musei/:id/items', async (req, res) => {
         // Mongo gestisce automaticamente la conversione da stringa a ObjectId
         const museumId = req.params.id; 
 
-        const items = await Item.find({ museumId: museumId });
+        const items = await getItemByMuseum(museumId);
         res.json(items);
     } catch (error) {
         console.error(error);
@@ -36,10 +37,9 @@ apiRouter.put('/items/:id', async (req, res) => {
         const itemId = req.params.id;
         const updateData = req.body;
 
-        const updatedItem = await Item.findByIdAndUpdate(
+        const updatedItem = await modifyItemById(
             itemId, // Mongoose accetta direttamente l'ID stringa qui
-            updateData, 
-            { new: true } 
+            updateData
         );
 
         if (!updatedItem) return res.status(404).json({ error: "Opera non trovata" });
