@@ -16,7 +16,7 @@
       async function fetchTestConfig() {
         try {
           // fetch del file di configurazione
-          const config = './config.json';
+          const config = 'http://localhost:3000/api/config';
           const response = await fetch(config);
           
           if (!response.ok) {

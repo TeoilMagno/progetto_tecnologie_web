@@ -56,7 +56,7 @@ router.get('/get-museums', async (req, res) => {
 
 //Add-museum
 router.get('/add-museum', (req, res) => {
-  res.sendFile(path.join(__dirname,'..','html','add-museum.html'));
+  res.sendFile(path.join(__dirname,'..','..','html','add-museum.html'));
 });
 
 router.post('/add-museum', saveMuseum);

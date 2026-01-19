@@ -51,4 +51,15 @@ apiRouter.put('/items/:id', async (req, res) => {
     }
 });
 
+//File config
+apiRouter.get('/config', async (req,res) => {
+  try
+  {
+    console.log('/api/config');
+    res.sendFile(path.join(__dirname,'..','..','config','config.json'));
+  } catch (err) {
+    console.log('Errore config');
+  }
+});
+
 module.exports = apiRouter;
