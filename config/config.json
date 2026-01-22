@@ -2,17 +2,13 @@
   "comment": "Possibile esempio di file di configurazione. Non e' finito, va adattato alle esigenze dell'applicazione. probabilmente conviene separare il file di config dell'estetica dal resto",
   
   "museum_id": "mus-uffizi-001",
-  "metadata": {
+  "museum_data": {
     "name": "Galleria degli Uffizi",
     "location": "Firenze, Italia",
-    "contact_email": "info@uffizi.it"
+    "contact_email": "info@uffizi.it",
+    "contact_phone": "0000-000000"
   },
-  "branding": {
-    "primary_color": "#e24c1186",
-    "secondary_color": "#F5F5DC",
-    "logo_url": "https://cdn.museum.it/uffizi/logo.png",
-    "splash_screen_img": "https://cdn.museum.it/uffizi/entry.jpg"
-  },
+  
   "content": {
     "description": "Uno dei musei più famosi al mondo...",
     "sections": [
@@ -20,20 +16,66 @@
         "id": "room_1",
         "title": "Sala Botticelli",
         "image": "https://cdn.museum.it/uffizi/botticelli.jpg",
-        "audio_guide_url": "/audio/it/botticelli.mp3"
+        "audio_guide_url": "/audio/it/botticelli.mp3",
+        "items": [
+          {
+            "name": "Mona Lisa",
+            "author": "Leonardo Da Vinci",
+            "style": "oil on poplar panel",
+            "year": "1503-1506 d.C.",
+            "description": [
+              {
+                "length": "3s",
+                "tone": "simple",
+                "description": "lorem ipsum"
+              },
+              {
+                "length": "15s",
+                "tone": "medium",
+                "description": "lorem ipsum"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "visit_types": [
+      {
+        "type": "guidata",
+        "price": "10.00",
+        "currency": "€",
+        "length": "45min"
+      },
+      {
+        "type": "libera",
+        "price": "2.00",
+        "currency": "€"
       }
     ]
   },
+
   "mapping": {
     "map_provider": "mapbox",
     "floor_plans": [
-      { "level": 0, "url": "https://cdn.museum.it/uffizi/floor0.svg" },
+      { "level": 0, 
+        "url": "https://cdn.museum.it/uffizi/floor0.svg" },
       { "level": 1, "url": "https://cdn.museum.it/uffizi/floor1.svg" }
     ],
-    "initial_coordinates": [43.7677, 11.2553]
+    "initial_coordinates": [43.7677, 11.2553],
+    "accessibility": {
+      "wheelchair_access": "yes",
+      "sensory_space": "no"
+    }
   },
+
   "api_endpoints": {
     "core_service": "http://servizio-core:8080",
     "media_service": "http://servizio-media:8081"
+  },
+  "branding": {
+    "primary_color": "#e24c1186",
+    "secondary_color": "#F5F5DC",
+    "logo_url": "https://cdn.museum.it/uffizi/logo.png",
+    "splash_screen_img": "https://cdn.museum.it/uffizi/entry.jpg"
   }
 }
