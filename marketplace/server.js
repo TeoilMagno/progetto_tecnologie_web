@@ -1,30 +1,30 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-// --- 🔴 CONFIGURAZIONE DATABASE ---
-// INCOLLA QUI SOTTO LA STESSA STRINGA DI ATLAS USATA NEL SEED
-const DB_URI = 'mongodb+srv://Alex:admin01237@progettotecweb.xt8rtd5.mongodb.net/?appName=progettoTecWeb'; 
+const DB_URI = process.env.MONGO_URI_SERVER;
 
 // --- MIDDLEWARE ---
 app.use(cors());
-app.use(express.json()); // Fondamentale per leggere i JSON in arrivo (es. nelle modifiche)
+app.use(express.json());
 
-// --- CONNESSIONE AL DATABASE ---
+// --- CONNESSIONE DATABASE ---
 mongoose.connect(DB_URI)
-    .then(() => console.log('✅ Server connesso a MongoDB Atlas!'))
+    .then(() => console.log('✅ Server connesso a MongoDB Atlas (Test Mode)!'))
     .catch(err => console.error('❌ Errore connessione Atlas:', err));
 
-// --- MODELLI (devono essere uguali a seed.js) ---
+// --- MODELLI (Identici al seed) ---
 const Museum = mongoose.model('Museum', new mongoose.Schema({
-    id: Number, name: String, address: String, image: String, tags: [String]
+    name: String, address: String, image: String, tags: [String]
 }));
 
 const Item = mongoose.model('Item', new mongoose.Schema({
-    id: Number, museumId: Number, name: String, description: String, image: String, price: Number, quantity: Number, duration: String, tone: String
+    museumId: { type: mongoose.Schema.Types.ObjectId, ref: 'Museum' },
+    name: String, description: String, image: String, price: Number, quantity: Number, duration: String, tone: String
 }));
 
 // --- ROTTE API ---
@@ -42,10 +42,14 @@ app.get('/api/musei', async (req, res) => {
 // 2. Ottieni opere di un museo specifico
 app.get('/api/musei/:id/items', async (req, res) => {
     try {
-        const museumId = parseInt(req.params.id);
+        // 🔴 CORREZIONE IMPORTANTE: Rimosso parseInt()
+        // Mongo gestisce automaticamente la conversione da stringa a ObjectId
+        const museumId = req.params.id; 
+
         const items = await Item.find({ museumId: museumId });
         res.json(items);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Errore recupero opere" });
     }
 });
@@ -53,13 +57,14 @@ app.get('/api/musei/:id/items', async (req, res) => {
 // 3. Modifica un'opera
 app.put('/api/items/:id', async (req, res) => {
     try {
-        const itemId = parseInt(req.params.id);
+        // 🔴 CORREZIONE IMPORTANTE: Rimosso parseInt()
+        const itemId = req.params.id;
         const updateData = req.body;
 
-        const updatedItem = await Item.findOneAndUpdate(
-            { id: itemId }, 
+        const updatedItem = await Item.findByIdAndUpdate(
+            itemId, // Mongoose accetta direttamente l'ID stringa qui
             updateData, 
-            { new: true } // Restituisce l'oggetto aggiornato
+            { new: true } 
         );
 
         if (!updatedItem) return res.status(404).json({ error: "Opera non trovata" });
