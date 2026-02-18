@@ -4,34 +4,44 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const itemSchema = new Schema({
-  Name: {
+  name: {
     type: String,
     required: true
   },
 
-  Price: {
+  price: {
     type: Number,
     required: true
   },
 
-  Description: {
+  description: {
     type: String,
     required: true
   },
 
-  Image: {
+  image: {
     type: String,
     required: true
   },
 
-  Museum: {
+  museumId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Museum',
     required: true
-  }
+  },
+
+  quantity: {
+    type: Number,
+    required: true
+  },
+
+  duration: String,
+  
+  tone: String
 });
 
-const Museum = mongoose.model('Item', ItemSchema, 'Items');
+
+const Item = mongoose.model('Item', itemSchema, 'Items');
 
 //esportiamo per rendere il file richiamabile da altri file .js
-module.exports = Items;
+module.exports = Item;

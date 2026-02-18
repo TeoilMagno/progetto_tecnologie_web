@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // --- 🔴 CONFIGURAZIONE DATABASE ---
 // INCOLLA QUI SOTTO LA TUA STRINGA DI CONNESSIONE COPIATA DA ATLAS
 // Esempio: 'mongodb+srv://admin:password123@cluster0.abcde.mongodb.net/artaround?retryWrites=true&w=majority'
-const DB_URI = 'mongodb+srv://admin:admin01237@progettotecweb.xt8rtd5.mongodb.net/?appName=progettoTecWeb'; 
+const DB_URI = ''; 
 
 // --- DEFINIZIONE SCHEMI ---
 const museumSchema = new mongoose.Schema({

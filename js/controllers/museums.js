@@ -1,4 +1,4 @@
-const Museum = require('../models/museums');
+const Museum = require('../../models/museums');
 
 exports.saveMuseum = async (req,res) => {
   try {
@@ -12,10 +12,10 @@ exports.saveMuseum = async (req,res) => {
       .filter(tag => tag.length > 0);
 
     const museum = new Museum({
-      Name: name,
-      Address: address,
-      Image: image_path,
-      Tags: tagsArray
+      name: name,
+      address: address,
+      image: image_path,
+      tags: tagsArray
     });
 
     museum.save()
