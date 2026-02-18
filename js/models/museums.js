@@ -3,10 +3,32 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const museumSchema = new Schema({
-  name: {
-    type: String,
-    required: true
+  museum_data: {
+    name: {
+      type: String,
+      required: true
+    },
+
+    location: {
+      type: String,
+      required: true
+    },
+
+    contact_email: {
+      type: String,
+      required: true
+    },
+
+    contact_phone: {
+      type: String,
+      required: true
+    }
   },
+
+  sections: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Section',
+  }],
 
   address: {
     type: String,
