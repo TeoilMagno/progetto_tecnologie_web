@@ -5,7 +5,7 @@ exports.saveSection = async (req,res) => {
     const {rsection, museumId} = req.body;
 
     const section = new Section({
-      title: rsection.title
+      title: rsection.title,
       image: rsection.image,
       works: [null],
       museumId: museumId

@@ -15,7 +15,7 @@ const sectionSchema = new Schema({
 
   works: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref; 'Works'
+    ref: 'Works'
   }],
 
   museumId: {
@@ -25,7 +25,7 @@ const sectionSchema = new Schema({
   }
 });
 
-const Section = mongoose.model('Section', itemSchema, 'Sections');
+const Section = mongoose.model('Section', sectionSchema, 'Sections');
 
 //esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Section;

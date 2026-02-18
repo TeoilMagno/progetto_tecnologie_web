@@ -38,7 +38,7 @@ exports.saveMuseum = async (req,res) => {
   }
 }
 
-export.modifyMuseumById = async (museumId, sectionId) => {
+exports.addSectionToMuseum = async (museumId, sectionId) => {
   try {
         const updatedMuseum = await Museum.findByIdAndUpdate(
             museumId, 
