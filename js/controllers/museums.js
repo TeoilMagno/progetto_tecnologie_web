@@ -1,4 +1,4 @@
-const Museum = require('../../models/museums');
+const Museum = require('../models/museums');
 
 exports.saveMuseum = async (req,res) => {
   try {
