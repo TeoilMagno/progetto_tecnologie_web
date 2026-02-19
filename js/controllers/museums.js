@@ -1,10 +1,10 @@
-const Museum = require('../../models/museums');
+const Museum = require('../models/museums');
 
 exports.saveMuseum = async (req,res) => {
   try {
-    const {name, address, image_path, tags} = req.body;
+    const rmuseum = req.body;
 
-    console.log(name, address, image_path, tags);
+    console.log(rmuseum.museum_data.name, rmuseum.address, rmuseum.image_path, rmuseum.tags);
 
     const tagsArray = tags
       .split(',')
@@ -12,15 +12,22 @@ exports.saveMuseum = async (req,res) => {
       .filter(tag => tag.length > 0);
 
     const museum = new Museum({
-      name: name,
-      address: address,
-      image: image_path,
-      tags: tagsArray
+      museum_data: {
+        name: rmuseum.name,
+        location: rmuseum.location,
+        contact_email: rmuseum.contact_email,
+        contact_phone: rmuseum.contact_phone
+      },
+
+      sections: [null],
+      address: rmuseum.address,
+      image: rmuseum.image,
+      tags: rmuseum.tags
     });
 
     museum.save()
       .then((result) => {
-        res.send(result);
+        res.status(201).json(result._id);
       })
       .catch((err) => {
         console.log(err);
@@ -29,6 +36,26 @@ exports.saveMuseum = async (req,res) => {
   catch (err) {
     res.send(err);
   }
+}
+
+exports.addSectionToMuseum = async (req,res) => {
+  try {
+        const {museumId, sectionId} = req.body;
+        const updatedMuseum = await Museum.findByIdAndUpdate(
+            museumId, 
+            { $push: { sections: sectionId } }, // Operatore per aggiungere all'array
+            { new: true, useFindAndModify: false } // Opzioni: ritorna il documento modificato
+        );
+
+        if (!updatedMuseum) {
+          res.status(200).send('<div>aggiunto con successo</div>');
+        }
+
+        return updatedMuseum;
+    } catch (error) {
+        console.error("Errore durante l'aggiornamento:", error);
+        throw error;
+    }
 }
 
 exports.getAllMuseums = async () => {

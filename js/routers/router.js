@@ -1,7 +1,12 @@
 const express = require('express');
 const path = require('path');
 
+<<<<<<< HEAD
 const {saveMuseum, getAllMuseums} = require ('../controllers/museums')
+=======
+const {saveMuseum, addSectionToMuseum, getAllMuseums} = require ('../controllers/museums')
+const {saveSection} = require ('../controllers/sections')
+>>>>>>> matteo
 const router = express.Router();
 
 //index
@@ -59,6 +64,16 @@ router.get('/add-museum', (req, res) => {
   res.sendFile(path.join(__dirname,'..','..','html','add-museum.html'));
 });
 
+//salva la sezione sul db
+router.post('add-section', saveSection);
+
+//salva il museo sul db
 router.post('/add-museum', saveMuseum);
 
+<<<<<<< HEAD
+=======
+//aggiunge la sezione al museo
+router.post('/add-section-to-museum', addSectionToMuseum)
+
+>>>>>>> matteo
 module.exports = router;
