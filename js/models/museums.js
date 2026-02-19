@@ -3,9 +3,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const museumSchema = new Schema({
-<<<<<<< HEAD:models/museums.js
-  name: {
-=======
   museum_data: {
     name: {
       type: String,
@@ -34,28 +31,15 @@ const museumSchema = new Schema({
   }],
 
   address: {
->>>>>>> matteo:js/models/museums.js
     type: String,
     required: true
   },
 
-<<<<<<< HEAD:models/museums.js
-  address: {
-=======
-  image: {
->>>>>>> matteo:js/models/museums.js
-    type: String,
-    required: true
-  },
-
-<<<<<<< HEAD:models/museums.js
   image: {
     type: String,
     required: true
   },
 
-=======
->>>>>>> matteo:js/models/museums.js
   tags: {
     type: [String],
     trim: true
