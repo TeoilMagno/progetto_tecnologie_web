@@ -4,6 +4,8 @@ const path = require('path');
 const {saveMuseum, addSectionToMuseum, getAllMuseums} = require ('../controllers/museums')
 const {saveSection} = require ('../controllers/sections')
 const router = express.Router();
+const sectionController = require('../controllers/sections');
+
 
 //index
 router.get('/', (req, res) => {
@@ -68,5 +70,8 @@ router.post('/add-museum', saveMuseum);
 
 //aggiunge la sezione al museo
 router.post('/add-section-to-museum', addSectionToMuseum)
+
+// sal
+router.post('/save-full-section', sectionController.saveFullSection);
 
 module.exports = router;

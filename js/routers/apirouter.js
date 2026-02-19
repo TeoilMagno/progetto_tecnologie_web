@@ -4,6 +4,7 @@ const path = require('path');
 const {saveMuseum, getAllMuseums} = require ('../controllers/museums')
 const {saveItem, getItemByMuseum, modifyItemById} = require ('../controllers/items')
 const apiRouter = express.Router();
+const sectionController = require('../controllers/sections');
 
 // 1. Ottieni tutti i musei
 apiRouter.get('/musei', async (req, res) => {
@@ -60,6 +61,29 @@ apiRouter.get('/config', async (req,res) => {
   } catch (err) {
     console.log('Errore config');
   }
+});
+
+// Rotta per il salvataggio atomico (Sezione + Opere)
+// Questa è quella che chiami nel fetch con /api/save-full-section
+apiRouter.post('/save-full-section', sectionController.saveFullSection);
+
+// Rotte per il recupero dati
+apiRouter.get('/museums/:museumId/sections', async (req, res) => {
+    try {
+        const sections = await sectionController.getSectionsByMuseum(req.params.museumId);
+        res.json(sections);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+apiRouter.get('/sections/:sectionId/works', async (req, res) => {
+    try {
+        const works = await sectionController.getWorksBySection(req.params.sectionId);
+        res.json(works);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 module.exports = apiRouter;
