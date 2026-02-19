@@ -38,8 +38,9 @@ exports.saveMuseum = async (req,res) => {
   }
 }
 
-exports.addSectionToMuseum = async (museumId, sectionId) => {
+exports.addSectionToMuseum = async (req,res) => {
   try {
+        const {museumId, sectionId} = req.body;
         const updatedMuseum = await Museum.findByIdAndUpdate(
             museumId, 
             { $push: { sections: sectionId } }, // Operatore per aggiungere all'array
@@ -47,8 +48,7 @@ exports.addSectionToMuseum = async (museumId, sectionId) => {
         );
 
         if (!updatedMuseum) {
-            console.log("Museo non trovato");
-            return null;
+          res.status(200).send('<div>aggiunto con successo</div>');
         }
 
         return updatedMuseum;
