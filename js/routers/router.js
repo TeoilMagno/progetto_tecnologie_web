@@ -63,15 +63,12 @@ router.get('/add-museum', (req, res) => {
 });
 
 //salva la sezione sul db
-router.post('add-section', saveSection);
+router.post('/add-section', saveSection);
 
 //salva il museo sul db
 router.post('/add-museum', saveMuseum);
 
 //aggiunge la sezione al museo
 router.post('/add-section-to-museum', addSectionToMuseum)
-
-// sal
-router.post('/save-full-section', sectionController.saveFullSection);
 
 module.exports = router;

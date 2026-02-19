@@ -9,7 +9,7 @@ const sectionSchema = new Schema({
   },
 
   image: {
-    type: Number,
+    type: String,
     required: true
   },
 

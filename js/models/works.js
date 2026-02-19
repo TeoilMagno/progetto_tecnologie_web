@@ -28,15 +28,17 @@ const workSchema = new Schema({
     required: true
   },
 
-  description: [{
-    lenght: Number,
-    tone: String,
-    descrpition: String,
+  description: {
+    type: [{
+      lenght: Number,
+      tone: String,
+      description: String,
+    }],
     required: true
-  }]
+  }
 });
 
-const Work = mongoose.model('Work', WorkSchema, 'Workss');
+const Work = mongoose.model('Work', workSchema, 'Works');
 
 //esportiamo per rendere il file richiamabile da altri file .js
-module.exports = Works;
+module.exports = Work;

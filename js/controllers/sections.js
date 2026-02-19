@@ -1,8 +1,9 @@
 const Section = require('../models/sections');
+const Work = require('../models/works')
 
 exports.saveSection = async (req,res) => {
   try {
-    const {rsection, museumId} = req.body;
+    const { rsection, museumId } = req.body;
 
     const section = new Section({
       title: rsection.title,
@@ -11,13 +12,9 @@ exports.saveSection = async (req,res) => {
       museumId: museumId
     });
 
-    section.save()
-      .then((result) => {
-        res.status(201).json(result._id);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
+    const result = await section.save()
+    
+    res.status(201).json(result._id);
   }
   catch (err) {
     res.send(err);
@@ -159,7 +156,7 @@ async function handleSave() {
   };
 
   try {
-    const response = await fetch('/api/save-full-section', {
+    const response = await fetch('http://localhost:3000/api/save-full-section', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)

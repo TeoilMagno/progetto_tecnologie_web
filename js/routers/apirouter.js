@@ -63,10 +63,6 @@ apiRouter.get('/config', async (req,res) => {
   }
 });
 
-// Rotta per il salvataggio atomico (Sezione + Opere)
-// Questa è quella che chiami nel fetch con /api/save-full-section
-apiRouter.post('/save-full-section', sectionController.saveFullSection);
-
 // Rotte per il recupero dati
 apiRouter.get('/museums/:museumId/sections', async (req, res) => {
     try {
@@ -85,5 +81,8 @@ apiRouter.get('/sections/:sectionId/works', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+// Se decidi di usare la versione che salva tutto insieme (Sezione + Opere):
+apiRouter.post('/save-full-section', sectionController.saveFullSection);
 
 module.exports = apiRouter;
