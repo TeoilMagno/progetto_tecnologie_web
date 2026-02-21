@@ -9,17 +9,7 @@ const sectionController = require('../controllers/sections');
 
 //index
 router.get('/', (req, res) => {
-  res.send(`
-    <!DOCTYPE HTML>
-    <head>
-      <title>Art Around</title>
-    </head>
-    <body>
-      <h1>Main page of Art Around</h1>
-      <a href="./Marketplace">Marketplace</a>
-      <a href="./Navigator">Navigator</a>
-    </body>
-    `);
+  res.sendFile(path.join(__dirname,'..','..','html','index.html'));
 });
 
 //Marketplace
@@ -60,6 +50,11 @@ router.get('/get-museums', async (req, res) => {
 //Add-museum
 router.get('/add-museum', (req, res) => {
   res.sendFile(path.join(__dirname,'..','..','html','add-museum.html'));
+});
+
+//add-sections
+router.get('/add-sections', (req, res) => {
+  res.sendFile(path.join(__dirname,'..','..','html','add-section.html'));
 });
 
 //salva la sezione sul db
