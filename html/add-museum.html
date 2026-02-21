@@ -5,13 +5,17 @@
 </head>
 <body>
   <h1>Aggiungi Museo</h1>
-  <form action="/add-museum" method="POST">
+  <form action="/api/add-museum" method="POST">
     <label for="name">Enter museum name:</label><br>
     <input type="text" name="name" class="name"><br>
     <label for="address">Enter museum address:</label><br>
     <input type="text" name="address" class="address"><br>
-    <label for="image_path">Enter museum image path:</label><br>
-    <input type="text" name="image_path" class="image_path"><br>
+    <label for="address">Enter museum email:</label><br>
+    <input type="text" name="contact_email" class="contact_email"><br>
+    <label for="address">Enter museum phone:</label><br>
+    <input type="text" name="contact_phone" class="contact_phone"><br>
+    <label for="image_path">Enter museum image (possibly from wikimedia):</label><br>
+    <input type="text" name="image" class="image"><br>
     <label for="tags">Enter museum tags:</label><br>
     <textarea name="tags" class="tags"></textarea>
     <input type="submit" value="Add">

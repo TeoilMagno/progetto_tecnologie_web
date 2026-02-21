@@ -1,29 +1,50 @@
 const express = require('express');
 const path = require('path');
 
-const {saveMuseum, getAllMuseums} = require ('../controllers/museums')
-const {saveItem, getItemByMuseum, modifyItemById} = require ('../controllers/items')
+const museumController = require ('../controllers/museums')
+const itemController = require ('../controllers/items')
 const apiRouter = express.Router();
 const sectionController = require('../controllers/sections');
 
+//--------------- museums -----------------------
 // 1. Ottieni tutti i musei
 apiRouter.get('/musei', async (req, res) => {
     try {
-        const museums = await getAllMuseums();
+        const museums = await museumController.getAllMuseums();
         res.json(museums);
     } catch (error) {
         res.status(500).json({ error: "Errore recupero musei" });
     }
 });
 
-// 2. Ottieni opere di un museo specifico
+//salva il museo sul db
+apiRouter.post('/add-museum', async (req,res) =>{
+  try {
+    const {name, address, contact_email, contact_phone, sections=[], image, tags=[]} = req.body;
+
+    const tagsArray = tags
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0);
+
+    const museum = {name, address, contact_email, contact_phone, sections, image, tags: tagsArray};
+    const result = await museumController.saveMuseum(museum);
+    res.redirect(`/api/museums/${result.id}/add-sections`);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error: "errore durante il salvataggio"});
+  } 
+});
+
+//--------------- items -----------------------
+// 2. Ottieni oggetto di un museo specifico
 apiRouter.get('/musei/:id/items', async (req, res) => {
     try {
         // 🔴 CORREZIONE IMPORTANTE: Rimosso parseInt()
         // Mongo gestisce automaticamente la conversione da stringa a ObjectId
         const museumId = req.params.id; 
 
-        const items = await getItemByMuseum(museumId);
+        const items = await itemController.getItemByMuseum(museumId);
         res.json(items);
     } catch (error) {
         console.error(error);
@@ -31,14 +52,14 @@ apiRouter.get('/musei/:id/items', async (req, res) => {
     }
 });
 
-// 3. Modifica un'opera
+// 3. Modifica un'oggetto in vendita
 apiRouter.put('/items/:id', async (req, res) => {
     try {
         // 🔴 CORREZIONE IMPORTANTE: Rimosso parseInt()
         const itemId = req.params.id;
         const updateData = req.body;
 
-        const updatedItem = await modifyItemById(
+        const updatedItem = await itemController.modifyItemById(
             itemId, // Mongoose accetta direttamente l'ID stringa qui
             updateData
         );
@@ -52,15 +73,19 @@ apiRouter.put('/items/:id', async (req, res) => {
     }
 });
 
-//File config
-apiRouter.get('/config', async (req,res) => {
-  try
-  {
-    console.log('/api/config');
-    res.sendFile(path.join(__dirname,'..','..','config','config.json'));
-  } catch (err) {
-    console.log('Errore config');
-  }
+//--------------- sections -----------------------
+apiRouter.get('/sections/:sectionId/works', async (req, res) => {
+    try {
+        const works = await sectionController.getWorksBySection(req.params.sectionId);
+        res.json(works);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+//add-sections
+apiRouter.get('/museums/:museumId/add-sections', (req, res) => {
+  res.sendFile(path.join(__dirname,'..','..','html','add-section.html'));
 });
 
 // Rotte per il recupero dati
@@ -73,16 +98,18 @@ apiRouter.get('/museums/:museumId/sections', async (req, res) => {
     }
 });
 
-apiRouter.get('/sections/:sectionId/works', async (req, res) => {
-    try {
-        const works = await sectionController.getWorksBySection(req.params.sectionId);
-        res.json(works);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
 // Se decidi di usare la versione che salva tutto insieme (Sezione + Opere):
 apiRouter.post('/save-full-section', sectionController.saveFullSection);
+
+//File config
+apiRouter.get('/config', async (req,res) => {
+  try
+  {
+    console.log('/api/config');
+    res.sendFile(path.join(__dirname,'..','..','config','config.json'));
+  } catch (err) {
+    console.log('Errore config');
+  }
+});
 
 module.exports = apiRouter;

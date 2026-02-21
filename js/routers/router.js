@@ -52,16 +52,8 @@ router.get('/add-museum', (req, res) => {
   res.sendFile(path.join(__dirname,'..','..','html','add-museum.html'));
 });
 
-//add-sections
-router.get('/add-sections', (req, res) => {
-  res.sendFile(path.join(__dirname,'..','..','html','add-section.html'));
-});
-
 //salva la sezione sul db
 router.post('/add-section', saveSection);
-
-//salva il museo sul db
-router.post('/add-museum', saveMuseum);
 
 //aggiunge la sezione al museo
 router.post('/add-section-to-museum', addSectionToMuseum)

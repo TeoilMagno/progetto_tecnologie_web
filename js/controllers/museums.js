@@ -1,41 +1,21 @@
 const Museum = require('../models/museums');
 
-exports.saveMuseum = async (req,res) => {
-  try {
-    const rmuseum = req.body;
-
-    console.log(rmuseum.museum_data.name, rmuseum.address, rmuseum.image_path, rmuseum.tags);
-
-    const tagsArray = tags
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag.length > 0);
-
-    const museum = new Museum({
-      museum_data: {
-        name: rmuseum.name,
-        location: rmuseum.location,
-        contact_email: rmuseum.contact_email,
-        contact_phone: rmuseum.contact_phone
-      },
-
-      sections: [null],
+//salva un singolo museo passato in input
+exports.saveMuseum = async (rmuseum) => {
+  const museum = new Museum({
+    museum_data: {
+      name: rmuseum.name,
       address: rmuseum.address,
-      image: rmuseum.image,
-      tags: rmuseum.tags
-    });
+      contact_email: rmuseum.contact_email,
+      contact_phone: rmuseum.contact_phone
+    },
 
-    museum.save()
-      .then((result) => {
-        res.status(201).json(result._id);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  }
-  catch (err) {
-    res.send(err);
-  }
+    sections: [],
+    image: rmuseum.image,
+    tags: rmuseum.tags
+  });
+
+  return museum.save();
 }
 
 exports.addSectionToMuseum = async (req,res) => {

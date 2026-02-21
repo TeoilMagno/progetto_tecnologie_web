@@ -9,7 +9,7 @@ const museumSchema = new Schema({
       required: true
     },
 
-    location: {
+    address: {
       type: String,
       required: true
     },
@@ -29,11 +29,6 @@ const museumSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Section',
   }],
-
-  address: {
-    type: String,
-    required: true
-  },
 
   image: {
     type: String,
