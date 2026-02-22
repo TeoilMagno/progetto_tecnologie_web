@@ -3,8 +3,8 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const router = require('./routers/router.js');
-const apiRouter = require('./routers/apirouter.js')
+const router = require('./routers/router');
+const apiRouter = require('./routers/apirouter')
 const connectDB = require('./db.js');
 const PORT = process.env.PORT;
 
