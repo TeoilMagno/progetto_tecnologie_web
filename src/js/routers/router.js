@@ -57,22 +57,6 @@ router.get('/add-museum', (req, res) => {
   res.sendFile(filePath);
 });
 
-// Per aggiungere sezioni (usando l'ID del museo nell'URL)
-router.get('/museums/:museumId/add-sections', (req, res) => {
-  const filePath = path.join(__dirname, '..', '..', 'html', 'add-section.html');
-  
-  console.log("Percorso generato per add-section:", filePath);
-  res.sendFile(filePath);
-});
-
-// Per aggiungere opere (usando l'ID della sezione nell'URL)
-router.get('/sections/:sectionId/add-works', (req, res) => {
-  const filePath = path.join(__dirname, '..', '..', 'html', 'add-work.html');
-  
-  console.log("Percorso generato per add-work:", filePath);
-  res.sendFile(filePath);
-});
-
 //salva la sezione sul db
 router.post('/add-section', saveSection);
 
