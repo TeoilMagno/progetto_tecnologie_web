@@ -1,32 +1,30 @@
-let workCount = 0;
+let sectionCount = 0;
 
-function renderAddWork(sId) {
-    const worksContainer = document.getElementById(`works-container-${sId}`);
-    workCount++
+function renderAddSection() {
+    sectionCount++;
+    const container = document.getElementById('sections-region'); // Punto di ancoraggio nel HTML
 
-    const workDiv = document.createElement('div');
-    workDiv.style = "background: #f9f9f9; padding: 10px; margin-top: 5px; border: 1px solid #ddd;";
-    workDiv.className = "work-block";
-    workDiv.id = `work-${workCount}`;
+    // Creazione del div della nuova sezione
+    const sectionDiv = document.createElement('div');
+    sectionDiv.className = "section-block";
+    sectionDiv.style = "border: 2px solid #007bff; padding: 15px; margin: 10px 0;";
+    sectionDiv.id = `section-${sectionCount}`;
 
-    workDiv.innerHTML = `
-        <h4>Opera ${(workCount)}</h4>
-        <label>Nome opera:</label>
-        <input type="text" name="workName[${sId}][]" required><br>
-        <label>Autore:</label>
-        <input type="text" name="author[${sId}][]" required><br>
-        <label>Stile:</label>
-        <input type="text" name="style[${sId}][]" required><br>
-        <label>Anno/periodo di realizzazione:</label>
-        <input type="text" name="year[${sId}][]" required><br>
-        <label>Image path:</label>
-        <input type="text" name="workImagePath[${sId}][]"><br>
-        <label>Descrizione:</label>
-        <textarea></textarea><br>
-        <input type="hidden" name="workSectionId[]" value="${sId}">
+    sectionDiv.innerHTML = `
+        <h3>Sezione ${sectionCount}</h3>
+        <label>Titolo sezione:</label><br>
+        <input type="text" name="sectionName[]" required><br>
+        
+        <label>Path immagine sezione:</label><br>
+        <input type="text" name="sectionImage[]"><br>
+        
+        <div id="works-container-${sectionCount}" style="margin-left: 20px; border-left: 1px dashed #ccc;">
+            </div>
+        
+        <button type="button" onclick="renderAddWork(${sectionCount})">+ Aggiungi Opera a questa sezione</button>
     `;
-    
-    worksContainer.appendChild(workDiv);
+
+    container.appendChild(sectionDiv);
 }
 
 async function handleSave() {
