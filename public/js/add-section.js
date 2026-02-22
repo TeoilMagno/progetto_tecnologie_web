@@ -1,11 +1,16 @@
+let workCount = 0;
+
 function renderAddWork(sId) {
     const worksContainer = document.getElementById(`works-container-${sId}`);
-    
+    workCount++
+
     const workDiv = document.createElement('div');
     workDiv.style = "background: #f9f9f9; padding: 10px; margin-top: 5px; border: 1px solid #ddd;";
-    
+    workDiv.className = "work-block";
+    workDiv.id = `work-${workCount}`;
+
     workDiv.innerHTML = `
-        <h4>Nuova Opera</h4>
+        <h4>Opera ${(workCount)}</h4>
         <label>Nome opera:</label>
         <input type="text" name="workName[${sId}][]" required><br>
         <label>Autore:</label>

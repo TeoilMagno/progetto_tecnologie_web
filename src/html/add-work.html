@@ -1,25 +1,24 @@
 <!DOCTYPE HTML>
 <head>
   <meta charset="UTF-8">
-  <title>Art Around - Aggiungi Sezioni</title>
+  <title>Art Around - Aggiungi opere</title>
 </head>
 <body>
-  <h1>Aggiungi sezioni al museo</h1>
+  <h1>Aggiungi opere alla sezione</h1>
   
   <form id="main-form">
-    <div id="sections-region"></div>
+    <div id="works-container-1"></div>
 
-    <button type="button" onclick="renderAddSection()">+ Aggiungi un'altra sezione</button>
+    <button type="button" onclick="renderAddWork(1)">+ Aggiungi un'altra opera</button>
     <br><br>
     <input type="submit" value="Salva tutto" onclick="handleSave()">
   </form>
 
-  <script src="../../public/js/add-museum.js"></script>
   <script src="../../public/js/add-section.js"></script>
   <script>
     // Appena la pagina carica, genera automaticamente la prima sezione
     window.onload = () => {
-        renderAddSection(); 
+        renderAddWork(1); 
     };
   </script>
 </body>
