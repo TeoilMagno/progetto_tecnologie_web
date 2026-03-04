@@ -1,4 +1,4 @@
-//schema che definisce gli item in vendita al museo
+// schema che definisce gli item in vendita al museo
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

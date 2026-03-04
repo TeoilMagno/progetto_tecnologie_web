@@ -1,4 +1,4 @@
-//schema che definisce le opere in esposizione
+// schema che definisce le opere in esposizione
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

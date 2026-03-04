@@ -1,14 +1,22 @@
+/*
+    Js contente gil end-point per le chiamate API
+
+    Gestore dei dati
+*/
+
 const express = require('express');
 const path = require('path');
 
+// Controllers
 const museumController = require ('../controllers/museums')
 const itemController = require ('../controllers/items')
 const apiRouter = express.Router();
 const sectionController = require('../controllers/sections');
 
 //--------------- museums -----------------------
-// 1. Ottieni tutti i musei
-apiRouter.get('/musei', async (req, res) => {
+
+// ritorna tutti i musei del db
+apiRouter.get('/museums', async (req, res) => {
     try {
         const museums = await museumController.getAllMuseums();
         res.json(museums);
@@ -17,7 +25,7 @@ apiRouter.get('/musei', async (req, res) => {
     }
 });
 
-//salva il museo sul db
+// salva il museo sul db
 apiRouter.post('/add-museum', async (req,res) =>{
   try {
     const {name, address, contact_email, contact_phone, sections=[], image, tags=[]} = req.body;
@@ -29,19 +37,20 @@ apiRouter.post('/add-museum', async (req,res) =>{
 
     const museum = {name, address, contact_email, contact_phone, sections, image, tags: tagsArray};
     const result = await museumController.saveMuseum(museum);
-    res.redirect(`/api/museums/${result.id}/add-sections`);
+
+    res.redirect(`/museums/${result.id}/add-sections`);
   } catch (error) {
-    console.log(error);
+    console.log("Errore nella post per add-museum: ", error);
     res.status(500).json({error: "errore durante il salvataggio"});
   } 
 });
 
 //--------------- items -----------------------
-// 2. Ottieni oggetto di un museo specifico
-apiRouter.get('/musei/:id/items', async (req, res) => {
+
+// ritorna oggetto di un museo specifico
+apiRouter.get('/museums/:id/items', async (req, res) => {
     try {
-        // 🔴 CORREZIONE IMPORTANTE: Rimosso parseInt()
-        // Mongo gestisce automaticamente la conversione da stringa a ObjectId
+        // Rimosso parseInt(): Mongo gestisce automaticamente la conversione da stringa a ObjectId
         const museumId = req.params.id; 
 
         const items = await itemController.getItemByMuseum(museumId);
@@ -52,10 +61,10 @@ apiRouter.get('/musei/:id/items', async (req, res) => {
     }
 });
 
+//? Perche' non e' una post?
 // 3. Modifica un'oggetto in vendita
 apiRouter.put('/items/:id', async (req, res) => {
     try {
-        // 🔴 CORREZIONE IMPORTANTE: Rimosso parseInt()
         const itemId = req.params.id;
         const updateData = req.body;
 
@@ -74,6 +83,8 @@ apiRouter.put('/items/:id', async (req, res) => {
 });
 
 //--------------- sections -----------------------
+
+// ritorna un item data la sezione specifica
 apiRouter.get('/sections/:sectionId/works', async (req, res) => {
     try {
         const works = await sectionController.getWorksBySection(req.params.sectionId);
@@ -83,12 +94,7 @@ apiRouter.get('/sections/:sectionId/works', async (req, res) => {
     }
 });
 
-//add-sections
-apiRouter.get('/museums/:museumId/add-sections', (req, res) => {
-  res.sendFile(path.join(__dirname,'..','..','html','add-section.html'));
-});
-
-// Rotte per il recupero dati
+// ritorna le sezioni di un museo dato
 apiRouter.get('/museums/:museumId/sections', async (req, res) => {
     try {
         const sections = await sectionController.getSectionsByMuseum(req.params.museumId);
@@ -98,10 +104,19 @@ apiRouter.get('/museums/:museumId/sections', async (req, res) => {
     }
 });
 
-// Se decidi di usare la versione che salva tutto insieme (Sezione + Opere):
+//------------------ form ------------------------
+
+// in router
+// ottiene il form html per l'inserimento delle sezioni
+// apiRouter.get('/museums/:museumId/add-sections', (req, res) => {
+//   res.sendFile(path.join(__dirname,'..','..','html','add-section.html'));
+// });
+
+// TODO: da rivedere
+//? salvataggio della sezione
 apiRouter.post('/save-full-section', sectionController.saveFullSection);
 
-//File config
+//? File config
 apiRouter.get('/config', async (req,res) => {
   try
   {
