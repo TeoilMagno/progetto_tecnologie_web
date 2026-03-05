@@ -19,6 +19,9 @@ const sectionController = require('../controllers/sections');
 apiRouter.get('/museums', async (req, res) => {
     try {
         const museums = await museumController.getAllMuseums();
+
+        if (!museums) return res.status(404).json({ error: "Musei non trovati" });
+
         res.json(museums);
     } catch (error) {
         res.status(500).json({ error: "Errore recupero musei" });
@@ -54,6 +57,9 @@ apiRouter.get('/museums/:id/items', async (req, res) => {
         const museumId = req.params.id; 
 
         const items = await itemController.getItemByMuseum(museumId);
+
+        if (!items) return res.status(404).json({ error: "Opere non trovate" });
+
         res.json(items);
     } catch (error) {
         console.error(error);

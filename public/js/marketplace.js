@@ -33,7 +33,7 @@ async function getMuseums() {
         </div>`;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/musei`);
+        const response = await fetch(`${API_BASE_URL}/museums`);
         if (!response.ok) throw new Error('Errore server');
         cachedMuseums = await response.json();
         renderMuseumsList(cachedMuseums);
@@ -54,7 +54,7 @@ async function getMuseumItems(museumId) {
         </div>`;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/musei/${museumId}/items`);
+        const response = await fetch(`${API_BASE_URL}/museums/${museumId}/items`);
         if (!response.ok) throw new Error('Errore items');
         
         currentItems = await response.json();
@@ -64,7 +64,7 @@ async function getMuseumItems(museumId) {
         renderItemsList(currentItems, museum);
         
     } catch (error) {
-        console.error(error);
+        console.error("Errore in getMuseumsItems: ", error);
         container.innerHTML = `<div class="alert alert-danger bg-transparent text-danger border-danger">Errore: ${error.message}</div>`;
     }
 }

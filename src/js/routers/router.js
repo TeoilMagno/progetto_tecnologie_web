@@ -65,7 +65,7 @@ router.get('/add-museum', (req, res) => {
 });
 
 // ottiene il form html per l'inserimento delle sezioni
-apiRouter.get('/museums/:museumId/add-section', (req, res) => {
+router.get('/museums/:museumId/add-section', (req, res) => {
   const filePath = path.join(__dirname,'..','..','html','add-section.html')
 
   console.log("Percorso generato per add-section: ", filePath)
@@ -73,18 +73,16 @@ apiRouter.get('/museums/:museumId/add-section', (req, res) => {
 });
 
 // ottiene il form html per l'inserimento degli item
-apiRouter.get('/museums/:museumId/sections/:sectionId/add-work', (req, res) => {
+router.get('/museums/:museumId/sections/:sectionId/add-work', (req, res) => {
   const filePath = path.join(__dirname,'..','..','html','add-work.html')
 
   console.log("Percorso generato per add-item: ", filePath)
   res.sendFile(filePath);
 });
 
-//! sara' da togliere 
 //salva la sezione sul db
 router.post('/add-section', saveSection);
 
-//! sara' da togliere
 //aggiunge la sezione al museo
 router.post('/add-section-to-museum', addSectionToMuseum)
 

@@ -9,6 +9,6 @@
     "nodemon": "^3.1.11"
   },
   "scripts": {
-    "start": "nodemon ./js/app"
+    "start": "nodemon src/js/app.js"
   }
 }
