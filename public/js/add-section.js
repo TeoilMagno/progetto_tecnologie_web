@@ -10,6 +10,8 @@ function renderAddSection() {
     sectionDiv.style = "border: 2px solid #007bff; padding: 15px; margin: 10px 0; position: relative";
     sectionDiv.id = `section-${sectionCount}`;
 
+    console.log("sono dentro renderaddsection")
+
     sectionDiv.innerHTML = `
       <button type="button" 
         onclick="this.parentElement.remove()" 

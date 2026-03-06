@@ -20,7 +20,7 @@ exports.saveMuseum = async (rmuseum) => {
 
 exports.addSectionToMuseum = async (req,res) => {
   try {
-        const {museumId, sectionId} = req.body;
+        const { museumId, sectionId } = req.body;
         const updatedMuseum = await Museum.findByIdAndUpdate(
             museumId, 
             { $push: { sections: sectionId } }, // Operatore per aggiungere all'array

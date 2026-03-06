@@ -23,7 +23,7 @@ exports.saveSection = async (req,res) => {
 
 exports.addWorkToSection = async (req,res) => {
   try {
-        const {sectionId, workId} = req.body;
+        const { sectionId, workId } = req.body;
         const updatedSection = await Section.findByIdAndUpdate(
             sectionId, 
             { $push: { works: workId } }, // Operatore per aggiungere all'array
@@ -53,7 +53,7 @@ exports.getSectionsByMuseum = async (museumId) => {
 
 exports.getWorksBySection = async (sectionId) => {
   try {
-    const {getWorksById} = require('./works');
+    const { getWorksById } = require('./works');
 
     let workIds;
     workIds = await Section.find({_id: sectionId}).works;

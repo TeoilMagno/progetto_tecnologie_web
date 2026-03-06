@@ -48,6 +48,14 @@ apiRouter.post('/add-museum', async (req,res) =>{
   } 
 });
 
+apiRouter.post('/add-section', async (req,res) => {
+    // qualcosa
+})
+
+apiRouter.post('/add-work', async (req,res) => {
+    // qualcosa
+})
+
 //--------------- items -----------------------
 
 // ritorna oggetto di un museo specifico
