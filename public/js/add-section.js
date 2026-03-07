@@ -13,7 +13,7 @@ function renderAddSection() {
     console.log("sono dentro renderaddsection")
 
     sectionDiv.innerHTML = `
-      <div class="section-block">
+      <div>
         <button type="button" 
           onclick="this.parentElement.remove()" 
           style="position: absolute; right: 10px; top: 10px; color: red; cursor: pointer;">

@@ -27,7 +27,7 @@ function renderAddWork(sId) {
       <label>Anno/periodo di realizzazione:</label>
       <input type="text" name="year[${sId}][]" required><br>
       <label>Image path:</label>
-      <input type="text" name="workImagePath[${sId}][]"><br>
+      <input type="text" name="workImagePath[${sId}][]" required><br>
       <label>Descrizione:</label>
       <textarea></textarea><br>
       <input type="hidden" name="workSectionId[]" value="${sId}">
