@@ -9,6 +9,7 @@ function renderAddWork(sId) {
     workDiv.className = "work-block";
     workDiv.id = `work-${workCount}`;
 
+
     workDiv.innerHTML = `
       <button type="button" 
         onclick="this.parentElement.remove()" 

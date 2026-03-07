@@ -29,24 +29,25 @@ apiRouter.get('/museums', async (req, res) => {
 });
 
 // salva il museo sul db
-apiRouter.post('/add-museum', async (req,res) =>{
-  try {
-    const {name, address, contact_email, contact_phone, sections=[], image, tags=[]} = req.body;
+// ! era salvataggio sincrono
+// apiRouter.post('/add-museum', async (req,res) =>{
+//   try {
+//     const {name, address, contact_email, contact_phone, sections=[], image, tags=[]} = req.body;
 
-    const tagsArray = tags
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag.length > 0);
+//     const tagsArray = tags
+//       .split(',')
+//       .map(tag => tag.trim())
+//       .filter(tag => tag.length > 0);
 
-    const museum = {name, address, contact_email, contact_phone, sections, image, tags: tagsArray};
-    const result = await museumController.saveMuseum(museum);
+//     const museum = {name, address, contact_email, contact_phone, sections, image, tags: tagsArray};
+//     const result = await museumController.saveMuseum(museum);
 
-    res.redirect(`/museums/${result.id}/add-sections`);
-  } catch (error) {
-    console.log("Errore nella post per add-museum: ", error);
-    res.status(500).json({error: "errore durante il salvataggio"});
-  } 
-});
+//     res.redirect(`/museums/${result.id}/add-sections`);
+//   } catch (error) {
+//     console.log("Errore nella post per add-museum: ", error);
+//     res.status(500).json({error: "errore durante il salvataggio"});
+//   } 
+// });
 
 apiRouter.post('/add-section', async (req,res) => {
     // qualcosa
@@ -128,7 +129,9 @@ apiRouter.get('/museums/:museumId/sections', async (req, res) => {
 
 // TODO: da rivedere
 //? salvataggio della sezione
-apiRouter.post('/save-full-section', sectionController.saveFullSection);
+apiRouter.post('/save-section', sectionController.saveSection);
+
+apiRouter.post('/save-museum', museumController.saveMuseum)
 
 //? File config
 apiRouter.get('/config', async (req,res) => {

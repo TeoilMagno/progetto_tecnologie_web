@@ -36,6 +36,13 @@ const workSchema = new Schema({
     }],
     required: true
   }
+  // },
+
+  // sectionId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Section',
+  //   required: true
+  // }
 });
 
 const Work = mongoose.model('Work', workSchema, 'Works');

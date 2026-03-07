@@ -3,12 +3,17 @@ const Work = require('../models/works')
 
 exports.saveSection = async (req,res) => {
   try {
+    console.log("saveSection called correctly")
     const { rsection, museumId } = req.body;
+
+    const savedWorks = await Work.insertMany(rsection.works);
+
+    const workIds = savedWorks.map(work => work._id);
 
     const section = new Section({
       title: rsection.title,
       image: rsection.image,
-      works: [],
+      works: workIds,
       museumId: museumId
     });
 
@@ -64,31 +69,31 @@ exports.getWorksBySection = async (sectionId) => {
   }
 }
 
-exports.saveFullSection = async (req, res) => {
-  try {
-    const { name, image_path, museumId, works } = req.body;
+// exports.saveSection = async (req, res) => {
+//   try {
+//     const { name, image_path, museumId, works } = req.body;
 
-    // 1. Salviamo prima tutte le opere nel database
-    // Assumendo che tu abbia un modello 'Work'
-    const savedWorks = await Work.insertMany(works);
+//     // 1. Salviamo prima tutte le opere nel database
+//     // Assumendo che tu abbia un modello 'Work'
+//     const savedWorks = await Work.insertMany(works);
     
-    // 2. Estraiamo solo gli ID delle opere appena create
-    const workIds = savedWorks.map(work => work._id);
+//     // 2. Estraiamo solo gli ID delle opere appena create
+//     const workIds = savedWorks.map(work => work._id);
 
-    // 3. Creiamo la sezione collegando gli ID delle opere
-    const newSection = new Section({
-      title: name,
-      image: image_path,
-      works: workIds,
-      museumId: museumId
-    });
+//     // 3. Creiamo la sezione collegando gli ID delle opere
+//     const newSection = new Section({
+//       title: name,
+//       image: image_path,
+//       works: workIds,
+//       museumId: museumId
+//     });
 
-    const result = await newSection.save();
-    res.status(201).json(result);
+//     const result = await newSection.save();
+//     res.status(201).json(result);
     
-  } catch (err) {
-    console.error("Errore nel salvataggio completo:", err);
-    res.status(500).json({ error: "Errore durante il salvataggio dei dati" });
-  }
-};
+//   } catch (err) {
+//     console.error("Errore nel salvataggio completo:", err);
+//     res.status(500).json({ error: "Errore durante il salvataggio dei dati" });
+//   }
+// };
 

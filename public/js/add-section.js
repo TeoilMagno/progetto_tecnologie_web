@@ -13,29 +13,31 @@ function renderAddSection() {
     console.log("sono dentro renderaddsection")
 
     sectionDiv.innerHTML = `
-      <button type="button" 
-        onclick="this.parentElement.remove()" 
-        style="position: absolute; right: 10px; top: 10px; color: red; cursor: pointer;">
-        ✖
-      </button>
+      <div class="section-block">
+        <button type="button" 
+          onclick="this.parentElement.remove()" 
+          style="position: absolute; right: 10px; top: 10px; color: red; cursor: pointer;">
+          ✖
+        </button>
 
-      <h3>Sezione ${sectionCount}</h3>
-      <label>Titolo sezione:</label><br>
-      <input type="text" name="sectionName[]" required><br>
-      
-      <label>Path immagine sezione:</label><br>
-      <input type="text" name="sectionImage[]"><br>
-      
-      <div id="works-container-${sectionCount}" style="margin-left: 20px; border-left: 1px dashed #ccc;">
-        </div>
-      
-      <button type="button" onclick="renderAddWork(${sectionCount})">+ Aggiungi Opera a questa sezione</button>
-    `;
+        <h3>Sezione ${sectionCount}</h3>
+        <label>Titolo sezione:</label><br>
+        <input type="text" name="sectionName[]" required><br>
+        
+        <label>Path immagine sezione:</label><br>
+        <input type="text" name="sectionImage[]"><br>
+        
+        <div id="works-container-${sectionCount}" style="margin-left: 20px; border-left: 1px dashed #ccc;">
+          </div>
+        
+        <button type="button" onclick="renderAddWork(${sectionCount})">+ Aggiungi Opera a questa sezione</button>
+      </div>
+      `;
 
     container.appendChild(sectionDiv);
 }
 
-async function handleSave() {
+async function sectionHandleSave(museumId) {
   event.preventDefault(); 
   
   const form = document.getElementById('form');
@@ -58,12 +60,13 @@ async function handleSave() {
   const payload = {
     name: formData.get('name'),
     image_path: formData.get('image_path'),
-    museumId: "69971027041c5bcbe57983b3", // Questo dovrai averlo da qualche parte (es. nell'URL)
-    works: worksArray
+    museumId: museumId,
   };
 
+  console.log("sezioni aggiunte con museumId: ", museumId)
+
   try {
-    const response = await fetch('http://localhost:3000/api/save-full-section', {
+    const response = await fetch('http://localhost:3000/api/save-section', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)

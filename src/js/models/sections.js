@@ -1,4 +1,4 @@
-//schema che definisce le varie sezioni/stanze del museo
+// schema che definisce le varie sezioni/stanze del museo
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -27,5 +27,5 @@ const sectionSchema = new Schema({
 
 const Section = mongoose.model('Section', sectionSchema, 'Sections');
 
-//esportiamo per rendere il file richiamabile da altri file .js
+// esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Section;

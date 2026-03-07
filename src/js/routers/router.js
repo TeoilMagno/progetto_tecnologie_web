@@ -81,7 +81,7 @@ router.get('/add-work', (req, res) => {
 });
 
 // ottiene il form html per l'inserimento delle sezioni
-router.get('/museums/:museumId/add-section', (req, res) => {
+router.get('/museums/:museumId/add-sections', (req, res) => {
   const filePath = path.join(__dirname,'..','..','html','add-section.html')
 
   console.log("Percorso generato per add-section: ", filePath)

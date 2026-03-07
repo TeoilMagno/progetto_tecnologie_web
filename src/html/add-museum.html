@@ -5,7 +5,7 @@
 </head>
 <body>
   <h1>Aggiungi Museo</h1>
-  <form action="/api/add-museum" method="POST">
+  <form id="museumForm">
     <label for="name">Enter museum name:</label><br>
     <input type="text" name="name" class="name"><br>
     <label for="address">Enter museum address:</label><br>
@@ -24,11 +24,12 @@
 
     <!--TODO: capire come gestire i diversi salvataggi per museo, sezione, item-->
     <!--onclick="handleSave()"-->
-    <input type="submit" value="Add" onclick="museumHandleSave()">
+    <input type="button" value="Add" onclick="museumHandleSave()">
     <input type="reset" value="Reset">
   </form>
 
   <script src="/js/add-work.js"></script>
   <script src="/js/add-section.js"></script>
+  <script src="/js/add-museum.js"></script>
 </body>
 
