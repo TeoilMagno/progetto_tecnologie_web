@@ -1,24 +1,37 @@
 <!DOCTYPE HTML>
+<html lang="it">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Art Around - Aggiungi opere</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/forms-style.css">
 </head>
 <body>
-  <h1>Aggiungi opere alla sezione</h1>
-  
-  <form action="/api/add-work" id="main-form">
-    <div id="works-container-1"></div>
+  <div class="form-wrapper">
+    <h1 class="aura-title">Aggiungi opere alla sezione</h1>
+    
+    <form action="/api/add-work" id="main-form" class="glass-panel">
+      <div id="works-container-1" class="mb-4"></div>
 
-    <button type="button" onclick="renderAddWork(1)">+ Aggiungi un'altra opera</button>
-    <br><br>
-    <input type="submit" value="Salva tutto" onclick="handleSave()">
-  </form>
+      <button type="button" class="btn btn-outline-info w-100 mb-4" onclick="renderAddWork(1)">
+        <i class="bi bi-plus-circle me-2"></i>Aggiungi un'altra opera
+      </button>
+
+      <div class="d-flex gap-3 border-top border-secondary border-opacity-25 pt-4">
+        <input type="button" class="btn btn-primary px-5" value="Salva tutto" onclick="handleSave()">
+      </div>
+    </form>
+  </div>
 
   <script src="/js/add-work.js"></script>
   <script>
-    // Appena la pagina carica, genera automaticamente la prima sezione
     window.onload = () => {
         renderAddWork(1); 
     };
   </script>
 </body>
+</html>
