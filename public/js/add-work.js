@@ -2,35 +2,48 @@ let workCount = 0;
 
 function renderAddWork(sId) {
     const worksContainer = document.getElementById(`works-container-${sId}`);
-    workCount++
-
+    workCount++;
     const workDiv = document.createElement('div');
-    workDiv.style = "background: #f9f9f9; padding: 10px; margin-top: 5px; border: 1px solid #ddd; position: relative";
-    workDiv.className = "work-block";
+    
+    workDiv.className = "work-block glass-panel work-block-aura p-3 mb-3 position-relative";
     workDiv.id = `work-${workCount}`;
 
-
     workDiv.innerHTML = `
-      <button type="button" 
-        onclick="this.parentElement.remove()" 
-        style="position: absolute; right: 5px; top: 5px; border: none; background: none; color: #666; cursor: pointer;">
-        ✕
-      </button>
+      <button type="button" onclick="this.parentElement.remove()" class="btn-close btn-close-white btn-sm position-absolute end-0 top-0 m-2"></button>
 
-      <h4>Opera ${(workCount)}</h4>
-      <label>Nome opera:</label>
-      <input type="text" name="workName[${sId}][]" required><br>
-      <label>Autore:</label>
-      <input type="text" name="author[${sId}][]" required><br>
-      <label>Stile:</label>
-      <input type="text" name="style[${sId}][]" required><br>
-      <label>Anno/periodo di realizzazione:</label>
-      <input type="text" name="year[${sId}][]" required><br>
-      <label>Image path:</label>
-      <input type="text" name="workImagePath[${sId}][]" required><br>
-      <label>Descrizione:</label>
-      <textarea></textarea><br>
-      <input type="hidden" name="workSectionId[]" value="${sId}">
+      <h4 class="h6 text-info mb-3">Opera ${workCount}</h4>
+      
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <label class="form-label-aura">Nome Opera</label>
+          <input type="text" name="workName[${sId}][]" class="form-control input-aura" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label-aura">Autore</label>
+          <input type="text" name="author[${sId}][]" class="form-control input-aura" required>
+        </div>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <label class="form-label-aura">Stile</label>
+          <input type="text" name="style[${sId}][]" class="form-control input-aura" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label-aura">Anno/Periodo</label>
+          <input type="text" name="year[${sId}][]" class="form-control input-aura" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label-aura">URL Immagine Opera</label>
+        <input type="text" name="workImagePath[${sId}][]" class="form-control input-aura" required>
+      </div>
+
+      <div>
+        <label class="form-label-aura">Descrizione</label>
+        <textarea class="form-control input-aura" rows="2" placeholder="Scrivi una breve descrizione..."></textarea>
+      </div>
     `;
     
     worksContainer.appendChild(workDiv);
