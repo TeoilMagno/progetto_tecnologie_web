@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
 
-require('dotenv').config();
-const dbURI = process.env.DB_URI;
+// require('dotenv').config();
 
 const connectDB = async () => {
-  mongoose.connect(dbURI)
+  const dbURI = process.env.DB_URI;
+
+  await mongoose.connect(dbURI, { serverSelectionTimeoutMS: 5000 }) // tenta la connessione per 5 secondi
    .then((result) => {
       console.log("connected to db");
  })
- .catch((err) => console.log(err));
+ .catch((err) => console.log("Db non raggiungibile. Errore: ", err));
 };
 
 module.exports = connectDB;

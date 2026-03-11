@@ -102,4 +102,21 @@ router.post('/add-section', saveSection);
 //aggiunge la sezione al museo
 router.post('/add-section-to-museum', addSectionToMuseum)
 
+// -------------------- login ---------------------------
+// apre l'interfaccia per il login
+router.get('/login', (req, res) => {
+  const filePath = path.join(__dirname, '..', '..', 'html', 'login.html');
+  
+  console.log("Percorso generato per il login:", filePath);
+  res.sendFile(filePath);
+});
+
+// apre l'interfaccia per il sign-up
+router.get('/signup', (req, res) => {
+  const filePath = path.join(__dirname, '..', '..', 'html', 'signup.html');
+  
+  console.log("Percorso generato per il sign-up:", filePath);
+  res.sendFile(filePath);
+});
+
 module.exports = router;

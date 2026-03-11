@@ -5,6 +5,7 @@ let cachedMuseums = [];
 let currentItems = [];
 let currentMuseumId = null;
 let editModalInstance = null;
+let currentUser = JSON.parse(localStorage.getItem('user')) || null; // curator o customer
 
 // 1. INIZIALIZZAZIONE
 document.addEventListener("DOMContentLoaded", () => {
@@ -113,33 +114,51 @@ function renderItemsList(items, museumInfo) {
   }
 
   items.forEach((item) => {
-    // CORREZIONE 4: Uso item._id e aggiungo gli apici nell'onclick del modale
+    const isCurator = currentUser && currentUser.role === 'curator';
+    // * va introdotta la logica per la visibilita' del tasto "+ Aggiungi museo"
     const cardHtml = `
             <div class="col-12 col-lg-6">
-                <div class="card custom-card h-100">
-                    <div class="row g-0 h-100">
-                        <div class="col-4">
-                            <img src="${item.image}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 180px;" alt="${item.name}">
+              <div class="card custom-card h-100">
+                <div class="row g-0 h-100">
+                  <div class="col-4">
+                    <img
+                      src="${item.image}"
+                      class="img-fluid rounded-start h-100"
+                      style="object-fit: cover; min-height: 180px"
+                      alt="${item.name}"
+                    />
+                  </div>
+                  <div class="col-8">
+                    <div class="card-body d-flex flex-column h-100 py-3 px-3">
+                      <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="card-title mb-1 text-truncate">${item.name}</h5>
+                      </div>
+                      <p
+                        class="card-text small text-truncate-3 mb-3"
+                        style="flex-grow: 1; opacity: 0.8"
+                      >
+                        ${item.description}
+                      </p>
+
+                      <div
+                        class="d-flex justify-content-between align-items-end mt-auto pt-2 border-top border-secondary border-opacity-25"
+                      >
+                        <div>
+                          <div class="fw-bold text-white fs-5">
+                            € ${item.price.toFixed(2)}
+                          </div>
                         </div>
-                        <div class="col-8">
-                            <div class="card-body d-flex flex-column h-100 py-3 px-3">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <h5 class="card-title mb-1 text-truncate">${item.name}</h5>
-                                </div>
-                                <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8;">${item.description}</p>
-                                
-                                <div class="d-flex justify-content-between align-items-end mt-auto pt-2 border-top border-secondary border-opacity-25">
-                                    <div>
-                                        <div class="fw-bold text-white fs-5">€ ${item.price.toFixed(2)}</div>
-                                    </div>
-                                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="openEditModal('${item._id}')">
-                                        <i class="bi bi-pencil me-1"></i> Modifica
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        <button
+                          class="btn btn-sm btn-outline-secondary rounded-pill px-3"
+                          onclick="openEditModal('${item._id}')"
+                        >
+                          <i class="bi bi-pencil me-1"></i> Modifica
+                        </button>
+                      </div>
                     </div>
+                  </div>
                 </div>
+              </div>
             </div>
         `;
     container.innerHTML += cardHtml;
@@ -147,7 +166,7 @@ function renderItemsList(items, museumInfo) {
 }
 
 // 4. LOGICA EDITOR (MODALE & SALVATAGGIO)
-
+// * decidere se tenerlo per debug o se tenerlo in modalita' curator
 function openEditModal(itemId) {
   // CORREZIONE 5: Cerco usando _id (confronto tra stringhe)
   const item = currentItems.find((i) => i._id === itemId);

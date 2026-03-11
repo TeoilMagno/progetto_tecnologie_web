@@ -11,7 +11,7 @@
   style="min-height: 100vh"
 >
   <div class="glass-panel" style="width: 100%; max-width: 400px">
-    <h2 class="aura-title text-center">Accedi</h2>
+    <h2 class="aura-title text-center">Registrati</h2>
     <form id="loginForm">
       <div class="mb-3">
         <label class="form-label-aura">Email</label>
@@ -19,6 +19,7 @@
           type="email"
           id="email"
           class="form-control input-aura"
+          placeholder="es. mariorossi@mail.net"
           required
         />
       </div>
@@ -28,14 +29,25 @@
           type="password"
           id="password"
           class="form-control input-aura"
+          placeholder="be creative"
+          required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="form-label-aura">Conferma la tua password</label>
+        <input
+          type="password"
+          id="password"
+          class="form-control input-aura"
+          placeholder="be creative"
           required
         />
       </div>
       <button type="submit" class="btn btn-primary w-100">
-        Entra in ArtAround
+        Registrati ad ArtAround
       </button>
       <p class="text-secondary small mt-3 text-center">
-        Non hai un account? <a href="/signup" class="text-info">Registrati</a>
+        Hai gia' un account? <a href="/login" class="text-info">Accedi</a>
       </p>
     </form>
   </div>
