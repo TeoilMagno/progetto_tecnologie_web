@@ -12,6 +12,7 @@ const museumController = require ('../controllers/museums')
 const itemController = require ('../controllers/items')
 const apiRouter = express.Router();
 const sectionController = require('../controllers/sections');
+const auth = require("../middleware/auth")
 
 //--------------- museums -----------------------
 
@@ -121,17 +122,9 @@ apiRouter.get('/museums/:museumId/sections', async (req, res) => {
 
 //------------------ form ------------------------
 
-// in router
-// ottiene il form html per l'inserimento delle sezioni
-// apiRouter.get('/museums/:museumId/add-sections', (req, res) => {
-//   res.sendFile(path.join(__dirname,'..','..','html','add-section.html'));
-// });
+apiRouter.post('/save-section', auth.isCurator, sectionController.saveSection);
 
-// TODO: da rivedere
-//? salvataggio della sezione
-apiRouter.post('/save-section', sectionController.saveSection);
-
-apiRouter.post('/save-museum', museumController.saveMuseum)
+apiRouter.post('/save-museum', auth.isCurator, museumController.saveMuseum)
 
 //? File config
 apiRouter.get('/config', async (req,res) => {
