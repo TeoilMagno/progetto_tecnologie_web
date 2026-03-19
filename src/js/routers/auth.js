@@ -6,7 +6,6 @@ const { User } = require('../models/user');
 const router = express.Router();
 
 // ─── Pagine ───────────────────────────────────────────────────────────────
-// Usa sendFile perché il progetto serve HTML statici, non template engine
 router.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'login.html'));
 });
@@ -24,15 +23,15 @@ router.post('/login/password', passport.authenticate('local', {
 // ─── Local signup ─────────────────────────────────────────────────────────
 router.post('/signup', async (req, res, next) => {
   try {
-    const salt = crypto.randomBytes(16);
-    crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', async (err, hash) => {
+    const salt = crypto.randomBytes(16); // simile al nonce
+    crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', async (err, hash) => { // crittazione della password
       if (err) return next(err);
       const user = await User.create({
         username: req.body.username,
         hashed_password: hash,
         salt
       });
-      req.login(user, err => {
+      req.login(user, err => { // gestisce direttamente l'accesso serializzando l'utente nella sessione
         if (err) return next(err);
         res.redirect('/');
       });
@@ -41,6 +40,7 @@ router.post('/signup', async (req, res, next) => {
 });
 
 // ─── Google ───────────────────────────────────────────────────────────────
+// Standard passport per il login con Google
 router.get('/login/federated/google', passport.authenticate('google'));
 router.get('/oauth2/redirect/google', passport.authenticate('google', {
   successRedirect: '/',
@@ -48,6 +48,7 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
 }));
 
 // ─── Facebook ─────────────────────────────────────────────────────────────
+// Standard passport per il login con FaceBook
 router.get('/login/federated/facebook', passport.authenticate('facebook'));
 router.get('/oauth2/redirect/facebook', passport.authenticate('facebook', {
   successRedirect: '/',

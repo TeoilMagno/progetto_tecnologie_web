@@ -6,6 +6,12 @@ const crypto = require("crypto");
 const { User, FederatedCredential } = require("../models/user"); // aggiusta il path se necessario
 
 // ─── Serialize / Deserialize ───────────────────────────────────────────────
+/*
+  cb := callback, feedback sulla verifica di passport
+  cb(err)           -> errore tecnico (es. DB non raggiungibile) → Passport lancia un 500
+  cb(null, false)   -> credenziali errate → Passport reindirizza a failureRedirect
+  cb(null, user)    -> tutto ok → Passport serializza l'utente e va a successRedirect
+*/
 passport.serializeUser((user, cb) => cb(null, user._id));
 
 passport.deserializeUser(async (id, cb) => {
@@ -37,6 +43,16 @@ passport.use(
 );
 
 // ─── Google Strategy ───────────────────────────────────────────────────────
+/*
+  Le FederatedCredentials sono un ponte tra le credenziali del provider (Google, FaceBook)
+  e i profili salvati con profile._id su MongoDB
+  FederatedCredential
+  ┌─────────────────────────────────────────────────────┐
+  │ user_id  → _id dell'utente su MongoDB               │
+  │ provider → "https://accounts.google.com"            │
+  │ subject  → "1234567890" (l'id univoco di Google)    │
+  └─────────────────────────────────────────────────────┘
+*/
 passport.use(
   new GoogleStrategy(
     {
@@ -51,7 +67,7 @@ passport.use(
           provider: issuer,
           subject: profile.id,
         });
-        if (!cred) {
+        if (!cred) { // e' un utente nuovo, lo creo
           const user = await User.create({ name: profile.displayName });
           await FederatedCredential.create({
             user_id: user._id,
@@ -59,7 +75,7 @@ passport.use(
             subject: profile.id,
           });
           return cb(null, user);
-        }
+        } // utente gia' registrato
         const user = await User.findById(cred.user_id);
         if (!user) return cb(null, false);
         return cb(null, user);

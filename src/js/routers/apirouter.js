@@ -139,7 +139,7 @@ apiRouter.get('/config', async (req,res) => {
 
 //------------------ user ------------------------
 // restituisce l'utente loggato, o null se non autenticato
-apiRouter.get('/me', (req, res) => {
+apiRouter.get('/current-user', (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ username: req.user.username || req.user.name, role: req.user.role });
   } else {

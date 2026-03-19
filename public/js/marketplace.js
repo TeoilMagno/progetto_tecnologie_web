@@ -5,7 +5,7 @@ let cachedMuseums = [];
 let currentItems = [];
 let currentMuseumId = null;
 let editModalInstance = null;
-let currentUser = null; // popolato da /api/me all'avvio
+let currentUser = null; // popolato da /api/current-user all'avvio
 
 // 1. INIZIALIZZAZIONE
 document.addEventListener("DOMContentLoaded", async () => {
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function fetchCurrentUser() {
   try {
-    const res = await fetch(`${API_BASE_URL}/me`);
+    const res = await fetch(`${API_BASE_URL}/current-user`);
     currentUser = await res.json(); // null se non loggato, { username, role } se loggato
   } catch (e) {
     currentUser = null;
