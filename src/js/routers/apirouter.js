@@ -12,7 +12,7 @@ const museumController = require ('../controllers/museums')
 const itemController = require ('../controllers/items')
 const apiRouter = express.Router();
 const sectionController = require('../controllers/sections');
-const auth = require("../middleware/auth")
+const auth = require("../middleware/roles")
 
 //--------------- museums -----------------------
 

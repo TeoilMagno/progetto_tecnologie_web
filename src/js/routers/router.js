@@ -5,14 +5,13 @@
   Gestore della navigazione
 */
 
-const express = require('express');
 const path = require('path');
-
+const express = require('express')
 const {saveMuseum, addSectionToMuseum, getAllMuseums} = require ('../controllers/museums')
 const {saveSection} = require ('../controllers/sections')
-const router = express.Router();
 const sectionController = require('../controllers/sections');
 
+const router = express.Router();
 
 // ottiene l'index.html per il caricamento della home
 router.get('/', (req, res) => {
@@ -101,22 +100,5 @@ router.post('/add-section', saveSection);
 
 //aggiunge la sezione al museo
 router.post('/add-section-to-museum', addSectionToMuseum)
-
-// -------------------- login ---------------------------
-// apre l'interfaccia per il login
-router.get('/login', (req, res) => {
-  const filePath = path.join(__dirname, '..', '..', 'html', 'login.html');
-  
-  console.log("Percorso generato per il login:", filePath);
-  res.sendFile(filePath);
-});
-
-// apre l'interfaccia per il sign-up
-router.get('/signup', (req, res) => {
-  const filePath = path.join(__dirname, '..', '..', 'html', 'signup.html');
-  
-  console.log("Percorso generato per il sign-up:", filePath);
-  res.sendFile(filePath);
-});
 
 module.exports = router;
