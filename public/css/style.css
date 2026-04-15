@@ -153,3 +153,61 @@ header.navbar {
 .btn-close {
     filter: invert(1) grayscale(100%) brightness(200%);
 }
+
+/* Responsive: su mobile la nascondiamo di default */
+@media (max-width: 768px) {
+    #sidebar {
+        position: fixed;
+        height: 100%;
+        background-color: var(--bg-dark) !important;
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+}
+
+* SIDEBAR TRASPARENTE E DINAMICA */
+#sidebar {
+    background-color: transparent !important;
+    border-right: 1px solid var(--border-color) !important;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Definiamo la larghezza iniziale (corrisponde a col-md-2) */
+    flex: 0 0 16.666667%; 
+    max-width: 16.666667%;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Stato Chiuso della Sidebar */
+#sidebar.collapsed {
+    flex: 0 0 0;        /* Toglie lo spazio flex */
+    max-width: 0;       /* Toglie lo spazio fisico */
+    margin-left: 0; 
+    padding: 0 !important;
+    opacity: 0;
+    visibility: hidden;
+    border: none !important;
+}
+
+/* Gestione pulsante hamburger nell'header */
+#sidebarOpenBtn {
+    display: none; /* Nascosto di default */
+    cursor: pointer;
+}
+
+#sidebarOpenBtn.show-btn {
+    display: block !important;
+}
+
+/* Il contenuto principale si espande quando la sidebar si chiude */
+main {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+}
+
+/* CONTENUTO PRINCIPALE (MAIN) */
+#main-content {
+    flex: 1;            /* Forza l'espansione per riempire il vuoto */
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 0;       /* Evita che il contenuto blocchi la contrazione */
+}

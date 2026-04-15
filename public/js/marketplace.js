@@ -14,6 +14,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     editModalInstance = new bootstrap.Modal(modalEl);
   }
 
+  // Gestione Apertura/Chiusura Sidebar
+  const sidebar = document.getElementById("sidebar");
+    const openBtn = document.getElementById("sidebarOpenBtn");
+    const closeBtn = document.getElementById("sidebarCloseBtn");
+
+    // Funzione per chiudere
+    closeBtn.addEventListener("click", () => {
+        sidebar.classList.add("collapsed");
+        openBtn.classList.add("show-btn");
+    });
+
+    // Funzione per aprire
+    openBtn.addEventListener("click", () => {
+        sidebar.classList.remove("collapsed");
+        openBtn.classList.remove("show-btn");
+    });
+
+  // Gestione del tasto indietro del browser
+  window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.view === 'items') {
+      // Se lo stato indica che eravamo in un museo, carichiamo gli items
+      getMuseumItems(event.state.id, true); // Passiamo un flag per evitare pushState duplicati
+    } else {
+      // Altrimenti torniamo alla lista generale
+      getMuseums(true);
+    }
+  });
+
   // Carica utente dal server (Passport) e poi carica i musei
   await fetchCurrentUser();
   getMuseums();
@@ -99,6 +127,7 @@ async function getMuseumItems(museumId) {
   try {
     const response = await fetch(`${API_BASE_URL}/museums/${museumId}/items`);
     if (!response.ok) throw new Error("Errore items");
+    history.pushState({ view: 'items', id: museumId }, "", `#museum/${museumId}`);
     currentItems = await response.json();
     const museum = cachedMuseums.find((m) => m._id === museumId);
     renderItemsList(currentItems, museum);
