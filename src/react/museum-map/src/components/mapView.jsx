@@ -8,14 +8,15 @@ export default function MapView() {
   return (
     <svg viewBox="0 0 1000 1000">
       {!selectedArea && (
-        <AreaLayer onSelect={setSelectedArea} />
+        <g transform="scale(0.5)">
+          <AreaLayer onSelect={setSelectedArea} />
+        </g>
       )}
 
       {selectedArea && (
-        <RoomLayer
-          area={selectedArea}
-          onBack={() => setSelectedArea(null)}
-        />
+        <g transform="scale(0.5)">
+          <RoomLayer area={selectedArea} onBack={() => setSelectedArea(null)} />
+        </g>
       )}
     </svg>
   );
