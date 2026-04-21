@@ -1,5 +1,11 @@
 const API_BASE_URL = "http://localhost:3000/api";
 
+/*
+  // TODO: aggiunta museo tramite json
+  // TODO: correzione meta_data su mongodb
+  // TODO: scrivere schema visite 
+*/
+
 // Stato globale
 let cachedMuseums = [];
 let currentItems = [];
@@ -50,6 +56,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 // 2. UTENTE LOGGATO
 
 async function fetchCurrentUser() {
+  //! AGGIUNTA DEBUG:
+  currentUser = { username: "Admin", role: "curator" }; renderUserArea(); return;
+
   try {
     const res = await fetch(`${API_BASE_URL}/current-user`);
     currentUser = await res.json(); // null se non loggato, { username, role } se loggato
@@ -63,26 +72,57 @@ function renderUserArea() {
   const area = document.getElementById("user-area");
 
   if (currentUser) {
-    // Utente loggato: mostra iniziale + username + tasto logout
     const initials = (currentUser.username || currentUser.name || "?")
       .slice(0, 2)
       .toUpperCase();
 
+    // Definiamo le voci del menu in base al ruolo
+    let menuOptions = "";
+    if (currentUser.role === "curator") {
+      menuOptions = `
+        <li><a class="dropdown-item" href="/my-museums"><i class="bi bi-bank me-2"></i>I miei musei</a></li>
+        <li><a class="dropdown-item" href="/my-visits"><i class="bi bi-map me-2"></i>Le mie visite</a></li>
+      `;
+    } else {
+      menuOptions = `
+        <li><a class="dropdown-item" href="/my-visits"><i class="bi bi-collection me-2"></i>Le mie visite</a></li>
+        <li><a class="dropdown-item" href="/create-visit"><i class="bi bi-plus-lg me-2"></i>Crea visita</a></li>
+      `;
+    }
+
     area.innerHTML = `
-      <div class="rounded-circle d-flex justify-content-center align-items-center fw-bold"
-        style="background: var(--accent-gradient); width:30px; height:30px; font-size:0.75rem;">
-        ${initials}
+      <div class="dropdown">
+        <div class="d-flex align-items-center cursor-pointer dropdown-toggle" 
+            id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+          
+          <div class="rounded-circle d-flex justify-content-center align-items-center fw-bold me-2"
+            style="background: var(--accent-gradient); width:32px; height:32px; font-size:0.75rem; color: white;">
+            ${initials}
+          </div>
+
+          <span class="fw-medium text-white">${currentUser.username || currentUser.name}</span>
+
+          <i class="bi bi-chevron-down ms-3 custom-arrow"></i> 
+        </div>
+        
+        <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu mt-2" aria-labelledby="userDropdown">
+          ${menuOptions}
+          <li><hr class="dropdown-divider border-secondary opacity-25"></li>
+          <li>
+            <form action="/logout" method="post" class="m-0">
+              <button type="submit" class="dropdown-item text-danger">
+                <i class="bi bi-box-arrow-right me-2"></i>Esci
+              </button>
+            </form>
+          </li>
+        </ul>
       </div>
-      <span>${currentUser.username || currentUser.name}</span>
-      <form action="/logout" method="post" class="m-0">
-        <button type="submit" class="btn btn-sm btn-outline-light ms-1">Esci</button>
-      </form>
     `;
   } else {
-    // Utente non loggato: mostra tasti Accedi e Registrati
+    // Utente non loggato: tasti standard
     area.innerHTML = `
-      <a href="/login" class="btn btn-sm btn-outline-light">Accedi</a>
-      <a href="/signup" class="btn btn-sm btn-primary ms-1">Registrati</a>
+      <a href="/login" class="btn btn-sm btn-outline-light px-3">Accedi</a>
+      <a href="/signup" class="btn btn-sm btn-primary ms-2 px-3">Registrati</a>
     `;
   }
 }

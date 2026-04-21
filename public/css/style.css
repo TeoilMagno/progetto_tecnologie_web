@@ -167,47 +167,120 @@ header.navbar {
     }
 }
 
-* SIDEBAR TRASPARENTE E DINAMICA */
+/* SIDEBAR DINAMICA OTTIMIZZATA */
 #sidebar {
     background-color: transparent !important;
     border-right: 1px solid var(--border-color) !important;
+    /* Usiamo 'width' invece di 'flex' per una transizione più lineare */
+    width: 250px; 
+    min-width: 250px;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    /* Definiamo la larghezza iniziale (corrisponde a col-md-2) */
-    flex: 0 0 16.666667%; 
-    max-width: 16.666667%;
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
+    white-space: nowrap; /* Evita che il testo vada a capo mentre si restringe */
+    will-change: width, opacity;
 }
 
 /* Stato Chiuso della Sidebar */
 #sidebar.collapsed {
-    flex: 0 0 0;        /* Toglie lo spazio flex */
-    max-width: 0;       /* Toglie lo spazio fisico */
-    margin-left: 0; 
-    padding: 0 !important;
+    width: 0;
+    min-width: 0;
     opacity: 0;
     visibility: hidden;
-    border: none !important;
-}
-
-/* Gestione pulsante hamburger nell'header */
-#sidebarOpenBtn {
-    display: none; /* Nascosto di default */
-    cursor: pointer;
-}
-
-#sidebarOpenBtn.show-btn {
-    display: block !important;
-}
-
-/* Il contenuto principale si espande quando la sidebar si chiude */
-main {
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+    border-right: 0 solid transparent !important;
 }
 
 /* CONTENUTO PRINCIPALE (MAIN) */
 #main-content {
-    flex: 1;            /* Forza l'espansione per riempire il vuoto */
+    flex: 1; 
+    min-width: 0; /* Cruciale per permettere al flex-item di rimpicciolirsi/espandersi */
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    min-width: 0;       /* Evita che il contenuto blocchi la contrazione */
+    will-change: transform;
+}
+
+/* Gestione pulsante hamburger */
+#sidebarOpenBtn.show-btn {
+    display: inline-block !important;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Bottono aggiungi museo */
+#add-museum-btn {
+    border-color: rgba(0, 204, 255, 0.5);
+    color: #00ccff;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+#add-museum-btn:hover {
+    background: var(--accent-gradient);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 0 15px rgba(122, 29, 208, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Stile personalizzato per il dropdown menu */
+.custom-dropdown-menu {
+    background: rgba(18, 18, 20, 0.95) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 0.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.custom-dropdown-menu .dropdown-item {
+    color: var(--text-secondary) !important;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.custom-dropdown-menu .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #fff !important;
+    transform: translateX(5px);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Rimuove la freccia di default di Bootstrap */
+.dropdown-toggle::after {
+    display: none !important;
+}
+
+/* Stile Freccia "Linux Mint Style" */
+.custom-arrow {
+    font-size: 0.75rem; /* Più piccola e discreta */
+    color: var(--text-secondary);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Il padding è già gestito dalla classe 'ms-3' in JS (0.75rem / 12px) */
+}
+
+/* Effetto rotazione quando il menu è aperto */
+.dropdown-toggle.show .custom-arrow {
+    transform: rotate(180deg);
+    color: #fff; /* Diventa bianca quando attiva */
+}
+
+/* Assicura che l'allineamento sia perfetto */
+.dropdown-toggle {
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.dropdown-toggle:hover {
+    background: rgba(255, 255, 255, 0.05);
 }
