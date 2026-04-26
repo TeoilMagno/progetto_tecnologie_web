@@ -209,7 +209,7 @@ header.navbar {
     to { opacity: 1; transform: translateX(0); }
 }
 
-/* Bottono aggiungi museo */
+/* Bottone aggiungi museo */
 #add-museum-btn {
     border-color: rgba(0, 204, 255, 0.5);
     color: #00ccff;

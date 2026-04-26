@@ -55,6 +55,7 @@ async function museumHandleSave(event) {
         };
       });
 
+      // TODO: rivedere la distinzione tra works e items -> al momento le opere inserite sono salvate in works
       // Aggiungiamo la sezione con le sue opere al payload
       payload.sections.push({
         title: sectionTitleInput.value,

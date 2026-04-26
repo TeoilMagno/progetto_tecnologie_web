@@ -3,7 +3,7 @@ const LocalStrategy = require("passport-local");
 const GoogleStrategy = require("passport-google-oidc");
 const FacebookStrategy = require("passport-facebook");
 const crypto = require("crypto");
-const { User, FederatedCredential } = require("../models/user"); // aggiusta il path se necessario
+const { User, FederatedCredential } = require("../models/users"); // aggiusta il path se necessario
 
 // ─── Serialize / Deserialize ───────────────────────────────────────────────
 /*

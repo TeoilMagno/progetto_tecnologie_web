@@ -101,4 +101,9 @@ router.post('/add-section', saveSection);
 //aggiunge la sezione al museo
 router.post('/add-section-to-museum', addSectionToMuseum)
 
+// Ottiene l'html per i musei creati dal currentUser
+router.get('/my-museums', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-museums.html'));
+});
+
 module.exports = router;

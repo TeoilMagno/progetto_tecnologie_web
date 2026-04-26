@@ -56,9 +56,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 // 2. UTENTE LOGGATO
 
 async function fetchCurrentUser() {
-  //! AGGIUNTA DEBUG:
-  currentUser = { username: "Admin", role: "curator" }; renderUserArea(); return;
-
   try {
     const res = await fetch(`${API_BASE_URL}/current-user`);
     currentUser = await res.json(); // null se non loggato, { username, role } se loggato
@@ -82,6 +79,7 @@ function renderUserArea() {
       menuOptions = `
         <li><a class="dropdown-item" href="/my-museums"><i class="bi bi-bank me-2"></i>I miei musei</a></li>
         <li><a class="dropdown-item" href="/my-visits"><i class="bi bi-map me-2"></i>Le mie visite</a></li>
+        <li><a class="dropdown-item" href="/add-museum"><i class="bi bi-plus-square me-2"></i>Aggiungi museo</a></li>
       `;
     } else {
       menuOptions = `
@@ -131,11 +129,21 @@ function renderUserArea() {
 
 async function getMuseums() {
   const container = document.getElementById("content-area");
+
+  // 1. SE IL CONTAINER NON ESISTE (es. siamo nella pagina I Miei Musei), FERMATI.
+  if (!container) return;
+
   const title = document.getElementById("page-title");
   const backBtn = document.getElementById("back-btn");
 
-  backBtn.classList.add("d-none");
-  title.innerHTML = "Musei Disponibili";
+  // 2. CONTROLLA CHE GLI ELEMENTI ESISTANO PRIMA DI MODIFICARLI
+  if (backBtn) {
+    backBtn.classList.add("d-none");
+  }
+
+  if (title) {
+    title.innerHTML = "Musei Disponibili";
+  }
 
   container.innerHTML = `
     <div class="col-12 text-center mt-5">
@@ -147,7 +155,9 @@ async function getMuseums() {
     const response = await fetch(`${API_BASE_URL}/museums`);
     if (!response.ok) throw new Error("Errore server");
     cachedMuseums = await response.json();
-    renderMuseumsList(cachedMuseums);
+
+    // Renderizza passandogli esplicitamente l'id (per evitare conflitti)
+    renderMuseumsList(cachedMuseums, "content-area");
   } catch (error) {
     console.error(error);
     container.innerHTML = `<div class="alert alert-danger bg-transparent text-danger border-danger">Errore caricamento dati. Il server è attivo?</div>`;
@@ -184,6 +194,8 @@ function renderMuseumsList(museums) {
   container.innerHTML = "";
 
   museums.forEach((museum) => {
+    if (!museum) return;
+
     const tagsHtml = museum.tags
       .map((tag) => `<span class="badge badge-tag">${tag}</span>`)
       .join("");
@@ -209,6 +221,7 @@ function renderItemsList(items, museumInfo) {
 
   title.innerText = museumInfo ? museumInfo.name : "Dettaglio Museo";
   backBtn.classList.remove("d-none");
+  if(!container) return;
   container.innerHTML = "";
 
   if (items.length === 0) {
@@ -302,5 +315,31 @@ async function saveItem() {
   } finally {
     saveBtn.innerText = originalText;
     saveBtn.disabled = false;
+  }
+}
+
+async function loadManagedMuseums() {
+  const container = document.getElementById("managed-museums-area");
+  if (!container) return;
+
+  container.innerHTML = `<div class="col-12 text-center mt-5"><div class="spinner-border text-info"></div></div>`;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/my-museums`);
+    const managedMuseums = await response.json();
+
+    if (managedMuseums.length === 0) {
+      container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <p class="text-secondary">Non hai ancora musei assegnati.</p>
+                    <a href="/add-museum" class="btn btn-primary">Aggiungi il tuo primo museo</a>
+                </div>`;
+      return;
+    }
+
+    // Riutilizziamo la tua funzione di rendering esistente!
+    renderMuseumsList(managedMuseums, "managed-museums-area");
+  } catch (error) {
+    container.innerHTML = `<div class="alert alert-danger">Errore nel caricamento dei tuoi musei.</div>`;
   }
 }

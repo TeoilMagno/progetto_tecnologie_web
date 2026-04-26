@@ -3,26 +3,24 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const museumSchema = new Schema({
-  museum_data: {
-    name: {
-      type: String,
-      required: true
-    },
+  name: {
+    type: String,
+    required: true
+  },
 
-    address: {
-      type: String,
-      required: true
-    },
+  address: {
+    type: String,
+    required: true
+  },
 
-    contact_email: {
-      type: String,
-      required: true
-    },
+  contact_email: {
+    type: String,
+    required: true
+  },
 
-    contact_phone: {
-      type: String,
-      required: true
-    }
+  contact_phone: {
+    type: String,
+    required: true
   },
 
   sections: [{

@@ -13,6 +13,7 @@ const itemController = require ('../controllers/items')
 const apiRouter = express.Router();
 const sectionController = require('../controllers/sections');
 const auth = require("../middleware/roles")
+const { User } = require('../models/users');
 
 //--------------- museums -----------------------
 
@@ -145,6 +146,22 @@ apiRouter.get('/current-user', (req, res) => {
   } else {
     res.json(null);
   }
+});
+
+// Ottiene i musei gestiti dal curatore loggato
+apiRouter.get('/my-museums', async (req, res) => {
+    try {
+        // Grazie al mock in app.js, req.user._id sarà quello di Alessia
+        const user = await User.findById(req.user._id).populate('managed_museums');
+
+        if (!user) return res.status(404).json({ error: "Utente non trovato" });
+
+        // Restituiamo solo l'array dei musei gestiti
+        res.json(user.managed_museums || []);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Errore nel recupero dei tuoi musei" });
+    }
 });
 
 module.exports = apiRouter;

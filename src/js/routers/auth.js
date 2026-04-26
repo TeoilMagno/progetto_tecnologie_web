@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const crypto = require('crypto');
 const path = require('path');
-const { User } = require('../models/user');
+const { User } = require('../models/users');
 const router = express.Router();
 
 // ─── Pagine ───────────────────────────────────────────────────────────────

@@ -38,6 +38,23 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// TODO: da rimuovere in seguito: login di debug per non dover accedere ogni volta
+// --- INIZIO DEBUG MOCK ---
+app.use((req, res, next) => {
+  // Iniettiamo forzatamente l'utente del database in ogni richiesta
+  req.user = {
+    _id: "69bbcc8442929ff5331b368a", // <--- METTI QUI L'ID REALE DI ALESSIA DA ATLAS
+    name: "Alessia Mertolini",
+    role: "curator"
+  };
+
+  // Mockiamo anche la funzione di Passport per farla risultare sempre true
+  req.isAuthenticated = () => true;
+
+  next();
+});
+// --- FINE DEBUG MOCK ---
+
 // ─── Router ────────────────────────────────────────────────────────────────
 app.use('/', authRouter); // gestisce POST /login/password, POST /signup, GET /oauth2/redirect/...
 app.use('/', router);

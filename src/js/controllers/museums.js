@@ -56,7 +56,10 @@ exports.saveMuseum = async (req, res) => {
     // --- 1. VALIDAZIONE PREVENTIVA ---
     // Creiamo l'istanza del museo per validarla
     const museumToValidate = new Museum({
-      museum_data: { name, address, contact_email, contact_phone },
+      name: name,
+      address: address,
+      contact_email: contact_email,
+      contact_phone: contact_phone,
       image: image,
       tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags
     });

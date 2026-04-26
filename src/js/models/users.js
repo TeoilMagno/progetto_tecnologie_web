@@ -11,6 +11,14 @@ const userSchema = new mongoose.Schema({
     enum: ['curator', 'visitor', 'museum'],
     default: 'visitor'
   },
+  // Musei gestiti (per curatori)
+  managed_museums: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Museum' }],
+
+  // Visite create (per curatori)
+  created_visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visit' }],
+
+  // Visite acquistate (per Visitatori/Customer)
+  purchased_visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visit' }],
   preferences: {
     favorite_styles:  [String],
     visit_history:    [mongoose.Schema.Types.ObjectId]
@@ -24,8 +32,8 @@ const federatedSchema = new mongoose.Schema({
 });
 federatedSchema.index({ provider: 1, subject: 1 }, { unique: true });
 
-const User = mongoose.model('User', userSchema, 'Users');
+const Users = mongoose.model('User', userSchema, 'Users');
 const FederatedCredential = mongoose.model('FederatedCredential', federatedSchema, 'FederatedCredentials');
 
 // esporta entrambi in un oggetto unico — mai due module.exports separati
-module.exports = { User, FederatedCredential };
+module.exports = { User: Users, FederatedCredential };
