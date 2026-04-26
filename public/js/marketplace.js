@@ -189,16 +189,24 @@ async function getMuseumItems(museumId) {
 
 // 4. LOGICA RENDER
 
-function renderMuseumsList(museums) {
-  const container = document.getElementById("content-area");
+// Aggiungiamo 'containerId' come secondo parametro, con 'content-area' come default
+function renderMuseumsList(museums, containerId = "content-area") {
+
+  // Ora usa il parametro dinamico invece della stringa fissa
+  const container = document.getElementById(containerId);
+
+  // Se il contenitore non esiste, si ferma senza crashare
+  if (!container) return;
+
   container.innerHTML = "";
 
   museums.forEach((museum) => {
-    if (!museum) return;
+    if (!museum) return; // Controllo di sicurezza che avevamo aggiunto
 
-    const tagsHtml = museum.tags
-      .map((tag) => `<span class="badge badge-tag">${tag}</span>`)
-      .join("");
+    const tags = museum.tags || [];
+    const tagsHtml = tags
+        .map((tag) => `<span class="badge badge-tag">${tag}</span>`)
+        .join("");
 
     container.innerHTML += `
       <div class="col">
