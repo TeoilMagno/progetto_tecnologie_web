@@ -1,6 +1,7 @@
 const Museum = require("../models/museums");
 const Section = require("../models/sections");
 const Work = require("../models/works");
+const { User } = require("../models/users");
 
 
 //salva un singolo museo passato in input
@@ -118,6 +119,15 @@ exports.saveMuseum = async (req, res) => {
       // Aggiorniamo il museo con gli ID delle sezioni
       museumResult.sections = savedSectionIds;
       await museumResult.save();
+    }
+
+
+    if (req.user && req.user._id) {
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { $push: { managed_museums: museumId } }, // $push aggiunge l'elemento all'array
+        { new: true }
+      );
     }
 
     res.status(201).json({ success: true, message: "Tutto salvato correttamente", id: museumId });

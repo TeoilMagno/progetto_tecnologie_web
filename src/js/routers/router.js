@@ -53,7 +53,7 @@ router.get('/get-museums', async (req, res) => {
   res.send('<h1>Musei trovati</h1>')
 });
 
-// Routes di get
+// ---------------------- Routes di get -----------------------------
 
 // Per aggiungere un museo
 router.get('/add-museum', (req, res) => {
@@ -94,6 +94,15 @@ router.get('/museums/:museumId/sections/:sectionId/add-work', (req, res) => {
   console.log("Percorso generato per add-item: ", filePath)
   res.sendFile(filePath);
 });
+
+// per la pagina di creazione visita
+router.get('/create-visit', (req, res) => {
+  const filePath = path.join(__dirname, '..', '..', 'html', 'create-visit.html');
+  console.log("Percorso generato per create-visit:", filePath);
+  res.sendFile(filePath);
+});
+
+// ------------------------- Routes di post -------------------------------
 
 //salva la sezione sul db
 router.post('/add-section', saveSection);
