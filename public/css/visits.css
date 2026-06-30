@@ -1,0 +1,15 @@
+
+/* CSS per il cursore di trascinamento */
+.drag-handle {
+    cursor: grab; /* Cursore a "mano aperta" */
+}
+
+.drag-handle:active {
+    cursor: grabbing !important; /* Cursore a "mano chiusa" mentre trascini */
+}
+
+/* Effetto visivo quando un elemento viene trascinato (aggiunto in automatico da SortableJS) */
+.sortable-ghost {
+    opacity: 0.4;
+    background-color: rgba(255, 255, 255, 0.1);
+}
