@@ -60,3 +60,17 @@ exports.createVisit = async (req, res) => {
       .json({ error: "Impossibile salvare la visita nel database" });
   }
 };
+
+exports.getVisits = async (req, res) => {
+  try {
+    const userId = req.user._id; // user_id certificato da passport
+    const visits = await Visit.find({ creator: userId }).populate('museum')
+
+    res.status(200).json(visits);
+  } catch(error) {
+    console.error("Errore nel recupero delle visite: ", error);
+    res
+      .status(500)
+      .json({ error: "Impossibile recuperare visite dal database" });
+  }
+}

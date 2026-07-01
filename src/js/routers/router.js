@@ -102,6 +102,13 @@ router.get('/create-visit', (req, res) => {
   res.sendFile(filePath);
 });
 
+// pagina my-visits
+router.get('/my-visits', (req, res) => {
+  const filePath = path.join(__dirname, '..', '..', 'html', 'my-visits.html');
+  console.log("Percorso generato: ", filePath);
+  res.sendFile(filePath);
+});
+
 // ------------------------- Routes di post -------------------------------
 
 //salva la sezione sul db

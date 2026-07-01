@@ -166,6 +166,10 @@ apiRouter.get('/my-museums', async (req, res) => {
 });
 
 // ----------------------- visits ----------------------------
+// TODO: per ora solo create -> ampliare con comprate
+// recupera le visite create/comprate dallo user
+apiRouter.get('/my-visits', visitController.getVisits);
+
 // permette il salvataggio di una nuova visita (accessibile sia a curatori che a visitatori)
 apiRouter.post('/visits', visitController.createVisit);
 
