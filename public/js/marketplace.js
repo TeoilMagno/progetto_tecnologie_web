@@ -227,7 +227,16 @@ function renderItemsList(items, museumInfo) {
   const title = document.getElementById("page-title");
   const backBtn = document.getElementById("back-btn");
 
-  title.innerText = museumInfo ? museumInfo.name : "Dettaglio Museo";
+  if (museumInfo) {
+    title.innerHTML = `
+      ${museumInfo.name} 
+      <a href="/create-visit?museumId=${museumInfo._id}" class="btn btn-sm btn-outline-primary ms-3 rounded-pill text-uppercase" style="font-size: 0.75rem;">
+        <i class="bi bi-map me-1"></i> Crea Visita Qui
+      </a>
+    `;
+  } else {
+    title.innerText = "Dettaglio Museo";
+  }
   backBtn.classList.remove("d-none");
   if(!container) return;
   container.innerHTML = "";

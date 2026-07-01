@@ -14,6 +14,7 @@ const apiRouter = express.Router();
 const sectionController = require('../controllers/sections');
 const auth = require("../middleware/roles")
 const { User } = require('../models/users');
+const visitController = require('../controllers/visits');
 
 //--------------- museums -----------------------
 
@@ -163,5 +164,9 @@ apiRouter.get('/my-museums', async (req, res) => {
         res.status(500).json({ error: "Errore nel recupero dei tuoi musei" });
     }
 });
+
+// ----------------------- visits ----------------------------
+// permette il salvataggio di una nuova visita (accessibile sia a curatori che a visitatori)
+apiRouter.post('/visits', visitController.createVisit);
 
 module.exports = apiRouter;
