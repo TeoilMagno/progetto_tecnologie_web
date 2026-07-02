@@ -54,7 +54,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
 
     container.innerHTML += `
   <div class="col">
-    <div class="card h-100 custom-card">
+    <div class="card h-100 custom-card" onclick="window.location.href='/visit-details?id=${visit._id}'">
       <div class="card-body">
         <div class="d-flex justify-content-between mb-2">
            ${statusBadge}

@@ -173,4 +173,7 @@ apiRouter.get('/my-visits', visitController.getVisits);
 // permette il salvataggio di una nuova visita (accessibile sia a curatori che a visitatori)
 apiRouter.post('/visits', visitController.createVisit);
 
+// per l'apertura dei dettagli di una visita
+apiRouter.get('/visits/:id', visitController.getVisitById);
+
 module.exports = apiRouter;

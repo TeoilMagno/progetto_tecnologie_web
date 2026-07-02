@@ -74,3 +74,19 @@ exports.getVisits = async (req, res) => {
       .json({ error: "Impossibile recuperare visite dal database" });
   }
 }
+
+exports.getVisitById = async (req, res) => {
+  try {
+    const visitId = req.params.id;
+    const visit = await Visit.findById(visitId).populate('museum').populate('items'); // ci servono le informazioni delle opere
+
+    if (!visit) {
+      return res.status(404).json({ error: "Visita non trovata" });
+    }
+
+    res.status(200).json(visit);
+  } catch (error) {
+    console.error("Errore nel recupero della visita specifica:", error);
+    res.status(500).json({ error: "Impossibile recuperare i dettagli della visita" });
+  }
+};

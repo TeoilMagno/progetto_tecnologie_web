@@ -109,6 +109,11 @@ router.get('/my-visits', (req, res) => {
   res.sendFile(filePath);
 });
 
+// pagina di dettaglio delle visite
+router.get('/visit-details', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'visit-details.html'));
+});
+
 // ------------------------- Routes di post -------------------------------
 
 //salva la sezione sul db
