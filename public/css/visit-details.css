@@ -1,82 +1,90 @@
-/* Header superiore (circa 1/6 della pagina) con immagine di copertina */
+/* BANNER DI COPERTINA */
 .visit-banner {
-  height: 18vh;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding-left: 2rem;
+    height: 18vh;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-left: 2rem;
+    border-bottom: 1px solid var(--border-color);
 }
-/* Overlay scuro per rendere il titolo leggibile sopra l'immagine */
+
 .visit-banner::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 1;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(9, 9, 11, 0.7); /* Adattato al --bg-dark */
+    z-index: 1;
 }
+
 .visit-banner-content {
-  position: relative;
-  z-index: 2;
+    position: relative;
+    z-index: 2;
 }
 
-/* STRUTTURA TIMELINE VERTICALE (o - o - o) */
+/* STRUTTURA TIMELINE VERTICALE */
 .timeline-container {
-  position: relative;
-  padding-left: 35px;
-  list-style: none;
-}
-/* La linea verticale di sfondo */
-.timeline-container::before {
-  content: "";
-  position: absolute;
-  top: 15px;
-  bottom: 15px;
-  left: 15px;
-  width: 2px;
-  background: rgba(255, 255, 255, 0.2);
-}
-.timeline-item {
-  position: relative;
-  margin-bottom: 30px;
-}
-/* Il cerchietto "o" della timeline */
-.timeline-item::before {
-  content: "";
-  position: absolute;
-  left: -25px;
-  top: 12px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #0d6efd; /* Colore blu di Bootstrap, cambialo se usi il viola/fucsia */
-  border: 2px solid #14141e; /* Colore dello sfondo per staccare */
-  box-shadow: 0 0 8px #0d6efd;
-  z-index: 2;
+    position: relative;
+    padding-left: 35px;
+    list-style: none;
 }
 
-/* Stile personalizzato per il popover dell'immagine */
+/* Linea verticale */
+.timeline-container::before {
+    content: "";
+    position: absolute;
+    top: 15px;
+    bottom: 15px;
+    left: 15px;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+/* Tappino (cerchietto) della timeline */
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -25px;
+    top: 12px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    /* Utilizzo del colore viola/neon in linea con il tuo tema */
+    background: #a855f7; 
+    border: 2px solid var(--bg-dark);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+    z-index: 2;
+}
+
+/* POPOVER PER L'IMMAGINE INGRANDITA */
 .image-popover {
-  max-width: 320px; /* Dimensione dell'immagine ingrandita */
-  border: none;
-  background: transparent;
+    max-width: 320px;
+    border: none;
+    background: transparent;
 }
+
 .image-popover .popover-body {
-  padding: 0;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-  background: #14141e; /* Colore di sfondo del tuo tema */
-  overflow: hidden;
+    padding: 0;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
 }
-/* Colora la "puntina" per abbinarla al tema scuro quando appare in alto */
+
+/* Colore della freccina del popover per mimetizzarsi con il bordo e lo sfondo scuro */
 .image-popover.bs-popover-top > .popover-arrow::after {
-  border-top-color: #14141e;
+    border-top-color: var(--bg-dark);
 }
-/* Colora la "puntina" quando Popper decide di capovolgerla in basso */
 .image-popover.bs-popover-bottom > .popover-arrow::after {
-  border-bottom-color: #14141e;
+    border-bottom-color: var(--bg-dark);
 }

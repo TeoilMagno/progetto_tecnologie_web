@@ -1,9 +1,13 @@
+<!DOCTYPE html>
+<html lang="it">
 <head>
+  <meta charset="UTF-8">
+  <title>ArtAround - Registrati</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/style.css"/>
   <link rel="stylesheet" href="/css/forms-style.css"/>
 </head>
-<body class="d-flex align-items-center justify-content-center" style="min-height: 100vh">
+<body class="artaround-theme d-flex align-items-center justify-content-center" style="min-height: 100vh">
   <div class="glass-panel" style="width: 100%; max-width: 400px">
     <h2 class="aura-title text-center">Registrati</h2>
 
@@ -18,50 +22,27 @@
     </a>
 
     <div class="d-flex align-items-center mb-3">
-      <hr style="flex:1"><span class="px-2 text-secondary small">oppure</span><hr style="flex:1">
+      <hr style="flex:1; border-color: rgba(255,255,255,0.1);"><span class="px-2 text-secondary small">oppure</span><hr style="flex:1; border-color: rgba(255,255,255,0.1);">
     </div>
 
     <form action="/signup" method="post" id="signupForm">
       <div class="mb-3">
         <label class="form-label-aura" for="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          class="form-control input-aura"
-          placeholder="es. mariorossi"
-          required
-        />
+        <input type="text" id="username" name="username" class="form-control input-aura" placeholder="es. mariorossi" required />
       </div>
       <div class="mb-3">
         <label class="form-label-aura" for="new-password">Password</label>
-        <input
-          type="password"
-          id="new-password"
-          name="password"
-          class="form-control input-aura"
-          placeholder="be creative"
-          autocomplete="new-password"
-          required
-        />
+        <input type="password" id="new-password" name="password" class="form-control input-aura" placeholder="Scegli una password sicura" autocomplete="new-password" required />
       </div>
       <div class="mb-4">
         <label class="form-label-aura" for="confirm-password">Conferma password</label>
-        <input
-          type="password"
-          id="confirm-password"
-          name="confirm_password"
-          class="form-control input-aura"
-          placeholder="be creative"
-          autocomplete="new-password"
-          required
-        />
+        <input type="password" id="confirm-password" name="confirm_password" class="form-control input-aura" placeholder="Ripeti la password" autocomplete="new-password" required />
       </div>
-      <button type="submit" class="btn btn-primary w-100">Registrati ad ArtAround</button>
+      <button type="submit" class="btn btn-gradient w-100">Registrati ad ArtAround</button>
     </form>
 
     <p class="text-secondary small mt-3 text-center">
-      Hai già un account? <a href="/login" class="text-info">Accedi</a>
+      Hai già un account? <a href="/login" class="text-info text-decoration-none">Accedi</a>
     </p>
   </div>
 
@@ -76,3 +57,4 @@
     });
   </script>
 </body>
+</html>

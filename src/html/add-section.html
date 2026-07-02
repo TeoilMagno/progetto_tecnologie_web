@@ -10,19 +10,29 @@
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/forms-style.css">
 </head>
-<body>
+<body class="artaround-theme">
+
+  <header class="navbar site-header sticky-top px-3 mb-4">
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand d-flex align-items-center" href="/my-museums">
+        <i class="bi bi-bank me-2 text-white"></i>
+        <span class="brand-text">ArtAround</span>
+      </a>
+    </div>
+  </header>
+
   <div class="form-wrapper">
     <h1 class="aura-title">Aggiungi sezioni al museo</h1>
     
     <form action="/api/add-section" id="main-form" class="glass-panel">
       <div id="sections-region"></div>
 
-      <button type="button" class="btn btn-outline-secondary w-100 mb-4" onclick="renderAddSection()">
+      <button type="button" class="btn btn-glass w-100 mb-4" onclick="renderAddSection()">
         <i class="bi bi-plus-lg me-2"></i>Aggiungi un'altra sezione
       </button>
       
-      <div class="d-flex gap-3 border-top border-secondary border-opacity-25 pt-4">
-        <input type="button" class="btn btn-primary px-5" value="Salva tutto" onclick="handleSave()">
+      <div class="d-flex gap-3 divider-top pt-4">
+        <button type="button" class="btn btn-gradient px-5" onclick="handleSave()">Salva tutto</button>
       </div>
     </form>
   </div>

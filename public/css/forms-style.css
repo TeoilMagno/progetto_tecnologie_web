@@ -25,8 +25,8 @@
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-/* Stile per gli input */
-.form-label-aura {
+/* Stile per le etichette degli input */
+.glass-panel .form-label-aura {
     color: var(--text-secondary);
     font-size: 0.8rem;
     font-weight: 600;
@@ -36,19 +36,28 @@
     display: block;
 }
 
-.input-aura {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid var(--border-color) !important;
-    color: white !important;
-    border-radius: 8px !important;
-    padding: 0.75rem !important;
+/* Sfruttiamo la specificità: 
+  .glass-panel .input-aura è più forte di .form-control di Bootstrap, 
+  quindi non abbiamo bisogno di !important.
+*/
+.glass-panel .input-aura {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 0.75rem;
     transition: all 0.3s ease;
 }
 
-.input-aura:focus {
-    border-color: #7a1dd0 !important;
-    box-shadow: 0 0 15px rgba(122, 29, 208, 0.4) !important;
-    background: rgba(255, 255, 255, 0.08) !important;
+/* Correggiamo il placeholder per renderlo leggibile sullo sfondo scuro */
+.glass-panel .input-aura::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.glass-panel .input-aura:focus {
+    border-color: #7a1dd0;
+    box-shadow: 0 0 15px rgba(122, 29, 208, 0.4);
+    background-color: rgba(255, 255, 255, 0.08);
     outline: none;
 }
 
@@ -56,10 +65,19 @@
 .section-block-aura {
     border-left: 4px solid #7a1dd0;
     padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .work-block-aura {
     border-left: 3px solid #00ccff;
-    background: rgba(0, 204, 255, 0.02);
+    background-color: rgba(0, 204, 255, 0.02);
     margin-left: 1rem;
+    padding: 1rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 1rem;
+}
+
+/* Un divisore pulito che non usa la classe border di Bootstrap */
+.divider-top {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
