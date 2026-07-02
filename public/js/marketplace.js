@@ -230,7 +230,7 @@ function renderItemsList(items, museumInfo) {
   if (museumInfo) {
     title.innerHTML = `
       ${museumInfo.name} 
-      <a href="/create-visit?museumId=${museumInfo._id}" class="btn btn-sm btn-outline-primary btn-outline-hover-white ms-3 rounded-pill text-uppercase" style="font-size: 0.75rem;">
+      <a href="/create-visit?museumId=${museumInfo._id}" class="btn-create-visit ms-3">
         <i class="bi bi-map me-1"></i> Crea Visita Qui
       </a>
     `;

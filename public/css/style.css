@@ -177,6 +177,39 @@ body.artaround-theme {
     color: #ffffff !important; /* Qui un piccolo important assicura che superi il default di Bootstrap, ma è confinato a questa specifica classe! */
 }
 
+.btn-create-visit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: #00ccff;                 
+    border: 1px solid rgba(0, 204, 255, 0.5);
+    border-radius: 50px;            
+    text-transform: uppercase;       
+    font-size: 0.75rem;             
+    font-weight: 600;               
+    padding: 4px 14px;              
+    text-decoration: none;          /* Rimuove la sottolineatura nativa dei link <a> */
+    transition: all 0.2s ease-in-out; 
+    cursor: pointer;
+
+    /* Le seguenti righe servono a rimuovere l'ereditarieta' della trasparenza del titolo */
+    -webkit-text-fill-color: currentColor;
+}
+
+/* Stato Hover (Quando passi sopra col mouse) */
+.btn-create-visit:hover {
+    background-color: #0d6efd;      /* Sfondo blu di Bootstrap */
+    border-color: #0d6efd;          /* Bordo blu coordinato */
+    color: #ffffff;                 /* Forza il testo a diventare BIANCO lucido */
+    text-decoration: none;          /* Sicurezza anti-sottolineatura */
+}
+
+/* Forza l'icona interna a seguire il testo e diventare bianca all'hover */
+.btn-create-visit:hover i {
+    color: #ffffff;
+}
+
 /* COMPONENTI: MODALI */
 .glass-modal {
     background-color: #18181b;
