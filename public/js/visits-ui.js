@@ -1,5 +1,4 @@
 let cachedVisits = [];
-const API_BASE_URL = "http://localhost:3000/api";
 
 async function getMyVisits() {
   const container = document.getElementById("managed-visits-area");
@@ -55,7 +54,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
     container.innerHTML += `
   <div class="col">
     <div class="card h-100 custom-card" onclick="window.location.href='/visit-details?id=${visit._id}'">
-      <div class="card-body">
+      <div class="card-body" style="cursor: pointer">
         <div class="d-flex justify-content-between mb-2">
            ${statusBadge}
            <small class="text-secondary">${visit.items ? visit.items.length : 0} opere</small>

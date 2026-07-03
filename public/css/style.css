@@ -25,6 +25,7 @@ body.artaround-theme {
     background-color: rgba(9, 9, 11, 0.8);
     border-bottom: 1px solid var(--border-color);
     backdrop-filter: blur(10px);
+    height: 63px;
 }
 
 .brand-text {
@@ -56,10 +57,27 @@ body.artaround-theme {
     width: 250px; 
     min-width: 250px;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: 100vh;
     overflow-x: hidden;
     white-space: nowrap;
     will-change: width, opacity;
+
+    /* LA MAGIA STICKY */
+    position: sticky;
+    top: 70px; /* Si ferma esattamente alla fine dell'header (70px) */
+    height: calc(100vh - 70px); /* Prende tutto lo schermo MENO l'header */
+    overflow-y: auto; /* Permette lo scroll interno se hai 100 voci di menu */
+    
+    /* Disattiviamo il min-height che sfalsava le misure */
+    min-height: auto !important;
+}
+
+/* nasconde la scrollbar interna della sidebar */
+#sidebar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, nuovo Edge */
+}
+#sidebar {
+    -ms-overflow-style: none;  /* Vecchio IE e Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
 #sidebar.collapsed {
@@ -92,6 +110,18 @@ body.artaround-theme {
     color: #fff;
     box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
     border-left: 3px solid #d8b4fe;
+}
+
+/* Rende la sidebar appiccicosa e la ferma esattamente sotto l'header */
+#sidebar .position-sticky {
+    top: 75px; /* Spazio per l'header (che è alto circa 70-75px) */
+    height: calc(100vh - 75px); /* Altezza totale dello schermo meno l'header */
+    overflow-y: auto; /* Se il menu diventa lunghissimo, si potrà scorrere! */
+}
+
+/* Nasconde la barra di scorrimento del menu per un look più pulito, ma permette lo scroll */
+#sidebar .position-sticky::-webkit-scrollbar {
+    display: none;
 }
 
 /* CONTENUTO PRINCIPALE */
