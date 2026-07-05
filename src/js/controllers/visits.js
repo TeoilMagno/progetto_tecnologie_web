@@ -90,3 +90,38 @@ exports.getVisitById = async (req, res) => {
     res.status(500).json({ error: "Impossibile recuperare i dettagli della visita" });
   }
 };
+
+exports.editVisitById = async (req, res) => {
+  try {
+    const visitId = req.params.id;
+    const payload = req.body;
+
+    // Supponendo che tu stia usando Mongoose/MongoDB, aggiorniamo il documento.
+    // Adatta i nomi dei campi in base a come hai definito lo Schema nel tuo database!
+    const updatedVisit = await Visit.findByIdAndUpdate(
+      visitId,
+      {
+        title: payload.title,
+        description: payload.description,
+        museum: payload.museumId, // Se nel tuo schema DB si chiama 'museum'
+        items: payload.items,      // Array di ID delle opere
+        price: payload.price,
+        isPublic: payload.isPublic,
+        isDraft: payload.isDraft
+      },
+      { new: true } // Questo flag serve a restituire la visita già aggiornata
+    );
+
+    // Se la visita non esiste nel database, restituiamo un JSON di errore (non HTML!)
+    if (!updatedVisit) {
+      return res.status(404).json({ error: "Visita non trovata nel database." });
+    }
+
+    // Rispondiamo al frontend con il JSON della visita aggiornata
+    res.json(updatedVisit);
+
+  } catch (error) {
+    console.error("Errore durante l'aggiornamento della visita:", error);
+    res.status(500).json({ error: "Errore interno del server durante il salvataggio." });
+  }
+}

@@ -67,6 +67,18 @@
 
         getMyVisits(); 
       });
+
+      // intercetta il tasto "Indietro"
+      window.addEventListener("pageshow", (event) => {
+        // Se la pagina viene dalla cache (tasto indietro) E c'è il post-it di aggiornamento
+        if (event.persisted && localStorage.getItem("visitsChanged") === "true") {
+            console.log("Rilevate nuove modifiche, aggiorno i dati...");
+            getMyVisits(); 
+            
+            // Strappiamo il post-it, così se torna indietro un'altra volta non ricarica inutilmente!
+            localStorage.removeItem("visitsChanged");
+        }
+      });
     </script>
   </body>
 </html>

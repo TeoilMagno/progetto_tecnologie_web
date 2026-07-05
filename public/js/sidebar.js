@@ -18,13 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="link-museums" href="/my-museums">
-            <i class="bi bi-bank me-2"></i> I miei Musei
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="link-visits" href="/my-visits">
-            <i class="bi bi-map me-2"></i> Le mie Visite
+          <a class="nav-link" id="link-public-visits" href="/public-visits">
+            <i class="bi bi-map me-2"></i> Esplora Visite
           </a>
         </li>
       </ul>

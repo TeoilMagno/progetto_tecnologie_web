@@ -104,8 +104,17 @@
           </div>
           
           <div class="modal-footer border-top-custom d-flex justify-content-between">
-            <button type="button" class="btn btn-glass px-4" data-bs-dismiss="modal">Annulla</button>
-            <button type="button" class="btn btn-gradient px-4" id="confirm-save-visit-btn" onclick="submitVisit()">Salva Visita</button>
+            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+            
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-glass text-warning border-warning px-3" id="save-draft-btn" onclick="submitVisit(true)">
+                <i class="bi bi-pencil-square me-1"></i> Salva bozza
+              </button>
+              
+              <button type="button" class="btn btn-gradient px-3" id="confirm-save-visit-btn" onclick="submitVisit(false)">
+                Salva
+              </button>
+            </div>
           </div>
 
         </div>

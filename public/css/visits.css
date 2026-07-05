@@ -29,3 +29,7 @@
     transform: scale(1.02); /* Ingrandisce leggermente la card per dare l'idea di sollevarla */
     cursor: grabbing ;
 }
+
+#museum-name-custom {
+    color: white;
+}

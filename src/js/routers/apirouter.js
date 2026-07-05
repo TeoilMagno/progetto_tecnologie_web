@@ -176,4 +176,7 @@ apiRouter.post('/visits', visitController.createVisit);
 // per l'apertura dei dettagli di una visita
 apiRouter.get('/visits/:id', visitController.getVisitById);
 
+// ROTTA PER AGGIORNARE UNA VISITA ESISTENTE (PUT)
+apiRouter.put('/visits/:id', visitController.editVisitById);
+
 module.exports = apiRouter;
