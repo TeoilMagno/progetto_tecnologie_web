@@ -1,34 +1,41 @@
-const Museum = require('../../models/museums');
+const Museum = require('../models/museums');
 
-exports.saveMuseum = async (req,res) => {
+//salva un singolo museo passato in input
+exports.saveMuseum = async (rmuseum) => {
+  const museum = new Museum({
+    museum_data: {
+      name: rmuseum.name,
+      address: rmuseum.address,
+      contact_email: rmuseum.contact_email,
+      contact_phone: rmuseum.contact_phone
+    },
+
+    sections: [],
+    image: rmuseum.image,
+    tags: rmuseum.tags
+  });
+
+  return museum.save();
+}
+
+exports.addSectionToMuseum = async (req,res) => {
   try {
-    const {name, address, image_path, tags} = req.body;
+        const {museumId, sectionId} = req.body;
+        const updatedMuseum = await Museum.findByIdAndUpdate(
+            museumId, 
+            { $push: { sections: sectionId } }, // Operatore per aggiungere all'array
+            { new: true, useFindAndModify: false } // Opzioni: ritorna il documento modificato
+        );
 
-    console.log(name, address, image_path, tags);
+        if (!updatedMuseum) {
+          res.status(200).send('<div>aggiunto con successo</div>');
+        }
 
-    const tagsArray = tags
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag.length > 0);
-
-    const museum = new Museum({
-      name: name,
-      address: address,
-      image: image_path,
-      tags: tagsArray
-    });
-
-    museum.save()
-      .then((result) => {
-        res.send(result);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  }
-  catch (err) {
-    res.send(err);
-  }
+        return updatedMuseum;
+    } catch (error) {
+        console.error("Errore durante l'aggiornamento:", error);
+        throw error;
+    }
 }
 
 exports.getAllMuseums = async () => {

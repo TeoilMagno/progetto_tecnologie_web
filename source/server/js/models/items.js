@@ -1,5 +1,4 @@
-
-//schema che definisce i musei per la lista iniziale del marketplace
+//schema che definisce gli item in vendita al museo
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
