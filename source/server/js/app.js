@@ -17,6 +17,6 @@ app.use(express.static(path.join(__dirname, '..', '..', 'marketplace')));
 app.use('/', router);
 app.use('/api',apiRouter);
 
-app.listen(PORT, () => {
-  console.log(`listening on port: ${PORT}`);
+app.listen(8000, () => {
+  console.log(`listening on port: 8000`);
 })

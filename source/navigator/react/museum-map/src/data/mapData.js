@@ -27,6 +27,22 @@ export const mapData = {
             points: "911.25 591 669.5 731.25 852.16 836.67"
           }
         }
+      ],
+      works: [
+        {
+          id: 1,
+          name: "Monna Lisa",
+          x: 1200,
+          y: 300,
+          image: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
+        },
+        {
+          id: 2,
+          name: "David",
+          x: 1000,
+          y: 150,
+          image: "https://upload.wikimedia.org/wikipedia/commons/8/80/Michelangelo%27s_David_-_right_view_2.jpg"
+        }
       ]
     },
     {
