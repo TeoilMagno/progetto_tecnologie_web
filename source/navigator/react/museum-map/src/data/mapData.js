@@ -32,6 +32,7 @@ export const mapData = {
         {
           id: 1,
           name: "Monna Lisa",
+          author: "Leonardo Da Vinci",
           x: 1200,
           y: 300,
           image: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
@@ -39,6 +40,7 @@ export const mapData = {
         {
           id: 2,
           name: "David",
+          author: "Michelangelo",
           x: 1000,
           y: 150,
           image: "https://upload.wikimedia.org/wikipedia/commons/8/80/Michelangelo%27s_David_-_right_view_2.jpg"

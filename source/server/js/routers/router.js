@@ -12,33 +12,6 @@ router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'..','..','html','index.html'));
 });
 
-//Marketplace
-router.get('/Marketplace', (req, res) => {
-  res.send(`
-    <!DOCTYPE HTML>
-    <head>
-      <title>Art Around Marketplace</title>
-    </head>
-    <body>
-      <h1>Marketplace of Art Around</h1>
-      <a href="./">Home</a>
-    </body>
-    `);
-});
-
-//Navigator
-router.get('/Navigator', (req, res) => {
-  res.send(`
-    <!DOCTYPE HTML>
-    <head>
-      <title>Art Around Navigator</title>
-    </head>
-    <body>
-      <h1>Navigator of Art Around</h1>
-      <a href="./">Home</a>
-    </body>
-    `);
-});
 
 //Get-museums
 router.get('/get-museums', async (req, res) => {
@@ -48,7 +21,6 @@ router.get('/get-museums', async (req, res) => {
 });
 
 // Routes di get
-
 // Per aggiungere un museo
 router.get('/add-museum', (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'add-museum.html');

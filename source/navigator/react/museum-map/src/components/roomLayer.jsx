@@ -1,4 +1,19 @@
+import { useState, useEffect } from "react";
+
 export default function RoomLayer({ area, onBack }) {
+  const [works, setWorks] = useState([]);
+
+  useEffect(() => {
+    // Usiamo l'ID della sezione (area) per fare la chiamata alla tua seconda API
+    fetch(`http://localhost:8000/api/sections/${area._id}/works`)
+      .then((response) => response.json())
+      .then((data) => {
+        setWorks(data);
+      })
+      .catch((error) => console.error("Errore nel caricamento delle opere:", error));
+      
+  }, [area._id]); // Esegui la chiamata ogni volta che cambia l'ID dell'area
+
   return (
     <>
       {/* 1. DISEGNO LE STANZE (il tuo codice originale) */}
@@ -42,47 +57,51 @@ export default function RoomLayer({ area, onBack }) {
 
       {/* 2. DISEGNO I WORK / OPERE D'ARTE (La novità!) */}
       {/* Controllo se ci sono work nell'area, e li stampo */}
-      {area.works && area.works.map((work) => (
+      {works.map((work) => (
         <foreignObject
-          key={work.id}
-          x={work.x} // coordinata X presa dai dati
-          y={work.y} // coordinata Y presa dai dati
-          width="160" // larghezza della finestrella HTML
-          height="120" // altezza della finestrella HTML
+        key={work._id}
+        x={work.x}
+        y={work.y}
+        width="120"
+        height="220" /* Rendiamolo bello grande, tanto il resto sarà trasparente! */
+        style={{ overflow: "visible" }}
         >
-          {/* Da qui in poi usiamo HTML normale per disegnare la card */}
-          <div
-            style={{
-              backgroundColor: "white",
-              border: "2px solid #333",
-              borderRadius: "8px",
-              padding: "10px",
-              display: "flex",
-              flexDirection: "column",
-              alignworks: "center",
-              justifyContent: "center",
-              fontFamily: "sans-serif",
-            }}
-          >
-            <img src={work.image}/>
-            <strong style={{ fontSize: "14px", textAlign: "center" }}>
-              {work.name}
-            </strong>
-            <button
-              onClick={() => alert(`Apro i dettagli di: ${work.name}`)}
-              style={{
-                marginTop: "8px",
-                padding: "4px 8px",
-                cursor: "pointer",
-                backgroundColor: "#007BFF",
-                color: "white",
-                border: "none",
-                borderRadius: "4px"
-              }}
-            >
-              Vedi
-            </button>
-          </div>
+        <div
+        style={{
+          width: "100%", 
+            height: "fit-content", /* LA MAGIA: il div si adatta al contenuto reale */
+            backgroundColor: "white",
+            border: "1px solid #ccc", /* Bordo applicato al contenitore principale */
+            borderRadius: "6px",
+            padding: "0px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            fontFamily: "sans-serif",
+            overflow: "hidden",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)", /* Un'ombreggiatura per farla staccare meglio dalla mappa */
+        }}
+        >
+        <img
+        src={work.image}
+        alt={work.name}
+        style={{
+          width: "100%",
+            height: "100px", /* Visto che il div si adatta, diamo un'altezza fissa in pixel all'immagine */
+            objectFit: "cover",
+        }}
+        />
+
+        {/* Contenitore per il testo */}
+        <div style={{ padding: "6px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <strong style={{ fontSize: "11px", textAlign: "center", lineHeight: "1.2" }}>
+        {work.name}
+        </strong>
+        <span style={{ fontSize: "10px", color: "#666", marginTop: "2px", textAlign: "center" }}>
+        {work.author}
+        </span>
+        </div>
+        </div>
         </foreignObject>
       ))}
 

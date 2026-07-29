@@ -1,9 +1,9 @@
-import { mapData } from "../data/mapData";
-
-export default function AreaLayer({ onSelect }) {
+export default function AreaLayer({ areas, onSelect }) {
+  if(!areas) return null;
+  
   return (
     <>
-      {mapData.areas.map(area => {
+      {areas.map(area => {
         if (area.shape.type === "polygon") {
           return (
             <polygon
