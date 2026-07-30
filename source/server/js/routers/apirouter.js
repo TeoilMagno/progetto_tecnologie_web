@@ -73,6 +73,7 @@ apiRouter.put('/items/:id', async (req, res) => {
 });
 
 //--------------- sections -----------------------
+//get works based on section provided
 apiRouter.get('/sections/:sectionId/works', async (req, res) => {
     try {
         const works = await sectionController.getWorksBySection(req.params.sectionId);
