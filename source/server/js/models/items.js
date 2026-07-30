@@ -40,7 +40,7 @@ const itemSchema = new Schema({
 });
 
 
-const Item = mongoose.model('Item', itemSchema, 'Items');
+const Item = mongoose.model('Item', itemSchema);
 
 //esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Item;

@@ -153,7 +153,6 @@ apiRouter.get('/current-user', (req, res) => {
 // Ottiene i musei gestiti dal curatore loggato
 apiRouter.get('/my-museums', async (req, res) => {
     try {
-        // Grazie al mock in app.js, req.user._id sarà quello di Alessia
         const user = await User.findById(req.user._id).populate('managed_museums');
 
         if (!user) return res.status(404).json({ error: "Utente non trovato" });

@@ -39,7 +39,7 @@ const museumSchema = new Schema({
   }
 });
 
-const Museum = mongoose.model('Museum', museumSchema, 'Museums');
+const Museum = mongoose.model('Museum', museumSchema);
 
 //esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Museum;

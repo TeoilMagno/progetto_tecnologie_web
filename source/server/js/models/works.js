@@ -45,7 +45,7 @@ const workSchema = new Schema({
   // }
 });
 
-const Work = mongoose.model('Work', workSchema, 'Works');
+const Work = mongoose.model('Work', workSchema);
 
 //esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Work;

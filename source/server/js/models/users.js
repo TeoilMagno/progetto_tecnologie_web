@@ -32,8 +32,8 @@ const federatedSchema = new mongoose.Schema({
 });
 federatedSchema.index({ provider: 1, subject: 1 }, { unique: true });
 
-const Users = mongoose.model('User', userSchema, 'Users');
-const FederatedCredential = mongoose.model('FederatedCredential', federatedSchema, 'FederatedCredentials');
+const Users = mongoose.model('User', userSchema);
+const FederatedCredential = mongoose.model('FederatedCredential', federatedSchema);
 
 // esporta entrambi in un oggetto unico — mai due module.exports separati
 module.exports = { User: Users, FederatedCredential };
