@@ -57,22 +57,18 @@ const sectionSchema = new Schema({
     required: true
   },
 
-  works: [
-    {
-      work: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Works'
-      },
-
-      x: {
-        type: Number
-      },
-
-      y: {
-        type: Number
-      }
+  works: [{
+    work: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Work'
+    },
+    x: {
+      type: Number
+    },
+    y: {
+      type: Number
     }
-  ],
+  }],
 
   museumId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -81,7 +77,7 @@ const sectionSchema = new Schema({
   }
 });
 
-const Section = mongoose.model('Section', sectionSchema, 'Sections');
+const Section = mongoose.model('Section', sectionSchema);
 
 //esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Section;

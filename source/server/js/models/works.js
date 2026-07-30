@@ -1,4 +1,4 @@
-//schema che definisce le opere in esposizione
+// schema che definisce le opere in esposizione
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -36,9 +36,16 @@ const workSchema = new Schema({
     }],
     required: true
   }
+  // },
+
+  // sectionId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Section',
+  //   required: true
+  // }
 });
 
-const Work = mongoose.model('Work', workSchema, 'Works');
+const Work = mongoose.model('Work', workSchema);
 
 //esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Work;
