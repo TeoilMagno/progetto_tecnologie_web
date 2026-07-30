@@ -9,6 +9,7 @@ let cachedMuseums = [];
 let currentItems = [];
 let currentMuseumId = null;
 let editModalInstance = null;
+let currentView = 'works';
 
 // 1. INIZIALIZZAZIONE
 document.addEventListener("DOMContentLoaded", async () => {
@@ -83,12 +84,10 @@ async function getMuseumItems(museumId) {
     </div>`;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/museums/${museumId}/items`);
-    if (!response.ok) throw new Error("Errore items");
-    history.pushState({ view: 'items', id: museumId }, "", `#museum/${museumId}`);
-    currentItems = await response.json();
     const museum = cachedMuseums.find((m) => m._id === museumId);
-    renderItemsList(currentItems, museum);
+    currentView = 'works';
+    history.pushState({ view: 'museum', id: museumId }, "", `#museum/${museumId}`);
+    renderMuseumDashboard(museum);
   } catch (error) {
     console.error("Errore in getMuseumItems: ", error);
     container.innerHTML = `<div class="alert alert-danger bg-transparent text-danger border-danger">Errore: ${error.message}</div>`;
@@ -97,7 +96,6 @@ async function getMuseumItems(museumId) {
 
 // 4. LOGICA RENDER
 
-// Aggiungiamo 'containerId' come secondo parametro, con 'content-area' come default
 function renderMuseumsList(museums, containerId = "content-area") {
 
   // Ora usa il parametro dinamico invece della stringa fissa
@@ -130,11 +128,14 @@ function renderMuseumsList(museums, containerId = "content-area") {
   });
 }
 
-function renderItemsList(items, museumInfo) {
+function renderMuseumDashboard(museumInfo) {
   const container = document.getElementById("content-area");
   const title = document.getElementById("page-title");
   const backBtn = document.getElementById("back-btn");
 
+  if (!container) return;
+
+  // 1. Configura il Titolo e il Bottone per creare la visita
   if (museumInfo) {
     title.innerHTML = `
       ${museumInfo.name} 
@@ -142,10 +143,148 @@ function renderItemsList(items, museumInfo) {
         <i class="bi bi-map me-1"></i> Crea Visita Qui
       </a>
     `;
-  } else {
-    title.innerText = "Dettaglio Museo";
   }
-  backBtn.classList.remove("d-none");
+  if (backBtn) backBtn.classList.remove("d-none");
+
+  // 2. Renderizziamo la barra di navigazione simmetrica, sottile e con stile tab personalizzato
+  container.innerHTML = `
+    <div class="w-100 mb-4 px-0">
+      <div class="row g-0 border-bottom border-secondary border-opacity-25 p-0 w-100 mx-0" style="background: transparent;">
+        <div class="col-6 p-0">
+          <button id="tab-works" 
+                  class="btn w-100 py-2 small rounded-top-3 border-0 ${currentView === 'works' ? 'tab-custom-active' : 'btn-glass text-secondary'}" 
+                  onclick="switchMuseumView('works', '${museumInfo._id}')">
+            <i class="bi bi-palette me-2"></i>Opere Esposte
+          </button>
+        </div>
+        <div class="col-6 p-0">
+          <button id="tab-items" 
+                  class="btn w-100 py-2 small rounded-top-3 border-0 ${currentView === 'items' ? 'tab-custom-active' : 'btn-glass text-secondary'}" 
+                  onclick="switchMuseumView('items', '${museumInfo._id}')">
+            <i class="bi bi-bag-check me-2"></i>Bookshop & Servizi
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="museum-display-area" class="row g-3 w-100 m-0">
+    </div>
+  `;
+
+  // 3. Carica la vista iniziale
+  loadMuseumSubView(currentView, museumInfo._id);
+}
+
+// Gestisce lo switch attivando l'effetto "scheda a tre lati"
+function switchMuseumView(view, museumId) {
+  currentView = view;
+  
+  const tabWorks = document.getElementById("tab-works");
+  const tabItems = document.getElementById("tab-items");
+  
+  if (!tabWorks || !tabItems) return;
+  
+  if (view === 'works') {
+    // Attiva Opere (Tre lati visibili e testo azzurro)
+    tabWorks.classList.remove("btn-glass", "text-secondary");
+    tabWorks.classList.add("tab-custom-active");
+    
+    // Disattiva Servizi (Torna spento e senza bordi)
+    tabItems.classList.remove("tab-custom-active");
+    tabItems.classList.add("btn-glass", "text-secondary");
+  } else {
+    // Attiva Servizi (Tre lati visibili e testo azzurro)
+    tabItems.classList.remove("btn-glass", "text-secondary");
+    tabItems.classList.add("tab-custom-active");
+    
+    // Disattiva Opere (Torna spento e senza bordi)
+    tabWorks.classList.remove("tab-custom-active");
+    tabWorks.classList.add("btn-glass", "text-secondary");
+  }
+  
+  // Ricarica la sotto-vista
+  loadMuseumSubView(view, museumId); //
+}
+
+// Si occupa di fare la fetch corretta in base al tab selezionato
+async function loadMuseumSubView(view, museumId) {
+  const subContainer = document.getElementById("museum-display-area");
+  if (!subContainer) return;
+
+  subContainer.innerHTML = `
+    <div class="col-12 text-center py-4">
+      <div class="spinner-border text-light spinner-border-sm" role="status"></div>
+    </div>`;
+
+  try {
+    // Scegliamo l'endpoint corretto (opere o articoli di vendita)
+    const endpoint = view === 'works' 
+      ? `${API_BASE_URL}/museums/${museumId}/works` 
+      : `${API_BASE_URL}/museums/${museumId}/items`;
+
+    const response = await fetch(endpoint);
+    if (!response.ok) throw new Error("Errore nel caricamento dei dati");
+    const data = await response.json();
+
+    if (view === 'works') {
+      renderWorksList(data); // Rendering per le Opere
+    } else {
+      currentItems = data; // Conserviamo gli articoli per l'editor
+      renderItemsList(data); // Il tuo vecchio rendering per gli Articoli (in vendita)
+    }
+  } catch (error) {
+    console.error(error);
+    subContainer.innerHTML = `<div class="col-12 text-center text-danger small py-3">Impossibile caricare i contenuti: ${error.message}</div>`;
+  }
+}
+
+function renderWorksList(works) {
+  const subContainer = document.getElementById("museum-display-area");
+  if (!subContainer) return;
+
+  subContainer.innerHTML = "";
+
+  if (works.length === 0) {
+    subContainer.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessuna opera d\'arte esposta in questo museo.</div>';
+    return;
+  }
+
+  works.forEach((work) => {
+    // Estraiamo la prima descrizione disponibile nell'array, se presente
+    const primaryDesc = work.description && work.description.length > 0 
+      ? work.description[0].description 
+      : "Descrizione culturale in corso di generazione...";
+
+    subContainer.innerHTML += `
+      <div class="col-12 col-lg-6">
+        <div class="card custom-card h-100">
+          <div class="row g-0 h-100">
+            <div class="col-4">
+              <img src="${work.image}" class="img-fluid rounded-start h-100"
+                style="object-fit: cover; min-height: 180px" alt="${work.name}"/>
+            </div>
+            <div class="col-8">
+              <div class="card-body d-flex flex-column h-100 py-3 px-3">
+                <h5 class="card-title mb-1 text-truncate text-info">${work.name}</h5>
+                
+                <p class="small text-secondary mb-2">
+                  <i class="bi bi-person-fill me-1"></i> ${work.author} <br>
+                  <i class="bi bi-calendar3 me-1"></i> ${work.year} &bull; ${work.style}
+                </p>
+                
+                <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8">
+                  ${primaryDesc}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+function renderItemsList(items, museumInfo) {
+  const container = document.getElementById("museum-display-area");
+  
   if(!container) return;
   container.innerHTML = "";
 

@@ -35,6 +35,11 @@ const workSchema = new Schema({
       description: String,
     }],
     default: []
+  },
+  
+  museumId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Museum'
   }
   // },
 

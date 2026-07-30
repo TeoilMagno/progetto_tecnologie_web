@@ -347,3 +347,26 @@ body.artaround-theme {
         margin-left: 0;
     }
 }
+
+/* Stile del Tab Attivo: illumina solo i tre lati superiori e il testo */
+.tab-custom-active {
+  background-color: transparent !important;
+  color: var(--bs-primary, #0d6efd) !important; /* Colore azzurro */
+  border: 1px solid rgba(13, 110, 253, 0.4) !important; /* Contorno azzurro delicato */
+  border-bottom: 1px solid transparent !important; /* Rimuove il bordo inferiore per fonderlo con la linea */
+  font-weight: 800 !important;
+}
+
+/* Rende l'hover pulito: intensifica solo il bordo, lo sfondo resta trasparente */
+.tab-custom-active:hover {
+  background-color: transparent !important;
+  border-color: rgba(13, 110, 253, 0.8) !important;
+  color: var(--bs-primary, #0d6efd) !important;
+}
+
+/* Stile del Tab Spento al passaggio del mouse: accenna solo un contorno leggero */
+.btn-glass:hover {
+  background-color: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-bottom: 1px solid transparent !important;
+}

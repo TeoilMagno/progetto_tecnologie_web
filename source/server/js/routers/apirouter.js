@@ -6,15 +6,22 @@
 
 const express = require("express");
 const path = require("path");
+const mongoose = require("mongoose");
+
+// Models
+const { User } = require("../models/users");
+const Work = require("../models/works");
 
 // Controllers
 const museumController = require("../controllers/museums");
 const itemController = require("../controllers/items");
-const apiRouter = express.Router();
 const sectionController = require("../controllers/sections");
-const auth = require("../middleware/roles");
-const { User } = require("../models/users");
 const visitController = require("../controllers/visits");
+
+// Middleware
+const auth = require("../middleware/roles");
+
+const apiRouter = express.Router();
 
 //--------------- museums -----------------------
 
@@ -99,6 +106,60 @@ apiRouter.put("/items/:id", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Errore salvataggio" });
+  }
+});
+
+apiRouter.get("/museums/:id/works", async (req, res) => {
+  try {
+    const museumIdStr = req.params.id;
+    
+    // Convertiamo la stringa dell'URL in un vero ObjectId di Mongo
+    let museumObjectId;
+    try {
+      museumObjectId = new mongoose.Types.ObjectId(museumIdStr);
+    } catch (e) {
+      museumObjectId = museumIdStr;
+    }
+
+    // 1. Cerchiamo le opere che hanno museumId (sia come ObjectId che come Stringa)
+    const directWorks = await Work.find({
+      $or: [
+        { museumId: museumObjectId },
+        { museumId: museumIdStr }
+      ]
+    });
+
+    // 2. Cerchiamo anche eventuali opere collegate tramite le Sezioni del museo
+    let sectionWorks = [];
+    const Museum = require("../models/museums");
+    const museum = await Museum.findById(museumIdStr).populate("sections");
+
+    if (museum && museum.sections && museum.sections.length > 0) {
+      let sectionWorkIds = [];
+      museum.sections.forEach((s) => {
+        if (s.works && s.works.length > 0) {
+          sectionWorkIds = sectionWorkIds.concat(s.works);
+        }
+      });
+      if (sectionWorkIds.length > 0) {
+        sectionWorks = await Work.find({ _id: { $in: sectionWorkIds } });
+      }
+    }
+
+    // 3. Uniamo i risultati rimuovendo eventuali duplicati
+    const worksMap = new Map();
+    directWorks.forEach((w) => worksMap.set(w._id.toString(), w));
+    sectionWorks.forEach((w) => worksMap.set(w._id.toString(), w));
+
+    const allWorks = Array.from(worksMap.values());
+
+    // LOG DI CONTROLLO NEL TERMINALE
+    console.log(`[GET /museums/${museumIdStr}/works] Trovate ${allWorks.length} opere.`);
+
+    res.json(allWorks);
+  } catch (error) {
+    console.error("Errore nel recupero delle opere:", error);
+    res.status(500).json({ error: "Errore nel recupero delle opere" });
   }
 });
 
