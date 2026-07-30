@@ -113,47 +113,13 @@ apiRouter.get("/museums/:id/works", async (req, res) => {
   try {
     const museumIdStr = req.params.id;
     
-    // Convertiamo la stringa dell'URL in un vero ObjectId di Mongo
     let museumObjectId;
-    try {
-      museumObjectId = new mongoose.Types.ObjectId(museumIdStr);
-    } catch (e) {
-      museumObjectId = museumIdStr;
-    }
+    museumObjectId = new mongoose.Types.ObjectId(museumIdStr);
+    
+    const directWorks = await Work.find({ museumId: museumObjectId });
 
-    // 1. Cerchiamo le opere che hanno museumId (sia come ObjectId che come Stringa)
-    const directWorks = await Work.find({
-      $or: [
-        { museumId: museumObjectId },
-        { museumId: museumIdStr }
-      ]
-    });
+    const allWorks = Array.from(directWorks.values());
 
-    // 2. Cerchiamo anche eventuali opere collegate tramite le Sezioni del museo
-    let sectionWorks = [];
-    const Museum = require("../models/museums");
-    const museum = await Museum.findById(museumIdStr).populate("sections");
-
-    if (museum && museum.sections && museum.sections.length > 0) {
-      let sectionWorkIds = [];
-      museum.sections.forEach((s) => {
-        if (s.works && s.works.length > 0) {
-          sectionWorkIds = sectionWorkIds.concat(s.works);
-        }
-      });
-      if (sectionWorkIds.length > 0) {
-        sectionWorks = await Work.find({ _id: { $in: sectionWorkIds } });
-      }
-    }
-
-    // 3. Uniamo i risultati rimuovendo eventuali duplicati
-    const worksMap = new Map();
-    directWorks.forEach((w) => worksMap.set(w._id.toString(), w));
-    sectionWorks.forEach((w) => worksMap.set(w._id.toString(), w));
-
-    const allWorks = Array.from(worksMap.values());
-
-    // LOG DI CONTROLLO NEL TERMINALE
     console.log(`[GET /museums/${museumIdStr}/works] Trovate ${allWorks.length} opere.`);
 
     res.json(allWorks);

@@ -184,24 +184,19 @@ function switchMuseumView(view, museumId) {
   if (!tabWorks || !tabItems) return;
   
   if (view === 'works') {
-    // Attiva Opere (Tre lati visibili e testo azzurro)
     tabWorks.classList.remove("btn-glass", "text-secondary");
     tabWorks.classList.add("tab-custom-active");
     
-    // Disattiva Servizi (Torna spento e senza bordi)
     tabItems.classList.remove("tab-custom-active");
     tabItems.classList.add("btn-glass", "text-secondary");
   } else {
-    // Attiva Servizi (Tre lati visibili e testo azzurro)
     tabItems.classList.remove("btn-glass", "text-secondary");
     tabItems.classList.add("tab-custom-active");
     
-    // Disattiva Opere (Torna spento e senza bordi)
     tabWorks.classList.remove("tab-custom-active");
     tabWorks.classList.add("btn-glass", "text-secondary");
   }
   
-  // Ricarica la sotto-vista
   loadMuseumSubView(view, museumId); //
 }
 
