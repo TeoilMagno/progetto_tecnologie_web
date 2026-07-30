@@ -61,6 +61,9 @@ app.use('/', authRouter); // gestisce POST /login/password, POST /signup, GET /o
 app.use('/', router);
 app.use('/api', apiRouter);
 
+// ─── Front-end ────────────────────────────────────────────────────────────────
+app.use('/vendor/sortablejs', express.static(path.join(__dirname, 'node_modules/sortablejs')));
+
 app.listen(PORT, () => {
   console.log(`listening on port: ${PORT}`);
 });

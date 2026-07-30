@@ -35,30 +35,32 @@ async function museumHandleSave(event) {
       // 3. Raccogliamo le opere appartenenti a QUESTA specifica sezione
       const workElements = sectionEl.querySelectorAll(".work-block");
       const worksArray = Array.from(workElements).map((workEl) => {
-        const descText = workEl.querySelector("textarea")?.value;
-        // Estraiamo i valori usando i selettori che corrispondono al tuo add-work.js
+        const descText = workEl.querySelector(".work-desc-input")?.value.trim();
+
+        // TODO: da riempire con le altre descrizioni generate
+        const descArray = [];
+        if (descText) {
+            descArray.push({
+                description: descText,
+                length: 10, 
+                tone: "normal" 
+            });
+        }
+
         return {
-          name: workEl.querySelector('input[name^="workName"]')?.value || "", // Mappa su 'name'
-          author: workEl.querySelector('input[name^="author"]')?.value || "", // Mappa su 'author'
-          style: workEl.querySelector('input[name^="style"]')?.value || "", // Mappa su 'style'
-          year: workEl.querySelector('input[name^="year"]')?.value || "", // Mappa su 'year'
+          name: workEl.querySelector('input[name^="workName"]')?.value || "", 
+          author: workEl.querySelector('input[name^="author"]')?.value || "", 
+          style: workEl.querySelector('input[name^="style"]')?.value || "",
+          year: workEl.querySelector('input[name^="year"]')?.value || "", 
           image:
-            workEl.querySelector('input[name^="workImagePath"]')?.value || "", // Mappa su 'image'
-          // Mappatura corretta per lo schema nidificato
-          description: [
-            {
-              description: descText,
-              lenght: 10, // Usa il nome esatto presente nel tuo schema (lenght)
-              tone: "normal",
-            },
-          ],
+            workEl.querySelector('input[name^="workImagePath"]')?.value || "", 
+          description: descArray,
         };
       });
 
-      // TODO: rivedere la distinzione tra works e items -> al momento le opere inserite sono salvate in works
       // Aggiungiamo la sezione con le sue opere al payload
       payload.sections.push({
-        title: sectionTitleInput.value,
+        name: sectionTitleInput.value,
         image: sectionImageInput?.value || "",
         works: worksArray,
       });
@@ -81,7 +83,8 @@ async function museumHandleSave(event) {
       window.location.href = "/";
     } else {
       const errorData = await response.json();
-      alert("Errore durante il salvataggio: " + errorData.error);
+      alert(`Errore: ${errorData.error}\nDettaglio: ${errorData.details}`);
+      console.error("Dettaglio Errore DB:", errorData.details);
     }
   } catch (error) {
     console.error("Errore nell'invio:", error);

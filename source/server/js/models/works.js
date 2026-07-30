@@ -30,11 +30,11 @@ const workSchema = new Schema({
 
   description: {
     type: [{
-      lenght: Number,
+      length: Number,
       tone: String,
       description: String,
     }],
-    required: true
+    default: []
   }
   // },
 

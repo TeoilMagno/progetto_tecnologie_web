@@ -42,7 +42,7 @@ function renderAddWork(sId) {
 
       <div>
         <label class="form-label-aura">Descrizione</label>
-        <textarea class="form-control input-aura" rows="2" placeholder="Scrivi una breve descrizione..."></textarea>
+        <textarea class="form-control input-aura work-desc-input" rows="2" placeholder="Scrivi una breve descrizione..."></textarea>
       </div>
     `;
     

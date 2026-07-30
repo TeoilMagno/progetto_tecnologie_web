@@ -53,8 +53,7 @@ exports.getAllMuseums = async () => {
 exports.saveMuseum = async (museumData, userId) => {
   const { name, address, contact_email, contact_phone, image, tags, sections } = museumData;
 
-  // --- 1. VALIDAZIONE PREVENTIVA ---
-  // Creiamo l'istanza del museo per validarla
+  // validazione modello
   const museumToValidate = new Museum({
     name: name,
     address: address,
@@ -64,7 +63,6 @@ exports.saveMuseum = async (museumData, userId) => {
     tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags
   });
   
-  // Validazione del museo
   await museumToValidate.validate();
 
   // Validazione di tutte le sezioni e opere
@@ -72,17 +70,19 @@ exports.saveMuseum = async (museumData, userId) => {
     for (const s of sections) {
       // Validiamo la sezione (usiamo un ID fittizio per il campo required museumId)
       const sectionToValidate = new Section({
-        title: s.title,
+        name: s.name,
         image: s.image,
         museumId: new (require('mongoose')).Types.ObjectId() 
       });
       await sectionToValidate.validate();
 
-      // Validiamo ogni opera all'interno della sezione
       if (s.works && s.works.length > 0) {
         for (const w of s.works) {
-          const workToValidate = new Work(w);
-          await workToValidate.validate(); // Se un'opera manca di author/year, l'errore scatta qui
+          const workToValidate = new Work({
+              ...w, // dati inviati dal frontend
+              museumId: new (require('mongoose')).Types.ObjectId(), // ID fittizio
+          });
+          await workToValidate.validate();
         }
       }
     }
@@ -105,7 +105,7 @@ exports.saveMuseum = async (museumData, userId) => {
 
       // Salviamo la sezione
       const newSection = new Section({
-        title: s.title,
+        name: s.name,
         image: s.image,
         works: workIds,
         museumId: museumId

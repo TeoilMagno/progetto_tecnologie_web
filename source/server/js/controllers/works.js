@@ -2,12 +2,12 @@ const Work = require('../models/works');
 
 exports.saveWorks = async (workData) => {
   const section = new Section({
-    name: rworks.name,
-    author: rworks.author,
-    style: rworks.style,
-    year: rworks.year,
-    image: rworks.image,
-    description: rworks.description
+    name: workData.name,
+    author: workData.author,
+    style: workData.style,
+    year: workData.year,
+    image: workData.image,
+    description: workData.description
   });
 
   const result = await work.save();
