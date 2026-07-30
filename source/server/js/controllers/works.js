@@ -25,18 +25,3 @@ exports.saveWorks = async (req,res) => {
     res.send(err);
   }
 }
-
-exports.getWorksById = async (workIds) => {
-  try {
-    let works[];
-    for id in workIds
-    {
-      work.append(Work.find({_id: id}));
-    }
-    
-    return works;
-  }
-  catch (err) {
-    throw err;
-  }
-}

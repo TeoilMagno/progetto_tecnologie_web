@@ -57,18 +57,22 @@ const sectionSchema = new Schema({
     required: true
   },
 
-  works: [{
-    work: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Work'
-    },
-    x: {
-      type: Number
-    },
-    y: {
-      type: Number
+  works: [
+    {
+      work: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Work'
+      },
+
+      x: {
+        type: Number
+      },
+
+      y: {
+        type: Number
+      }
     }
-  }],
+  ],
 
   museumId: {
     type: mongoose.Schema.Types.ObjectId,

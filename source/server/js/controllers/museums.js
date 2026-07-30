@@ -73,7 +73,7 @@ exports.saveMuseum = async (req, res) => {
       for (const s of sections) {
         // Validiamo la sezione (usiamo un ID fittizio per il campo required museumId)
         const sectionToValidate = new Section({
-          title: s.title,
+          name: s.name,
           image: s.image,
           museumId: new (require('mongoose')).Types.ObjectId() 
         });
@@ -106,7 +106,7 @@ exports.saveMuseum = async (req, res) => {
 
         // Salviamo la sezione
         const newSection = new Section({
-          title: s.title,
+          name: s.name,
           image: s.image,
           works: workIds,
           museumId: museumId

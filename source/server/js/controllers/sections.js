@@ -11,7 +11,7 @@ exports.saveSection = async (req,res) => {
     const workIds = savedWorks.map(work => work._id);
 
     const section = new Section({
-      title: rsection.title,
+      name: rsection.name,
       image: rsection.image,
       works: workIds,
       museumId: museumId
@@ -49,7 +49,7 @@ exports.addWorkToSection = async (req,res) => {
 
 exports.getSectionsByMuseum = async (museumId) => {
   try {
-    return await Section.find({museumId: museum});
+    return await Section.find({museumId: museumId});
   }
   catch (err) {
     throw err;
@@ -58,11 +58,13 @@ exports.getSectionsByMuseum = async (museumId) => {
 
 exports.getWorksBySection = async (sectionId) => {
   try {
-    const { getWorksById } = require('./works');
+    const section = await Section.findById(sectionId).populate("works.work");
 
-    let workIds;
-    workIds = await Section.find({_id: sectionId}).works;
-    return await getWorksById(workIds)
+    if(!section) {
+      throw new Error("Sezione non trovata");
+    }
+
+    return section.works;
   }
   catch (err) {
     throw err;
