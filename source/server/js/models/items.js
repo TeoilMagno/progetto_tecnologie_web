@@ -1,4 +1,4 @@
-//schema che definisce gli item in vendita al museo
+// schema che definisce gli item in vendita al museo
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -40,7 +40,7 @@ const itemSchema = new Schema({
 });
 
 
-const Item = mongoose.model('Item', itemSchema, 'Items');
+const Item = mongoose.model('Item', itemSchema);
 
 //esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Item;

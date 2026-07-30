@@ -32,7 +32,7 @@ exports.saveItem = async (req,res) => {
 
 exports.getItemByMuseum = async (museumId) => {
   try {
-    return await Item.find({museumId: museumId});
+    return await Item.find({ museumId: museumId });
   }
   catch (err) {
     throw err;

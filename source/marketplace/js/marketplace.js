@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://localhost:8000/api';
 
 // Stato globale
 let cachedMuseums = [];
@@ -33,7 +33,7 @@ async function getMuseums() {
         </div>`;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/musei`);
+        const response = await fetch(`${API_BASE_URL}/museums`);
         if (!response.ok) throw new Error('Errore server');
         cachedMuseums = await response.json();
         renderMuseumsList(cachedMuseums);
@@ -54,7 +54,7 @@ async function getMuseumItems(museumId) {
         </div>`;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/musei/${museumId}/items`);
+        const response = await fetch(`${API_BASE_URL}/museums/${museumId}/items`);
         if (!response.ok) throw new Error('Errore items');
         
         currentItems = await response.json();

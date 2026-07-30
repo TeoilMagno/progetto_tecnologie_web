@@ -2,11 +2,55 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const sectionSchema = new Schema({
-  title: {
+// 1. Schema per la forma svg (riutilizzabile sia per Sezioni che per Stanze)
+const shapeSchema = new Schema({
+  type: {
+    type: String,
+    required: true,
+    enum: ['polygon', 'polyline', 'path'] //per ora si accettano questi 3 valori
+  },
+
+  points: {
+    type: String, //usato da polygon e polyline
+  },
+
+  d: {
+    type: String  // Utilizzato da path
+  }
+}, { _id: false }); // Disabilitiamo l'_id qui perché è solo un sotto-oggetto geometrico
+
+const roomSchema = new Schema({
+  name: {
     type: String,
     required: true
   },
+
+  color: {
+    type: String,
+    required: true
+  },
+
+  shape: {
+    type: shapeSchema, //usa shapeSchema definito sopra
+    required: true
+  }
+});
+
+const sectionSchema = new Schema({
+  name: {
+    type: String,
+    required: true
+  },
+
+  color: {
+    type: String,
+  },
+
+  shape: {
+    type: shapeSchema,  //usa shapeSchema definito sopra
+  },
+
+  rooms: [roomSchema], //array di stanze, usato per la rappresentazione specifica della sezione con svg
 
   image: {
     type: String,
@@ -14,8 +58,16 @@ const sectionSchema = new Schema({
   },
 
   works: [{
+    work: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Works'
+    ref: 'Work'
+    },
+    x: {
+      type: Number
+    },
+    y: {
+      type: Number
+    }
   }],
 
   museumId: {
@@ -25,7 +77,7 @@ const sectionSchema = new Schema({
   }
 });
 
-const Section = mongoose.model('Section', sectionSchema, 'Sections');
+const Section = mongoose.model('Section', sectionSchema);
 
 //esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Section;

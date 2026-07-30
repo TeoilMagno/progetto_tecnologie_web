@@ -3,26 +3,24 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const museumSchema = new Schema({
-  museum_data: {
-    name: {
-      type: String,
-      required: true
-    },
+  name: {
+    type: String,
+    required: true
+  },
 
-    address: {
-      type: String,
-      required: true
-    },
+  address: {
+    type: String,
+    required: true
+  },
 
-    contact_email: {
-      type: String,
-      required: true
-    },
+  contact_email: {
+    type: String,
+    required: true
+  },
 
-    contact_phone: {
-      type: String,
-      required: true
-    }
+  contact_phone: {
+    type: String,
+    required: true
   },
 
   sections: [{
@@ -41,7 +39,7 @@ const museumSchema = new Schema({
   }
 });
 
-const Museum = mongoose.model('Museum', museumSchema, 'Museums');
+const Museum = mongoose.model('Museum', museumSchema);
 
 //esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Museum;
