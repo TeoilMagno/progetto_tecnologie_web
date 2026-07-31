@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ArtAround - Crea Visita</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/visits.css" />
+  </head>
+  <body class="artaround-theme">
+    <div class="container-fluid px-4"> 
+      <div class="row g-4 mt-2">
+        
+        <div class="col-12 col-lg-8">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="h4">Catalogo Opere</h3>
+            <span class="text-secondary" id="current-museum-name">Seleziona un museo...</span>
+          </div>
+
+          <div id="works-catalog-area" class="row row-cols-1 row-cols-md-2 g-3">
+            <div class="p-4 border border-dashed border-secondary rounded w-100">
+              <h5>Test Inserimento Opere</h5>
+              <button class="btn btn-glass me-2 mt-2" onclick="addToVisit('id-001', 'La Gioconda')">
+                  <i class="bi bi-plus"></i> Aggiungi La Gioconda
+              </button>
+              <button class="btn btn-glass me-2 mt-2" onclick="addToVisit('id-002', 'Notte Stellata')">
+                  <i class="bi bi-plus"></i> Aggiungi Notte Stellata
+              </button>
+              <button class="btn btn-glass me-2 mt-2" onclick="addToVisit('id-003', 'Il David')">
+                  <i class="bi bi-plus"></i> Aggiungi Il David
+              </button>
+            </div>
+          </div>
+        </div> 
+
+        <div class="col-12 col-lg-4">
+          <div class="card custom-card sticky-top" style="top: 80px">
+            <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25 pt-3 pb-2">
+              <h5 class="mb-0"><i class="bi bi-map me-2"></i>La tua Visita</h5>
+              <p class="small text-secondary mb-0 mt-1">
+                Trascina l'icona <i class="bi bi-list"></i> per riordinare.
+              </p>
+            </div>
+
+            <div class="card-body p-0">
+              <ul id="visit-cart-list" class="list-group list-group-flush bg-transparent"></ul>
+
+              <div id="empty-cart-msg" class="text-center p-4 text-secondary">
+                <i class="bi bi-basket fs-1 mb-2 opacity-50"></i>
+                <p class="small">Non hai ancora aggiunto opere alla tua visita.</p>
+              </div>
+            </div>
+
+            <div class="card-footer bg-transparent border-top border-secondary border-opacity-25 p-3">
+              <button
+                id="save-visit-btn"
+                class="btn btn-gradient w-100 disabled"
+                data-bs-toggle="modal" 
+                data-bs-target="#saveVisitModal"
+              >
+                Procedi e Salva
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div> 
+    
+    <div class="modal fade" id="saveVisitModal" tabindex="-1" aria-labelledby="saveVisitModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content glass-modal text-white">
+          
+          <div class="modal-header border-bottom-custom">
+            <h5 class="modal-title" id="saveVisitModalLabel">Dettagli della Visita</h5>
+            <button type="button" class="btn-close custom-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="visit-title" class="form-label">Titolo della visita <span class="text-danger">*</span></label>
+              <input type="text" class="form-control glass-input" id="visit-title" placeholder="Es. I capolavori del Rinascimento" required>
+            </div>
+            <div class="mb-3">
+              <label for="visit-desc" class="form-label">Descrizione</label>
+              <textarea class="form-control glass-input" id="visit-desc" rows="3" placeholder="Aggiungi una breve descrizione della tua esperienza..."></textarea>
+            </div>
+            
+            <div id="curator-options-area" class="border-top-custom pt-3 mt-3">
+                <p class="small text-info mb-2"><i class="bi bi-star me-1"></i>Opzioni Curatore</p>
+                <div class="mb-3">
+                  <label for="visit-price" class="form-label">Prezzo del tour (€)</label>
+                  <input type="number" step="0.01" min="0" class="form-control glass-input" id="visit-price" placeholder="0.00">
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="visit-public">
+                  <label class="form-check-label" for="visit-public">Pubblica sul Marketplace</label>
+                </div>
+            </div>
+
+          </div>
+          
+          <div class="modal-footer border-top-custom d-flex justify-content-between">
+            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+            
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-glass text-warning border-warning px-3" id="save-draft-btn" onclick="submitVisit(true)">
+                <i class="bi bi-pencil-square me-1"></i> Salva bozza
+              </button>
+              
+              <button type="button" class="btn btn-gradient px-3" id="confirm-save-visit-btn" onclick="submitVisit(false)">
+                Salva
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/sortablejs/Sortable.min.js"></script>
+    <script src="/js/add-visit.js"></script>
+  </body>
+</html>

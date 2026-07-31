@@ -1,74 +1,51 @@
 const Section = require('../models/sections');
 const Work = require('../models/works')
 
-exports.saveSection = async (req,res) => {
-  try {
-    console.log("saveSection called correctly")
-    const { rsection, museumId } = req.body;
+exports.saveSection = async (sectionData, museumId) => {
+  const savedWorks = await Work.insertMany(sectionData.works);
+  const workIds = savedWorks.map(work => work._id);
 
-    const savedWorks = await Work.insertMany(rsection.works);
+  const section = new Section({
+    title: sectionData.title,
+    image: sectionData.image,
+    works: workIds,
+    museumId: museumId
+  });
 
-    const workIds = savedWorks.map(work => work._id);
-
-    const section = new Section({
-      name: rsection.name,
-      image: rsection.image,
-      works: workIds,
-      museumId: museumId
-    });
-
-    const result = await section.save()
-    
-    res.status(201).json(result._id);
-  }
-  catch (err) {
-    res.send(err);
-  }
+  const result = await section.save()
+  return result._id;
 }
 
-exports.addWorkToSection = async (req,res) => {
-  try {
-        const { sectionId, workId } = req.body;
-        const updatedSection = await Section.findByIdAndUpdate(
-            sectionId, 
-            { $push: { works: workId } }, // Operatore per aggiungere all'array
-            { new: true, useFindAndModify: false } // Opzioni: ritorna il documento modificato
-        );
+exports.addWorkToSection = async (sectionId, workId) => {
+  const updatedSection = await Section.findByIdAndUpdate(
+    sectionId, 
+    { $push: { works: workId } }, // Operatore per aggiungere all'array
+    { new: true, useFindAndModify: false } // Opzioni: ritorna il documento modificato
+  );
 
-        if (!updatedSection) {
-            console.log("Sezione non trovata");
-            return null;
-        }
+  if (!updatedSection) {
+    const error = new Error("Sezione non trovata");
+    error.statusCode = 404;
+    throw error;
+  }
 
-        return updatedSection;
-    } catch (error) {
-        console.error("Errore durante l'aggiornamento:", error);
-        throw error;
-    }
+  return updatedSection;
 }
 
 exports.getSectionsByMuseum = async (museumId) => {
-  try {
-    return await Section.find({museumId: museumId});
-  }
-  catch (err) {
-    throw err;
-  }
+  return await Section.find({ museumId: museumId });
 }
 
 exports.getWorksBySection = async (sectionId) => {
-  try {
-    const section = await Section.findById(sectionId).populate("works.work");
+  const { getWorksById } = require('./works');
 
-    if(!section) {
-      throw new Error("Sezione non trovata");
-    }
-
-    return section.works;
+  const section = await Section.findById(sectionId);
+  if (!section) {
+    const error = new Error("Sezione non trovata");
+    error.statusCode = 404;
+    throw error;
   }
-  catch (err) {
-    throw err;
-  }
+  return await getWorksById(section.works);
 }
 
 // exports.saveSection = async (req, res) => {
