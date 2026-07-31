@@ -1,4 +1,3 @@
-const API_BASE_URL = 'http://localhost:8000/api';
 /*
   // TODO: aggiunta museo tramite json
   // TODO: correzione meta_data su mongodb

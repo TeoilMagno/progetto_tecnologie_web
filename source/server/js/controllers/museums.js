@@ -99,7 +99,11 @@ exports.saveMuseum = async (museumData, userId) => {
       let workIds = [];
       // Salviamo le opere
       if (s.works && s.works.length > 0) {
-        const savedWorks = await Work.insertMany(s.works);
+        const worksToInsert = s.works.map(work => ({
+            ...work,               // Copiamo i dati originali dell'opera
+            museumId: museumId    // Aggiungiamo/Sovrascriviamo il museumId reale
+        }));
+        const savedWorks = await Work.insertMany(worksToInsert);
         workIds = savedWorks.map(w => w._id);
       }
 
