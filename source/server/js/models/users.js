@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   username:        { type: String, unique: true, sparse: true },
   email:           { type: String, unique: true, sparse: true }, // sparse: true perché gli utenti OAuth potrebbero non averla
-  password: { type: Buffer }, // rinominato da 'password' per chiarezza
+  password:        { type: Buffer }, 
   salt:            { type: Buffer },
   name:            { type: String }, // usato dal login Google/Facebook
   role: {
@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   // Visite create (per curatori)
   created_visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visit' }],
 
-  // Visite acquistate (per Visitatori/Customer)
+  // Visite acquistate (per visitatori)
   purchased_visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visit' }],
   preferences: {
     favorite_styles:  [String],
@@ -35,5 +35,4 @@ federatedSchema.index({ provider: 1, subject: 1 }, { unique: true });
 const Users = mongoose.model('User', userSchema);
 const FederatedCredential = mongoose.model('FederatedCredential', federatedSchema);
 
-// esporta entrambi in un oggetto unico — mai due module.exports separati
 module.exports = { User: Users, FederatedCredential };

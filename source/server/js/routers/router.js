@@ -7,9 +7,14 @@
 
 const path = require('path');
 const express = require('express')
+
+// Controllers
 const {saveMuseum, addSectionToMuseum, getAllMuseums} = require ('../controllers/museums')
 const {saveSection} = require ('../controllers/sections')
 const sectionController = require('../controllers/sections');
+
+// Middleware
+const auth = require("../middleware/roles");
 
 const router = express.Router();
 
@@ -56,7 +61,7 @@ router.get('/get-museums', async (req, res) => {
 // ---------------------- Routes di get -----------------------------
 
 // Per aggiungere un museo
-router.get('/add-museum', (req, res) => {
+router.get('/add-museum', auth.isCuratorPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'add-museum.html');
   
   console.log("Percorso generato per add-museum:", filePath);
@@ -64,7 +69,7 @@ router.get('/add-museum', (req, res) => {
 });
 
 // Per aggiungere una sezione
-router.get('/add-section', (req, res) => {
+router.get('/add-section', auth.isCuratorPage,  (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'add-section.html');
   
   console.log("Percorso generato per add-section:", filePath);
@@ -72,7 +77,7 @@ router.get('/add-section', (req, res) => {
 });
 
 // Per aggiungere un'opera
-router.get('/add-work', (req, res) => {
+router.get('/add-work', auth.isCuratorPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'add-work.html');
   
   console.log("Percorso generato per add-work:", filePath);
@@ -80,7 +85,7 @@ router.get('/add-work', (req, res) => {
 });
 
 // ottiene il form html per l'inserimento delle sezioni
-router.get('/museums/:museumId/add-sections', (req, res) => {
+router.get('/museums/:museumId/add-sections', auth.isCuratorPage, (req, res) => {
   const filePath = path.join(__dirname,'..','..','html','add-section.html')
 
   console.log("Percorso generato per add-section: ", filePath)
@@ -88,7 +93,7 @@ router.get('/museums/:museumId/add-sections', (req, res) => {
 });
 
 // ottiene il form html per l'inserimento degli item
-router.get('/museums/:museumId/sections/:sectionId/add-work', (req, res) => {
+router.get('/museums/:museumId/sections/:sectionId/add-work', auth.isCuratorPage,  (req, res) => {
   const filePath = path.join(__dirname,'..','..','html','add-work.html')
 
   console.log("Percorso generato per add-item: ", filePath)
@@ -96,14 +101,14 @@ router.get('/museums/:museumId/sections/:sectionId/add-work', (req, res) => {
 });
 
 // per la pagina di creazione visita
-router.get('/create-visit', (req, res) => {
+router.get('/create-visit', auth.isLoggedInPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'create-visit.html');
   console.log("Percorso generato per create-visit:", filePath);
   res.sendFile(filePath);
 });
 
 // pagina my-visits
-router.get('/my-visits', (req, res) => {
+router.get('/my-visits', auth.isLoggedInPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'my-visits.html');
   console.log("Percorso generato: ", filePath);
   res.sendFile(filePath);
@@ -117,13 +122,13 @@ router.get('/visit-details', (req, res) => {
 // ------------------------- Routes di post -------------------------------
 
 //salva la sezione sul db
-router.post('/add-section', saveSection);
+router.post('/add-section', auth.isCuratorPage, saveSection);
 
 //aggiunge la sezione al museo
-router.post('/add-section-to-museum', addSectionToMuseum)
+router.post('/add-section-to-museum', auth.isCuratorPage, addSectionToMuseum)
 
 // Ottiene l'html per i musei creati dal currentUser
-router.get('/my-museums', (req, res) => {
+router.get('/my-museums', auth.isCuratorPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-museums.html'));
 });
 

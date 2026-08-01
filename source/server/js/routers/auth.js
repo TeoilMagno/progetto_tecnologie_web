@@ -26,11 +26,13 @@ router.post('/signup', async (req, res, next) => {
     const salt = crypto.randomBytes(16); // simile al nonce
     crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', async (err, hash) => { // crittazione della password
       if (err) return next(err);
+
       const user = await User.create({
         username: req.body.username,
-        hashed_password: hash,
-        salt
+        password: hash,
+        salt: salt
       });
+
       req.login(user, err => { // gestisce direttamente l'accesso serializzando l'utente nella sessione
         if (err) return next(err);
         res.redirect('/');
@@ -59,7 +61,12 @@ router.get('/oauth2/redirect/facebook', passport.authenticate('facebook', {
 router.post('/logout', (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
-    res.redirect('/');
+
+    const redirectTo = req.body.next || '/'; // controlliamo se e' stata inviata una pagina di destinazione specifica (es. /login)
+    if (!redirectTo.startsWith('/') || redirectTo.startsWith('//')) { // evita redirect forzati verso siti esterni
+      redirectTo = '/';
+    }
+    res.redirect(redirectTo);
   });
 });
 

@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL = "http://localhost:8000/api";
 
 document.addEventListener("DOMContentLoaded", async () => {
   // 1. Recuperiamo l'ID della visita dall'URL
@@ -52,6 +52,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Cicliamo le opere popolate dal DB (mantenendo l'ordine del carrello originario!)
     visit.items.forEach((item, index) => {
+            const descText = (item.description && item.description.length > 0) 
+              ? item.description[0].description 
+              : '';
+              
             // Creiamo il contenuto del riquadro ingrandito
             const popoverContent = `<img src='${item.image}' style='width: 100%; height: auto;'>`;
 
@@ -75,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <div class="col">
                                 <span class="badge bg-dark border border-secondary text-secondary mb-1">Tappa ${index + 1}</span>
                                 <h5 class="h6 mb-1 text-white">${item.name}</h5>
-                                <p class="small text-white-50 mb-0">${item.description || 'Nessuna descrizione per quest\'opera.'}</p>
+                                <p class="small text-white-50 mb-0">${descText}</p>
                             </div>
                         </div>
                     </div>

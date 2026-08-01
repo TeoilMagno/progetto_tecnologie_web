@@ -49,7 +49,7 @@ exports.createVisit = async (visitPayload, user) => {
   return await newVisit.save();
 };
 
-exports.getVisits = async (UserId) => {
+exports.getVisits = async (userId) => {
   return await Visit.find({ creator: userId }).populate('museum')
 }
 
@@ -64,28 +64,17 @@ exports.getVisitById = async (visitId) => {
   return visit;
 };
 
-exports.editVisitById = async (visitId, payload) => {
-  // Supponendo che tu stia usando Mongoose/MongoDB, aggiorniamo il documento.
-  // Adatta i nomi dei campi in base a come hai definito lo Schema nel tuo database!
-  const updatedVisit = await Visit.findByIdAndUpdate(
-    visitId,
-    {
-      title: payload.title,
-      description: payload.description,
-      museum: payload.museumId, // Se nel tuo schema DB si chiama 'museum'
-      items: payload.items,      // Array di ID delle opere
-      price: payload.price,
-      isPublic: payload.isPublic,
-      isDraft: payload.isDraft
-    },
-    { new: true } // Questo flag serve a restituire la visita già aggiornata
+exports.editVisitById = async (visitId, payload, userId) => {
+  // Troviamo e aggiorniamo SOLO se l'ID corrisponde e il creatore è l'utente corrente
+  const updatedVisit = await Visit.findOneAndUpdate(      
+    { _id: visitId, creator: userId },
+    payload,
+    { new: true } // Opzione per farci restituire il documento aggiornato
   );
 
   // Se la visita non esiste nel database, restituiamo un JSON di errore (non HTML!)
   if (!updatedVisit) {
-    const error = new Error("Visita non trovata nel database.");
-    error.statusCode = 404;
-    throw error;
+    throw new new Error("Visita non trovata nel database o non sei autorizzato a modificarla");
   }
   
   return updatedVisit;

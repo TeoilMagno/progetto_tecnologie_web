@@ -89,7 +89,7 @@ apiRouter.get("/museums/:id/items", async (req, res) => {
 
 //? Perche' non e' una post?
 // 3. Modifica un'oggetto in vendita
-apiRouter.put("/items/:id", async (req, res) => {
+apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
   try {
     const itemId = req.params.id;
     const updateData = req.body;
@@ -212,7 +212,7 @@ apiRouter.get("/current-user", (req, res) => {
 });
 
 // Ottiene i musei gestiti dal curatore loggato
-apiRouter.get("/my-museums", async (req, res) => {
+apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
   try {
     const user = await User.findById(req.user._id).populate("managed_museums");
 
@@ -231,29 +231,36 @@ apiRouter.get("/my-museums", async (req, res) => {
 // recupera le visite create/comprate dallo user
 apiRouter.get("/my-visits", async (req, res) => {
     try {
-        const userId = req.user._id;
-        const visits = await visitController.getVisits(userId);
-        res.status(200).json(visits);
+      if (!req.user) {
+        return res.status(401).json({ error: "Sessione scaduta. Effettua di nuovo il login." });
+      }
+
+      const userId = req.user._id;
+      const visits = await visitController.getVisits(userId);
+      res.status(200).json(visits);
     } catch(error) {
-        console.error("Errore nel recupero delle visite: ", error);
-        res.status(500).json({ error: "Impossibile recuperare visite dal database" });
+      console.error("Errore nel recupero delle visite: ", error);
+      res.status(500).json({ error: "Impossibile recuperare visite dal database" });
     }
 });
 
 // permette il salvataggio di una nuova visita (accessibile sia a curatori che a visitatori)
 apiRouter.post("/visits", async (req, res) => {
     try {
-        // Passiamo dati e utente al controller
-        const savedVisit = await visitController.createVisit(req.body, req.user);
-        res.status(201).json({
-            message: "Visita creata con successo!",
-            visit: savedVisit,
-        });
+      if (!req.user) {
+        return res.status(401).json({ error: "Sessione scaduta. Effettua di nuovo il login." });
+      }
+      // Passiamo dati e utente al controller
+      const savedVisit = await visitController.createVisit(req.body, req.user);
+      res.status(201).json({
+          message: "Visita creata con successo!",
+          visit: savedVisit,
+      });
     } catch(error) {
-        console.error("Errore nel salvataggio della visita:", error);
-        // Leggiamo il codice di stato dal throw (se presente), altrimenti diamo 500
-        const status = error.statusCode || 500;
-        res.status(status).json({ error: error.message || "Impossibile salvare la visita" });
+      console.error("Errore nel salvataggio della visita:", error);
+      // Leggiamo il codice di stato dal throw (se presente), altrimenti diamo 500
+      const status = error.statusCode || 500;
+      res.status(status).json({ error: error.message || "Impossibile salvare la visita" });
     }
 });
 
@@ -272,12 +279,16 @@ apiRouter.get("/visits/:id", async (req, res) => {
 // ROTTA PER AGGIORNARE UNA VISITA ESISTENTE (PUT)
 apiRouter.put("/visits/:id", async (req, res) => {
     try {
-        const updatedVisit = await visitController.editVisitById(req.params.id, req.body);
-        res.status(200).json(updatedVisit);
+      if (!req.user) {
+        return res.status(401).json({ error: "Accesso negato. Fai il login." });
+      }
+      
+      const updatedVisit = await visitController.editVisitById(req.params.id, req.body, req.user._id);
+      res.status(200).json(updatedVisit);
     } catch(error) {
-        console.error("Errore durante l'aggiornamento della visita:", error);
-        const status = error.statusCode || 500;
-        res.status(status).json({ error: error.message || "Errore interno del server" });
+      console.error("Errore durante l'aggiornamento della visita:", error);
+      const status = error.statusCode || 500;
+      res.status(status).json({ error: error.message || "Errore interno del server" });
     }
 });
 
