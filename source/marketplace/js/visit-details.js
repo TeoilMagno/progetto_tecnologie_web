@@ -1,5 +1,3 @@
-const API_BASE_URL = "http://localhost:8000/api";
-
 document.addEventListener("DOMContentLoaded", async () => {
   // 1. Recuperiamo l'ID della visita dall'URL
   const urlParams = new URLSearchParams(window.location.search);

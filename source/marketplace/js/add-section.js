@@ -64,7 +64,7 @@ async function sectionHandleSave(museumId) {
   console.log("sezioni aggiunte con museumId: ", museumId);
 
   try {
-    const response = await fetch("http://localhost:3000/api/save-section", {
+    const response = await fetch(`${API_URL}/api/save-section`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

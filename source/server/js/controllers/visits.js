@@ -74,7 +74,7 @@ exports.editVisitById = async (visitId, payload, userId) => {
 
   // Se la visita non esiste nel database, restituiamo un JSON di errore (non HTML!)
   if (!updatedVisit) {
-    throw new new Error("Visita non trovata nel database o non sei autorizzato a modificarla");
+    throw new Error("Visita non trovata nel database o non sei autorizzato a modificarla");
   }
   
   return updatedVisit;
