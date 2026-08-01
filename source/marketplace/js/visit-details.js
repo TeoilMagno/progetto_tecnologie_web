@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const banner = document.getElementById("visit-banner");
     if (visit.coverImage) {
       banner.style.backgroundImage = `url('${visit.coverImage}')`;
-    } else if (visit.items && visit.items.length > 0 && visit.items[0].image) {
+    } else if (visit.works && visit.works.length > 0 && visit.works[0].image) {
       // niente copertina, ma c'è almeno un'opera con un'immagine
-      banner.style.backgroundImage = `url('${visit.items[0].image}')`;
+      banner.style.backgroundImage = `url('${visit.works[0].image}')`;
     } else {
       // gradiente di fallback
       banner.style.background = "linear-gradient(135px, #1e1e2f, #11111d)";
@@ -43,27 +43,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     const timeline = document.getElementById("visit-timeline");
     timeline.innerHTML = "";
 
-    if (!visit.items || visit.items.length === 0) {
+    if (!visit.works || visit.works.length === 0) {
       timeline.innerHTML = `<p class="text-secondary">Questa visita non contiene ancora nessuna opera.</p>`;
       return;
     }
 
     // Cicliamo le opere popolate dal DB (mantenendo l'ordine del carrello originario!)
-    visit.items.forEach((item, index) => {
-            const descText = (item.description && item.description.length > 0) 
-              ? item.description[0].description 
+    visit.works.forEach((work, index) => {
+            const descText = (work.description && work.description.length > 0) 
+              ? work.description[0].description 
               : '';
               
             // Creiamo il contenuto del riquadro ingrandito
-            const popoverContent = `<img src='${item.image}' style='width: 100%; height: auto;'>`;
+            const popoverContent = `<img src='${work.image}' style='width: 100%; height: auto;'>`;
 
             timeline.innerHTML += `
-                <li class="timeline-item">
+                <li class="timeline-work">
                     <div class="card custom-card p-3">
-                        <div class="row align-items-center g-3">
-                            ${item.image ? `
+                        <div class="row align-works-center g-3">
+                            ${work.image ? `
                             <div class="col-3 col-md-2">
-                                <img src="${item.image}" class="img-fluid rounded" 
+                                <img src="${work.image}" class="img-fluid rounded" 
                                      style="max-height: 70px; object-fit: cover; width: 100%; cursor: zoom-in;"
                                      data-bs-toggle="popover" 
                                      data-bs-placement="top" 
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             ` : ''}
                             <div class="col">
                                 <span class="badge bg-dark border border-secondary text-secondary mb-1">Tappa ${index + 1}</span>
-                                <h5 class="h6 mb-1 text-white">${item.name}</h5>
+                                <h5 class="h6 mb-1 text-white">${work.name}</h5>
                                 <p class="small text-white-50 mb-0">${descText}</p>
                             </div>
                         </div>

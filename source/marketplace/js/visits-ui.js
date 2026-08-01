@@ -72,7 +72,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
           <div class="card-body" style="cursor: pointer">
             <div class="d-flex justify-content-between mb-2">
               ${statusBadge}
-              <small class="text-secondary">${visit.items ? visit.items.length : 0} opere</small>
+              <small class="text-secondary">${visit.works ? visit.works.length : 0} opere</small>
             </div>
             <h5 class="card-title">${visit.title}</h5>
             <h6 class="card-subtitle mb-2 text-muted museum-name-custom">

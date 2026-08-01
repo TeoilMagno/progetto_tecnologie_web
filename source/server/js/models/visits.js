@@ -7,9 +7,9 @@ const visitSchema = new mongoose.Schema({
     // l'autore della visita (curatore o visitatore)
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     // l'ordine nell'array definisce l'ordine del tour.
-    items: [{
+    works: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Item'
+        ref: 'Work'
     }],
     price: { type: Number, default: 0 },
     isDraft: { type: Boolean, default: true }, // Per gestire le bozze

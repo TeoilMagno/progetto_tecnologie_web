@@ -1,12 +1,8 @@
 // Stato globale della visita in creazione
 let currentVisitCart = []; // Array che conterrà gli ID (o gli oggetti) delle opere
 let currentMuseumId = null;
-let editingVisitId = null; // 1. ORA È GLOBALE!
+let editingVisitId = null;
 
-// TODO: da modificare in produzione
-const API_URL = "http://localhost:8000/api";
-
-// 2. AGGIUNTO 'async' QUI!
 document.addEventListener("DOMContentLoaded", async () => {
   // inizializza il drag & drop
   const cartListElement = document.getElementById("visit-cart-list");
@@ -44,17 +40,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // GESTIONE BOZZA
-  // GESTIONE BOZZA
   if (editingVisitId) {
         try {
-            const res = await fetch(`${API_URL}/visits/${editingVisitId}`);
+            const res = await fetch(`${API_BASE_URL}/visits/${editingVisitId}`);
             if (res.ok) {
                 const draft = await res.json();
                 
                 // TRASFORMAZIONE CORRETTIVA: Convertiamo gli _id del DB in id per il carrello del front-end
-                currentVisitCart = (draft.items || []).map(item => ({
-                    id: item._id, // Prende il trattino basso e lo uniforma
-                    name: item.name
+                currentVisitCart = (draft.works || []).map(work => ({
+                    id: work._id, // Prende il trattino basso e lo uniforma
+                    name: work.name
                 }));
                 
                 // Se la bozza ha già un museo associato, lo impostiamo
@@ -87,31 +82,34 @@ async function loadMuseumWorks(museumId) {
   catalogArea.innerHTML = `<div class="col-12 text-center mt-4"><div class="spinner-border text-info"></div></div>`;
 
   try {
-    const itemsRes = await fetch(`${API_URL}/museums/${museumId}/items`);
-    const items = await itemsRes.json();
+    const worksRes = await fetch(`${API_BASE_URL}/museums/${museumId}/works`);
+    const works = await worksRes.json();
 
     museumNameLabel.innerText = "Catalogo caricato"; 
 
-    if (items.length === 0) {
+    if (works.length === 0) {
       catalogArea.innerHTML = `<p class="text-secondary">Questo museo non ha ancora opere disponibili.</p>`;
       return;
     }
 
     catalogArea.innerHTML = "";
-    items.forEach((item) => {
+    works.forEach((work) => {
+      const workImage = work.image || '/img/fallback-work.jpg';
+      const workAuthor = work.author || 'Autore sconosciuto';
+
       catalogArea.innerHTML += `
                 <div class="col">
                     <div class="card custom-card h-100">
                         <div class="row g-0 h-100">
                             <div class="col-4">
-                                <img src="${item.image}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 120px;">
+                                <img src="${workImage}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 120px; width: 100%;">
                             </div>
                             <div class="col-8">
                                 <div class="card-body p-2 d-flex flex-column h-100">
-                                    <h6 class="card-title mb-1 text-truncate">${item.name}</h6>
-                                    <p class="small text-secondary mb-2" style="font-size: 0.75rem;">€ ${item.price.toFixed(2)}</p>
-                                    <button class="btn btn-sm btn-outline-light mt-auto w-100" onclick="addToVisit('${item._id}', '${item.name.replace(/'/g, "\\'")}')">
-                                        <i class="bi bi-plus"></i> Aggiungi
+                                    <h6 class="card-title mb-1 text-truncate">${work.name}</h6>
+                                    <p class="small text-secondary mb-2" style="font-size: 0.75rem;">${workAuthor}</p>
+                                    <button class="btn btn-sm btn-outline-light mt-auto w-100" onclick="addToVisit('${work._id}', '${work.name.replace(/'/g, "\\'")}')">
+                                        <i class="bi bi-plus"></i> Aggiungi alla visita
                                     </button>
                                 </div>
                             </div>
@@ -121,6 +119,7 @@ async function loadMuseumWorks(museumId) {
             `;
     });
   } catch (error) {
+    console.error("Dettaglio errore intercettato:", error);
     catalogArea.innerHTML = `<p class="text-danger">Errore nel caricamento delle opere.</p>`;
   }
 }
@@ -133,7 +132,7 @@ async function showMuseumSelector() {
   catalogArea.innerHTML = `<div class="col-12 text-center mt-4"><div class="spinner-border text-info"></div></div>`;
 
   try {
-    const res = await fetch(`${API_URL}/museums`);
+    const res = await fetch(`${API_BASE_URL}/museums`);
     const museums = await res.json();
 
     catalogArea.innerHTML = `
@@ -150,23 +149,24 @@ async function showMuseumSelector() {
             </div>
         `;
   } catch (error) {
+    console.error("Motivo errore:", error);
     catalogArea.innerHTML = `<p class="text-danger">Errore nel caricamento dei musei.</p>`;
   }
 }
 
-function addToVisit(itemId, itemName) {
-  if (currentVisitCart.some((item) => item.id === itemId)) {
+function addToVisit(workId, workName) {
+  if (currentVisitCart.some((work) => work.id === workId)) {
     alert("Quest'opera è già nella tua visita!");
     return;
   }
-  currentVisitCart.push({ id: itemId, name: itemName });
+  currentVisitCart.push({ id: workId, name: workName });
   renderVisitCart();
 
   triggerAutoSave();
 }
 
-function removeFromVisit(itemId) {
-  currentVisitCart = currentVisitCart.filter((item) => item.id !== itemId);
+function removeFromVisit(workId) {
+  currentVisitCart = currentVisitCart.filter((work) => work.id !== workId);
   renderVisitCart();
 
   triggerAutoSave();
@@ -232,13 +232,13 @@ async function submitVisit(isSavingAsDraft = false) {
   const isPublic = isSavingAsDraft ? false : (publicCheckbox ? publicCheckbox.checked : false);
   const isDraft = isSavingAsDraft;
 
-  const itemIds = currentVisitCart.map((item) => item.id);
+  const workIds = currentVisitCart.map((work) => work.id);
 
   const payload = {
     title: titleInput.value.trim(),
     description: description,
     museumId: currentMuseumId,
-    items: itemIds,
+    works: workIds,
     price: price,
     isPublic: isPublic,
     isDraft: isDraft,
@@ -260,8 +260,8 @@ async function submitVisit(isSavingAsDraft = false) {
 
   const method = editingVisitId ? "PUT" : "POST";
   const endpoint = editingVisitId 
-      ? `${API_URL}/visits/${editingVisitId}`
-      : `${API_URL}/visits`;
+      ? `${API_BASE_URL}/visits/${editingVisitId}`
+      : `${API_BASE_URL}/visits`;
 
   try {
     const response = await fetch(endpoint, {
@@ -331,7 +331,7 @@ async function autoSaveDraft() {
         title: titleInput || "Bozza in corso...", // Fallback essenziale se non ha ancora aperto la modale
         description: descInput || "",
         museumId: currentMuseumId,
-        items: currentVisitCart.map((item) => item.id),
+        works: currentVisitCart.map((work) => work.id),
         price: price,
         isPublic: false,
         isDraft: true, // È sempre una bozza
@@ -339,8 +339,8 @@ async function autoSaveDraft() {
 
     const method = editingVisitId ? "PUT" : "POST";
     const endpoint = editingVisitId 
-        ? `${API_URL}/visits/${editingVisitId}`
-        : `${API_URL}/visits`;
+        ? `${API_BASE_URL}/visits/${editingVisitId}`
+        : `${API_BASE_URL}/visits`;
 
     try {
         const response = await fetch(endpoint, {

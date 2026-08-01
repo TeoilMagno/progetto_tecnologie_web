@@ -62,7 +62,8 @@ app.use('/', router);
 app.use('/api', apiRouter);
 
 // ─── Front-end ────────────────────────────────────────────────────────────────
-app.use('/vendor/sortablejs', express.static(path.join(__dirname, 'node_modules/sortablejs')));
+const sortablePath = path.join(__dirname, '..', '..', '..', 'node_modules', 'sortablejs');
+app.use('/vendor/sortablejs', express.static(sortablePath));
 
 app.listen(8000, () => {
   console.log(`listening on port: 8000`);

@@ -53,7 +53,7 @@
         
         try {
           // Supponendo che il tuo backend restituisca tutte le visite pubbliche a questo indirizzo
-          const res = await fetch(`${API_URL}/api/visits`); 
+          const res = await fetch(`${API_BASE_URL}/api/visits`); 
           const visits = await res.json();
           const container = document.getElementById("public-visits-area");
           container.innerHTML = "";

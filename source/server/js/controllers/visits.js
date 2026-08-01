@@ -5,7 +5,7 @@ exports.createVisit = async (visitPayload, user) => {
     title,
     description,
     museumId,
-    items,
+    works,
     price,
     isDraft,
     isPublic,
@@ -26,7 +26,7 @@ exports.createVisit = async (visitPayload, user) => {
     description,
     museum: museumId,
     creator: user._id, // Preso automaticamente dalla sessione
-    items, // Array ordinato di ObjectId delle opere
+    works, // Array ordinato di ObjectId delle opere
     duration,
     language: language || "it",
   };
@@ -54,7 +54,7 @@ exports.getVisits = async (userId) => {
 }
 
 exports.getVisitById = async (visitId) => {
-  const visit = await Visit.findById(visitId).populate('museum').populate('items'); // ci servono le informazioni delle opere
+  const visit = await Visit.findById(visitId).populate('museum').populate('works'); // ci servono le informazioni delle opere
 
   if (!visit) {
     const error = new Error("Visita non trovata");
