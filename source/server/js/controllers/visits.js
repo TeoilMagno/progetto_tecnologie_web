@@ -4,7 +4,7 @@ exports.createVisit = async (visitPayload, user) => {
   const {
     title,
     description,
-    museumId,
+    museum,
     works,
     price,
     isDraft,
@@ -24,7 +24,7 @@ exports.createVisit = async (visitPayload, user) => {
   const visitData = {
     title,
     description,
-    museum: museumId,
+    museum,
     creator: user._id, // Preso automaticamente dalla sessione
     works, // Array ordinato di ObjectId delle opere
     duration,
@@ -65,6 +65,13 @@ exports.getVisitById = async (visitId) => {
 };
 
 exports.editVisitById = async (visitId, payload, userId) => {
+  const updateData = {
+    ...payload,
+  };
+
+  if (payload.museumId) {
+    updateData.museum
+  }
   // Troviamo e aggiorniamo SOLO se l'ID corrisponde e il creatore è l'utente corrente
   const updatedVisit = await Visit.findOneAndUpdate(      
     { _id: visitId, creator: userId },

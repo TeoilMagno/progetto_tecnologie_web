@@ -6,21 +6,25 @@ let editingVisitId = null;
 document.addEventListener("DOMContentLoaded", async () => {
   // inizializza il drag & drop
   const cartListElement = document.getElementById("visit-cart-list");
-  
+
   // Ascoltatori per l'autosalvataggio sui campi di testo
-  document.getElementById("visit-title")?.addEventListener("input", triggerAutoSave);
-  document.getElementById("visit-desc")?.addEventListener("input", triggerAutoSave);
-  
+  document
+    .getElementById("visit-title")
+    ?.addEventListener("input", triggerAutoSave);
+  document
+    .getElementById("visit-desc")
+    ?.addEventListener("input", triggerAutoSave);
+
   if (cartListElement) {
     new Sortable(cartListElement, {
-      handle: ".drag-handle", 
-      animation: 150, 
+      handle: ".drag-handle",
+      animation: 150,
       ghostClass: "sortable-ghost",
       onEnd: function (evt) {
         const movedItem = currentVisitCart.splice(evt.oldIndex, 1)[0];
         currentVisitCart.splice(evt.newIndex, 0, movedItem);
         console.log("Nuovo ordine della visita:", currentVisitCart);
-        
+
         triggerAutoSave();
       },
     });
@@ -28,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const urlParams = new URLSearchParams(window.location.search);
   const preselectedMuseumId = urlParams.get("museumId");
-  
+
   // Assegniamo la variabile globale
   editingVisitId = urlParams.get("editId");
 
@@ -39,41 +43,63 @@ document.addEventListener("DOMContentLoaded", async () => {
     showMuseumSelector();
   }
 
+  await checkUserRole();
+
   // GESTIONE BOZZA
   if (editingVisitId) {
-        try {
-            const res = await fetch(`${API_BASE_URL}/visits/${editingVisitId}`);
-            if (res.ok) {
-                const draft = await res.json();
-                
-                // TRASFORMAZIONE CORRETTIVA: Convertiamo gli _id del DB in id per il carrello del front-end
-                currentVisitCart = (draft.works || []).map(work => ({
-                    id: work._id, // Prende il trattino basso e lo uniforma
-                    name: work.name
-                }));
-                
-                // Se la bozza ha già un museo associato, lo impostiamo
-                currentMuseumId = draft.museumId || (draft.museum ? draft.museum._id : null);
-                
-                renderVisitCart(); 
+    try {
+      const res = await fetch(`${API_BASE_URL}/visits/${editingVisitId}`);
+      if (res.ok) {
+        const draft = await res.json();
 
-                // Popoliamo i campi
-                document.getElementById("visit-title").value = draft.title || "";
-                document.getElementById("visit-desc").value = draft.description || "";
-                document.getElementById("visit-price").value = draft.price || "";
-                document.getElementById("visit-public").checked = draft.isPublic || false;
+        // TRASFORMAZIONE CORRETTIVA: Convertiamo gli _id del DB in id per il carrello del front-end
+        currentVisitCart = (draft.works || []).map((work) => ({
+          id: work._id, // Prende il trattino basso e lo uniforma
+          name: work.name,
+        }));
 
-                document.getElementById("save-visit-btn").innerText = "Aggiorna Bozza";
-                
-                if (currentMuseumId) {
-                    loadMuseumWorks(currentMuseumId);
-                }
-            }
-        } catch (e) {
-            console.error("Errore nel caricamento della bozza", e);
+        // Se la bozza ha già un museo associato, lo impostiamo
+        currentMuseumId =
+          draft.museumId || (draft.museum ? draft.museum._id : null);
+
+        renderVisitCart();
+
+        // Popoliamo i campi
+        document.getElementById("visit-title").value = draft.title || "";
+        document.getElementById("visit-desc").value = draft.description || "";
+        document.getElementById("visit-price").value = draft.price || "";
+        document.getElementById("visit-public").checked =
+          draft.isPublic || false;
+
+        document.getElementById("save-visit-btn").innerText = "Aggiorna Bozza";
+
+        if (currentMuseumId) {
+          loadMuseumWorks(currentMuseumId);
         }
+      }
+    } catch (e) {
+      console.error("Errore nel caricamento della bozza", e);
     }
+  }
 });
+
+// controlla se lo user e' un curatore o un visitatore
+async function checkUserRole() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/current-user`);
+    if (response.ok) {
+      const user = await response.json();
+      // se lo user e' un curatore mostriamo le opzioni eslcusive per curatori
+      if (user && user.role === "curator") {
+        document
+          .getElementById("curator-options-area")
+          .classList.remove("d-none");
+      }
+    }
+  } catch (error) {
+    console.error("Error checking user role:", error);
+  }
+}
 
 async function loadMuseumWorks(museumId) {
   const catalogArea = document.getElementById("works-catalog-area");
@@ -85,7 +111,7 @@ async function loadMuseumWorks(museumId) {
     const worksRes = await fetch(`${API_BASE_URL}/museums/${museumId}/works`);
     const works = await worksRes.json();
 
-    museumNameLabel.innerText = "Catalogo caricato"; 
+    museumNameLabel.innerText = "Catalogo caricato";
 
     if (works.length === 0) {
       catalogArea.innerHTML = `<p class="text-secondary">Questo museo non ha ancora opere disponibili.</p>`;
@@ -94,8 +120,8 @@ async function loadMuseumWorks(museumId) {
 
     catalogArea.innerHTML = "";
     works.forEach((work) => {
-      const workImage = work.image || '/img/fallback-work.jpg';
-      const workAuthor = work.author || 'Autore sconosciuto';
+      const workImage = work.image || "/img/fallback-work.jpg";
+      const workAuthor = work.author || "Autore sconosciuto";
 
       catalogArea.innerHTML += `
                 <div class="col">
@@ -139,12 +165,16 @@ async function showMuseumSelector() {
             <div class="col-12">
                 <p class="text-white mb-3">Seleziona il museo in cui vuoi creare la tua visita:</p>
                 <div class="list-group bg-transparent">
-                    ${museums.map((m) => `
+                    ${museums
+                      .map(
+                        (m) => `
                         <button class="list-group-item list-group-item-action bg-transparent text-white border-secondary mb-2 rounded" 
                                 onclick="window.location.href='/create-visit?museumId=${m._id}'">
                             <i class="bi bi-bank me-2"></i> ${m.name}
                         </button>
-                    `).join("")}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
@@ -205,6 +235,8 @@ function renderVisitCart() {
 
 // Aggiunto il parametro isSavingAsDraft (di default false)
 async function submitVisit(isSavingAsDraft = false) {
+  clearTimeout(autoSaveTimeout); // evita race conditions con il timer dell'auto-save
+
   if (currentVisitCart.length === 0) {
     alert("Devi aggiungere almeno un'opera alla tua visita!");
     return;
@@ -222,14 +254,19 @@ async function submitVisit(isSavingAsDraft = false) {
 
   const description = document.getElementById("visit-desc")?.value || "";
   const priceInput = document.getElementById("visit-price");
-  const price = priceInput && priceInput.value ? parseFloat(priceInput.value) : 0;
-  
+  const price =
+    priceInput && priceInput.value ? parseFloat(priceInput.value) : 0;
+
   const publicCheckbox = document.getElementById("visit-public");
-  
+
   // LA MAGIA DEI 3 STATI:
-  // Se premo "Salva Bozza", forziamo isPublic a false. 
+  // Se premo "Salva Bozza", forziamo isPublic a false.
   // Altrimenti, dipende dalla spunta della checkbox.
-  const isPublic = isSavingAsDraft ? false : (publicCheckbox ? publicCheckbox.checked : false);
+  const isPublic = isSavingAsDraft
+    ? false
+    : publicCheckbox
+      ? publicCheckbox.checked
+      : false;
   const isDraft = isSavingAsDraft;
 
   const workIds = currentVisitCart.map((work) => work.id);
@@ -237,7 +274,7 @@ async function submitVisit(isSavingAsDraft = false) {
   const payload = {
     title: titleInput.value.trim(),
     description: description,
-    museumId: currentMuseumId,
+    museum: currentMuseumId,
     works: workIds,
     price: price,
     isPublic: isPublic,
@@ -246,22 +283,24 @@ async function submitVisit(isSavingAsDraft = false) {
 
   const submitBtn = document.getElementById("confirm-save-visit-btn");
   const draftBtn = document.getElementById("save-draft-btn");
-  
+
   // Animazione di caricamento sul bottone cliccato
   if (submitBtn && draftBtn) {
     if (isSavingAsDraft) {
-      draftBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Salvataggio...';
+      draftBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm"></span> Salvataggio...';
     } else {
-      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Salvataggio...';
+      submitBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm"></span> Salvataggio...';
     }
     submitBtn.disabled = true;
     draftBtn.disabled = true;
   }
 
   const method = editingVisitId ? "PUT" : "POST";
-  const endpoint = editingVisitId 
-      ? `${API_BASE_URL}/visits/${editingVisitId}`
-      : `${API_BASE_URL}/visits`;
+  const endpoint = editingVisitId
+    ? `${API_BASE_URL}/visits/${editingVisitId}`
+    : `${API_BASE_URL}/visits`;
 
   try {
     const response = await fetch(endpoint, {
@@ -275,18 +314,24 @@ async function submitVisit(isSavingAsDraft = false) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || "Errore dal server durante il salvataggio.");
+      throw new Error(
+        data.error || "Errore dal server durante il salvataggio.",
+      );
     }
 
     // Messaggio dinamico in base all'azione scelta
     if (isSavingAsDraft) {
-        alert("Bozza salvata con successo!");
+      alert("Bozza salvata con successo!");
     } else {
-        alert(isPublic ? "Visita pubblicata sul Marketplace!" : "Visita privata salvata con successo!");
+      alert(
+        isPublic
+          ? "Visita pubblicata sul Marketplace!"
+          : "Visita privata salvata con successo!",
+      );
     }
-    
+
     currentVisitCart = [];
-    localStorage.setItem('visitsChanged', 'true');
+    localStorage.setItem("visitsChanged", "true");
     window.location.href = "/my-visits";
   } catch (error) {
     console.error("Errore salvataggio:", error);
@@ -294,8 +339,9 @@ async function submitVisit(isSavingAsDraft = false) {
 
     // Ripristino bottoni in caso di errore
     if (submitBtn && draftBtn) {
-      draftBtn.innerHTML = '<i class="bi bi-pencil-square me-1"></i> Salva Bozza';
-      submitBtn.innerHTML = 'Salva Definitivo';
+      draftBtn.innerHTML =
+        '<i class="bi bi-pencil-square me-1"></i> Salva Bozza';
+      submitBtn.innerHTML = "Salva Definitivo";
       submitBtn.disabled = false;
       draftBtn.disabled = false;
     }
@@ -306,67 +352,73 @@ async function submitVisit(isSavingAsDraft = false) {
 let autoSaveTimeout = null;
 
 function triggerAutoSave() {
-    clearTimeout(autoSaveTimeout);
-    
-    // Attendi 2 secondi dall'ultimo click o dall'ultima lettera digitata
-    autoSaveTimeout = setTimeout(() => {
-        autoSaveDraft();
-    }, 2000);
+  clearTimeout(autoSaveTimeout);
+
+  // Attendi 2 secondi dall'ultimo click o dall'ultima lettera digitata
+  autoSaveTimeout = setTimeout(() => {
+    autoSaveDraft();
+  }, 2000);
 }
 
 async function autoSaveDraft() {
-    // Se non c'è un museo, non possiamo collegare la visita a nulla
-    if (!currentMuseumId) return;
+  // Se non c'è un museo, non possiamo collegare la visita a nulla
+  if (!currentMuseumId) return;
 
-    const titleInput = document.getElementById("visit-title")?.value.trim();
-    const descInput = document.getElementById("visit-desc")?.value.trim();
-    const price = parseFloat(document.getElementById("visit-price")?.value) || 0;
+  const titleInput = document.getElementById("visit-title")?.value.trim();
+  const descInput = document.getElementById("visit-desc")?.value.trim();
+  const price = parseFloat(document.getElementById("visit-price")?.value) || 0;
 
-    // CONDIZIONE: Se il carrello è vuoto E non ha scritto né titolo né descrizione, FERMATI.
-    if (currentVisitCart.length === 0 && !titleInput && !descInput) {
-        return;
+  // CONDIZIONE: Se il carrello è vuoto E non ha scritto né titolo né descrizione, FERMATI.
+  if (currentVisitCart.length === 0 && !titleInput && !descInput) {
+    return;
+  }
+
+  const payload = {
+    title: titleInput || "Bozza in corso...", // Fallback essenziale se non ha ancora aperto la modale
+    description: descInput || "",
+    museum: currentMuseumId,
+    works: currentVisitCart.map((work) => work.id),
+    price: price,
+    isPublic: false,
+    isDraft: true, // È sempre una bozza
+  };
+
+  const method = editingVisitId ? "PUT" : "POST";
+  const endpoint = editingVisitId
+    ? `${API_BASE_URL}/visits/${editingVisitId}`
+    : `${API_BASE_URL}/visits`;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      // Se era la PRIMA volta che salvavamo in automatico (POST)...
+      // CORREZIONE: Andiamo a leggere l'ID dentro data.visit._id !
+      if (!editingVisitId && data.visit && data.visit._id) {
+        editingVisitId = data.visit._id; // Aggiorniamo la variabile globale!
+
+        // Aggiorniamo l'URL in alto senza ricaricare la pagina
+        window.history.replaceState(
+          null,
+          "",
+          `/create-visit?editId=${editingVisitId}`,
+        );
+      }
+
+      localStorage.setItem("visitsChanged", "true");
+
+      console.log(
+        "Bozza salvata/aggiornata in automatico alle:",
+        new Date().toLocaleTimeString(),
+      );
     }
-
-    const payload = {
-        title: titleInput || "Bozza in corso...", // Fallback essenziale se non ha ancora aperto la modale
-        description: descInput || "",
-        museumId: currentMuseumId,
-        works: currentVisitCart.map((work) => work.id),
-        price: price,
-        isPublic: false,
-        isDraft: true, // È sempre una bozza
-    };
-
-    const method = editingVisitId ? "PUT" : "POST";
-    const endpoint = editingVisitId 
-        ? `${API_BASE_URL}/visits/${editingVisitId}`
-        : `${API_BASE_URL}/visits`;
-
-    try {
-        const response = await fetch(endpoint, {
-            method: method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            
-            // Se era la PRIMA volta che salvavamo in automatico (POST)...
-            // CORREZIONE: Andiamo a leggere l'ID dentro data.visit._id !
-            if (!editingVisitId && data.visit && data.visit._id) {
-                
-                editingVisitId = data.visit._id; // Aggiorniamo la variabile globale!
-                
-                // Aggiorniamo l'URL in alto senza ricaricare la pagina
-                window.history.replaceState(null, '', `/create-visit?editId=${editingVisitId}`);
-            }
-
-            localStorage.setItem('visitsChanged', 'true');
-            
-            console.log("Bozza salvata/aggiornata in automatico alle:", new Date().toLocaleTimeString());
-        }
-    } catch (error) {
-        console.error("Errore nell'autosalvataggio in background", error);
-    }
+  } catch (error) {
+    console.error("Errore nell'autosalvataggio in background", error);
+  }
 }
