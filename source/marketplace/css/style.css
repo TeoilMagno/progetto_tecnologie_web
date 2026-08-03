@@ -167,6 +167,16 @@ body.artaround-theme {
     color: var(--text-secondary);
 }
 
+.custom-card .explore {
+  margin-top: 5px;
+  padding-top: 3px;
+  border-top: 1px solid;
+  border-radius: 0.5;
+  border-color: rgb(94, 99, 96);
+  color: var(--text-secondary);
+  background-color: rgba(0, 0, 0, 0,);
+}
+
 /* COMPONENTI: PULSANTI */
 .btn-gradient {
     background: var(--accent-gradient);

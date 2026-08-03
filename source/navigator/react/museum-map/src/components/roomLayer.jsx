@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
-export default function RoomLayer({ area, onBack }) {
+export default function RoomLayer({ section, onBack }) {
   const [works, setWorks] = useState([]);
 
   useEffect(() => {
     // Usiamo l'ID della sezione (area) per fare la chiamata alla tua seconda API
-    fetch(`http://localhost:8000/api/sections/${area._id}/works`)
+    fetch(`http://localhost:8000/api/sections/${section._id}/works`)
       .then((response) => response.json())
       .then((data) => {
         setWorks(data);
@@ -17,7 +17,7 @@ export default function RoomLayer({ area, onBack }) {
   return (
     <>
       {/* 1. DISEGNO LE STANZE (il tuo codice originale) */}
-      {area.rooms.map((room) => {
+      {section.rooms.map((room) => {
         if (room.shape.type === "polygon") {
           return (
             <polygon

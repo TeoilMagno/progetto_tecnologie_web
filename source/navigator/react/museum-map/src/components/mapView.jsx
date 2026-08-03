@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import AreaLayer from "./areaLayer";
+import SectionLayer from "./sectionLayer";
 import RoomLayer from "./roomLayer";
 
-export default function MapView() {
-  const [selectedArea, setSelectedArea] = useState(null);
+export default function MapView({ museumId }) {
+  const [selectedSection, setSelectedSection] = useState(null);
 
-  const [areas, setAreas] = useState([]);
+  const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
       // Sostituisci "ID_DEL_TUO_MUSEO" con l'ID reale (o passalo come prop)
-      fetch("http://localhost:8000/api/museums/ID_DEL_TUO_MUSEO/sections")
+      fetch(`/api/museums/${museumId}/sections`)
         .then((response) => response.json())
         .then((data) => {
-          setAreas(data); // Salviamo le sezioni nello stato
+          setSections(data); // Salviamo le sezioni nello stato
           setLoading(false); // Fine caricamento
         })
         .catch((error) => {
@@ -43,15 +43,15 @@ export default function MapView() {
              alla libreria quanto è grande l'area da muovere */
           style={{ width: "2000px", height: "2000px" }}
         >
-          {!selectedArea && (
+          {!selectedSection && (
             <g>
-              <AreaLayer areas={areas} onSelect={setSelectedArea} />
+              <SectionLayer sections={sections} onSelect={setSelectedSection} />
             </g>
           )}
 
-          {selectedArea && (
+          {selectedSection && (
             <g>
-              <RoomLayer area={selectedArea} onBack={() => setSelectedArea(null)} />
+              <RoomLayer section={selectedSection} onBack={() => setSelectedSection(null)} />
             </g>
           )}
         </svg>

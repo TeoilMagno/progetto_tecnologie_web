@@ -18,33 +18,6 @@ router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'..','..','html','index.html'));
 });
 
-//Marketplace
-// router.get('/Marketplace', (req, res) => {
-//   res.send(`
-//     <!DOCTYPE HTML>
-//     <head>
-//       <title>Art Around Marketplace</title>
-//     </head>
-//     <body>
-//       <h1>Marketplace of Art Around</h1>
-//       <a href="./">Home</a>
-//     </body>
-//     `);
-// });
-
-// //Navigator
-// router.get('/Navigator', (req, res) => {
-//   res.send(`
-//     <!DOCTYPE HTML>
-//     <head>
-//       <title>Art Around Navigator</title>
-//     </head>
-//     <body>
-//       <h1>Navigator of Art Around</h1>
-//       <a href="./">Home</a>
-//     </body>
-//     `);
-// });
 
 //Get-museums
 router.get('/get-museums', async (req, res) => {
@@ -126,5 +99,9 @@ router.post('/add-section-to-museum', addSectionToMuseum)
 router.get('/my-museums', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-museums.html'));
 });
+
+router.get('/navigator/museum/:musemId', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'dist', 'index.html'));
+}); 
 
 module.exports = router;
