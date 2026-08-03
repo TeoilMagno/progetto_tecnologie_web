@@ -264,6 +264,17 @@ apiRouter.post("/visits", async (req, res) => {
     }
 });
 
+// Recupera tutte le visite pubbliche per il marketplace
+apiRouter.get("/visits", async (req, res) => {
+    try {
+        const visits = await visitController.getPublicVisits();
+        res.status(200).json(visits);
+    } catch(error) {
+        console.error("Errore nel recupero visite pubbliche:", error);
+        res.status(500).json({ error: "Impossibile recuperare le visite pubbliche" });
+    }
+});
+
 // per l'apertura dei dettagli di una visita
 apiRouter.get("/visits/:id", async (req, res) => {
     try {
@@ -276,7 +287,7 @@ apiRouter.get("/visits/:id", async (req, res) => {
     }
 });
 
-// ROTTA PER AGGIORNARE UNA VISITA ESISTENTE (PUT)
+// rotta per aggiornare una visita esistente
 apiRouter.put("/visits/:id", async (req, res) => {
     try {
       if (!req.user) {
@@ -291,5 +302,7 @@ apiRouter.put("/visits/:id", async (req, res) => {
       res.status(status).json({ error: error.message || "Errore interno del server" });
     }
 });
+
+
 
 module.exports = apiRouter;

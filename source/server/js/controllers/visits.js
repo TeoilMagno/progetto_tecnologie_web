@@ -86,3 +86,12 @@ exports.editVisitById = async (visitId, payload, userId) => {
   
   return updatedVisit;
 }
+
+exports.getPublicVisits = async () => {
+  // Cerchiamo le visite completate (non bozze) e pubbliche
+  const visits = await Visit.find({ isPublic: true, isDraft: false })
+    .populate('museum')
+    .populate('works');
+
+  return visits;
+};

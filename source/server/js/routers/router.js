@@ -119,6 +119,12 @@ router.get('/visit-details', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'visit-details.html'));
 });
 
+// pagina esplora visite (Pubbliche)
+router.get('/public-visits', (req, res) => {
+  const filePath = path.join(__dirname, '..', '..', 'html', 'public-visit.html');
+  res.sendFile(filePath);
+});
+
 // ------------------------- Routes di post -------------------------------
 
 //salva la sezione sul db

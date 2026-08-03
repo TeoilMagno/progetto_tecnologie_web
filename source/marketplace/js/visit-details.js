@@ -1,5 +1,19 @@
+function goBackToVisits() {
+  // Controlliamo da dove proviene l'utente
+  const referrer = document.referrer;
+
+  // Se proviene da "Le mie visite" o da "Esplora visite", torna alla pagina precedente reale
+  if (referrer && (referrer.includes('/my-visits') || referrer.includes('/explore-visits'))) {
+    window.location.href = referrer;
+  } else {
+    // Fallback sicuro se è arrivato tramite un link diretto, segnalibro o dopo un login:
+    // Rimanda alla pagina delle visite pubbliche
+    window.location.href = '/public-visits';
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
-  // 1. Recuperiamo l'ID della visita dall'URL
+  // recuperiamo l'ID della visita dall'URL
   const urlParams = new URLSearchParams(window.location.search);
   const visitId = urlParams.get("id");
 
@@ -10,14 +24,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    // 2. Chiamiamo la nuova rotta API per la singola visita
     const response = await fetch(`${API_BASE_URL}/visits/${visitId}`);
     if (!response.ok)
       throw new Error("Impossibile caricare i dettagli della visita.");
 
     const visit = await response.json();
 
-    // 3. Popoliamo il Banner superiore
+    // popoliamo il Banner superiore
     const banner = document.getElementById("visit-banner");
     if (visit.coverImage) {
       banner.style.backgroundImage = `url('${visit.coverImage}')`;
@@ -39,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         visit.description;
     }
 
-    // 4. Generiamo la Timeline delle Opere
+    // generiamo la timeline delle opere
     const timeline = document.getElementById("visit-timeline");
     timeline.innerHTML = "";
 
@@ -48,13 +61,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Cicliamo le opere popolate dal DB (mantenendo l'ordine del carrello originario!)
     visit.works.forEach((work, index) => {
             const descText = (work.description && work.description.length > 0) 
               ? work.description[0].description 
               : '';
               
-            // Creiamo il contenuto del riquadro ingrandito
+            // creiamo il contenuto del riquadro ingrandito
             const popoverContent = `<img src='${work.image}' style='width: 100%; height: auto;'>`;
 
             timeline.innerHTML += `
