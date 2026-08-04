@@ -104,7 +104,7 @@ exports.saveMuseum = async (museumData, userId) => {
             museumId: museumId    // Aggiungiamo/Sovrascriviamo il museumId reale
         }));
         const savedWorks = await Work.insertMany(worksToInsert);
-        workIds = savedWorks.map(w => w._id);
+        workIds = savedWorks.map(w => ({ work: w._id }));
       }
 
       // Salviamo la sezione
@@ -136,16 +136,34 @@ exports.saveMuseum = async (museumData, userId) => {
 };
 
 exports.updateMuseum = async (museumId, updateData, user) => {
-  // Se è admin, può aggiornare direttamente qualsiasi museo
+  if (!user) {
+    const error = new Error("Utente non autenticato");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  // se è admin, può aggiornare direttamente qualsiasi museo
   if (user.role === 'admin') {
-    return await Museum.findByIdAndUpdate(museumId, updateData, { new: true });
+    return await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
   }
 
-  // Se è un curatore normale, verifichiamo prima che gestisca quel museo
-  const isOwner = user.managed_museums.some(id => id.toString() === museumId);
+  // se è curatore, gestiamo la verifica sul campo managed_museums
+  const managed = user.managed_museums || [];
+  const isOwner = managed.some(id => id.toString() === museumId);
+
   if (!isOwner) {
-    throw new Error("Non sei autorizzato a modificare questo museo");
+    const error = new Error("Non sei autorizzato a modificare questo museo");
+    error.statusCode = 403;
+    throw error;
   }
 
-  return await Museum.findByIdAndUpdate(museumId, updateData, { new: true });
+  return await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
+};
+
+exports.removeSectionFromMuseum = async (museumId, sectionId) => {
+  return await Museum.findByIdAndUpdate(
+    museumId,
+    { $pull: { sections: sectionId } },
+    { new: true }
+  );
 };

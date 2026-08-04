@@ -114,6 +114,7 @@ router.get('/my-visits', auth.isLoggedInPage, (req, res) => {
   res.sendFile(filePath);
 });
 
+// TODO: verificare che qualcuno non possa entrare forzatamente in una vistia privata
 // pagina di dettaglio delle visite
 router.get('/visit-details', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'visit-details.html'));
@@ -122,6 +123,12 @@ router.get('/visit-details', (req, res) => {
 // pagina esplora visite (Pubbliche)
 router.get('/public-visits', (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'public-visit.html');
+  res.sendFile(filePath);
+});
+
+// Pagina di gestione/modifica del museo
+router.get('/edit-museum', auth.isCuratorPage, (req, res) => {
+  const filePath = path.join(__dirname, '..', '..', 'html', 'edit-museum.html');
   res.sendFile(filePath);
 });
 

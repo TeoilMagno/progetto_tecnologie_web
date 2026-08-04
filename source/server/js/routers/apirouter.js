@@ -11,6 +11,8 @@ const mongoose = require("mongoose");
 // Models
 const { User } = require("../models/users");
 const Work = require("../models/works");
+const { Section } = require("../models/sections");
+const Museum = require("../models/museums");
 
 // Controllers
 const museumController = require("../controllers/museums");
@@ -36,35 +38,6 @@ apiRouter.get("/museums", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Errore recupero musei" });
   }
-});
-
-// salva il museo sul db
-// ! era salvataggio sincrono
-// apiRouter.post('/add-museum', async (req,res) =>{
-//   try {
-//     const {name, address, contact_email, contact_phone, sections=[], image, tags=[]} = req.body;
-
-//     const tagsArray = tags
-//       .split(',')
-//       .map(tag => tag.trim())
-//       .filter(tag => tag.length > 0);
-
-//     const museum = {name, address, contact_email, contact_phone, sections, image, tags: tagsArray};
-//     const result = await museumController.saveMuseum(museum);
-
-//     res.redirect(`/museums/${result.id}/add-sections`);
-//   } catch (error) {
-//     console.log("Errore nella post per add-museum: ", error);
-//     res.status(500).json({error: "errore durante il salvataggio"});
-//   }
-// });
-
-apiRouter.post("/add-section", async (req, res) => {
-  // qualcosa
-});
-
-apiRouter.post("/add-work", async (req, res) => {
-  // qualcosa
 });
 
 //--------------- items -----------------------
@@ -112,15 +85,17 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
 apiRouter.get("/museums/:id/works", async (req, res) => {
   try {
     const museumIdStr = req.params.id;
-    
+
     let museumObjectId;
     museumObjectId = new mongoose.Types.ObjectId(museumIdStr);
-    
+
     const directWorks = await Work.find({ museumId: museumObjectId });
 
     const allWorks = Array.from(directWorks.values());
 
-    console.log(`[GET /museums/${museumIdStr}/works] Trovate ${allWorks.length} opere.`);
+    console.log(
+      `[GET /museums/${museumIdStr}/works] Trovate ${allWorks.length} opere.`,
+    );
 
     res.json(allWorks);
   } catch (error) {
@@ -155,17 +130,106 @@ apiRouter.get("/museums/:museumId/sections", async (req, res) => {
   }
 });
 
+// modifica una sezione
+apiRouter.put("/sections/:id", auth.isCurator, async (req, res) => {
+  try {
+    const updatedSection = await sectionController.updateSectionById(req.params.id, req.body);
+    res.json({ message: "Sezione aggiornata", section: updatedSection });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// elimina una sezione intera
+apiRouter.delete("/sections/:id", auth.isCurator, async (req, res) => {
+  try {
+    const sectionId = req.params.id;
+    const { museumId } = req.body; // Il frontend dovrà inviarci l'ID del museo da cui toglierla
+
+    // Elimina la sezione e tutte le sue opere a cascata
+    await sectionController.deleteSectionById(sectionId);
+
+    // Rimuove il riferimento dall'array del Museo
+    if (museumId) {
+      await museumController.removeSectionFromMuseum(museumId, sectionId);
+    }
+
+    res.json({ message: "Sezione eliminata con successo" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//--------------- works -----------------------
+
+// Rotta per creare e aggiungere un'opera a una sezione dalla modale
+apiRouter.post("/add-work", auth.isCurator, async (req, res) => {
+  try {
+    const { work, sectionId } = req.body;
+
+    // salva la nuova opera su MongoDB
+    const newWork = new Work(work);
+    const savedWork = await newWork.save();
+
+    // collega l'ID dell'opera alla sezione tramite il controller
+    await sectionController.addWorkToSection(sectionId, savedWork._id);
+
+    res
+      .status(201)
+      .json({ message: "Opera salvata e aggiunta!", work: savedWork });
+  } catch (error) {
+    console.error("Errore salvataggio opera:", error);
+    res.status(500).json({ error: "Errore nel salvataggio dell'opera" });
+  }
+});
+
+// per la modifica di un'opera
+apiRouter.put("/works/:id", auth.isCurator, async (req, res) => {
+  try {
+    const updatedWork = await require("../controllers/works").updateWorkById(req.params.id, req.body);
+    res.json({ message: "Opera aggiornata", work: updatedWork });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// elimina un'opera 
+apiRouter.delete("/works/:id", auth.isCurator, async (req, res) => {
+  try {
+    const workId = req.params.id;
+    const { sectionId } = req.body; // Il frontend dovrà inviarci l'ID della sezione da cui toglierla
+
+    // Elimina dalla collezione Works
+    await require("../controllers/works").deleteWorkById(workId);
+    
+    // Rimuove il riferimento dall'array della Sezione
+    if (sectionId) {
+      await sectionController.removeWorkFromSection(sectionId, workId);
+    }
+
+    res.json({ message: "Opera eliminata con successo" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 //------------------ form ------------------------
 
 apiRouter.post("/save-section", auth.isCurator, async (req, res) => {
-    try {
-        const { rsection, museumId } = req.body;
-        const sectionId = await sectionController.saveSection(rsection, museumId);
-        res.status(201).json(sectionId);
-    } catch(error) {
-        console.error("Errore nel salvataggio sezione:", error);
-        res.status(500).json({ error: "Errore durante il salvataggio della sezione" });
-    }
+  try {
+    const { rsection, museumId } = req.body;
+    const sectionId = await sectionController.saveSection(rsection, museumId);
+    await Museum.findByIdAndUpdate(museumId, {
+      $push: { sections: sectionId },
+    });
+
+    res.status(201).json(sectionId);
+  } catch (error) {
+    console.error("Errore nel salvataggio sezione:", error);
+    res
+      .status(500)
+      .json({ error: "Errore durante il salvataggio della sezione" });
+  }
 });
 
 apiRouter.post("/save-museum", auth.isCurator, async (req, res) => {
@@ -215,11 +279,11 @@ apiRouter.get("/current-user", (req, res) => {
 apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
   try {
     // Se è Admin, restituiamo TUTTI i musei del DB
-    if (req.user.role === 'admin') {
+    if (req.user.role === "admin") {
       const allMuseums = await museumController.getAllMuseums();
       return res.json(allMuseums);
     }
-    
+
     const user = await User.findById(req.user._id).populate("managed_museums");
 
     if (!user) return res.status(404).json({ error: "Utente non trovato" });
@@ -236,79 +300,123 @@ apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
 // TODO: per ora solo create -> ampliare con comprate
 // recupera le visite create/comprate dallo user
 apiRouter.get("/my-visits", async (req, res) => {
-    try {
-      if (!req.user) {
-        return res.status(401).json({ error: "Sessione scaduta. Effettua di nuovo il login." });
-      }
-
-      const userId = req.user._id;
-      const visits = await visitController.getVisits(userId);
-      res.status(200).json(visits);
-    } catch(error) {
-      console.error("Errore nel recupero delle visite: ", error);
-      res.status(500).json({ error: "Impossibile recuperare visite dal database" });
+  try {
+    if (!req.user) {
+      return res
+        .status(401)
+        .json({ error: "Sessione scaduta. Effettua di nuovo il login." });
     }
+
+    const userId = req.user._id;
+    const visits = await visitController.getVisits(userId);
+    res.status(200).json(visits);
+  } catch (error) {
+    console.error("Errore nel recupero delle visite: ", error);
+    res
+      .status(500)
+      .json({ error: "Impossibile recuperare visite dal database" });
+  }
 });
 
 // permette il salvataggio di una nuova visita (accessibile sia a curatori che a visitatori)
 apiRouter.post("/visits", async (req, res) => {
-    try {
-      if (!req.user) {
-        return res.status(401).json({ error: "Sessione scaduta. Effettua di nuovo il login." });
-      }
-      // Passiamo dati e utente al controller
-      const savedVisit = await visitController.createVisit(req.body, req.user);
-      res.status(201).json({
-          message: "Visita creata con successo!",
-          visit: savedVisit,
-      });
-    } catch(error) {
-      console.error("Errore nel salvataggio della visita:", error);
-      // Leggiamo il codice di stato dal throw (se presente), altrimenti diamo 500
-      const status = error.statusCode || 500;
-      res.status(status).json({ error: error.message || "Impossibile salvare la visita" });
+  try {
+    if (!req.user) {
+      return res
+        .status(401)
+        .json({ error: "Sessione scaduta. Effettua di nuovo il login." });
     }
+    // Passiamo dati e utente al controller
+    const savedVisit = await visitController.createVisit(req.body, req.user);
+    res.status(201).json({
+      message: "Visita creata con successo!",
+      visit: savedVisit,
+    });
+  } catch (error) {
+    console.error("Errore nel salvataggio della visita:", error);
+    // Leggiamo il codice di stato dal throw (se presente), altrimenti diamo 500
+    const status = error.statusCode || 500;
+    res
+      .status(status)
+      .json({ error: error.message || "Impossibile salvare la visita" });
+  }
 });
 
 // Recupera tutte le visite pubbliche per il marketplace
 apiRouter.get("/visits", async (req, res) => {
-    try {
-        const visits = await visitController.getPublicVisits();
-        res.status(200).json(visits);
-    } catch(error) {
-        console.error("Errore nel recupero visite pubbliche:", error);
-        res.status(500).json({ error: "Impossibile recuperare le visite pubbliche" });
-    }
+  try {
+    const visits = await visitController.getPublicVisits();
+    res.status(200).json(visits);
+  } catch (error) {
+    console.error("Errore nel recupero visite pubbliche:", error);
+    res
+      .status(500)
+      .json({ error: "Impossibile recuperare le visite pubbliche" });
+  }
 });
 
 // per l'apertura dei dettagli di una visita
 apiRouter.get("/visits/:id", async (req, res) => {
-    try {
-        const visit = await visitController.getVisitById(req.params.id);
-        res.status(200).json(visit);
-    } catch(error) {
-        console.error("Errore nel recupero della visita:", error);
-        const status = error.statusCode || 500;
-        res.status(status).json({ error: error.message || "Impossibile recuperare la visita" });
-    }
+  try {
+    const visit = await visitController.getVisitById(req.params.id);
+    res.status(200).json(visit);
+  } catch (error) {
+    console.error("Errore nel recupero della visita:", error);
+    const status = error.statusCode || 500;
+    res
+      .status(status)
+      .json({ error: error.message || "Impossibile recuperare la visita" });
+  }
 });
 
 // rotta per aggiornare una visita esistente
 apiRouter.put("/visits/:id", async (req, res) => {
-    try {
-      if (!req.user) {
-        return res.status(401).json({ error: "Accesso negato. Fai il login." });
-      }
-      
-      const updatedVisit = await visitController.editVisitById(req.params.id, req.body, req.user._id);
-      res.status(200).json(updatedVisit);
-    } catch(error) {
-      console.error("Errore durante l'aggiornamento della visita:", error);
-      const status = error.statusCode || 500;
-      res.status(status).json({ error: error.message || "Errore interno del server" });
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Accesso negato. Fai il login." });
     }
+
+    const updatedVisit = await visitController.editVisitById(
+      req.params.id,
+      req.body,
+      req.user._id,
+    );
+    res.status(200).json(updatedVisit);
+  } catch (error) {
+    console.error("Errore durante l'aggiornamento della visita:", error);
+    const status = error.statusCode || 500;
+    res
+      .status(status)
+      .json({ error: error.message || "Errore interno del server" });
+  }
 });
 
+// Aggiorna i dati generali di un museo
+apiRouter.put("/museums/:id", auth.isCurator, async (req, res) => {
+  try {
+    const museumId = req.params.id;
+    const updateData = req.body;
 
+    const updatedMuseum = await museumController.updateMuseum(
+      museumId,
+      updateData,
+      req.user,
+    );
+
+    if (!updatedMuseum) {
+      return res
+        .status(404)
+        .json({ error: "Museo non trovato o non autorizzato" });
+    }
+
+    res.json({
+      message: "Museo aggiornato con successo",
+      museum: updatedMuseum,
+    });
+  } catch (error) {
+    console.error("Errore aggiornamento museo:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = apiRouter;

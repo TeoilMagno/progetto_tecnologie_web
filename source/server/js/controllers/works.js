@@ -17,3 +17,17 @@ exports.saveWorks = async (workData) => {
 exports.getWorksById = async (workIds) => {
   return await Work.find({ _id: { $in: workIds } });
 }
+
+// Aggiorna un'opera esistente
+exports.updateWorkById = async (workId, updateData) => {
+  const updatedWork = await Work.findByIdAndUpdate(workId, updateData, { new: true, runValidators: true });
+  if (!updatedWork) throw new Error("Opera non trovata");
+  return updatedWork;
+};
+
+// Elimina un'opera
+exports.deleteWorkById = async (workId) => {
+  const deletedWork = await Work.findByIdAndDelete(workId);
+  if (!deletedWork) throw new Error("Opera non trovata");
+  return deletedWork;
+};
