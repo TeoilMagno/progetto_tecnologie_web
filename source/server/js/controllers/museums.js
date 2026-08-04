@@ -111,7 +111,7 @@ exports.saveMuseum = async (museumData, userId) => {
       const newSection = new Section({
         name: s.name,
         image: s.image,
-        works: workIds,
+        works: workIds.map(id => ({ work: id })),
         museumId: museumId
       });
       

@@ -25,11 +25,6 @@ const roomSchema = new Schema({
     required: true
   },
 
-  color: {
-    type: String,
-    required: true
-  },
-
   shape: {
     type: shapeSchema, //usa shapeSchema definito sopra
     required: true

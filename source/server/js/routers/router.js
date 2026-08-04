@@ -54,17 +54,25 @@ router.get('/add-work', (req, res) => {
 
 // ottiene il form html per l'inserimento delle sezioni
 router.get('/museums/:museumId/add-sections', (req, res) => {
-  const filePath = path.join(__dirname,'..','..','html','add-section.html')
+  const filePath = path.join(__dirname,'..','..','html','add-section.html');
 
-  console.log("Percorso generato per add-section: ", filePath)
+  console.log("Percorso generato per add-section: ", filePath);
   res.sendFile(filePath);
 });
 
 // ottiene il form html per l'inserimento degli item
 router.get('/museums/:museumId/sections/:sectionId/add-work', (req, res) => {
-  const filePath = path.join(__dirname,'..','..','html','add-work.html')
+  const filePath = path.join(__dirname,'..','..','html','add-work.html');
 
-  console.log("Percorso generato per add-item: ", filePath)
+  console.log("Percorso generato per add-item: ", filePath);
+  res.sendFile(filePath);
+});
+
+// ottiene il form per caricare i dati vettoriali per la visualizzazione della mappa
+router.get('/museums/:museumId/upload-map', (req, res) => {
+  const filePath = path.join(__dirname,'..','..','html','upload-map.html');
+
+  console.log("Percorso generato per upload-map: ", filePath);
   res.sendFile(filePath);
 });
 

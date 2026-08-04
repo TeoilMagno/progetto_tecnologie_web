@@ -23,7 +23,7 @@ export default function RoomLayer({ section, onBack }) {
             <polygon
               key={room.id}
               points={room.shape.points}
-              fill={room.color}
+              fill={section.color}
               stroke="#000"
               strokeWidth="6"
               onClick={() => alert(room.name)}
@@ -34,7 +34,7 @@ export default function RoomLayer({ section, onBack }) {
             <polyline
               key={room.id}
               points={room.shape.points}
-              fill={room.color}
+              fill={section.color}
               stroke="#000"
               strokeWidth="6"
               onClick={() => alert(room.name)}
@@ -45,7 +45,7 @@ export default function RoomLayer({ section, onBack }) {
             <path
               key={room.id}
               d={room.shape.d}
-              fill={room.color}
+              fill={section.color}
               stroke="#000"
               strokeWidth="6"
               onClick={() => alert(room.name)}

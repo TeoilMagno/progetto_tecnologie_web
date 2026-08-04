@@ -4,7 +4,7 @@ let currentMuseumId = null;
 let editingVisitId = null; // 1. ORA È GLOBALE!
 
 // TODO: da modificare in produzione
-const API_URL = "http://localhost:3000/api";
+const API_URL = "http://localhost:8000/api";
 
 // 2. AGGIUNTO 'async' QUI!
 document.addEventListener("DOMContentLoaded", async () => {
