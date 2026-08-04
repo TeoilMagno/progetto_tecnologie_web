@@ -31,7 +31,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Carica utente dal server (Passport) e poi carica i musei
   await fetchCurrentUser();
-  getMuseums();
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const museumToOpen = urlParams.get("museumId");
+
+  if (museumToOpen && document.getElementById("content-area")) {
+    // Se ci hanno passato un ID e siamo nella home, prima carichiamo i dati...
+    await getMuseums();
+    // ...poi apriamo il museo!
+    getMuseumItems(museumToOpen);
+  } else {
+    // Comportamento normale
+    getMuseums();
+  }
 });
 
 // 3. LOGICA API (FETCH)
@@ -104,6 +116,9 @@ function renderMuseumsList(museums, containerId = "content-area") {
 
   container.innerHTML = "";
 
+  // Capiamo se siamo nel marketplace (dove c'è content-area) o in I Miei Musei
+  const isMarketplace = containerId === "content-area";
+
   museums.forEach((museum) => {
     if (!museum) return; // Controllo di sicurezza che avevamo aggiunto
 
@@ -112,9 +127,14 @@ function renderMuseumsList(museums, containerId = "content-area") {
         .map((tag) => `<span class="badge badge-tag">${tag}</span>`)
         .join("");
 
+    // Se siamo nel marketplace apriamo la scheda dinamicamente, altrimenti redirigiamo alla home passandogli l'ID!
+    const clickAction = isMarketplace 
+        ? `getMuseumItems('${museum._id}')` 
+        : `window.location.href='/?museumId=${museum._id}'`;
+
     container.innerHTML += `
       <div class="col">
-        <div class="card h-100 custom-card cursor-pointer" onclick="getMuseumItems('${museum._id}')" style="cursor: pointer;">
+        <div class="card h-100 custom-card cursor-pointer" onclick="${clickAction}" style="cursor: pointer;">
           <img src="${museum.image}" class="card-img-top" alt="${museum.name}" style="height: 200px; object-fit: cover; opacity: 0.9;">
           <div class="card-body">
             <h5 class="card-title">${museum.name}</h5>

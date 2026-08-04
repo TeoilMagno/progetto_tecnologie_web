@@ -3,25 +3,6 @@ const Section = require("../models/sections");
 const Work = require("../models/works");
 const { User } = require("../models/users");
 
-
-//salva un singolo museo passato in input
-// exports.saveMuseum = async (rmuseum) => {
-//   const museum = new Museum({
-//     museum_data: {
-//       name: rmuseum.name,
-//       address: rmuseum.address,
-//       contact_email: rmuseum.contact_email,
-//       contact_phone: rmuseum.contact_phone,
-//     },
-
-//     sections: [],
-//     image: rmuseum.image,
-//     tags: rmuseum.tags,
-//   });
-
-//   return museum.save();
-// };
-
 exports.addSectionToMuseum = async (req, res) => {
   try {
     const { museumId, sectionId } = req.body;
