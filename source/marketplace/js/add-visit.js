@@ -59,8 +59,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }));
 
         // Se la bozza ha già un museo associato, lo impostiamo
-        currentMuseumId =
-          draft.museumId || (draft.museum ? draft.museum._id : null);
+        // TODO: magari uniformare back end e front end?
+        currentMuseumId = draft.museumId?._id || draft.museumId;
 
         renderVisitCart();
 
@@ -274,7 +274,7 @@ async function submitVisit(isSavingAsDraft = false) {
   const payload = {
     title: titleInput.value.trim(),
     description: description,
-    museum: currentMuseumId,
+    museumId: currentMuseumId,
     works: workIds,
     price: price,
     isPublic: isPublic,
@@ -376,7 +376,7 @@ async function autoSaveDraft() {
   const payload = {
     title: titleInput || "Bozza in corso...", // Fallback essenziale se non ha ancora aperto la modale
     description: descInput || "",
-    museum: currentMuseumId,
+    museumId: currentMuseumId,
     works: currentVisitCart.map((work) => work.id),
     price: price,
     isPublic: false,

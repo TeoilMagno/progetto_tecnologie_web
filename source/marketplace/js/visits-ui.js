@@ -76,7 +76,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
             </div>
             <h5 class="card-title">${visit.title}</h5>
             <h6 class="card-subtitle mb-2 text-muted museum-name-custom">
-              <i class="bi bi-bank me-1"></i> ${visit.museum ? visit.museum.name : "Senza museo"}
+              <i class="bi bi-bank me-1"></i> ${visit.museumId ? visit.museumId.name : "Senza museo"}
             </h6>
             <p class="card-text small text-secondary">${visit.description || ""}</p>
             <div class="d-flex justify-content-between mb-2">

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const visitSchema = new mongoose.Schema({
     title: { type: String, required: true, trim: true },
     description: { type: String },
-    museum: { type: mongoose.Schema.Types.ObjectId, ref: 'Museum', required: true },
+    museumId: { type: mongoose.Schema.Types.ObjectId, ref: 'Museum', required: true },
     // l'autore della visita (curatore o visitatore)
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     // l'ordine nell'array definisce l'ordine del tour.

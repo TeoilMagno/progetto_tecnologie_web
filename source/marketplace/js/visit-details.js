@@ -43,8 +43,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     document.getElementById("visit-main-title").innerText = visit.title;
-    document.getElementById("visit-museum-sub").innerText = visit.museum
-      ? `Presso: ${visit.museum.name}`
+    document.getElementById("visit-museum-sub").innerText = visit.museumId
+      ? `Presso: ${visit.museumId.name}`
       : "Museo non specificato";
 
     if (visit.description) {

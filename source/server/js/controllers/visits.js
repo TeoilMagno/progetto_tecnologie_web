@@ -4,7 +4,7 @@ exports.createVisit = async (visitPayload, user) => {
   const {
     title,
     description,
-    museum,
+    museumId,
     works,
     price,
     isDraft,
@@ -13,18 +13,18 @@ exports.createVisit = async (visitPayload, user) => {
     language,
   } = visitPayload;
 
-  // Sicurezza: Verifichiamo che l'utente sia loggato (grazie al nostro mock/passport)
+  // Sicurezza: Verifichiamo che l'utente sia loggato
   if (!user) {
     const error = new Error("Devi essere autenticato per creare una visita");
     error.statusCode = 401;
     throw error;
   }
 
-  // Prepariamo i dati di base della visita
+  // dati di base della visita
   const visitData = {
     title,
     description,
-    museum,
+    museumId,
     creator: user._id, // Preso automaticamente dalla sessione
     works, // Array ordinato di ObjectId delle opere
     duration,
@@ -50,11 +50,11 @@ exports.createVisit = async (visitPayload, user) => {
 };
 
 exports.getVisits = async (userId) => {
-  return await Visit.find({ creator: userId }).populate('museum')
+  return await Visit.find({ creator: userId }).populate('museumId')
 }
 
 exports.getVisitById = async (visitId) => {
-  const visit = await Visit.findById(visitId).populate('museum').populate('works'); // ci servono le informazioni delle opere
+  const visit = await Visit.findById(visitId).populate('museumId').populate('works'); // ci servono le informazioni delle opere
 
   if (!visit) {
     const error = new Error("Visita non trovata");
@@ -65,13 +65,6 @@ exports.getVisitById = async (visitId) => {
 };
 
 exports.editVisitById = async (visitId, payload, userId) => {
-  const updateData = {
-    ...payload,
-  };
-
-  if (payload.museumId) {
-    updateData.museum
-  }
   // Troviamo e aggiorniamo SOLO se l'ID corrisponde e il creatore è l'utente corrente
   const updatedVisit = await Visit.findOneAndUpdate(      
     { _id: visitId, creator: userId },
@@ -90,7 +83,7 @@ exports.editVisitById = async (visitId, payload, userId) => {
 exports.getPublicVisits = async () => {
   // Cerchiamo le visite completate (non bozze) e pubbliche
   const visits = await Visit.find({ isPublic: true, isDraft: false })
-    .populate('museum')
+    .populate('museumId')
     .populate('works');
 
   return visits;
