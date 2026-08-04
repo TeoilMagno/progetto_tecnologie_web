@@ -95,9 +95,7 @@ async function getMuseumItems(museumId) {
 }
 
 // 4. LOGICA RENDER
-
 function renderMuseumsList(museums, containerId = "content-area") {
-
   // Ora usa il parametro dinamico invece della stringa fissa
   const container = document.getElementById(containerId);
 
@@ -135,14 +133,20 @@ function renderMuseumDashboard(museumInfo) {
 
   if (!container) return;
 
-  // 1. Configura il Titolo e il Bottone per creare la visita
+  // Configura il titolo e il bottone per creare la visita
   if (museumInfo) {
     title.innerHTML = `
       ${museumInfo.name} 
       <a href="/create-visit?museumId=${museumInfo._id}" class="btn-create-visit ms-3">
-        <i class="bi bi-map me-1"></i> Crea Visita Qui
+        <i class="bi bi-map me-1"></i> Crea visita qui
+      </a>
+      <a href="/edit-museum?id=${museumInfo._id}" id="edit-museum-btn" class="btn-create-visit ms-2 d-none">
+        <i class="bi bi-sliders me-1"></i> Modifica
       </a>
     `;
+    
+    // controlliamo se l'utente puo' mostrare
+    checkIfMuseumIsManaged(museumInfo._id);
   }
   if (backBtn) backBtn.classList.remove("d-none");
 
@@ -172,6 +176,37 @@ function renderMuseumDashboard(museumInfo) {
 
   // 3. Carica la vista iniziale
   loadMuseumSubView(currentView, museumInfo._id);
+}
+
+// controlla se l'utente gestisce un determinato museo
+async function checkIfMuseumIsManaged(currentMuseumId) {
+  if (!currentUser || currentUser.role !== 'curator') {
+    return;
+  }
+
+  try {
+    // recuperiamo l'elenco dei musei gestiti dal curatore
+    const response = await fetch(`${API_BASE_URL}/my-museums`);
+    
+    if (response.ok) {
+      const managedMuseums = await response.json();
+      
+      // controlliamo se l'ID del museo aperto è nell'array restituito
+      const isManaged = managedMuseums.some(museum => {
+         return (museum._id && museum._id === currentMuseumId) || museum === currentMuseumId;
+      });
+
+      // mostriamo il bottone
+      if (isManaged) {
+        const editBtn = document.getElementById("edit-museum-btn");
+        if (editBtn) {
+          editBtn.classList.remove("d-none");
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Errore durante la verifica dei permessi di modifica museo:", error);
+  }
 }
 
 // Gestisce lo switch attivando l'effetto "scheda a tre lati"
