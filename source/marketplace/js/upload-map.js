@@ -56,12 +56,11 @@ async function createForm(sections, works) {
     sectionDiv.className = "section-block glass-panel section-block-aura mb-4 position-relative row g-3";
 
     sectionDiv.innerHTML = `
+    <h4 class="h6 mb-3">Sezione ${s.name}</h4>
+
     <div class="row">
       <div class="col-md-6">
         <img src="${s.image}" alt="${s.name}" class="img-fluid">
-      </div>
-      <div class="col-md-6">
-        ${s.name}
       </div>
     </div>
     <div class="row">
