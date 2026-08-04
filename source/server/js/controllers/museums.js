@@ -3,26 +3,6 @@ const Section = require("../models/sections");
 const Work = require("../models/works");
 const { User } = require("../models/users");
 
-exports.addSectionToMuseum = async (req, res) => {
-  try {
-    const { museumId, sectionId } = req.body;
-    const updatedMuseum = await Museum.findByIdAndUpdate(
-      museumId,
-      { $push: { sections: sectionId } }, // Operatore per aggiungere all'array
-      { new: true, useFindAndModify: false }, // Opzioni: ritorna il documento modificato
-    );
-
-    if (!updatedMuseum) {
-      res.status(200).send("<div>aggiunto con successo</div>");
-    }
-
-    return updatedMuseum;
-  } catch (error) {
-    console.error("Errore durante l'aggiornamento:", error);
-    throw error;
-  }
-};
-
 exports.getAllMuseums = async () => {
   try {
     return await Museum.find();
