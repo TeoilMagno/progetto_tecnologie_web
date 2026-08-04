@@ -60,8 +60,7 @@ apiRouter.get("/museums/:id/items", async (req, res) => {
   }
 });
 
-//? Perche' non e' una post?
-// 3. Modifica un'oggetto in vendita
+// modifica un'oggetto in vendita
 apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
   try {
     const itemId = req.params.id;
