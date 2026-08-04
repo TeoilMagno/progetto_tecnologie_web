@@ -179,11 +179,22 @@ function renderMuseumDashboard(museumInfo) {
 }
 
 // controlla se l'utente gestisce un determinato museo
+// controlla se l'utente gestisce un determinato museo (o se è admin)
 async function checkIfMuseumIsManaged(currentMuseumId) {
-  if (!currentUser || currentUser.role !== 'curator') {
+  if (!currentUser || (currentUser.role !== 'curator' && currentUser.role !== 'admin')) {
     return;
   }
 
+  // se è admin, sblocca il bottone istantaneamente
+  if (currentUser.role === 'admin') {
+    const editBtn = document.getElementById("edit-museum-btn");
+    if (editBtn) {
+      editBtn.classList.remove("d-none");
+    }
+    return; // Ci fermiamo qui, l'admin ha già i permessi
+  }
+
+  // logica normale per i curatori
   try {
     // recuperiamo l'elenco dei musei gestiti dal curatore
     const response = await fetch(`${API_BASE_URL}/my-museums`);

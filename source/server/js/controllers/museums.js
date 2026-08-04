@@ -134,3 +134,18 @@ exports.saveMuseum = async (museumData, userId) => {
 
   return museumId;
 };
+
+exports.updateMuseum = async (museumId, updateData, user) => {
+  // Se è admin, può aggiornare direttamente qualsiasi museo
+  if (user.role === 'admin') {
+    return await Museum.findByIdAndUpdate(museumId, updateData, { new: true });
+  }
+
+  // Se è un curatore normale, verifichiamo prima che gestisca quel museo
+  const isOwner = user.managed_museums.some(id => id.toString() === museumId);
+  if (!isOwner) {
+    throw new Error("Non sei autorizzato a modificare questo museo");
+  }
+
+  return await Museum.findByIdAndUpdate(museumId, updateData, { new: true });
+};

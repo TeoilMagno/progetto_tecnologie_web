@@ -1,11 +1,6 @@
 exports.isCurator = (req, res, next) => {
-  if (req.user && req.user.role === 'curator') return next();
+  if (req.user && req.user.role === 'curator' || req.user.role === 'admin') return next();
   return res.status(403).json({ error: 'Accesso negato: solo i curatori possono modificare i contenuti.' });
-};
-
-exports.isMuseum = (req, res, next) => {
-  if (req.user && req.user.role === 'museum') return next();
-  return res.status(403).json({ error: 'Accesso negato.' });
 };
 
 exports.isLoggedIn = (req, res, next) => {
@@ -15,7 +10,7 @@ exports.isLoggedIn = (req, res, next) => {
 
 // Middleware per le pagine HTML: se non è curatore, caricamento della pagina 403
 exports.isCuratorPage = (req, res, next) => {
-  if (req.user && req.user.role === 'curator') {
+  if (req.user && req.user.role === 'curator' || req.user.role === 'admin') {
     return next(); // Tutto ok, procedi verso la pagina richiesta
   }
 

@@ -32,7 +32,7 @@ exports.createVisit = async (visitPayload, user) => {
   };
 
   // GESTIONE LOGICA DIFFERENZIATA IN BASE AL RUOLO
-  if (user.role === "curator") {
+  if (user.role === "curator" || user.role === "admin") {
     // Il curatore può decidere liberamente prezzo e visibilità
     visitData.price = price || 0;
     visitData.isDraft = isDraft !== undefined ? isDraft : true;
@@ -65,6 +65,13 @@ exports.getVisitById = async (visitId) => {
 };
 
 exports.editVisitById = async (visitId, payload, userId) => {
+  const query = { _id: visitId };
+
+  // Se NON è admin, limitiamo la modifica solo alla visita creata dall'utente
+  if (user.role !== 'admin') {
+    query.creator = user._id;
+  }
+  
   // Troviamo e aggiorniamo SOLO se l'ID corrisponde e il creatore è l'utente corrente
   const updatedVisit = await Visit.findOneAndUpdate(      
     { _id: visitId, creator: userId },

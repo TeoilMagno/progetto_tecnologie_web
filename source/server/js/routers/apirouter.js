@@ -214,6 +214,12 @@ apiRouter.get("/current-user", (req, res) => {
 // Ottiene i musei gestiti dal curatore loggato
 apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
   try {
+    // Se è Admin, restituiamo TUTTI i musei del DB
+    if (req.user.role === 'admin') {
+      const allMuseums = await museumController.getAllMuseums();
+      return res.json(allMuseums);
+    }
+    
     const user = await User.findById(req.user._id).populate("managed_museums");
 
     if (!user) return res.status(404).json({ error: "Utente non trovato" });

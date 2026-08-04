@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   name:            { type: String }, // usato dal login Google/Facebook
   role: {
     type: String,
-    enum: ['curator', 'visitor', 'museum'],
+    enum: ['curator', 'visitor', 'admin'],
     default: 'visitor'
   },
   // Musei gestiti (per curatori)
