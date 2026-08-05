@@ -17,6 +17,7 @@ const Museum = require("../models/museums");
 // Controllers
 const museumController = require("../controllers/museums");
 const itemController = require("../controllers/items");
+const workController = require("../controllers/works");
 const sectionController = require("../controllers/sections");
 const visitController = require("../controllers/visits");
 
@@ -42,10 +43,9 @@ apiRouter.get("/museums", async (req, res) => {
 
 //--------------- items -----------------------
 
-// ritorna oggetto di un museo specifico
+// ritorna prodotti (items) di un museo specifico
 apiRouter.get("/museums/:id/items", async (req, res) => {
   try {
-    // Rimosso parseInt(): Mongo gestisce automaticamente la conversione da stringa a ObjectId
     // Mongo gestisce automaticamente la conversione da stringa a ObjectId
     const museumId = req.params.id;
 
@@ -67,7 +67,7 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
     const updateData = req.body;
 
     const updatedItem = await itemController.modifyItemById(
-      itemId, // Mongoose accetta direttamente l'ID stringa qui
+      itemId,
       updateData,
     );
 
@@ -81,48 +81,32 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
   }
 });
 
-apiRouter.get("/museums/:id/works", async (req, res) => {
-  try {
-    const museumIdStr = req.params.id;
-
-    let museumObjectId;
-    museumObjectId = new mongoose.Types.ObjectId(museumIdStr);
-
-    const directWorks = await Work.find({ museumId: museumObjectId });
-
-    const allWorks = Array.from(directWorks.values());
-
-    console.log(
-      `[GET /museums/${museumIdStr}/works] Trovate ${allWorks.length} opere.`,
-    );
-
-    res.json(allWorks);
-  } catch (error) {
-    console.error("Errore nel recupero delle opere:", error);
-    res.status(500).json({ error: "Errore nel recupero delle opere" });
-  }
-});
-
 //--------------- sections -----------------------
 
-// ritorna un item data la sezione specifica
+// ritorna tutte le opere di una sezione specifica
 apiRouter.get("/sections/:sectionId/works", async (req, res) => {
   try {
     const works = await sectionController.getWorksBySection(
       req.params.sectionId,
     );
+
+    if(!works) return res.status(404).json({ error: "Opere non trovate" });
+
     res.json(works);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// ritorna le sezioni di un museo dato
+// ritorna tutte le sezioni di un museo specifico
 apiRouter.get("/museums/:museumId/sections", async (req, res) => {
   try {
     const sections = await sectionController.getSectionsByMuseum(
       req.params.museumId,
     );
+
+    if(!sections) return res.status(404).json({ error: "Opere non trovate" });
+
     res.json(sections);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -140,10 +124,11 @@ apiRouter.put("/sections/:id", auth.isCurator, async (req, res) => {
 });
 
 // elimina una sezione intera
+// * il frontend deve inviare l'ID del museo da cui toglierla
 apiRouter.delete("/sections/:id", auth.isCurator, async (req, res) => {
   try {
     const sectionId = req.params.id;
-    const { museumId } = req.body; // Il frontend dovrà inviarci l'ID del museo da cui toglierla
+    const { museumId } = req.body;
 
     // Elimina la sezione e tutte le sue opere a cascata
     await sectionController.deleteSectionById(sectionId);
@@ -161,7 +146,60 @@ apiRouter.delete("/sections/:id", auth.isCurator, async (req, res) => {
 
 //--------------- works -----------------------
 
-// Rotta per creare e aggiungere un'opera a una sezione dalla modale
+// ? ha senso dato che c'e' gia' la rotta per ottenere le opere di ogni sezione e ogni sezione di un museo
+// ottiene le opere di un museo
+apiRouter.get("/museums/:id/works", async (req, res) => {
+  try {
+    const museumIdStr = req.params.id;
+
+    let museumObjectId;
+    museumObjectId = new mongoose.Types.ObjectId(museumIdStr);
+
+    const directWorks = await Work.find({ museumId: museumObjectId });
+
+    const allWorks = Array.from(directWorks.values());
+
+    res.json(allWorks);
+  } catch (error) {
+    console.error("Errore nel recupero delle opere:", error);
+    res.status(500).json({ error: "Errore nel recupero delle opere" });
+  }
+});
+
+// per la modifica di un'opera
+apiRouter.put("/works/:id", auth.isCurator, async (req, res) => {
+  try {
+    const updatedWork = await workController.updateWorkById(req.params.id, req.body);
+    res.json({ message: "Opera aggiornata", work: updatedWork });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// elimina un'opera 
+// * il frontend deve inveare l'ID della sezione da cui toglierla
+apiRouter.delete("/works/:id", auth.isCurator, async (req, res) => {
+  try {
+    const workId = req.params.id;
+    const { sectionId } = req.body; 
+
+    // Elimina dalla collezione Works
+    await workController.deleteWorkById(workId);
+    
+    // Rimuove il riferimento dall'array della Sezione
+    if (sectionId) {
+      await sectionController.removeWorkFromSection(sectionId, workId);
+    }
+
+    res.json({ message: "Opera eliminata con successo" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//------------------ form ------------------------
+
+// Rotta per creare e aggiungere un'opera sul db
 apiRouter.post("/add-work", auth.isCurator, async (req, res) => {
   try {
     const { work, sectionId } = req.body;
@@ -182,38 +220,7 @@ apiRouter.post("/add-work", auth.isCurator, async (req, res) => {
   }
 });
 
-// per la modifica di un'opera
-apiRouter.put("/works/:id", auth.isCurator, async (req, res) => {
-  try {
-    const updatedWork = await require("../controllers/works").updateWorkById(req.params.id, req.body);
-    res.json({ message: "Opera aggiornata", work: updatedWork });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// elimina un'opera 
-apiRouter.delete("/works/:id", auth.isCurator, async (req, res) => {
-  try {
-    const workId = req.params.id;
-    const { sectionId } = req.body; // Il frontend dovrà inviarci l'ID della sezione da cui toglierla
-
-    // Elimina dalla collezione Works
-    await require("../controllers/works").deleteWorkById(workId);
-    
-    // Rimuove il riferimento dall'array della Sezione
-    if (sectionId) {
-      await sectionController.removeWorkFromSection(sectionId, workId);
-    }
-
-    res.json({ message: "Opera eliminata con successo" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//------------------ form ------------------------
-
+// salva una sezione sul db
 apiRouter.post("/save-section", auth.isCurator, async (req, res) => {
   try {
     const { rsection, museumId } = req.body;
@@ -231,6 +238,7 @@ apiRouter.post("/save-section", auth.isCurator, async (req, res) => {
   }
 });
 
+// salva un museo sul db
 apiRouter.post("/save-museum", auth.isCurator, async (req, res) => {
   try {
     const museumData = req.body;
@@ -252,20 +260,21 @@ apiRouter.post("/save-museum", auth.isCurator, async (req, res) => {
 });
 
 //? File config
-apiRouter.get("/config", async (req, res) => {
-  try {
-    console.log("/api/config");
-    res.sendFile(path.join(__dirname, "..", "..", "config", "config.json"));
-  } catch (err) {
-    console.log("Errore config");
-  }
-});
+// apiRouter.get("/config", async (req, res) => {
+//   try {
+//     console.log("/api/config");
+//     res.sendFile(path.join(__dirname, "..", "..", "config", "config.json"));
+//   } catch (err) {
+//     console.log("Errore config");
+//   }
+// });
 
 //------------------ user ------------------------
+
 // restituisce l'utente loggato, o null se non autenticato
 apiRouter.get("/current-user", (req, res) => {
   if (req.isAuthenticated()) {
-    res.json({
+    res.status(200).json({
       username: req.user.username || req.user.name,
       role: req.user.role,
     });
@@ -288,7 +297,7 @@ apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
     if (!user) return res.status(404).json({ error: "Utente non trovato" });
 
     // Restituiamo solo l'array dei musei gestiti
-    res.json(user.managed_museums || []);
+    res.status(200).json(user.managed_museums || []);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Errore nel recupero dei tuoi musei" });
@@ -296,6 +305,7 @@ apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
 });
 
 // ----------------------- visits ----------------------------
+
 // TODO: per ora solo create -> ampliare con comprate
 // recupera le visite create/comprate dallo user
 apiRouter.get("/my-visits", async (req, res) => {
@@ -325,7 +335,7 @@ apiRouter.post("/visits", async (req, res) => {
         .status(401)
         .json({ error: "Sessione scaduta. Effettua di nuovo il login." });
     }
-    // Passiamo dati e utente al controller
+
     const savedVisit = await visitController.createVisit(req.body, req.user);
     res.status(201).json({
       message: "Visita creata con successo!",
@@ -333,7 +343,6 @@ apiRouter.post("/visits", async (req, res) => {
     });
   } catch (error) {
     console.error("Errore nel salvataggio della visita:", error);
-    // Leggiamo il codice di stato dal throw (se presente), altrimenti diamo 500
     const status = error.statusCode || 500;
     res
       .status(status)
@@ -341,7 +350,7 @@ apiRouter.post("/visits", async (req, res) => {
   }
 });
 
-// Recupera tutte le visite pubbliche per il marketplace
+// Recupera tutte le visite **pubbliche** per il marketplace
 apiRouter.get("/visits", async (req, res) => {
   try {
     const visits = await visitController.getPublicVisits();
@@ -354,6 +363,7 @@ apiRouter.get("/visits", async (req, res) => {
   }
 });
 
+// TODO: non devo poter aprire visite private di altri scrivendo l'URL ma tutti possono aprire quelle pubbliche
 // per l'apertura dei dettagli di una visita
 apiRouter.get("/visits/:id", async (req, res) => {
   try {
@@ -375,6 +385,7 @@ apiRouter.put("/visits/:id", async (req, res) => {
       return res.status(401).json({ error: "Accesso negato. Fai il login." });
     }
 
+    // TODO: verificare se basta user._id o serve intero user
     const updatedVisit = await visitController.editVisitById(
       req.params.id,
       req.body,
@@ -390,6 +401,7 @@ apiRouter.put("/visits/:id", async (req, res) => {
   }
 });
 
+// ? per il codice scritto mi basta essere un curator o il curator del museo in questione
 // Aggiorna i dati generali di un museo
 apiRouter.put("/museums/:id", auth.isCurator, async (req, res) => {
   try {

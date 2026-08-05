@@ -39,7 +39,7 @@ exports.getItemByMuseum = async (museumId) => {
   }
 }
 
-exports.modifyItemById = async (itemId, updateData) => {
+exports.modiffyItemById = async (itemId, updateData) => {
   try {
   return await Item.findByIdAndUpdate(itemId, updateData, {new: true});
   }

@@ -23,12 +23,9 @@ router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'..','..','html','index.html'));
 });
 
-// ---------------------- Routes di get -----------------------------
-
 // Per aggiungere un museo
 router.get('/add-museum', auth.isCuratorPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'add-museum.html');
-  
   console.log("Percorso generato per add-museum:", filePath);
   res.sendFile(filePath);
 });
@@ -47,7 +44,7 @@ router.get('/my-visits', auth.isLoggedInPage, (req, res) => {
   res.sendFile(filePath);
 });
 
-// TODO: verificare che qualcuno non possa entrare forzatamente in una vistia privata
+// TODO: verificare che qualcuno non possa entrare forzatamente in una vistia privata -> yeah you can
 // pagina di dettaglio delle visite
 router.get('/visit-details', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'visit-details.html'));
@@ -64,8 +61,6 @@ router.get('/edit-museum', auth.isCuratorPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'edit-museum.html');
   res.sendFile(filePath);
 });
-
-// ------------------------- Routes di post -------------------------------
 
 // Ottiene l'html per i musei creati dal currentUser
 router.get('/my-museums', auth.isCuratorPage, (req, res) => {

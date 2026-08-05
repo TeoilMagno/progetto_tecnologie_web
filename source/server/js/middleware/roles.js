@@ -11,7 +11,7 @@ exports.isLoggedIn = (req, res, next) => {
 // Middleware per le pagine HTML: se non è curatore, caricamento della pagina 403
 exports.isCuratorPage = (req, res, next) => {
   if (req.user && req.user.role === 'curator' || req.user.role === 'admin') {
-    return next(); // Tutto ok, procedi verso la pagina richiesta
+    return next(); 
   }
 
   const path = require('path');
@@ -21,7 +21,7 @@ exports.isCuratorPage = (req, res, next) => {
 // Middleware per pagine HTML: se non loggato, manda al login
 exports.isLoggedInPage = (req, res, next) => {
   if (req.isAuthenticated && req.isAuthenticated()) {
-    return next(); // L'utente c'è, procedi alla pagina
+    return next(); 
   }
   
   res.redirect('/login?msg=login_required'); // teniamo traccia di quando il redirect al login e' forzato
