@@ -3,6 +3,7 @@ const Section = require("../models/sections");
 const Work = require("../models/works");
 const { User } = require("../models/users");
 
+// utilizzato da admin
 exports.getAllMuseums = async () => {
   try {
     return await Museum.find();
@@ -16,11 +17,11 @@ exports.saveMuseum = async (museumData, userId) => {
 
   // validazione modello
   const museumToValidate = new Museum({
-    name: name,
-    address: address,
-    contact_email: contact_email,
-    contact_phone: contact_phone,
-    image: image,
+    name,
+    address,
+    contact_email,
+    contact_phone,
+    image,
     tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags
   });
   
@@ -29,7 +30,7 @@ exports.saveMuseum = async (museumData, userId) => {
   // Validazione di tutte le sezioni e opere
   if (sections && sections.length > 0) {
     for (const s of sections) {
-      // Validiamo la sezione (usiamo un ID fittizio per il campo required museumId)
+
       const sectionToValidate = new Section({
         name: s.name,
         image: s.image,
@@ -40,7 +41,7 @@ exports.saveMuseum = async (museumData, userId) => {
       if (s.works && s.works.length > 0) {
         for (const w of s.works) {
           const workToValidate = new Work({
-              ...w, // dati inviati dal frontend
+              ...w, 
               museumId: new (require('mongoose')).Types.ObjectId(), // ID fittizio
           });
           await workToValidate.validate();
@@ -49,7 +50,7 @@ exports.saveMuseum = async (museumData, userId) => {
     }
   }
 
-  // --- 2. SALVATAGGIO REALE (Eseguito solo se la validazione sopra ha avuto successo) ---
+  // salvataggio reale (eseguito solo se la validazione sopra ha avuto successo)
   // Salviamo il museo per ottenere l'ID reale
   const museumResult = await museumToValidate.save();
   const museumId = museumResult._id;
@@ -58,11 +59,12 @@ exports.saveMuseum = async (museumData, userId) => {
   if (sections && sections.length > 0) {
     for (const s of sections) {
       let workIds = [];
+
       // Salviamo le opere
       if (s.works && s.works.length > 0) {
         const worksToInsert = s.works.map(work => ({
-            ...work,               // Copiamo i dati originali dell'opera
-            museumId: museumId    // Aggiungiamo/Sovrascriviamo il museumId reale
+            ...work,               
+            museumId: museumId     // sovrascriviamo il museumId reale
         }));
         const savedWorks = await Work.insertMany(worksToInsert);
         workIds = savedWorks.map(w => ({ work: w._id }));
@@ -80,7 +82,7 @@ exports.saveMuseum = async (museumData, userId) => {
       savedSectionIds.push(savedSection._id);
     }
 
-    // Aggiorniamo il museo con gli ID delle sezioni
+    // aggiorniamo il museo con gli ID delle sezioni
     museumResult.sections = savedSectionIds;
     await museumResult.save();
   }
@@ -96,28 +98,7 @@ exports.saveMuseum = async (museumData, userId) => {
   return museumId;
 };
 
-exports.updateMuseum = async (museumId, updateData, user) => {
-  if (!user) {
-    const error = new Error("Utente non autenticato");
-    error.statusCode = 401;
-    throw error;
-  }
-
-  // se è admin, può aggiornare direttamente qualsiasi museo
-  if (user.role === 'admin') {
-    return await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
-  }
-
-  // se è curatore, gestiamo la verifica sul campo managed_museums
-  const managed = user.managed_museums || [];
-  const isOwner = managed.some(id => id.toString() === museumId);
-
-  if (!isOwner) {
-    const error = new Error("Non sei autorizzato a modificare questo museo");
-    error.statusCode = 403;
-    throw error;
-  }
-
+exports.updateMuseum = async (museumId, updateData) => {
   return await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
 };
 

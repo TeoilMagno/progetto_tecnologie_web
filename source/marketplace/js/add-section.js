@@ -35,46 +35,46 @@ function renderAddSection() {
   container.appendChild(sectionDiv);
 }
 
-async function sectionHandleSave(museumId) {
-  event.preventDefault();
+// async function sectionHandleSave(museumId) {
+//   event.preventDefault();
 
-  const form = document.getElementById("form");
-  const formData = new FormData(form);
+//   const form = document.getElementById("form");
+//   const formData = new FormData(form);
 
-  // Raccogliamo i dati delle opere dagli input dinamici
-  const names = formData.getAll("itemName[]");
-  const prices = formData.getAll("price[]");
-  const images = formData.get("image_path_item[]"); // se ne hai più di uno usa getAll
-  const quantities = formData.getAll("quantity[]");
+//   // Raccogliamo i dati delle opere dagli input dinamici
+//   const names = formData.getAll("itemName[]");
+//   const prices = formData.getAll("price[]");
+//   const images = formData.get("image_path_item[]"); // se ne hai più di uno usa getAll
+//   const quantities = formData.getAll("quantity[]");
 
-  // Creiamo l'array di oggetti "opera"
-  const worksArray = names.map((n, i) => ({
-    name: n,
-    price: prices[i],
-    image: images[i],
-    quantity: quantities[i],
-  }));
+//   // Creiamo l'array di oggetti "opera"
+//   const worksArray = names.map((n, i) => ({
+//     name: n,
+//     price: prices[i],
+//     image: images[i],
+//     quantity: quantities[i],
+//   }));
 
-  const payload = {
-    name: formData.get("name"),
-    image_path: formData.get("image_path"),
-    museumId: museumId,
-  };
+//   const payload = {
+//     name: formData.get("name"),
+//     image_path: formData.get("image_path"),
+//     museumId: museumId,
+//   };
 
-  console.log("sezioni aggiunte con museumId: ", museumId);
+//   console.log("sezioni aggiunte con museumId: ", museumId);
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/save-section`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+//   try {
+//     const response = await fetch(`${API_BASE_URL}/save-section`, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(payload),
+//     });
 
-    if (response.ok) {
-      alert("Tutto salvato con successo!");
-      // window.location.href = "/dashboard";
-    }
-  } catch (error) {
-    console.error("Errore nell'invio:", error);
-  }
-}
+//     if (response.ok) {
+//       alert("Tutto salvato con successo!");
+//       // window.location.href = "/dashboard";
+//     }
+//   } catch (error) {
+//     console.error("Errore nell'invio:", error);
+//   }
+// }

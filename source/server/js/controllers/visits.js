@@ -13,38 +13,29 @@ exports.createVisit = async (visitPayload, user) => {
     language,
   } = visitPayload;
 
-  // Sicurezza: Verifichiamo che l'utente sia loggato
-  if (!user) {
-    const error = new Error("Devi essere autenticato per creare una visita");
-    error.statusCode = 401;
-    throw error;
-  }
-
   // dati di base della visita
   const visitData = {
     title,
     description,
     museumId,
     creator: user._id, // Preso automaticamente dalla sessione
-    works, // Array ordinato di ObjectId delle opere
+    works,
     duration,
     language: language || "it",
   };
 
-  // GESTIONE LOGICA DIFFERENZIATA IN BASE AL RUOLO
+  // logica differenziata in base al ruolo
   if (user.role === "curator" || user.role === "admin") {
     // Il curatore può decidere liberamente prezzo e visibilità
     visitData.price = price || 0;
     visitData.isDraft = isDraft !== undefined ? isDraft : true;
     visitData.isPublic = isPublic !== undefined ? isPublic : false;
   } else {
-    // Il visitatore normale crea SEMPRE visite private non in vendita
     visitData.price = 0;
-    visitData.isDraft = false; // Per il visitatore è subito attiva/pronta
+    visitData.isDraft = false;
     visitData.isPublic = false; // Sempre privata, non va sul marketplace
   }
 
-  // Creiamo e salviamo il documento nel DB
   const newVisit = new Visit(visitData);
   return await newVisit.save();
 };
@@ -53,18 +44,26 @@ exports.getVisits = async (userId) => {
   return await Visit.find({ creator: userId }).populate('museumId')
 }
 
-exports.getVisitById = async (visitId) => {
-  const visit = await Visit.findById(visitId).populate('museumId').populate('works'); // ci servono le informazioni delle opere
+exports.getVisitById = async (visitId, user) => {
+  const visit = await Visit.findById(visitId).populate('museumId').populate('works'); 
 
   if (!visit) {
     const error = new Error("Visita non trovata");
     error.statusCode = 404;
     throw error;
   }
-  return visit;
+
+  // Passa se è pubblica, o se l'utente è il creatore/admin
+  if (visit.isPublic || user?.role === "admin" || visit.creator.toString() === user?._id?.toString() ) {
+    return visit;
+  } else {
+    const error = new Error("Accesso negato: questa visita è privata");
+    error.statusCode = 403;
+    throw error;
+  }
 };
 
-exports.editVisitById = async (visitId, payload, userId) => {
+exports.editVisitById = async (visitId, payload, user) => {
   const query = { _id: visitId };
 
   // Se NON è admin, limitiamo la modifica solo alla visita creata dall'utente
@@ -74,14 +73,15 @@ exports.editVisitById = async (visitId, payload, userId) => {
   
   // Troviamo e aggiorniamo SOLO se l'ID corrisponde e il creatore è l'utente corrente
   const updatedVisit = await Visit.findOneAndUpdate(      
-    { _id: visitId, creator: userId },
+    query,
     payload,
     { new: true } // Opzione per farci restituire il documento aggiornato
   );
 
-  // Se la visita non esiste nel database, restituiamo un JSON di errore (non HTML!)
   if (!updatedVisit) {
-    throw new Error("Visita non trovata nel database o non sei autorizzato a modificarla");
+    const error = new Error("Visita non trovata nel database o non sei autorizzato a modificarla");
+    error.statusCode = 403;
+    throw error;
   }
   
   return updatedVisit;

@@ -26,3 +26,22 @@ exports.isLoggedInPage = (req, res, next) => {
   
   res.redirect('/login?msg=login_required'); // teniamo traccia di quando il redirect al login e' forzato
 };
+
+exports.isMuseumOwner = async (req, res, next) => {
+  if (req.user.role === 'admin') { // gli admin hanno accesso a tutto
+    return next();
+  }
+
+  const museumId = req.body.museumId ||  req.params.id;
+
+  if (!museumId) {
+    return res.status(400).json({ error: "ID museo non specificato per la verifica permessi" });
+  }
+
+  const managed = req.user.managed_museums || [];
+  const isOwner = managed.some(id => id.toString() === museumId.toString());
+
+  if (isOwner) next();
+  
+  return res.status(403).json({ error: "Non sei autorizzato a gestire questo museo" });
+};

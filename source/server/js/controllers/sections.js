@@ -1,5 +1,7 @@
 const Section = require('../models/sections');
-const Work = require('../models/works')
+const Work = require('../models/works');
+
+const { getWorksById, deleteWorkById } = require('./works');
 
 exports.saveSection = async (sectionData, museumId) => {
   let workObjects = [];
@@ -36,8 +38,6 @@ exports.getSectionsByMuseum = async (museumId) => {
 }
 
 exports.getWorksBySection = async (sectionId) => {
-  const { getWorksById } = require('./works');
-
   const section = await Section.findById(sectionId);
   if (!section) throw new Error("Sezione non trovata");
 
@@ -47,9 +47,18 @@ exports.getWorksBySection = async (sectionId) => {
 }
 
 // Aggiorna i dati base di una sezione
-exports.updateSectionById = async (sectionId, updateData) => {
-  const updatedSection = await Section.findByIdAndUpdate(sectionId, updateData, { new: true, runValidators: true });
-  if (!updatedSection) throw new Error("Sezione non trovata");
+exports.updateSectionById = async (sectionId, updateData, museumId) => {
+  const updatedSection = await Section.findOneAndUpdate(
+    { _id: sectionId, museumId: museumId},
+    updateData, 
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedSection) {
+    const error = new Error("Sezione non trovata o non sei autorizzato a modificarla");
+    error.statusCode = 403;
+    throw error;
+  }
   return updatedSection;
 };
 
@@ -63,15 +72,17 @@ exports.removeWorkFromSection = async (sectionId, workId) => {
 };
 
 // Elimina una sezione e tutte le opere contenute al suo interno
-exports.deleteSectionById = async (sectionId) => {
-  const { deleteWorkById } = require('./works');
-  
-  const section = await Section.findById(sectionId);
-  if (!section) throw new Error("Sezione non trovata");
+exports.deleteSectionById = async (sectionId, museumId) => {
+  const section = await Section.findOne({ _id:sectionId, museumId: museumId });
+  if (!section) {
+    const error = new Error("Sezione non trovata o non sei autorizzato a eliminarla");
+    error.statusCode = 403;
+    throw error;
+  }
 
   if (section.works && section.works.length > 0) {
     for (const w of section.works) {
-      if (w.work) await deleteWorkById(w.work);
+      if (w.work) await deleteWorkById(w.work, museumId);
     }
   }
 

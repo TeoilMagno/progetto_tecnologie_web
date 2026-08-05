@@ -8,11 +8,6 @@
 const path = require('path');
 const express = require('express')
 
-// Controllers
-const {saveMuseum, addSectionToMuseum, getAllMuseums} = require ('../controllers/museums')
-const {saveSection} = require ('../controllers/sections')
-const sectionController = require('../controllers/sections');
-
 // Middleware
 const auth = require("../middleware/roles");
 

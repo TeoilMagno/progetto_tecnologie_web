@@ -195,7 +195,7 @@ async function saveWorkFromModal() {
     const res = await fetch(`${API_BASE_URL}/add-work`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ work: workData, sectionId: sectionId })
+      body: JSON.stringify({ work: workData, sectionId: sectionId, museumId: currentMuseumId })
     });
 
     if (res.ok) {
