@@ -4,7 +4,6 @@ export default function RoomLayer({ section, onBack }) {
   const [works, setWorks] = useState([]);
 
   useEffect(() => {
-    // Usiamo l'ID della sezione (area) per fare la chiamata alla tua seconda API
     fetch(`http://localhost:8000/api/sections/${section._id}/works`)
       .then((response) => response.json())
       .then((data) => {
@@ -12,7 +11,7 @@ export default function RoomLayer({ section, onBack }) {
       })
       .catch((error) => console.error("Errore nel caricamento delle opere:", error));
       
-  }, [area._id]); // Esegui la chiamata ogni volta che cambia l'ID dell'area
+  }, [section._id]); // Esegui la chiamata ogni volta che cambia l'ID dell'area
 
   return (
     <>

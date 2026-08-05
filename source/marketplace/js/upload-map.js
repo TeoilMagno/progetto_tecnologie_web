@@ -363,7 +363,7 @@ async function mapHandleSave(event) {
   try {
     // Inviamo tutto all'endpoint globale
     console.log("sto salvando la mappa del museo");
-    const response = await fetch("/rotta/da/decidiere", {
+    const response = await fetch(`/api/museums/${museumId}/upload-map`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

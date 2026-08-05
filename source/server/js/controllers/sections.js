@@ -48,6 +48,49 @@ exports.getWorksBySection = async (sectionId) => {
   return await getWorksById(section.works);
 }
 
+exports.uploadMap = async (mapData) => {
+  const {sections} = mapData;
+  
+  if(!sections || !Array.isArray(sections) || sections.lenght === 0) {
+    throw new Error("Nessuna sezione fornita nel payload");
+  }
+
+  const updatedSections = [];
+
+  for (const section of sections) {
+    const {_id, color, works, rooms, shape} = section;
+
+    if(!_id) {
+      console.warn("Ricevuta una sezione senza _id, ignorata.");
+      continue;
+    }
+
+    const updatedSection = await Section.findByIdAndUpdate(
+      _id,
+      {
+        $set: {
+          color: color,
+          shape: shape,
+          works: works,
+          rooms: rooms
+        }
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    if(!updatedSection) {
+      throw new Error(`Impossibile trovare e aggiornare le sezioni con id ${_id}`);
+    }
+
+    updatedSections.push(updatedSection);
+  }
+
+  return updatedSections;
+}
+
 // exports.saveSection = async (req, res) => {
 //   try {
 //     const { name, image_path, museumId, works } = req.body;
