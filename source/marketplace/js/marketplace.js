@@ -1,7 +1,5 @@
 /*
   // TODO: aggiunta museo tramite json
-  // TODO: correzione meta_data su mongodb
-  // TODO: scrivere schema visite 
 */
 
 // Stato globale
