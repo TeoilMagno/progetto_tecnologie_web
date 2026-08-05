@@ -1,29 +1,28 @@
 import { useState, useEffect } from "react";
 
-export default function RoomLayer({ area, onBack }) {
+export default function RoomLayer({ section, onBack }) {
   const [works, setWorks] = useState([]);
 
   useEffect(() => {
-    // Usiamo l'ID della sezione (area) per fare la chiamata alla tua seconda API
-    fetch(`http://localhost:8000/api/sections/${area._id}/works`)
+    fetch(`http://localhost:8000/api/sections/${section._id}/works`)
       .then((response) => response.json())
       .then((data) => {
         setWorks(data);
       })
       .catch((error) => console.error("Errore nel caricamento delle opere:", error));
       
-  }, [area._id]); // Esegui la chiamata ogni volta che cambia l'ID dell'area
+  }, [section._id]); // Esegui la chiamata ogni volta che cambia l'ID dell'area
 
   return (
     <>
       {/* 1. DISEGNO LE STANZE (il tuo codice originale) */}
-      {area.rooms.map((room) => {
+      {section.rooms.map((room) => {
         if (room.shape.type === "polygon") {
           return (
             <polygon
               key={room.id}
               points={room.shape.points}
-              fill={room.color}
+              fill={section.color}
               stroke="#000"
               strokeWidth="6"
               onClick={() => alert(room.name)}
@@ -34,7 +33,7 @@ export default function RoomLayer({ area, onBack }) {
             <polyline
               key={room.id}
               points={room.shape.points}
-              fill={room.color}
+              fill={section.color}
               stroke="#000"
               strokeWidth="6"
               onClick={() => alert(room.name)}
@@ -45,7 +44,7 @@ export default function RoomLayer({ area, onBack }) {
             <path
               key={room.id}
               d={room.shape.d}
-              fill={room.color}
+              fill={section.color}
               stroke="#000"
               strokeWidth="6"
               onClick={() => alert(room.name)}

@@ -140,6 +140,8 @@ function renderMuseumsList(museums, containerId = "content-area") {
             <div>${tagsHtml}</div>
           </div>
         </div>
+        <a href="/navigator/museum/${museum._id}"><div class="explore">Navigate museum</div></a>
+        <a href="/museums/${museum._id}/upload-map/"><div class="explore">Upload Map</div></a>
       </div>`;
   });
 }

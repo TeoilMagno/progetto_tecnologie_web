@@ -292,15 +292,24 @@ apiRouter.post("/save-museum", auth.isCurator, async (req, res) => {
   }
 });
 
-//? File config
-// apiRouter.get("/config", async (req, res) => {
-//   try {
-//     console.log("/api/config");
-//     res.sendFile(path.join(__dirname, "..", "..", "config", "config.json"));
-//   } catch (err) {
-//     console.log("Errore config");
-//   }
-// });
+apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
+  try {
+    const mapData = req.body;
+    const map = await sectionController.uploadMap(mapData);
+
+    res.status(201).json({
+      success: true,
+      message: "Mappa salvata correttamente",
+      map: map,
+    });
+  } catch (error) {
+    console.error("Errore validazione o salvataggio:", error);
+    res.status(400).json({
+      error: "Dati incompleti o errati",
+      details: error.message,
+    });
+  }
+});
 
 //------------------ user ------------------------
 

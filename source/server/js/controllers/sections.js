@@ -53,14 +53,50 @@ exports.updateSectionById = async (sectionId, updateData, museumId) => {
     updateData, 
     { new: true, runValidators: true }
   );
+}
 
-  if (!updatedSection) {
-    const error = new Error("Sezione non trovata o non sei autorizzato a modificarla");
-    error.statusCode = 403;
-    throw error;
+exports.uploadMap = async (mapData) => {
+  const {sections} = mapData;
+  
+  if(!sections || !Array.isArray(sections) || sections.lenght === 0) {
+    throw new Error("Nessuna sezione fornita nel payload");
   }
-  return updatedSection;
-};
+
+  const updatedSections = [];
+
+  for (const section of sections) {
+    const {_id, color, works, rooms, shape} = section;
+
+    if(!_id) {
+      console.warn("Ricevuta una sezione senza _id, ignorata.");
+      continue;
+    }
+
+    const updatedSection = await Section.findByIdAndUpdate(
+      _id,
+      {
+        $set: {
+          color: color,
+          shape: shape,
+          works: works,
+          rooms: rooms
+        }
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    if(!updatedSection) {
+      throw new Error(`Impossibile trovare e aggiornare le sezioni con id ${_id}`);
+    }
+
+    updatedSections.push(updatedSection);
+  }
+
+  return updatedSections;
+}
 
 // Rimuove l'opera dall'array della sezione
 exports.removeWorkFromSection = async (sectionId, workId) => {

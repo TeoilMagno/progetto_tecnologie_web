@@ -1,10 +1,21 @@
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 import MapView from "./components/mapView";
+
+function MuseumPage() {
+  // useParams estrae il valore dinamico :museumId dall'URL
+  const { museumId } = useParams(); 
+
+  // Passiamo il museumId scaricato dall'URL direttamente a MapView
+  return <MapView museumId={museumId} />;
+}
 
 export default function App() {
   return (
-    <div>
-      <h1>Mappa Museo</h1>
-      <MapView />
-    </div>
+    <BrowserRouter basename="/navigator">
+      <Routes>
+        {/* React riconosce il parametro :museumId direttamente dall'URL */}
+        <Route path="/museum/:museumId" element={<MuseumPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

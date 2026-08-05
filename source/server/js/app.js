@@ -25,7 +25,8 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '..', '..', 'marketplace')));
+app.use("/marketplace", express.static(path.join(__dirname, '..', '..', 'marketplace')));
+app.use("/navigator",   express.static(path.join(__dirname, '..', '..', 'navigator', 'react', 'museum-map', 'dist')));
 
 // ─── Sessione e Passport ───────────────────────────────────────────────────
 // DEVONO stare prima dei router, altrimenti req.user non è disponibile nelle rotte

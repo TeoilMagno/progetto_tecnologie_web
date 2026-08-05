@@ -72,7 +72,7 @@ async function museumHandleSave(event) {
   try {
     // Inviamo tutto all'endpoint globale
     console.log("sto salvando il museo...");
-    const response = await fetch("/api/save-museum", {
+    const response = await fetch(`${API_BASE_URL}/save-museum`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

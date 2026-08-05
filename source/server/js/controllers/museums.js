@@ -67,14 +67,14 @@ exports.saveMuseum = async (museumData, userId) => {
             museumId: museumId     // sovrascriviamo il museumId reale
         }));
         const savedWorks = await Work.insertMany(worksToInsert);
-        workIds = savedWorks.map(w => ({ work: w._id }));
+        workIds = savedWorks.map(w => w._id);
       }
 
       // Salviamo la sezione
       const newSection = new Section({
         name: s.name,
         image: s.image,
-        works: workIds,
+        works: workIds.map(id => ({ work: id })),
         museumId: museumId
       });
       

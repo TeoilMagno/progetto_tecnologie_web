@@ -25,6 +25,14 @@ router.get('/add-museum', auth.isCuratorPage, (req, res) => {
   res.sendFile(filePath);
 });
 
+// ottiene il form per caricare i dati vettoriali per la visualizzazione della mappa
+router.get('/museums/:museumId/upload-map', (req, res) => {
+  const filePath = path.join(__dirname,'..','..','html','upload-map.html');
+
+  console.log("Percorso generato per upload-map: ", filePath);
+  res.sendFile(filePath);
+});
+
 // per la pagina di creazione visita
 router.get('/create-visit', auth.isLoggedInPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'create-visit.html');
@@ -61,5 +69,9 @@ router.get('/edit-museum', auth.isCuratorPage, (req, res) => {
 router.get('/my-museums', auth.isCuratorPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-museums.html'));
 });
+
+router.get('/navigator/museum/:musemId', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'dist', 'index.html'));
+}); 
 
 module.exports = router;
