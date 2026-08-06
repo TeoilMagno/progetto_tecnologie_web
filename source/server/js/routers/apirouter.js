@@ -111,7 +111,7 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
 //--------------- sections -----------------------
 
 // ritorna tutte le opere di una sezione specifica
-apiRouter.get("/g:id/works", async (req, res) => {
+apiRouter.get("/sections/:id/works", async (req, res) => {
   try {
     const works = await sectionController.getWorksBySection(
       req.params.id,
@@ -120,6 +120,19 @@ apiRouter.get("/g:id/works", async (req, res) => {
     if(!works) return res.status(404).json({ error: "Opere non trovate" });
 
     res.json(works);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+apiRouter.get("/visits/:visitId/museum", async (req, res) => {
+  try {
+    const userId = req.user ? req.user._id : null;
+    const visit = await visitController.getVisitById(req.params.visitId, userId);
+
+    if(!visit) return res.status(404).json({ error: "visita non trovata" });
+
+    res.json(visit);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

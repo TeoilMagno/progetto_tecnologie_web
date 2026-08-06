@@ -70,7 +70,7 @@ router.get('/my-museums', auth.isCuratorPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-museums.html'));
 });
 
-router.get('/navigator/museum/:musemId', (req, res) => {
+router.get('/navigator/visits/:visitId', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'dist', 'index.html'));
 }); 
 

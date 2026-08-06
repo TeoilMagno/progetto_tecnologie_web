@@ -3,25 +3,38 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import SectionLayer from "./sectionLayer";
 import RoomLayer from "./roomLayer";
 
-export default function MapView({ museumId }) {
+export default function MapView({ visitId }) {
   const [selectedSection, setSelectedSection] = useState(null);
 
   const [sections, setSections] = useState([]);
+  const [visitedWorks, setVisitedWorks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      // Sostituisci "ID_DEL_TUO_MUSEO" con l'ID reale (o passalo come prop)
-      fetch(`/api/museums/${museumId}/sections`)
-        .then((response) => response.json())
-        .then((data) => {
-          setSections(data); // Salviamo le sezioni nello stato
-          setLoading(false); // Fine caricamento
-        })
-        .catch((error) => {
-          console.error("Errore nel caricamento delle sezioni:", error);
-          setLoading(false);
-        });
-    }, []); // L'array vuoto [] significa "esegui solo all'avvio"
+    const fetchVisitData = async () => {
+      try {
+        // 1. Scarichiamo i dati della visita
+        const visitResponse = await fetch(`/api/visits/${visitId}/museum`);
+        const visitData = await visitResponse.json();
+
+        // Salviamo le opere della visita nello stato
+        setVisitedWorks(visitData.works);
+
+        // 2. Usiamo il museumId appena recuperato per scaricare le sezioni
+        const sectionsResponse = await fetch(`/api/museums/${visitData.museumId._id}/sections`);
+        const sectionsData = await sectionsResponse.json();
+
+        // Salviamo le sezioni della museo nello stato
+        setSections(sectionsData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Errore nel caricamento dei dati della visita o delle sezioni:", error);
+        setLoading(false);
+      }
+    }
+
+      fetchVisitData();
+    }, [visitId]); // L'array vuoto [] significa "esegui solo all'avvio"
 
   if (loading) return <div>Caricamento mappa in corso...</div>;
 
@@ -51,7 +64,7 @@ export default function MapView({ museumId }) {
 
           {selectedSection && (
             <g>
-              <RoomLayer section={selectedSection} onBack={() => setSelectedSection(null)} />
+              <RoomLayer onBack={() => setSelectedSection(null)} section={selectedSection} visitedWorks={visitedWorks} />
             </g>
           )}
         </svg>

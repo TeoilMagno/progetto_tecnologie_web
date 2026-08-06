@@ -12,6 +12,13 @@ function goBackToVisits() {
   }
 }
 
+function startVisit()
+{
+  const urlParams = new URLSearchParams(window.location.search);
+  const visitId = urlParams.get("id");
+  window.location.replace(`/navigator/visits/${visitId}`);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   // recuperiamo l'ID della visita dall'URL
   const urlParams = new URLSearchParams(window.location.search);

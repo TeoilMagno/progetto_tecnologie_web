@@ -1,17 +1,39 @@
 import { useState, useEffect } from "react";
 
-export default function RoomLayer({ section, onBack }) {
+export default function RoomLayer({ onBack, section, visitedWorks }) {
   const [works, setWorks] = useState([]);
+  const [filteredWorks, setFilteredWorks] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/sections/${section._id}/works`)
+    console.log(section);
+    fetch(`/api/sections/${section._id}/works`)
       .then((response) => response.json())
       .then((data) => {
-        setWorks(data);
+        setWorks(data); // Salviamo tutte le opere della sezione (per sicurezza/cache)
+        
+        // --- CONFRONTO E FILTRAGGIO ---
+        // Controlliamo quali opere della sezione sono presenti nella visita
+        console.log("sectionWork ",data, "visitedWorks ", visitedWorks);
+        const worksToShow = data.filter(fetchedWork => {
+          return visitedWorks.some(vw => vw._id === fetchedWork._id);
+        });
+
+        //associamo i lavori filtrati con le loro coordinate contenute in section.works
+        const finalWorks = worksToShow.map(work => {
+          const coords = section.works.find(sw => sw.work === work._id);
+          
+          return {
+            ...work,
+            x: coords ? coords.x : 0,
+            y: coords ? coords.y : 0
+          };
+        });
+        
+        setFilteredWorks(finalWorks);
       })
       .catch((error) => console.error("Errore nel caricamento delle opere:", error));
       
-  }, [section._id]); // Esegui la chiamata ogni volta che cambia l'ID dell'area
+  }, [section._id, visitedWorks, section.works]);
 
   return (
     <>
@@ -56,7 +78,7 @@ export default function RoomLayer({ section, onBack }) {
 
       {/* 2. DISEGNO I WORK / OPERE D'ARTE (La novità!) */}
       {/* Controllo se ci sono work nell'area, e li stampo */}
-      {works.map((work) => (
+      {filteredWorks.map((work) => (
         <foreignObject
         key={work._id}
         x={work.x}
