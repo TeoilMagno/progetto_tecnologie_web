@@ -68,6 +68,18 @@ apiRouter.put("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (req, 
   }
 });
 
+// Elimina un museo
+apiRouter.delete("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
+  try {
+    const museumId = req.params.id;
+    await museumController.deleteMuseumById(museumId);
+    res.json({ message: "Museo eliminato con successo" });
+  } catch (error) {
+    console.error("Errore eliminazione museo:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 //--------------- items -----------------------
 
 // ritorna prodotti (items) di un museo specifico

@@ -109,3 +109,29 @@ exports.removeSectionFromMuseum = async (museumId, sectionId) => {
     { new: true }
   );
 };
+
+exports.deleteMuseumById = async (museumId) => {
+  const { deleteSectionById } = require('./sections');
+
+  const museum = await Museum.findById(museumId);
+  if (!museum) {
+    const error = new Error("Museo non trovato");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  // eliminiamo tutte le sezioni (e relative opere) collegate a questo museo
+  if (museum.sections && museum.sections.length > 0) {
+    for (const sectionId of museum.sections) {
+      await deleteSectionById(sectionId, museumId);
+    }
+  }
+
+  // rimuoviamo il museo dai musei gestiti dagli utenti
+  await User.updateMany(
+    { managed_museums: museumId },
+    { $pull: { managed_museums: museumId } }
+  );
+
+  return await Museum.findByIdAndDelete(museumId);
+};
