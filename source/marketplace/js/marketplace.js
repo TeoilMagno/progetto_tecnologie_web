@@ -354,7 +354,7 @@ function renderItemsList(items, museumInfo) {
     return;
   }
 
-  const isCurator = currentUser && currentUser.role === "curator";
+  const isAdmin = currentUser && currentUser.role === "admin";
 
   items.forEach((item) => {
     container.innerHTML += `
@@ -375,7 +375,7 @@ function renderItemsList(items, museumInfo) {
                 </p>
                 <div class="d-flex justify-content-between align-items-end mt-auto pt-2 border-top border-secondary border-opacity-25">
                   <div class="fw-bold text-white fs-5">€ ${item.price.toFixed(2)}</div>
-                  ${isCurator ? `
+                  ${isAdmin ? `
                   <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="openEditModal('${item._id}')">
                     <i class="bi bi-pencil me-1"></i> Modifica
                   </button>` : ""}

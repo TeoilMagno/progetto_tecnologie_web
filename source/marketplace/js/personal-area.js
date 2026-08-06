@@ -25,6 +25,7 @@ function renderUserArea() {
         <li><a class="dropdown-item" href="/my-museums"><i class="bi bi-bank me-2"></i>I miei musei</a></li>
         <li><a class="dropdown-item" href="/my-visits"><i class="bi bi-map me-2"></i>Le mie visite</a></li>
         <li><a class="dropdown-item" href="/add-museum"><i class="bi bi-plus-square me-2"></i>Aggiungi museo</a></li>
+        <li><a class="dropdown-item" href="/create-visit"><i class="bi bi-plus-lg me-2"></i>Crea visita</a></li>
       `;
     } else {
       menuOptions = `
