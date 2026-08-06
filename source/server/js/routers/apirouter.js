@@ -111,7 +111,7 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
 //--------------- sections -----------------------
 
 // ritorna tutte le opere di una sezione specifica
-apiRouter.get("/g:id/works", async (req, res) => {
+apiRouter.get("/sections/:id/works", async (req, res) => {
   try {
     const works = await sectionController.getWorksBySection(
       req.params.id,

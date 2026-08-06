@@ -47,7 +47,6 @@ router.get('/my-visits', auth.isLoggedInPage, (req, res) => {
   res.sendFile(filePath);
 });
 
-// TODO: verificare che qualcuno non possa entrare forzatamente in una vistia privata -> yeah you can
 // pagina di dettaglio delle visite
 router.get('/visit-details', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'visit-details.html'));

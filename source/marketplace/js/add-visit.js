@@ -68,8 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("visit-title").value = draft.title || "";
         document.getElementById("visit-desc").value = draft.description || "";
         document.getElementById("visit-price").value = draft.price || "";
-        document.getElementById("visit-public").checked =
-          draft.isPublic || false;
+        document.getElementById("visit-public").checked = draft.isPublic || false;
 
         document.getElementById("save-visit-btn").innerText = "Aggiorna Bozza";
 
@@ -90,7 +89,7 @@ async function checkUserRole() {
     if (response.ok) {
       const user = await response.json();
       // se lo user e' un curatore mostriamo le opzioni eslcusive per curatori
-      if (user && user.role === "curator") {
+      if (user?.role === "curator" || user?.role === "admin") {
         document
           .getElementById("curator-options-area")
           .classList.remove("d-none");
