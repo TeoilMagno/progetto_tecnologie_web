@@ -1,0 +1,6 @@
+fromMuseumId
+toMuseumId
+begin-date
+end-date
+workId
+status: enum: ['pending', 'accepted', 'completed', 'refused']

@@ -40,14 +40,12 @@ const workSchema = new Schema({
   museumId: {
     type: Schema.Types.ObjectId,
     ref: 'Museum'
-  }
-  // },
+  },
 
-  // sectionId: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Section',
-  //   required: true
-  // }
+  roomId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Section.Room'
+  }
 });
 
 const Work = mongoose.model('Work', workSchema);
