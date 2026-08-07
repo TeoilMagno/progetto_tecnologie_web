@@ -8,9 +8,9 @@ stima durata visita "virtuale"
 piccolo campo metadata per le opere es: indica ref a wikimedia
 display sezione per ogni opera nel crea visita
 
-modello adozioni
-campo in adozione nel modello work
-id stanza in modello work
+modello adozioni                ✅
+campo adozione nel modello work ✅
+id stanza in modello work       ✅
 
 --------------- navigator ---------------
 chiedere domande su file di config per navigator

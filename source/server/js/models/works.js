@@ -44,7 +44,12 @@ const workSchema = new Schema({
 
   roomId: {
     type: Schema.Types.ObjectId
-  }
+  },
+
+  adoptionId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Adoption'
+  },
 });
 
 const Work = mongoose.model('Work', workSchema);
