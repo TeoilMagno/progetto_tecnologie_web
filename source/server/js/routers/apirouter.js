@@ -20,6 +20,7 @@ const itemController = require("../controllers/items");
 const workController = require("../controllers/works");
 const sectionController = require("../controllers/sections");
 const visitController = require("../controllers/visits");
+const orderController = require("../controllers/orders");
 
 // Middleware
 const auth = require("../middleware/roles");
@@ -435,6 +436,34 @@ apiRouter.put("/visits/:id", auth.isLoggedIn, async (req, res) => {
     res
       .status(status)
       .json({ error: error.message || "Errore interno del server" });
+  }
+});
+
+// ----------------------- ordini & checkout ----------------------------
+
+// Riceve il carrello dal frontend e processa l'acquisto
+apiRouter.post("/checkout", auth.isLoggedIn, async (req, res) => {
+  try {
+    const order = await orderController.processCheckout(req.user._id, req.body);
+    
+    res.status(201).json({ 
+      message: "Checkout completato con successo!", 
+      order: order 
+    });
+  } catch (error) {
+    console.error("Errore durante il checkout:", error);
+    res.status(500).json({ error: "Errore interno durante il processamento dell'ordine" });
+  }
+});
+
+// Restituisce lo storico ordini dell'utente loggato
+apiRouter.get("/my-orders", auth.isLoggedIn, async (req, res) => {
+  try {
+    const orders = await orderController.getUserOrders(req.user._id);
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Errore nel recupero degli ordini:", error);
+    res.status(500).json({ error: "Impossibile recuperare lo storico ordini" });
   }
 });
 

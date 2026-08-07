@@ -21,19 +21,22 @@
         <button class="btn text-white me-2 d-none" id="sidebarOpenBtn">
           <i class="bi bi-list fs-4"></i>
         </button>
-        <a class="navbar-brand d-flex align-items-center" href="/">
+        <a class="navbar-brand d-flex align-items-center" href="#">
           <i class="bi bi-bank me-2 text-white"></i>
           <span class="brand-text">ArtAround</span>
-          <span class="brand-subtitle ms-1 text-white opacity-75"
-            >Marketplace</span
-          >
+          <span class="brand-subtitle ms-1 text-white opacity-75">Marketplace</span>
         </a>
       </div>
-
-      <div
-        id="user-area"
-        class="text-white small d-flex align-items-center gap-2"
-      ></div>
+      
+      <div class="d-flex align-items-center">
+        <button class="btn text-white position-relative me-3" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+          <i class="bi bi-cart3 fs-4"></i>
+          <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
+            0
+          </span>
+        </button>
+        <div id="user-area" class="text-white small d-flex align-items-center gap-2"></div>
+      </div>
     </header>
 
     <div class="container-fluid">

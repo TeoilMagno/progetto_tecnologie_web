@@ -73,4 +73,9 @@ router.get('/navigator/museum/:musemId', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'dist', 'index.html'));
 }); 
 
+// pagina dello storico deli ordini
+router.get('/my-orders', auth.isLoggedInPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-orders.html'));
+});
+
 module.exports = router;

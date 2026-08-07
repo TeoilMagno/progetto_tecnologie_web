@@ -350,13 +350,16 @@ function renderItemsList(items, museumInfo) {
   container.innerHTML = "";
 
   if (items.length === 0) {
-    container.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessuna opera presente.</div>';
+    container.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessun articolo presente nel bookshop.</div>';
     return;
   }
 
-  const isAdmin = currentUser && currentUser.role === "admin";
+  const isCurator = currentUser && currentUser.role === "curator";
 
   items.forEach((item) => {
+    // Puliamo il nome da eventuali apici singoli che romperebbero la stringa onclick di JavaScript
+    const safeName = item.name.replace(/'/g, "\\'");
+
     container.innerHTML += `
       <div class="col-12 col-lg-6">
         <div class="card custom-card h-100">
@@ -375,10 +378,19 @@ function renderItemsList(items, museumInfo) {
                 </p>
                 <div class="d-flex justify-content-between align-items-end mt-auto pt-2 border-top border-secondary border-opacity-25">
                   <div class="fw-bold text-white fs-5">€ ${item.price.toFixed(2)}</div>
-                  ${isAdmin ? `
-                  <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="openEditModal('${item._id}')">
-                    <i class="bi bi-pencil me-1"></i> Modifica
-                  </button>` : ""}
+                  
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-gradient rounded-pill px-3" 
+                      onclick="addToCart({ id: '${item._id}', type: 'item', name: '${safeName}', price: ${item.price}, image: '${item.image || ''}' })">
+                      <i class="bi bi-cart-plus me-1"></i> Compra
+                    </button>
+
+                    ${isCurator ? `
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="openEditModal('${item._id}')">
+                      <i class="bi bi-pencil"></i>
+                    </button>` : ""}
+                  </div>
+
                 </div>
               </div>
             </div>

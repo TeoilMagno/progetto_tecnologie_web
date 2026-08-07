@@ -5,7 +5,7 @@ exports.isCurator = (req, res, next) => {
 
 exports.isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) return next();
-  return res.redirect('/login');
+  return res.status(401).json({ error: 'Devi effettuare il login per continuare.' });
 };
 
 // Middleware per le pagine HTML: se non è curatore, caricamento della pagina 403
