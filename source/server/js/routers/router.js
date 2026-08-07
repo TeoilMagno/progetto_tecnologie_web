@@ -47,7 +47,6 @@ router.get('/my-visits', auth.isLoggedInPage, (req, res) => {
   res.sendFile(filePath);
 });
 
-// TODO: verificare che qualcuno non possa entrare forzatamente in una vistia privata -> yeah you can
 // pagina di dettaglio delle visite
 router.get('/visit-details', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'visit-details.html'));
@@ -73,5 +72,10 @@ router.get('/my-museums', auth.isCuratorPage, (req, res) => {
 router.get('/navigator/visits/:visitId', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'dist', 'index.html'));
 }); 
+
+// pagina dello storico deli ordini
+router.get('/my-orders', auth.isLoggedInPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-orders.html'));
+});
 
 module.exports = router;

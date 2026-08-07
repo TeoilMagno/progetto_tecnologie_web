@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,7 @@
     <title>ArtAround - Gestione Museo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/marketplace/css/style.css" />
   </head>
   <body class="artaround-theme">
     <header class="navbar site-header sticky-top px-3">
@@ -29,9 +29,14 @@
           <h1 class="h3 text-info mb-1" id="editor-title">Modifica Museo</h1>
           <p class="small text-secondary mb-0">Aggiorna le informazioni del museo, le sue sezioni e le opere esposte.</p>
         </div>
-        <button class="btn btn-success" onclick="saveAllMuseumChanges()">
-          <i class="bi bi-check-lg me-1"></i> Salva Modifiche Museo
-        </button>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-danger" onclick="openDeleteMuseumModal()">
+            <i class="bi bi-trash me-1"></i> Elimina Museo
+          </button>
+          <button class="btn btn-success" onclick="saveAllMuseumChanges()">
+            <i class="bi bi-check-lg me-1"></i> Salva Modifiche Museo
+          </button>
+        </div>
       </div>
 
       <div class="card custom-card mb-4">
@@ -72,7 +77,7 @@
 
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="h5 text-white mb-0"><i class="bi bi-journal-album me-2"></i>Sezioni ed Opere</h4>
-        <button class="btn btn-sm btn-outline-info" onclick="addNewSectionPrompt()">
+        <button class="btn btn-sm btn-outline-info" onclick="openSectionModal()">
           <i class="bi bi-plus-lg me-1"></i> Aggiungi Nuova Sezione
         </button>
       </div>
@@ -125,15 +130,69 @@
           </div>
           <div class="modal-footer border-top-custom">
             <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
-            <button type="button" class="btn btn-gradient px-3" onclick="saveWorkFromModal()">Salva Opera</button>
+            <button type="button" id="save-work-btn" class="btn btn-gradient px-3" onclick="saveWorkFromModal()">Salva Opera</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="sectionModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content glass-modal text-white">
+          <div class="modal-header border-bottom-custom">
+            <h5 class="modal-title" id="sectionModalLabel">Gestisci Sezione</h5>
+            <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="section-form">
+              <input type="hidden" id="section-id-input" />
+              <div class="mb-3">
+                <label class="form-label small text-secondary">Nome Sezione *</label>
+                <input type="text" class="form-control glass-input" id="section-name-input" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-secondary">URL Immagine Sezione</label>
+                <input type="url" class="form-control glass-input" id="section-image-input" placeholder="https://..." />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer border-top-custom">
+            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+            <button type="button" class="btn btn-gradient px-3" onclick="saveSectionFromModal()">Salva Sezione</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="deleteMuseumModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content glass-modal border-danger text-white">
+          <div class="modal-header border-bottom-custom">
+            <h5 class="modal-title text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Elimina Museo</h5>
+            <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p class="small text-white-50">
+              Questa azione è <strong class="text-danger">irreversibile</strong>. Tutte le sezioni e le opere collegate verranno eliminate.
+            </p>
+            <p class="small text-white mb-2">
+              Per confermare, digita esattamente <code id="delete-target-text" class="text-warning"></code> nel campo sottostante:
+            </p>
+            <input type="text" class="form-control glass-input text-white" id="delete-confirm-input" placeholder="Scrivi qui..." autocomplete="off" />
+          </div>
+          <div class="modal-footer border-top-custom">
+            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+            <button type="button" id="confirm-delete-museum-btn" class="btn btn-danger px-3" disabled onclick="confirmDeleteMuseum()">
+              Conferma ed Elimina
+            </button>
           </div>
         </div>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/config.js"></script>
-    <script src="/js/personal-area.js"></script>
-    <script src="/js/edit-museum.js"></script>
+    <script src="/marketplace/js/config.js"></script>
+    <script src="/marketplace/js/personal-area.js"></script>
+    <script src="/marketplace/js/edit-museum.js"></script>
   </body>
-</html>1
+</html>
