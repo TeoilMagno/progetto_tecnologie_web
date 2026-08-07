@@ -20,7 +20,7 @@ export default function RoomLayer({ onBack, section, visitedWorks }) {
 
         //associamo i lavori filtrati con le loro coordinate contenute in section.works
         const finalWorks = worksToShow.map(work => {
-          const coords = section.works.find(sw => sw.work === work._id);
+          const coords = section.works.find(sw => sw.workId === work._id);
           
           return {
             ...work,

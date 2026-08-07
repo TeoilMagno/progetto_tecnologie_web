@@ -8,7 +8,7 @@ exports.saveSection = async (sectionData, museumId) => {
   
   if (sectionData.works && sectionData.works.length > 0) {
     const savedWorks = await Work.insertMany(sectionData.works);
-    workObjects = savedWorks.map(work => ({ work: work._id }));
+    workObjects = savedWorks.map(work => ({ workId: work._id }));
   }
 
   const section = new Section({
@@ -25,7 +25,7 @@ exports.saveSection = async (sectionData, museumId) => {
 exports.addWorkToSection = async (sectionId, workId) => {
   const updatedSection = await Section.findByIdAndUpdate(
     sectionId, 
-    { $push: { works: { work: workId } } }, 
+    { $push: { works: { workId: workId } } }, 
     { new: true, useFindAndModify: false } 
   );
 
@@ -41,7 +41,7 @@ exports.getWorksBySection = async (sectionId) => {
   const section = await Section.findById(sectionId);
   if (!section) throw new Error("Sezione non trovata");
 
-  const workIds = section.works.map(w => w.work);
+  const workIds = section.works.map(w => w.workId);
 
   return await getWorksById(workIds);
 }
@@ -118,7 +118,7 @@ exports.deleteSectionById = async (sectionId, museumId) => {
 
   if (section.works && section.works.length > 0) {
     for (const w of section.works) {
-      if (w.work) await deleteWorkById(w.work, museumId);
+      if (w.workId) await deleteWorkById(w.workId, museumId);
     }
   }
 

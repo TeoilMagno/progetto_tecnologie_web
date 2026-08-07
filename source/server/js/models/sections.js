@@ -54,7 +54,7 @@ const sectionSchema = new Schema({
 
   works: [
     {
-      work: {
+      workId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Work'
       },

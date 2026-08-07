@@ -292,7 +292,7 @@ async function mapHandleSave(event) {
 
       //prepariamo l'oggetto finale delle opere
       sectionWorksArray.push({
-        work: workId,
+        workId: workId,
         x: xValue,
         y: yValue
       });

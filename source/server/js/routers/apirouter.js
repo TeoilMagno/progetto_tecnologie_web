@@ -132,6 +132,7 @@ apiRouter.get("/sections/:id/works", async (req, res) => {
 
     if(!works) return res.status(404).json({ error: "Opere non trovate" });
 
+    console.log(works);
     res.json(works);
   } catch (err) {
     res.status(500).json({ error: err.message });

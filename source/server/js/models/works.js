@@ -43,8 +43,7 @@ const workSchema = new Schema({
   },
 
   roomId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Section.Room'
+    type: Schema.Types.ObjectId
   }
 });
 
