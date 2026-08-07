@@ -13,6 +13,7 @@ const { User } = require("../models/users");
 const Work = require("../models/works");
 const { Section } = require("../models/sections");
 const Museum = require("../models/museums");
+const Adoption = require("../models/adoptions");
 
 // Controllers
 const museumController = require("../controllers/museums");
@@ -21,6 +22,7 @@ const workController = require("../controllers/works");
 const sectionController = require("../controllers/sections");
 const visitController = require("../controllers/visits");
 const orderController = require("../controllers/orders");
+const adoptionController = require("../controllers/adoptions");
 
 // Middleware
 const auth = require("../middleware/roles");
@@ -132,7 +134,6 @@ apiRouter.get("/sections/:id/works", async (req, res) => {
 
     if(!works) return res.status(404).json({ error: "Opere non trovate" });
 
-    console.log(works);
     res.json(works);
   } catch (err) {
     res.status(500).json({ error: err.message });
