@@ -20,9 +20,9 @@ function renderUserArea() {
 
     // Definiamo le voci del menu in base al ruolo
     let menuOptions = `
-        ${currentUser.role === 'curator' ? `<li><a class="dropdown-item text-white" href="/my-museums"><i class="bi bi-bank me-2"></i>I miei musei</a></li>` : ''}
+        ${(currentUser.role === 'curator' || currentUser.role === "admin") ? `<li><a class="dropdown-item text-white" href="/my-museums"><i class="bi bi-bank me-2"></i>I miei musei</a></li>` : ''}
         <li><a class="dropdown-item" href="/my-visits"><i class="bi bi-map me-2"></i>Le mie visite</a></li>
-        ${currentUser.role === 'curator' ? `<li><a class="dropdown-item" href="/add-museum"><i class="bi bi-plus-square me-2"></i>Aggiungi museo</a></li>` : ''}
+        ${(currentUser.role === 'curator' || currentUser.role === "admin") ? `<li><a class="dropdown-item" href="/add-museum"><i class="bi bi-plus-square me-2"></i>Aggiungi museo</a></li>` : ''}
         <li><a class="dropdown-item" href="/create-visit"><i class="bi bi-plus-lg me-2"></i>Crea visita</a></li>
         <li><a class="dropdown-item text-white" href="/my-orders"><i class="bi bi-receipt me-2"></i>I miei ordini</a></li>
       `;

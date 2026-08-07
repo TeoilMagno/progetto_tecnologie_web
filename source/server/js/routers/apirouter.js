@@ -198,6 +198,47 @@ apiRouter.delete("/sections/:id", [auth.isCurator, auth.isMuseumOwner], async (r
   }
 });
 
+// -------------- rooms -----------------------
+
+// Aggiungi una stanza a una sezione
+// * nel body deve esserci il museumId
+apiRouter.post("/sections/:sectionId/rooms", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
+  try {
+    const { roomData, museumId } = req.body;
+    const newRoom = await sectionController.addRoomToSection(req.params.sectionId, roomData, museumId);
+    res.status(201).json(newRoom);
+  } catch (error) {
+    console.error("Errore aggiunta stanza:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Modifica (rinomina) una Stanza
+// * nel body deve esserci il museumId
+apiRouter.put("/sections/:sectionId/rooms/:roomId", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
+  try {
+    const { roomData, museumId } = req.body;
+    const updatedRoom = await sectionController.updateRoomInSection(req.params.sectionId, req.params.roomId, roomData, museumId);
+    res.json(updatedRoom);
+  } catch (error) {
+    console.error("Errore modifica stanza:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Elimina una Stanza
+// * nel body deve esserci il museumId
+apiRouter.delete("/sections/:sectionId/rooms/:roomId", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
+  try {
+    const { museumId } = req.body;
+    await sectionController.deleteRoomFromSection(req.params.sectionId, req.params.roomId, museumId);
+    res.json({ message: "Stanza eliminata con successo" });
+  } catch (error) {
+    console.error("Errore eliminazione stanza:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 //--------------- works -----------------------
 
 // ? ha senso dato che c'e' gia' la rotta per ottenere le opere di ogni sezione e ogni sezione di un museo
@@ -220,7 +261,6 @@ apiRouter.get("/museums/:id/works", async (req, res) => {
   }
 });
 
-// TODO: manca il lato frontend di queste rott e edi quelle per le sezioni
 // per la modifica di un'opera
 // * nel body deve esserci il museumId, potrei anche fare il controllo nel controller ma dovrei prendere l'oggetto dal db per poi dire che non
 apiRouter.put("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, res) => {
@@ -235,7 +275,7 @@ apiRouter.put("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, res
 
 // elimina un'opera 
 // * il frontend deve inveare l'ID della sezione da cui toglierla
-apiRouter.delete("/works/:id", auth.isCurator, async (req, res) => {
+apiRouter.delete("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, res) => {
   try {
     const workId = req.params.id;
     const { sectionId, museumId } = req.body; 
@@ -257,19 +297,20 @@ apiRouter.delete("/works/:id", auth.isCurator, async (req, res) => {
 //------------------ form ------------------------
 
 // Rotta per creare e aggiungere un'opera sul db
-// * il frontend deve inviare museumId
+// * il frontend deve inviare museumId e roomId (se l'opera è in una stanza)
 apiRouter.post("/add-work", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
   try {
     const { work, sectionId, museumId } = req.body;
 
-    // salva la nuova opera su MongoDB
+    // Salviamo la nuova opera inserendo esplicitamente il roomId e il museumId verificato
     const newWork = new Work({
       ...work,
-      museumId: museumId // evitiamo che l'utente si inventi cose
+      museumId: museumId, // Evitiamo che l'utente si inventi cose
+      roomId: work.roomId || null // Valorizza il campo roomId sul DB!
     });
     const savedWork = await newWork.save();
 
-    // collega l'ID dell'opera alla sezione tramite il controller
+    // Collega l'ID dell'opera alla sezione tramite il controller
     await sectionController.addWorkToSection(sectionId, savedWork._id);
 
     res
