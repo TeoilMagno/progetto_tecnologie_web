@@ -2,6 +2,7 @@
 let currentVisitCart = []; // Array che conterrà gli ID (o gli oggetti) delle opere
 let currentMuseumId = null;
 let editingVisitId = null;
+let isCurrentVisitDraft = true;
 
 document.addEventListener("DOMContentLoaded", async () => {
   // inizializza il drag & drop
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const preselectedMuseumId = urlParams.get("museumId");
 
   // Assegniamo la variabile globale
-  editingVisitId = urlParams.get("editId");
+  editingVisitId = urlParams.get("editId") || urlParams.get("edit");
 
   if (preselectedMuseumId) {
     currentMuseumId = preselectedMuseumId;
@@ -70,7 +71,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("visit-price").value = draft.price || "";
         document.getElementById("visit-public").checked = draft.isPublic || false;
 
-        document.getElementById("save-visit-btn").innerText = "Aggiorna Bozza";
+        isCurrentVisitDraft = draft.isDraft !== false;
+
+        const saveVisitBtn = document.getElementById("save-visit-btn");
+        const saveDraftBtn = document.getElementById("save-draft-btn");
+
+        if (isCurrentVisitDraft) {
+          if (saveVisitBtn) saveVisitBtn.innerText = "Aggiorna Bozza";
+          if (saveDraftBtn) saveDraftBtn.classList.remove("d-none");
+        } else {
+          if (saveVisitBtn) saveVisitBtn.innerText = "Aggiorna Visita";
+          // Nascondiamo il tasto Salva Bozza se è una visita definitiva
+          if (saveDraftBtn) saveDraftBtn.classList.add("d-none"); 
+        }
+
+        const deleteVisitBtn = document.getElementById("delete-visit-btn");
+        if (deleteVisitBtn) {
+          deleteVisitBtn.classList.remove("d-none");
+          deleteVisitBtn.innerHTML = isCurrentVisitDraft ? '<i class="bi bi-trash me-1"></i> Elimina Bozza' : '<i class="bi bi-trash me-1"></i> Elimina Visita';
+        }
 
         if (currentMuseumId) {
           loadMuseumWorks(currentMuseumId);
@@ -318,20 +337,24 @@ async function submitVisit(isSavingAsDraft = false) {
       );
     }
 
-    // Messaggio dinamico in base all'azione scelta
+    // Recuperiamo l'ID univoco della visita (sia in caso di modifica che di nuova creazione)
+    const finalVisitId = editingVisitId || (data.visit ? data.visit._id : data._id);
+
+    currentVisitCart = [];
+    localStorage.setItem("visitsChanged", "true");
+
     if (isSavingAsDraft) {
       alert("Bozza salvata con successo!");
+      window.location.href = "/my-visits"; // Le bozze rimangono nella lista "Le mie visite"
     } else {
       alert(
         isPublic
           ? "Visita pubblicata sul Marketplace!"
-          : "Visita privata salvata con successo!",
+          : "Visita privata salvata con successo!"
       );
+      // Reindirizza direttamente alla pagina di dettaglio della visita creata/modificata!
+      window.location.href = `/visit-details?id=${finalVisitId}`;
     }
-
-    currentVisitCart = [];
-    localStorage.setItem("visitsChanged", "true");
-    window.location.href = "/my-visits";
   } catch (error) {
     console.error("Errore salvataggio:", error);
     alert(error.message);
@@ -360,6 +383,9 @@ function triggerAutoSave() {
 }
 
 async function autoSaveDraft() {
+  // blocca l'autosalvataggio se la visita è definitiva (pubblica o privata) -> impedisce di caricare sul marketplace dati non definitivi
+  if (!isCurrentVisitDraft) return;
+
   // Se non c'è un museo, non possiamo collegare la visita a nulla
   if (!currentMuseumId) return;
 
@@ -419,5 +445,40 @@ async function autoSaveDraft() {
     }
   } catch (error) {
     console.error("Errore nell'autosalvataggio in background", error);
+  }
+}
+
+// funzione per eliminare definitivamente la visita/bozza
+async function deleteVisit() {
+  if (!editingVisitId) return; // Se non stiamo modificando nulla, esci
+  
+  const confirmMsg = isCurrentVisitDraft 
+    ? "Sei sicuro di voler eliminare questa bozza?" 
+    : "Attenzione: sei sicuro di voler eliminare definitivamente questa visita? Verrà rimossa dal marketplace.";
+    
+  if (!confirm(confirmMsg)) return;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/visits/${editingVisitId}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      alert("Eliminata con successo.");
+      
+      // Resettiamo il localStorage per forzare il refresh nella pagina "Le mie visite"
+      localStorage.setItem("visitsChanged", "true");
+      
+      // Disattiviamo il timer di autosalvataggio per evitare che resusciti la bozza!
+      clearTimeout(autoSaveTimeout); 
+      
+      window.location.href = "/my-visits";
+    } else {
+      const data = await response.json();
+      alert(data.error || "Errore durante l'eliminazione.");
+    }
+  } catch (error) {
+    console.error("Errore eliminazione:", error);
+    alert("Errore di connessione con il server.");
   }
 }

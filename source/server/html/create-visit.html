@@ -114,19 +114,24 @@
 
           </div>
           
-          <div class="modal-footer border-top-custom d-flex justify-content-between">
-            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
-            
-            <div class="d-flex gap-2">
-              <button type="button" class="btn btn-glass text-warning border-warning px-3" id="save-draft-btn" onclick="submitVisit(true)">
-                <i class="bi bi-pencil-square me-1"></i> Salva bozza
+          <div class="card-footer bg-transparent border-top border-secondary border-opacity-25 p-3">
+              <button
+                id="save-visit-btn"
+                class="btn btn-gradient w-100 disabled"
+                data-bs-toggle="modal" 
+                data-bs-target="#saveVisitModal"
+              >
+                Procedi e Salva
               </button>
               
-              <button type="button" class="btn btn-gradient px-3" id="confirm-save-visit-btn" onclick="submitVisit(false)">
-                Salva
+              <button
+                id="delete-visit-btn"
+                class="btn btn-outline-danger w-100 mt-2 d-none"
+                onclick="deleteVisit()"
+              >
+                <i class="bi bi-trash me-1"></i> Elimina Bozza
               </button>
             </div>
-          </div>
 
         </div>
       </div>

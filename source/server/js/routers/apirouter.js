@@ -386,6 +386,7 @@ apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
 apiRouter.get("/current-user", (req, res) => {
   if (req.isAuthenticated()) {
     res.status(200).json({
+      _id: req.user._id,
       username: req.user.username || req.user.name,
       role: req.user.role,
     });
@@ -492,6 +493,18 @@ apiRouter.put("/visits/:id", auth.isLoggedIn, async (req, res) => {
     res
       .status(status)
       .json({ error: error.message || "Errore interno del server" });
+  }
+});
+
+// rotta per eliminare una visita o bozza
+apiRouter.delete("/visits/:id", auth.isLoggedIn, async (req, res) => {
+  try {
+    await visitController.deleteVisitById(req.params.id, req.user);
+    res.json({ message: "Visita eliminata con successo" });
+  } catch (error) {
+    console.error("Errore eliminazione visita:", error);
+    const status = error.statusCode || 500;
+    res.status(status).json({ error: error.message || "Errore interno del server" });
   }
 });
 

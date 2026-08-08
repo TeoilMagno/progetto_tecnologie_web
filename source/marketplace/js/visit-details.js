@@ -37,6 +37,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const visit = await response.json();
 
+    // recuperiamo l'utente corrente
+    let currentUser = null;
+    try {
+      const userRes = await fetch(`${API_BASE_URL}/current-user`);
+      if (userRes.ok) {
+        currentUser = await userRes.json();
+      }
+    } catch (e) {
+      console.warn("Utente non autenticato", e);
+    }
+
+    // se l'utente è il creatore della visita o un admin, mostriamo il tasto Modifica
+    if (currentUser) {
+      const creatorId = visit.creator?._id || visit.creator;
+      if (currentUser._id === creatorId || currentUser.role === 'admin') {
+        const editBtn = document.getElementById("edit-visit-btn");
+        if (editBtn) editBtn.classList.remove("d-none");
+      }
+    }
+    
     // popoliamo il Banner superiore
     const banner = document.getElementById("visit-banner");
     if (visit.coverImage) {
@@ -50,9 +70,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     document.getElementById("visit-main-title").innerText = visit.title;
-    document.getElementById("visit-museum-sub").innerText = visit.museumId
-      ? `Presso: ${visit.museumId.name}`
-      : "Museo non specificato";
+    const museumSub = document.getElementById("visit-museum-sub");
+    if (visit.museumId) {
+      museumSub.innerText = `Presso: ${visit.museumId.name || 'Museo'}`;
+      museumSub.dataset.museumId = visit.museumId._id || visit.museumId; // AGGIUNTO: Salva l'ID nel dataset
+    } else {
+      museumSub.innerText = "Museo non specificato";
+    }
 
     if (visit.description) {
       document.getElementById("visit-description").innerText =
@@ -114,3 +138,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       `<div class="alert alert-danger bg-transparent text-danger border-danger">${error.message}</div>`;
   }
 });
+
+// reindirizza all'editor passando l'ID della visita e del museo
+function editVisit() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const visitId = urlParams.get("id");
+  const museumId = document.getElementById("visit-museum-sub")?.dataset?.museumId || "";
+  
+  window.location.href = `/create-visit?edit=${visitId}&museumId=${museumId}`;
+}

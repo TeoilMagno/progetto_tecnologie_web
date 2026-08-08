@@ -95,3 +95,22 @@ exports.getPublicVisits = async () => {
 
   return visits;
 };
+
+exports.deleteVisitById = async (visitId, user) => {
+  const query = { _id: visitId };
+
+  // Se NON è admin, limitiamo l'eliminazione alla sole visite create dall'utente
+  if (user.role !== 'admin') {
+    query.creator = user._id;
+  }
+
+  const deletedVisit = await Visit.findOneAndDelete(query);
+
+  if (!deletedVisit) {
+    const error = new Error("Visita non trovata o non sei autorizzato a eliminarla");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  return deletedVisit;
+};

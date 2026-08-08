@@ -17,9 +17,16 @@
           <h1 class="h2 mb-1" id="visit-main-title">Caricamento...</h1>
           <p class="small text-opacity-75 text-white mb-0" id="visit-museum-sub"></p>
         </div>
-        <button class="btn btn-outline-light btn-sm" onclick="goBackToVisits()">
-          <i class="bi bi-arrow-left me-1"></i> Torna alle visite
-        </button>
+        
+        <div class="d-flex gap-2">
+          <button id="edit-visit-btn" class="btn btn-warning btn-sm d-none" onclick="editVisit()">
+            <i class="bi bi-pencil me-1"></i> Modifica
+          </button>
+          <button class="btn btn-outline-light btn-sm" onclick="goBackToVisits()">
+            <i class="bi bi-arrow-left me-1"></i> Torna alle visite
+          </button>
+        </div>
+
       </div>
     </div>
 
