@@ -7,7 +7,18 @@ async function fetchCurrentUser() {
   } catch (e) {
     currentUser = null;
   }
+
+  // Sincronizza il carrello guest se l'utente ha appena fatto il login
+  if (typeof syncGuestCartToUser === 'function') {
+    syncGuestCartToUser();
+  }
+
   renderUserArea();
+
+  // Aggiorna la vista del carrello con la chiave dell'utente corretto
+  if (typeof updateCartUI === 'function') {
+    updateCartUI();
+  }
 }
 
 function renderUserArea() {

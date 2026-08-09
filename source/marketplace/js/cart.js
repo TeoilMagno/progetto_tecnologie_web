@@ -1,14 +1,46 @@
-const CART_KEY = 'artaround_cart';
+// Calcola la chiave del carrello in base all'utente corrente
+function getCartKey() {
+  if (typeof currentUser !== 'undefined' && currentUser && currentUser._id) {
+    return `artaround_cart_${currentUser._id}`;
+  }
+  return 'artaround_cart_guest';
+}
 
-// 1. Recupera il carrello dal localStorage
+// 1. Recupera il carrello dal localStorage per l'utente/ospite corrente
 function getCart() {
-  return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+  return JSON.parse(localStorage.getItem(getCartKey())) || [];
 }
 
 // 2. Salva il carrello e aggiorna la UI
 function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  localStorage.setItem(getCartKey(), JSON.stringify(cart));
   updateCartUI();
+}
+
+// 2b. Sincronizza/trasferisce il carrello da Ospite ad Utente loggato dopo il login
+function syncGuestCartToUser() {
+  if (typeof currentUser === 'undefined' || !currentUser || !currentUser._id) return;
+
+  const guestCart = JSON.parse(localStorage.getItem('artaround_cart_guest')) || [];
+  if (guestCart.length > 0) {
+    const userKey = `artaround_cart_${currentUser._id}`;
+    const userCart = JSON.parse(localStorage.getItem(userKey)) || [];
+
+    // Uniamo il carrello guest a quello dell'utente evitando duplicati di visite
+    guestCart.forEach(guestItem => {
+      const existing = userCart.find(i => i.id === guestItem.id && i.type === guestItem.type);
+      if (existing) {
+        if (guestItem.type !== 'visit') {
+          existing.quantity += guestItem.quantity;
+        }
+      } else {
+        userCart.push(guestItem);
+      }
+    });
+
+    localStorage.setItem(userKey, JSON.stringify(userCart));
+    localStorage.removeItem('artaround_cart_guest'); // Svuota il carrello guest temporaneo
+  }
 }
 
 // 3. Aggiungi un elemento (Visita o Item)
