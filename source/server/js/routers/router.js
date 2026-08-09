@@ -78,4 +78,14 @@ router.get('/my-orders', auth.isLoggedInPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-orders.html'));
 });
 
+// pagina delle adozioni in corso e completate di un curatore
+router.get('/my-adoptions', auth.isCuratorPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-adoptions.html'));
+});
+
+// pagina delle adozioni in corso e completate di un curatore
+router.get('/admin-dashboard', auth.isAdminPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'admin-dashboard.html'));
+});
+
 module.exports = router;

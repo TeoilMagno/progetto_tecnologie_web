@@ -16,7 +16,7 @@
     </div>
     <h1 class="h3 fw-bold mb-2">Area Riservata (403)</h1>
     <p class="text-secondary mb-4">
-      Non hai i permessi necessari per accedere a questa pagina. Questa funzionalità è configurata esclusivamente per gli account <strong>Curatore</strong>.
+      Non hai i permessi necessari per accedere a questa pagina. Questa funzionalità è configurata esclusivamente per gli account <strong id="required-role-text">Curatore</strong>.
     </p>
     
     <div class="d-grid gap-2">
@@ -34,6 +34,13 @@
   </div>
 
   <script src="/js/config.js"></script>
-
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Se l'utente ha cercato di accedere a una rotta admin, mostriamo 'Amministratore'
+      if (window.location.pathname.toLowerCase().includes('admin')) {
+        document.getElementById('required-role-text').innerText = 'Amministratore';
+      }
+    });
+  </script>
 </body>
 </html>
