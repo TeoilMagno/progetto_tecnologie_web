@@ -4,7 +4,10 @@ const crypto = require('crypto');
 const connectDB = async () => {
   const dbURI = process.env.DB_URI;
 
-  await mongoose.connect(dbURI, { serverSelectionTimeoutMS: 5000 }) // tenta la connessione per 5 secondi
+  await mongoose.connect(dbURI, { 
+    dbName: 'ArtAround',
+    serverSelectionTimeoutMS: 5000 
+  }) // tenta la connessione per 5 secondi
    .then((result) => {
       console.log("connected to db");
  })

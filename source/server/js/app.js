@@ -63,7 +63,7 @@ app.use('/vendor/sortablejs', express.static(sortablePath));
 
 // ─── 404 Handler ───────────────────────────────────────────────────────────
 app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, '..', '..', 'html', '404.html'));
+  res.status(404).sendFile(path.join(__dirname, '..', 'html', '404.html'));
 });
 
 app.listen(8000, () => {

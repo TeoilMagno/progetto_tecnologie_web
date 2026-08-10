@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
 
 // Favicon route
 router.get('/favicon.ico', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'marketplace', 'favicon.svg'));
+  res.sendFile(path.join(__dirname, '..', '..', '..', 'marketplace', 'favicon.svg'));
 });
 
 // Per aggiungere un museo

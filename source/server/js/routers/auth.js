@@ -27,22 +27,29 @@ router.post('/signup', async (req, res, next) => {
     crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', async (err, hash) => { // crittazione della password
       if (err) return next(err);
 
-      // Recuperiamo la scelta fatta dal form
-      const requestedRole = req.body.requested_role;
-      const initialCuratorStatus = requestedRole === 'curator' ? 'pending' : 'none';
+      try {
+        // Recuperiamo la scelta fatta dal form
+        const requestedRole = req.body.requested_role;
+        const initialCuratorStatus = requestedRole === 'curator' ? 'pending' : 'none';
 
-      const user = await User.create({
-        username: req.body.username,
-        password: hash,
-        salt: salt,
-        role: 'visitor', // Indipendentemente da cosa chiede, nasce come visitatore
-        curator_status: initialCuratorStatus // Salviamo la richiesta in attesa per l'admin
-      });
+        const user = await User.create({
+          username: req.body.username,
+          password: hash,
+          salt: salt,
+          role: 'visitor', // Indipendentemente da cosa chiede, nasce come visitatore
+          curator_status: initialCuratorStatus // Salviamo la richiesta in attesa per l'admin
+        });
 
-      req.login(user, err => { // gestisce direttamente l'accesso serializzando l'utente nella sessione
-        if (err) return next(err);
-        res.redirect('/');
-      });
+        req.login(user, err => { // gestisce direttamente l'accesso serializzando l'utente nella sessione
+          if (err) return next(err);
+          res.redirect('/');
+        });
+      } catch (dbErr) {
+        if (dbErr.code === 11000) {
+          return res.redirect('/signup?error=username_taken');
+        }
+        return next(dbErr);
+      }
     });
   } catch (err) { next(err); }
 });
