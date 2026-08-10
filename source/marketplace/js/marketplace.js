@@ -174,18 +174,25 @@ function renderMuseumDashboard(museumInfo) {
   container.innerHTML = `
     <div class="w-100 mb-4 px-0">
       <div class="row g-0 border-bottom border-secondary border-opacity-25 p-0 w-100 mx-0" style="background: transparent;">
-        <div class="col-6 p-0">
+        <div class="col-4 p-0">
           <button id="tab-works" 
                   class="btn w-100 py-2 small rounded-top-3 border-0 ${currentView === 'works' ? 'tab-custom-active' : 'btn-glass text-secondary'}" 
                   onclick="switchMuseumView('works', '${museumInfo._id}')">
             <i class="bi bi-palette me-2"></i>Opere Esposte
           </button>
         </div>
-        <div class="col-6 p-0">
+        <div class="col-4 p-0">
           <button id="tab-items" 
                   class="btn w-100 py-2 small rounded-top-3 border-0 ${currentView === 'items' ? 'tab-custom-active' : 'btn-glass text-secondary'}" 
                   onclick="switchMuseumView('items', '${museumInfo._id}')">
             <i class="bi bi-bag-check me-2"></i>Bookshop & Servizi
+          </button>
+        </div>
+        <div class="col-4 p-0">
+          <button id="tab-visits" 
+                  class="btn w-100 py-2 small rounded-top-3 border-0 ${currentView === 'visits' ? 'tab-custom-active' : 'btn-glass text-secondary'}" 
+                  onclick="switchMuseumView('visits', '${museumInfo._id}')">
+            <i class="bi bi-map me-2"></i>Visite Guidate
           </button>
         </div>
       </div>
@@ -246,21 +253,26 @@ function switchMuseumView(view, museumId) {
   
   const tabWorks = document.getElementById("tab-works");
   const tabItems = document.getElementById("tab-items");
+  const tabVisits = document.getElementById("tab-visits");
   
-  if (!tabWorks || !tabItems) return;
+  if (!tabWorks || !tabItems || !tabVisits) return;
+  
+  tabWorks.classList.remove("tab-custom-active");
+  tabWorks.classList.add("btn-glass", "text-secondary");
+  tabItems.classList.remove("tab-custom-active");
+  tabItems.classList.add("btn-glass", "text-secondary");
+  tabVisits.classList.remove("tab-custom-active");
+  tabVisits.classList.add("btn-glass", "text-secondary");
   
   if (view === 'works') {
     tabWorks.classList.remove("btn-glass", "text-secondary");
     tabWorks.classList.add("tab-custom-active");
-    
-    tabItems.classList.remove("tab-custom-active");
-    tabItems.classList.add("btn-glass", "text-secondary");
-  } else {
+  } else if (view === 'items') {
     tabItems.classList.remove("btn-glass", "text-secondary");
     tabItems.classList.add("tab-custom-active");
-    
-    tabWorks.classList.remove("tab-custom-active");
-    tabWorks.classList.add("btn-glass", "text-secondary");
+  } else if (view === 'visits') {
+    tabVisits.classList.remove("btn-glass", "text-secondary");
+    tabVisits.classList.add("tab-custom-active");
   }
   
   loadMuseumSubView(view, museumId); //
@@ -277,25 +289,84 @@ async function loadMuseumSubView(view, museumId) {
     </div>`;
 
   try {
-    // Scegliamo l'endpoint corretto (opere o articoli di vendita)
-    const endpoint = view === 'works' 
-      ? `${API_BASE_URL}/museums/${museumId}/works` 
-      : `${API_BASE_URL}/museums/${museumId}/items`;
-
-    const response = await fetch(endpoint);
-    if (!response.ok) throw new Error("Errore nel caricamento dei dati");
-    const data = await response.json();
-
-    if (view === 'works') {
-      renderWorksList(data); // Rendering per le Opere
+    if (view === 'visits') {
+      const response = await fetch(`${API_BASE_URL}/visits`);
+      if (!response.ok) throw new Error("Errore nel caricamento delle visite");
+      const allVisits = await response.json();
+      
+      // Filtriamo per questo museo
+      const museumVisits = allVisits.filter(v => v.isPublic !== false && (v.museumId?._id === museumId || v.museumId === museumId));
+      renderVisitsListForMuseum(museumVisits);
     } else {
-      currentItems = data; // Conserviamo gli articoli per l'editor
-      renderItemsList(data); // Il tuo vecchio rendering per gli Articoli (in vendita)
+      // Scegliamo l'endpoint corretto (opere o articoli di vendita)
+      const endpoint = view === 'works' 
+        ? `${API_BASE_URL}/museums/${museumId}/works` 
+        : `${API_BASE_URL}/museums/${museumId}/items`;
+
+      const response = await fetch(endpoint);
+      if (!response.ok) throw new Error("Errore nel caricamento dei dati");
+      const data = await response.json();
+
+      if (view === 'works') {
+        renderWorksList(data); // Rendering per le Opere
+      } else {
+        currentItems = data; // Conserviamo gli articoli per l'editor
+        renderItemsList(data); // Il tuo vecchio rendering per gli Articoli (in vendita)
+      }
     }
   } catch (error) {
     console.error(error);
     subContainer.innerHTML = `<div class="col-12 text-center text-danger small py-3">Impossibile caricare i contenuti: ${error.message}</div>`;
   }
+}
+
+function renderVisitsListForMuseum(visits) {
+  const container = document.getElementById("museum-display-area");
+  if (!container) return;
+  container.innerHTML = "";
+
+  if (visits.length === 0) {
+    container.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessuna visita guidata disponibile per questo museo.</div>';
+    return;
+  }
+
+  visits.forEach((visit) => {
+    const coverImg =
+      visit.coverImage ||
+      (visit.works && visit.works.length > 0 && visit.works[0].image
+        ? visit.works[0].image
+        : "/img/fallback-visit.jpg");
+
+    const safeTitle = visit.title.replace(/'/g, "\\'");
+
+    container.innerHTML += `
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 custom-card cursor-pointer overflow-hidden" onclick="window.location.href='/visit-details?id=${visit._id}'">
+          <div style="height: 160px; overflow: hidden; position: relative;">
+            <img src="${coverImg}" class="card-img-top h-100 w-100" style="object-fit: cover;" alt="${visit.title}">
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to top, rgba(18,18,28,0.9), transparent);"></div>
+          </div>
+
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-info mb-2">${visit.title}</h5>
+            <p class="card-text small text-secondary flex-grow-1">${visit.description || "Nessuna descrizione disponibile."}</p>
+            
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-25">
+              <span class="badge badge-tag"><i class="bi bi-collection me-1"></i>${visit.works ? visit.works.length : 0} Opere</span>
+              ${visit.price > 0 ? `<span class="fw-bold text-white">€ ${visit.price.toFixed(2)}</span>` : `<span class="fw-bold text-success">GRATIS</span>`}
+            </div>
+
+            <div class="mt-3">
+              <button class="btn btn-sm btn-gradient w-100 py-2 rounded-pill" 
+                onclick="event.stopPropagation(); addToCart({ id: '${visit._id}', type: 'visit', name: '${safeTitle}', price: ${visit.price}, image: '${coverImg}' })">
+                <i class="bi bi-cart-plus me-1"></i> Acquista Visita
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>`;
+  });
 }
 
 function renderWorksList(works) {

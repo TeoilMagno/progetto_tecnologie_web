@@ -3,6 +3,8 @@ let currentVisitCart = []; // Array che conterrà gli ID (o gli oggetti) delle o
 let currentMuseumId = null;
 let editingVisitId = null;
 let isCurrentVisitDraft = true;
+let allMuseumWorks = [];
+let allMuseumSections = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
   // inizializza il drag & drop
@@ -126,46 +128,160 @@ async function loadMuseumWorks(museumId) {
   catalogArea.innerHTML = `<div class="col-12 text-center mt-4"><div class="spinner-border text-info"></div></div>`;
 
   try {
+    // 1. Fetch works
     const worksRes = await fetch(`${API_BASE_URL}/museums/${museumId}/works`);
-    const works = await worksRes.json();
+    allMuseumWorks = await worksRes.json();
+
+    // 2. Fetch sections
+    try {
+      const sectionsRes = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`);
+      allMuseumSections = await sectionsRes.json();
+    } catch (e) {
+      console.warn("Impossibile caricare le sezioni per il raggruppamento:", e);
+      allMuseumSections = [];
+    }
 
     museumNameLabel.innerText = "Catalogo caricato";
 
-    if (works.length === 0) {
-      catalogArea.innerHTML = `<p class="text-secondary">Questo museo non ha ancora opere disponibili.</p>`;
-      return;
-    }
-
-    catalogArea.innerHTML = "";
-    works.forEach((work) => {
-      const workImage = work.image || "/img/fallback-work.jpg";
-      const workAuthor = work.author || "Autore sconosciuto";
-
-      catalogArea.innerHTML += `
-                <div class="col">
-                    <div class="card custom-card h-100">
-                        <div class="row g-0 h-100">
-                            <div class="col-4">
-                                <img src="${workImage}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 120px; width: 100%;">
-                            </div>
-                            <div class="col-8">
-                                <div class="card-body p-2 d-flex flex-column h-100">
-                                    <h6 class="card-title mb-1 text-truncate">${work.name}</h6>
-                                    <p class="small text-secondary mb-2" style="font-size: 0.75rem;">${workAuthor}</p>
-                                    <button class="btn btn-sm btn-outline-light mt-auto w-100" onclick="addToVisit('${work._id}', '${work.name.replace(/'/g, "\\'")}')">
-                                        <i class="bi bi-plus"></i> Aggiungi alla visita
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-    });
+    renderCatalog();
   } catch (error) {
     console.error("Dettaglio errore intercettato:", error);
     catalogArea.innerHTML = `<p class="text-danger">Errore nel caricamento delle opere.</p>`;
   }
+}
+
+function renderCatalog() {
+  const catalogArea = document.getElementById("works-catalog-area");
+  if (!catalogArea) return;
+
+  if (allMuseumWorks.length === 0) {
+    catalogArea.innerHTML = `<p class="text-secondary col-12">Questo museo non ha ancora opere disponibili.</p>`;
+    return;
+  }
+
+  // Costruisci mappa roomId -> { roomName, sectionName, sectionImage }
+  const roomMap = {};
+  allMuseumSections.forEach(section => {
+    const secName = section.name;
+    const secImg = section.image || "/img/fallback-section.jpg";
+    if (section.rooms) {
+      section.rooms.forEach(room => {
+        roomMap[room._id] = {
+          roomName: room.name,
+          sectionName: secName,
+          sectionImage: secImg
+        };
+      });
+    }
+  });
+
+  // Raggruppa le opere per Sezione e poi per Stanza
+  const groups = {}; // { sectionName: { sectionImage, rooms: { roomName: [works...] } } }
+
+  allMuseumWorks.forEach(work => {
+    const roomInfo = roomMap[work.roomId];
+    const secName = roomInfo ? roomInfo.sectionName : "Opere non collocate";
+    const secImg = roomInfo ? roomInfo.sectionImage : "/img/fallback-section.jpg";
+    const roomName = roomInfo ? roomInfo.roomName : "Senza stanza";
+
+    if (!groups[secName]) {
+      groups[secName] = {
+        sectionImage: secImg,
+        rooms: {}
+      };
+    }
+
+    if (!groups[secName].rooms[roomName]) {
+      groups[secName].rooms[roomName] = [];
+    }
+
+    groups[secName].rooms[roomName].push(work);
+  });
+
+  catalogArea.innerHTML = "";
+
+  // Renderizza ogni gruppo di sezione
+  Object.keys(groups).forEach(secName => {
+    const group = groups[secName];
+    const roomKeys = Object.keys(group.rooms);
+    
+    let sectionHtml = `
+      <div class="col-12 mb-4">
+        <div class="glass-panel p-3 position-relative overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
+          <h4 class="text-info mb-3 border-bottom border-secondary border-opacity-25 pb-2" style="font-size: 1.15rem;">
+            <i class="bi bi-tag-fill me-2"></i>${secName}
+          </h4>
+          
+          <!-- Foto della sezione in basso a destra, fusa con lo sfondo -->
+          <div style="position: absolute; bottom: 10px; right: 10px; width: 80px; height: 80px; opacity: 0.15; pointer-events: none; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+            <img src="${group.sectionImage}" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+
+          <div class="row g-3">
+    `;
+
+    roomKeys.forEach(roomName => {
+      const worksInRoom = group.rooms[roomName];
+      sectionHtml += `
+        <div class="col-12 mb-1">
+          <h5 class="text-secondary small mb-2" style="font-size: 0.8rem;"><i class="bi bi-door-open me-1"></i> Stanza: ${roomName}</h5>
+          <div class="row row-cols-1 row-cols-md-2 g-2">
+      `;
+
+      worksInRoom.forEach(work => {
+        const workImage = work.image || "/img/fallback-work.jpg";
+        const workAuthor = work.author || "Autore sconosciuto";
+        const isAdded = currentVisitCart.some(item => item.id === work._id);
+
+        let buttonHtml = "";
+        if (isAdded) {
+          buttonHtml = `
+            <button class="btn btn-sm btn-success mt-auto w-100" disabled style="background-color: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #10b981;">
+              <i class="bi bi-check-lg"></i> Già aggiunto
+            </button>
+          `;
+        } else {
+          buttonHtml = `
+            <button class="btn btn-sm btn-outline-light mt-auto w-100" onclick="addToVisit('${work._id}', '${work.name.replace(/'/g, "\\'")}')">
+              <i class="bi bi-plus"></i> Aggiungi alla visita
+            </button>
+          `;
+        }
+
+        sectionHtml += `
+          <div class="col">
+            <div class="card custom-card h-100" style="background: rgba(255,255,255,0.01); border-color: rgba(255,255,255,0.05);">
+              <div class="row g-0 h-100">
+                <div class="col-4">
+                  <img src="${workImage}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 100px; width: 100%;">
+                </div>
+                <div class="col-8">
+                  <div class="card-body p-2 d-flex flex-column h-100">
+                    <h6 class="card-title mb-1 text-truncate" style="font-size: 0.85rem; color: #fff;">${work.name}</h6>
+                    <p class="small text-secondary mb-2" style="font-size: 0.72rem;">${workAuthor}</p>
+                    ${buttonHtml}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      sectionHtml += `
+          </div>
+        </div>
+      `;
+    });
+
+    sectionHtml += `
+          </div>
+        </div>
+      </div>
+    `;
+
+    catalogArea.innerHTML += sectionHtml;
+  });
 }
 
 async function showMuseumSelector() {
@@ -230,6 +346,9 @@ function renderVisitCart() {
   if (currentVisitCart.length === 0) {
     emptyMsg.classList.remove("d-none");
     saveBtn.classList.add("disabled");
+    if (typeof renderCatalog === "function" && allMuseumWorks.length > 0) {
+      renderCatalog();
+    }
     return;
   }
 
@@ -249,6 +368,10 @@ function renderVisitCart() {
             </li>
         `;
   });
+
+  if (typeof renderCatalog === "function" && allMuseumWorks.length > 0) {
+    renderCatalog();
+  }
 }
 
 // Aggiunto il parametro isSavingAsDraft (di default false)

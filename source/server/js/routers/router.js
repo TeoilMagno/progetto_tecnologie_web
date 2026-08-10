@@ -18,6 +18,11 @@ router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'..','..','html','index.html'));
 });
 
+// Favicon route
+router.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'marketplace', 'favicon.svg'));
+});
+
 // Per aggiungere un museo
 router.get('/add-museum', auth.isCuratorPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'add-museum.html');

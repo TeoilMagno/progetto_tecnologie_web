@@ -61,6 +61,11 @@ app.use('/api', apiRouter);
 const sortablePath = path.join(__dirname, '..', '..', '..', 'node_modules', 'sortablejs');
 app.use('/vendor/sortablejs', express.static(sortablePath));
 
+// ─── 404 Handler ───────────────────────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, '..', '..', 'html', '404.html'));
+});
+
 app.listen(8000, () => {
   console.log(`listening on port: 8000`);
 })
