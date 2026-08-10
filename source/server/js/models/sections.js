@@ -25,11 +25,6 @@ const roomSchema = new Schema({
     required: true
   },
 
-  color: {
-    type: String,
-    required: true
-  },
-
   shape: {
     type: shapeSchema, //usa shapeSchema definito sopra
     required: true
@@ -57,18 +52,22 @@ const sectionSchema = new Schema({
     required: true
   },
 
-  works: [{
-    work: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Work'
-    },
-    x: {
-      type: Number
-    },
-    y: {
-      type: Number
+  works: [
+    {
+      workId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Work'
+      },
+
+      x: {
+        type: Number
+      },
+
+      y: {
+        type: Number
+      }
     }
-  }],
+  ],
 
   museumId: {
     type: mongoose.Schema.Types.ObjectId,

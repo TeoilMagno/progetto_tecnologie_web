@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ArtAround - Pannello Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/marketplace/css/style.css" />
+  </head>
+  <body class="artaround-theme">
+    
+    <header class="navbar site-header sticky-top px-3">
+      <div class="d-flex align-items-center">
+        <a class="btn text-white me-2" href="/">
+          <i class="bi bi-arrow-left fs-4"></i>
+        </a>
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <i class="bi bi-shield-lock me-2 text-warning"></i>
+          <span class="brand-text text-warning">Admin Dashboard</span>
+        </a>
+      </div>
+      <div id="user-area" class="text-white small d-flex align-items-center gap-2"></div>
+    </header>
+
+    <div class="container py-5" style="max-width: 900px;">
+      <h2 class="h3 mb-4 text-white"><i class="bi bi-people me-2 text-info"></i>Richieste Curatori in Sospeso</h2>
+      
+      <div class="card custom-card glass-panel border border-secondary border-opacity-25">
+        <div class="card-body p-0">
+          <ul id="pending-users-list" class="list-group list-group-flush bg-transparent">
+            <li class="list-group-item bg-transparent text-center py-5 text-secondary">
+              <div class="spinner-border text-warning" role="status"></div>
+              <p class="mt-2 mb-0">Caricamento richieste...</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/marketplace/js/config.js"></script>
+    <script src="/marketplace/js/personal-area.js"></script>
+    <script src="/marketplace/js/admin-dashboard.js"></script>
+  </body>
+</html>

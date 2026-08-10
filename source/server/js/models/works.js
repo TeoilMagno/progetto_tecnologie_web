@@ -30,19 +30,26 @@ const workSchema = new Schema({
 
   description: {
     type: [{
-      lenght: Number,
+      length: Number,
       tone: String,
       description: String,
     }],
-    required: true
-  }
-  // },
+    default: []
+  },
+  
+  museumId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Museum'
+  },
 
-  // sectionId: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Section',
-  //   required: true
-  // }
+  roomId: {
+    type: Schema.Types.ObjectId
+  },
+
+  adoptionId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Adoption'
+  },
 });
 
 const Work = mongoose.model('Work', workSchema);

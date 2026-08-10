@@ -1,25 +1,54 @@
+<!-- * INUTILIZZATO 
+/* Al momento inutilizzato se si decide di tenere l'add-museum iniziale che poi rimanda all'edit-museum 
+   Serve invece se vogliamo il form unico in cui si possono aggiungere sezioni una sotto l'altra
+   Non ha le modifiche necessarie per aggiungere le stanze -->
+   
 <!DOCTYPE HTML>
+<html lang="it">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Art Around - Aggiungi Sezioni</title>
-</head>
-<body>
-  <h1>Aggiungi sezioni al museo</h1>
   
-  <form id="main-form">
-    <div id="sections-region"></div>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/marketplace/css/style.css">
+  <link rel="stylesheet" href="/marketplace/css/forms-style.css">
+</head>
+<body class="artaround-theme">
 
-    <button type="button" onclick="renderAddSection()">+ Aggiungi un'altra sezione</button>
-    <br><br>
-    <input type="submit" value="Salva tutto" onclick="handleSave()">
-  </form>
+  <header class="navbar site-header sticky-top px-3 mb-4">
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand d-flex align-items-center" href="/my-museums">
+        <i class="bi bi-bank me-2 text-white"></i>
+        <span class="brand-text">ArtAround</span>
+      </a>
+    </div>
+  </header>
 
-  <script src="/js/add-section.js"></script>
-  <script src="/js/add-work.js"></script>
+  <div class="form-wrapper">
+    <h1 class="aura-title">Aggiungi sezioni al museo</h1>
+    
+    <form action="/api/add-section" id="main-form" class="glass-panel">
+      <div id="sections-region"></div>
+
+      <button type="button" class="btn btn-glass w-100 mb-4" onclick="renderAddSection()">
+        <i class="bi bi-plus-lg me-2"></i>Aggiungi un'altra sezione
+      </button>
+      
+      <div class="d-flex gap-3 divider-top pt-4">
+        <button type="button" class="btn btn-gradient px-5" onclick="handleSave()">Salva tutto</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="/marketplace/js/config.js"></script>
+  <script src="/marketplace/js/add-section.js"></script>
+  <script src="/marketplace/js/add-work.js"></script>
   <script>
-    // Appena la pagina carica, genera automaticamente la prima sezione
     window.onload = () => {
         renderAddSection(); 
     };
   </script>
 </body>
+</html>
