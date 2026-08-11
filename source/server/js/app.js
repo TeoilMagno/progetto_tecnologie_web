@@ -1,9 +1,7 @@
 require('dotenv').config();
 
-const https = require('https');
 const path = require('path');
 const express = require('express');
-const fs = require('fs'); // Aggiunto per poter leggere i file del certificato
 const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -47,7 +45,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: { 
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    secure: true // Visto che ora usi HTTPS, questo indica ai browser di inviare il cookie SOLO su connessioni sicure!
+    secure: false
   }
 }));
 app.use(passport.initialize());
@@ -62,22 +60,7 @@ app.use('/api', apiRouter);
 const sortablePath = path.join(__dirname, '..', '..', '..', 'node_modules', 'sortablejs');
 app.use('/vendor/sortablejs', express.static(sortablePath));
 
-
-// ─── Configurazione Server HTTPS ───────────────────────────────────────────
-// Usa fs.readFileSync per leggere il contenuto dei file basandoti sui percorsi nel .env
-const sslOptions = {
-  key: fs.readFileSync(process.env.SSL_KEY),
-  cert: fs.readFileSync(process.env.SSL_CERT),
-  minVersion: 'TLSv1.2',
-  secureOptions: require('constants').SSL_OP_NO_SSLv3 |
-              require('constants').SSL_OP_NO_TLSv1 |
-              require('constants').SSL_OP_NO_TLSv1_1
-};
-
-// Creo il server passando sslOptions e usando 'app' Express per gestire le richieste
-const server = https.createServer(sslOptions, app);
-
 // Avviamo il SERVER HTTPS (non app.listen)
-server.listen(PORT, () => {
-  console.log(`Server HTTPS listening on https://localhost:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`listening on port: ${PORT}`);
 });
