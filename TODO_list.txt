@@ -15,7 +15,7 @@ id stanza in modello work       ✅
 --------------- navigator ---------------
 chiedere domande su file di config per navigator
 
-tasto next
+tasto next ✅
 chat bot per stile opera, artista etc...
 generazione audio sintetico
 comandi vocali per l'opera

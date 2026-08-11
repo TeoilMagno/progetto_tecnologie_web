@@ -50,6 +50,39 @@ export default function MapView({ visitId }) {
     fetchVisitData();
   }, [visitId]);
 
+  // --- GESTIONE AUDIOGUIDA (Sintesi Vocale) ---
+  useEffect(() => {
+    // interrompiamo qualsiasi audio in corso ogni volta che cambia qualcosa
+    window.speechSynthesis.cancel();
+
+    // Se non siamo in modalità 'listen' o non abbiamo un'opera selezionata, ci fermiamo
+    if (playMode !== "listen" || currentWorkIndex < 0) return;
+
+    const currentWork = visitedWorks[currentWorkIndex];
+    if (!currentWork) return;
+
+    // Estraiamo il testo della descrizione
+    // per ora si prende il primo campo dell'array description
+    // TODO: a seconda del tono richiesto per la visita estrarre la corretta descrizione da sintetizzare
+    const textToRead = currentWork.description?.[0]?.description || "Descrizione audio non disponibile per quest'opera.";
+
+    // Configurazione e avvio del lettore vocale
+    const utterance = new SpeechSynthesisUtterance(textToRead);
+    utterance.lang = "it-IT"; // Lingua italiana
+
+    // Quando l'audio finisce da solo, riportiamo il pulsante su "Leggi"
+    utterance.onend = () => {
+      setPlayMode("read");
+    };
+
+    window.speechSynthesis.speak(utterance);
+
+    // ferma l'audio se l'utente esce improvvisamente dalla mappa
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, [playMode, currentWorkIndex, visitedWorks]);
+
   // Seleziona automaticamente la sezione della mappa contenente l'opera d'arte corrente
   const selectSectionForWork = (work) => {
     if (!work || !work.roomId) return;
