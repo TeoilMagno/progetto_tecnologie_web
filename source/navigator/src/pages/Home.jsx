@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
+
   const cards = [
     {
       id: 1,
@@ -8,7 +11,8 @@ const Home = () => {
       desc: "Discover available visits and start your autonomous exploration",
       icon: "🧭", // Usa SVG per fedeltà massima, qui uso emoji per brevità codice
       color: "bg-amber-500",
-      glow: "shadow-[0_0_15px_rgba(245,158,11,0.3)]"
+      glow: "shadow-[0_0_15px_rgba(245,158,11,0.3)]",
+      path: "/visits"
     },
     {
       id: 2,
@@ -16,7 +20,8 @@ const Home = () => {
       desc: "Participate in a synchronized guided tour with the teacher",
       icon: "👥",
       color: "bg-purple-600",
-      glow: "shadow-[0_0_15px_rgba(147,51,234,0.3)]"
+      glow: "shadow-[0_0_15px_rgba(147,51,234,0.3)]",
+      path: "/join"
     },
     {
       id: 3,
@@ -24,7 +29,8 @@ const Home = () => {
       desc: "Explore the museum layout and find artworks",
       icon: "🗺️",
       color: "bg-blue-500",
-      glow: "shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+      glow: "shadow-[0_0_15px_rgba(59,130,246,0.3)]",
+      path: "/map"
     },
     {
       id: 4,
@@ -32,7 +38,8 @@ const Home = () => {
       desc: "Free exploration with voice-guided narration",
       icon: "🎧",
       color: "bg-teal-500",
-      glow: "shadow-[0_0_15px_rgba(20,184,166,0.3)]"
+      glow: "shadow-[0_0_15px_rgba(20,184,166,0.3)]",
+      path: "/free"
     },
     {
       id: 5,
@@ -40,7 +47,8 @@ const Home = () => {
       desc: "Build your own custom museum tour",
       icon: "➕",
       color: "bg-red-500",
-      glow: "shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+      glow: "shadow-[0_0_15px_rgba(239,68,68,0.3)]",
+      path: "/visits" // Redirect o creazione
     },
     {
       id: 6,
@@ -48,7 +56,8 @@ const Home = () => {
       desc: "View your saved visits and history",
       icon: "👤",
       color: "bg-cyan-500",
-      glow: "shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+      glow: "shadow-[0_0_15px_rgba(6,182,212,0.3)]",
+      path: "/visits" // Va comunque alla pagina unificata di Visits
     }
   ];
 
@@ -90,6 +99,7 @@ const Home = () => {
           {cards.map((card) => (
             <div 
               key={card.id}
+              onClick={() => navigate(card.path)}
               className="group relative flex items-center p-4 bg-[#1e293b]/60 backdrop-blur-md border border-slate-700/50 rounded-2xl hover:bg-[#1e293b]/80 transition-all active:scale-[0.98] cursor-pointer"
             >
               {/* Icona Quadrata Colorata */}

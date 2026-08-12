@@ -41,8 +41,33 @@ exports.createVisit = async (visitPayload, user) => {
 };
 
 exports.getVisits = async (userId) => {
-  return await Visit.find({ creator: userId }).populate('museumId')
-}
+  // Trova le visite create dall'utente
+  const created = await Visit.find({ creator: userId })
+    .populate('museumId')
+    .populate('works');
+
+  // Trova l'utente per prenderne le visite acquistate/salvate
+  const { User } = require('../models/users');
+  const user = await User.findById(userId).populate({
+    path: 'purchased_visits',
+    populate: [
+      { path: 'museumId' },
+      { path: 'works' }
+    ]
+  });
+
+  const purchased = user?.purchased_visits || [];
+
+  // Combina gli array evitando duplicati per ID
+  const allVisits = [...created];
+  purchased.forEach(pVisit => {
+    if (pVisit && !allVisits.some(v => v._id.toString() === pVisit._id.toString())) {
+      allVisits.push(pVisit);
+    }
+  });
+
+  return allVisits;
+};
 
 exports.getVisitById = async (visitId, user) => {
   const visit = await Visit.findById(visitId).populate('museumId').populate('works'); 

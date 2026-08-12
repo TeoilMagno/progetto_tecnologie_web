@@ -389,9 +389,34 @@ apiRouter.get("/current-user", (req, res) => {
       _id: req.user._id,
       username: req.user.username || req.user.name,
       role: req.user.role,
+      type: req.user.type || 'none',
     });
   } else {
     res.json(null);
+  }
+});
+
+// aggiorna il tipo dell'utente corrente (student / teacher)
+apiRouter.put("/current-user/type", auth.isLoggedIn, async (req, res) => {
+  try {
+    const { type } = req.body;
+    if (!['student', 'teacher', 'none'].includes(type)) {
+      return res.status(400).json({ error: "Tipo utente non valido" });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ error: "Utente non trovato" });
+
+    user.type = type;
+    await user.save();
+
+    res.status(200).json({
+      message: "Tipo utente aggiornato con successo",
+      type: user.type
+    });
+  } catch (error) {
+    console.error("Errore aggiornamento tipo utente:", error);
+    res.status(500).json({ error: "Errore interno del server" });
   }
 });
 

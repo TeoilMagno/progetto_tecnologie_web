@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Home, Compass, User, MapPin, Map as MapIcon, Menu, Settings } from 'lucide-react';
+import { Home, Compass, User, MapPin, Map as MapIcon, Menu, Settings, Users } from 'lucide-react';
 
-// Importiamo la pagina Home
+// Importiamo la pagina Home e le nuove pagine/componenti
 import HomePage from './pages/Home';
+import Visits from './pages/Visits';
+import JoinSession from './pages/JoinSession';
+import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
 
 // Placeholder per le pagine future
 const Placeholder = ({ title }) => (
@@ -12,11 +15,13 @@ const Placeholder = ({ title }) => (
       <Settings size={48} className="text-slate-700" />
     </div>
     <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
-    <p className="max-w-md text-sm text-slate-400">Questa sezione verrà sviluppata nei prossimi step del progetto.</p>
+    <p className="max-w-md text-sm text-slate-400">Questa sezione verrà sviluppata nei primi step del progetto.</p>
   </div>
 );
 
 export default function App() {
+  const [selectedMuseum, setSelectedMuseum] = useState(null);
+
   return (
     <Router>
       {/* Layout Principale:
@@ -25,6 +30,11 @@ export default function App() {
       */}
       <div className="flex h-[100dvh] w-full bg-slate-950 text-white font-sans overflow-hidden flex-col">
         
+        {/* --- OVERLAY SELEZIONE MUSEO --- */}
+        {!selectedMuseum && (
+          <MuseumSelectorOverlay onSelect={(museum) => setSelectedMuseum(museum)} />
+        )}
+
         {/* --- HEADER MUSEO --- */}
         <header className="bg-slate-900/95 backdrop-blur-lg border-b border-slate-800 px-4 py-4 shrink-0 z-50 w-full">
           <div className="flex items-center justify-center max-w-lg mx-auto">
@@ -32,7 +42,9 @@ export default function App() {
               <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0 overflow-hidden">
                 <img src="/img/logob.svg" alt="Logo Museo" className="w-full h-full object-cover" />
               </div>
-              <h1 className="font-bold text-lg text-white">Nome Museo</h1>
+              <h1 className="font-bold text-lg text-white">
+                {selectedMuseum ? selectedMuseum.name : 'Seleziona un museo'}
+              </h1>
             </div>
             
           </div>
@@ -45,7 +57,8 @@ export default function App() {
           <main className="flex-1 overflow-y-auto scroll-smooth w-full relative">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/visits" element={<Placeholder title="Explore Visits" />} />
+              <Route path="/visits" element={<Visits selectedMuseum={selectedMuseum} />} />
+              <Route path="/join" element={<JoinSession />} />
               <Route path="/my-visits" element={<Placeholder title="My Visits" />} />
               <Route path="/free" element={<Placeholder title="Free Mode" />} />
               <Route path="/map" element={<Placeholder title="Interactive Map" />} />
@@ -60,7 +73,7 @@ export default function App() {
               <ul className="flex justify-around items-center h-16 w-full">
                 <MobileNavItem to="/" icon={<Home size={24} />} label="Home" />
                 <MobileNavItem to="/visits" icon={<Compass size={24} />} label="Visits" />
-                <MobileNavItem to="/my-visits" icon={<User size={24} />} label="My Visits" />
+                <MobileNavItem to="/join" icon={<Users size={24} />} label="Join" />
                 <MobileNavItem to="/free" icon={<MapPin size={24} />} label="Free" />
                 <MobileNavItem to="/map" icon={<MapIcon size={24} />} label="Map" />
                 <MobileNavItem to="/menu" icon={<Menu size={24} />} label="Menu" />
@@ -73,20 +86,6 @@ export default function App() {
     </Router>
   );
 }
-
-// Componente Link Sidebar (Desktop)
-/*function SidebarItem({ to, icon, label }) {
-  const location = useLocation();
-  const isActive = location.pathname === to;
-  return (
-    <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all group ${isActive ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-      <span className={`group-hover:scale-110 transition-transform ${isActive ? '' : 'text-slate-400 group-hover:text-white'}`}>
-        {icon}
-      </span>
-      <span className="font-medium">{label}</span>
-    </Link>
-  );
-}*/
 
 // Componente Link Bottom Bar (Mobile)
 function MobileNavItem({ to, icon, label }) {
