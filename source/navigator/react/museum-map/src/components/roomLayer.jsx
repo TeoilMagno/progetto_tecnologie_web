@@ -3,33 +3,38 @@ import { useState, useEffect } from "react";
 export default function RoomLayer({ onBack, section, visitedWorks, activeWorkId }) {
   const [works, setWorks] = useState([]);
   const [filteredWorks, setFilteredWorks] = useState([]);
+  const API_BASE_URL = window.location.origin + "/api";
 
   useEffect(() => {
     console.log(section);
-    fetch(`/api/sections/${section._id}/works`)
+    fetch(`${API_BASE_URL}/sections/${section._id}/works`)
       .then((response) => response.json())
       .then((data) => {
         setWorks(data); // Salviamo tutte le opere della sezione (per sicurezza/cache)
         
         // --- CONFRONTO E FILTRAGGIO ---
         // Controlliamo quali opere della sezione sono presenti nella visita
-        console.log("sectionWork ",data, "visitedWorks ", visitedWorks);
+        // console.log("sectionWork ",data, "visitedWorks ", visitedWorks);
         const worksToShow = data.filter(fetchedWork => {
           return visitedWorks.some(vw => vw._id === fetchedWork._id);
         });
 
-        //associamo i lavori filtrati con le loro coordinate contenute in section.works
+        //associamo le opere filtrate con le loro coordinate contenute in section.works
         const finalWorks = worksToShow.map(work => {
           const coords = section.works.find(sw => sw.workId === work._id);
+        //associamo i nome delle stanze alle opere che le contengono tramite work.roomId
+          const room = section.rooms?.find(sr => sr._id === work.roomId)
           
           return {
             ...work,
             x: coords ? coords.x : 0,
-            y: coords ? coords.y : 0
+            y: coords ? coords.y : 0,
+            roomName: room ? room.name : "Stanza sconosciuta"
           };
         });
         
         setFilteredWorks(finalWorks);
+        // console.log("finalWorks: ", finalWorks);
       })
       .catch((error) => console.error("Errore nel caricamento delle opere:", error));
       

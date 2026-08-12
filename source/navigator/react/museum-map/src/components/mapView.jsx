@@ -10,6 +10,7 @@ export default function MapView({ visitId }) {
   const [visitedWorks, setVisitedWorks] = useState([]);
   const [allMuseumWorks, setAllMuseumWorks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API_BASE_URL = window.location.origin + "/api";
 
   // Navigator state
   const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);
@@ -22,7 +23,7 @@ export default function MapView({ visitId }) {
     const fetchVisitData = async () => {
       try {
         // 1. Scarichiamo i dati della visita
-        const visitResponse = await fetch(`/api/visits/${visitId}/museum`);
+        const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}/museum`);
         const visitData = await visitResponse.json();
 
         // Salviamo le opere della visita nello stato
@@ -31,14 +32,39 @@ export default function MapView({ visitId }) {
         const museumId = visitData.museumId?._id || visitData.museumId;
 
         // 2. Usiamo il museumId appena recuperato per scaricare le sezioni
-        const sectionsResponse = await fetch(`/api/museums/${museumId}/sections`);
+        const sectionsResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`);
         const sectionsData = await sectionsResponse.json();
         setSections(sectionsData);
 
+        const getRoomName = (roomId) => {
+          if (!roomId) return "Stanza sconosciuta";
+          
+          // Scorriamo TUTTE le sezioni appena scaricate (usando sectionsData)
+          for (const section of sectionsData) {
+            const room = section.rooms?.find(r => r._id === roomId);
+            if (room) return room.name; // Trovata!
+          }
+          return "Stanza sconosciuta";
+        };
+
+        // --- ARRICCHIAMO LE OPERE DELLA VISITA ---
+        const enrichedVisitedWorks = visitData.works.map(work => ({
+          ...work,
+          roomName: getRoomName(work.roomId)
+        }));
+        // Salviamo le opere arricchite nello stato!
+        setVisitedWorks(enrichedVisitedWorks);
+
         // 3. Scarichiamo tutte le opere del museo per le raccomandazioni
-        const worksResponse = await fetch(`/api/museums/${museumId}/works`);
+        const worksResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/works`);
         const worksData = await worksResponse.json();
-        setAllMuseumWorks(worksData);
+
+        // --- ARRICCHIAMO TUTTE LE OPERE DEL MUSEO ---
+        const enrichedAllWorks = worksData.map(work => ({
+          ...work,
+          roomName: getRoomName(work.roomId)
+        }));
+        setAllMuseumWorks(enrichedAllWorks);
 
         setLoading(false);
       } catch (error) {
@@ -50,38 +76,39 @@ export default function MapView({ visitId }) {
     fetchVisitData();
   }, [visitId]);
 
-  // --- GESTIONE AUDIOGUIDA (Sintesi Vocale) ---
+  // garantisce che la sintesi vocale venga fermata prima di far partire un altro pezzo di sintesi
   useEffect(() => {
-    // interrompiamo qualsiasi audio in corso ogni volta che cambia qualcosa
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  // Funzione riutilizzabile per la sintesi vocale
+  const speakText = (textToRead) => {
+    // Zittiamo subito qualsiasi voce stia già parlando
     window.speechSynthesis.cancel();
 
-    // Se non siamo in modalità 'listen' o non abbiamo un'opera selezionata, ci fermiamo
-    if (playMode !== "listen" || currentWorkIndex < 0) return;
+    // Se non c'è testo, usciamo
+    if (!textToRead) {
+      setPlayMode("read");
+      return;
+    }
 
-    const currentWork = visitedWorks[currentWorkIndex];
-    if (!currentWork) return;
+    // Impostiamo lo stato UI su "ascolto"
+    setPlayMode("listen");
 
-    // Estraiamo il testo della descrizione
-    // per ora si prende il primo campo dell'array description
-    // TODO: a seconda del tono richiesto per la visita estrarre la corretta descrizione da sintetizzare
-    const textToRead = currentWork.description?.[0]?.description || "Descrizione audio non disponibile per quest'opera.";
-
-    // Configurazione e avvio del lettore vocale
+    // Configuriamo e avviamo il lettore vocale
     const utterance = new SpeechSynthesisUtterance(textToRead);
     utterance.lang = "it-IT"; // Lingua italiana
 
-    // Quando l'audio finisce da solo, riportiamo il pulsante su "Leggi"
+    // Quando finisce, resettiamo la UI
     utterance.onend = () => {
       setPlayMode("read");
     };
 
+    // riproduci il testo passato
     window.speechSynthesis.speak(utterance);
-
-    // ferma l'audio se l'utente esce improvvisamente dalla mappa
-    return () => {
-      window.speechSynthesis.cancel();
-    };
-  }, [playMode, currentWorkIndex, visitedWorks]);
+  };
 
   // Seleziona automaticamente la sezione della mappa contenente l'opera d'arte corrente
   const selectSectionForWork = (work) => {
@@ -91,7 +118,10 @@ export default function MapView({ visitId }) {
     );
     if (section) {
       setSelectedSection(section);
+      return section;
     }
+    
+    return null;
   };
 
   const handleNext = () => {
@@ -99,7 +129,13 @@ export default function MapView({ visitId }) {
       const nextIndex = currentWorkIndex + 1;
       setCurrentWorkIndex(nextIndex);
       const activeWork = visitedWorks[nextIndex];
-      selectSectionForWork(activeWork);
+      const currentSection = selectedSection;
+      const nextSection = selectSectionForWork(activeWork);
+      if(nextSection._id === currentSection._id) {
+        alert(`la prossima opera si trova nella ${activeWork.roomName}`)
+      } else {
+        alert(`la prossima opera si trova nella sezione ${nextSection.name}, sala ${activeWork.roomName}`);
+      }
     } else {
       // Fine della visita, genera raccomandazioni
       const remainingWorks = allMuseumWorks.filter(w => !visitedWorks.some(vw => vw._id === w._id));
@@ -213,8 +249,11 @@ export default function MapView({ visitId }) {
             <button 
               onClick={() => {
                 setCurrentWorkIndex(0);
-                selectSectionForWork(visitedWorks[0]);
-              }} 
+                const nextSection = selectSectionForWork(visitedWorks[0]);
+                if (nextSection) {
+                  alert(`la prossima opera si trova nella sezione ${nextSection.name}, ${visitedWorks[0].roomName}`);
+                }
+              }}
               className="btn btn-sm text-white rounded-pill px-4"
               style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)", border: "none", minWidth: "140px", fontWeight: 600, padding: "8px 20px" }}
               disabled={visitedWorks.length === 0}
@@ -248,7 +287,7 @@ export default function MapView({ visitId }) {
               type="button" 
               className={`btn btn-sm py-2 px-3 border-0 rounded-0 ${playMode === 'listen' ? 'btn-info text-dark' : 'text-secondary'}`}
               style={{ background: playMode === 'listen' ? '#00ccff' : 'transparent', fontSize: "0.75rem", fontWeight: 600 }}
-              onClick={() => setPlayMode('listen')}
+              onClick={() => speakText(`Descrizione opera: ${visitedWorks[currentWorkIndex]?.description?.[0]?.description}`)}
             >
               <i className="bi bi-volume-up me-1"></i> Ascolta
             </button>
