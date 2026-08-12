@@ -17,6 +17,6 @@ chiedere domande su file di config per navigator
 
 tasto next ✅
 chat bot per stile opera, artista etc...
-generazione audio sintetico
+generazione audio sintetico ✅
 comandi vocali per l'opera
 consiglia altre opere a fine visita
