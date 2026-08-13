@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import SectionLayer from "./sectionLayer";
 import RoomLayer from "./roomLayer";
+import WorkDetailsSheet from "./workDetailsSheet";
 
 export default function MapView({ visitId }) {
   const [selectedSection, setSelectedSection] = useState(null);
@@ -14,6 +15,7 @@ export default function MapView({ visitId }) {
 
   // Navigator state
   const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);
+  const [detailsWork, setDetailsWork] = useState(null);
   const [playMode, setPlayMode] = useState("read"); // 'read' or 'listen'
   const [inputMode, setInputMode] = useState("write"); // 'write' or 'speak'
   const [showEndModal, setShowEndModal] = useState(false);
@@ -187,11 +189,12 @@ export default function MapView({ visitId }) {
           minScale={0.4}
           maxScale={2.5}
           centerOnInit={true}
+          panning={{ velocityDisabled: true }}
         >
           <TransformComponent wrapperStyle={{ width: "100vw", height: "100%" }}>
             <svg 
               viewBox="0 0 2000 2000" 
-              style={{ width: "2000px", height: "2000px" }}
+              style={{ width: "2000px", height: "2000px", willChange: "transform" }}
             >
               {!selectedSection && (
                 <g>
@@ -206,6 +209,7 @@ export default function MapView({ visitId }) {
                     section={selectedSection} 
                     visitedWorks={visitedWorks}
                     activeWorkId={currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex]?._id : null}
+                    onWorkClick={(work) => setDetailsWork(work)}
                   />
                 </g>
               )}
@@ -366,6 +370,13 @@ export default function MapView({ visitId }) {
           </div>
         </div>
       )}
+
+      {/* ─── BOTTOM SHEET ESTRATTO IN COMPONENTE ─── */}
+      <WorkDetailsSheet
+        work={detailsWork}
+        onClose={() => setDetailsWork(null)} 
+        onSpeak={speakText}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function RoomLayer({ onBack, section, visitedWorks, activeWorkId }) {
+export default function RoomLayer({ onBack, section, visitedWorks, activeWorkId, onWorkClick }) {
   const [works, setWorks] = useState([]);
   const [filteredWorks, setFilteredWorks] = useState([]);
   const API_BASE_URL = window.location.origin + "/api";
@@ -98,7 +98,9 @@ export default function RoomLayer({ onBack, section, visitedWorks, activeWorkId 
             style={{ overflow: "visible" }}
           >
             <div
+              onClick={() => onWorkClick(work)}
               style={{
+                cursor: "pointer",
                 width: "100%", 
                 height: "fit-content", /* LA MAGIA: il div si adatta al contenuto reale */
                 backgroundColor: isActive ? "rgba(126, 20, 255, 0.1)" : "white",
@@ -119,6 +121,7 @@ export default function RoomLayer({ onBack, section, visitedWorks, activeWorkId 
               <img
                 src={work.image}
                 alt={work.name}
+                loading="lazy"
                 style={{
                   width: "100%",
                   height: "100px", /* Visto che il div si adatta, diamo un'altezza fissa in pixel all'immagine */
