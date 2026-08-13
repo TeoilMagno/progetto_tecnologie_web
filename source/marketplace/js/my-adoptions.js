@@ -1,5 +1,7 @@
 let newAdoptionModalInstance = null;
 let currentUserId = null;
+let cachedIncoming = [];
+let cachedOutgoing = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
   newAdoptionModalInstance = new bootstrap.Modal(document.getElementById("newAdoptionModal"));
@@ -8,6 +10,45 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (currentUser) currentUserId = currentUser._id;
 
   await loadAdoptions();
+
+  // --- INIZIALIZZAZIONE BARRA DI RICERCA ---
+  const searchContainer = document.getElementById("search-container");
+  const searchToggleBtn = document.getElementById("search-toggle-btn");
+  const searchInput = document.getElementById("adoptions-search-input");
+
+  if (searchToggleBtn && searchInput) {
+    searchToggleBtn.addEventListener("click", () => {
+      searchContainer.classList.toggle("active");
+      if (searchContainer.classList.contains("active")) {
+        searchInput.focus();
+      } else {
+        searchInput.value = "";
+        // Ripristina tutto
+        renderAdoptionsList(cachedIncoming, document.getElementById("incoming-container"), true);
+        renderAdoptionsList(cachedOutgoing, document.getElementById("outgoing-container"), false);
+      }
+    });
+
+    searchInput.addEventListener("input", (e) => {
+      const query = e.target.value;
+      
+      // Funzione di filtro riutilizzabile per le adozioni
+      const filterAdoptions = (adoption) => {
+        const workName = adoption.workId ? adoption.workId.name : "";
+        const fromMuseum = adoption.fromMuseumId ? adoption.fromMuseumId.name : "";
+        const toMuseum = adoption.toMuseumId ? adoption.toMuseumId.name : "";
+        
+        return fuzzySearch(query, workName) || fuzzySearch(query, fromMuseum) || fuzzySearch(query, toMuseum);
+      };
+
+      // Filtra e renderizza simultaneamente entrambe le schede
+      const filteredIncoming = cachedIncoming.filter(filterAdoptions);
+      const filteredOutgoing = cachedOutgoing.filter(filterAdoptions);
+
+      renderAdoptionsList(filteredIncoming, document.getElementById("incoming-container"), true);
+      renderAdoptionsList(filteredOutgoing, document.getElementById("outgoing-container"), false);
+    });
+  }
 });
 
 // Carica tutte le adozioni dell'utente e le divide in Inviate e Ricevute
@@ -25,12 +66,12 @@ async function loadAdoptions() {
     const adoptions = await res.json();
 
     // Filtro rigoroso basato esclusivamente sugli ID dei curatori
-    const incoming = adoptions.filter(a => String(a.fromCuratorId) === String(currentUserId));
-    const outgoing = adoptions.filter(a => String(a.toCuratorId) === String(currentUserId));
+    cachedIncoming = adoptions.filter(a => String(a.fromCuratorId) === String(currentUserId));
+    cachedOutgoing = adoptions.filter(a => String(a.toCuratorId) === String(currentUserId));
 
     // Renderizziamo le due sezioni
-    renderAdoptionsList(incoming, incomingContainer, true);
-    renderAdoptionsList(outgoing, outgoingContainer, false);
+    renderAdoptionsList(cachedIncoming, incomingContainer, true);
+    renderAdoptionsList(cachedOutgoing, outgoingContainer, false);
   } catch (error) {
     console.error("Errore caricamento adozioni:", error);
     incomingContainer.innerHTML = `<div class="alert alert-danger col-12">Errore nel caricamento delle adozioni.</div>`;

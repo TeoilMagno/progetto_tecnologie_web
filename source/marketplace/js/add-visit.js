@@ -3,6 +3,7 @@ let currentVisitCart = []; // Array che conterrà gli ID (o gli oggetti) delle o
 let currentMuseumId = null;
 let editingVisitId = null;
 let isCurrentVisitDraft = true;
+let currentMuseumCatalog = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
   // inizializza il drag & drop
@@ -46,7 +47,37 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await checkUserRole();
 
-  // GESTIONE BOZZA
+  // Inizializzazione barra di ricerca
+  const searchContainer = document.getElementById("search-container");
+  const searchToggleBtn = document.getElementById("search-toggle-btn");
+  const searchInput = document.getElementById("catalog-search-input");
+
+  if (searchToggleBtn && searchInput) {
+    searchToggleBtn.addEventListener("click", () => {
+      searchContainer.classList.toggle("active");
+      if (searchContainer.classList.contains("active")) {
+        searchInput.focus();
+      } else {
+        searchInput.value = "";
+        // Se la barra viene chiusa, mostriamo di nuovo tutto il catalogo
+        if (currentMuseumCatalog.length > 0) renderCatalog(currentMuseumCatalog);
+      }
+    });
+
+    searchInput.addEventListener("input", (e) => {
+      const query = e.target.value;
+      if (!currentMuseumId || currentMuseumCatalog.length === 0) return; 
+      
+      // Filtriamo usando la fuzzySearch condivisa (Cerca per nome opera o nome autore)
+      const filtered = currentMuseumCatalog.filter(work => 
+        fuzzySearch(query, work.name) || 
+        (work.author && fuzzySearch(query, work.author))
+      );
+      renderCatalog(filtered);
+    });
+  }
+
+  // Gestione bozza
   if (editingVisitId) {
     try {
       const res = await fetch(`${API_BASE_URL}/visits/${editingVisitId}`);
@@ -127,45 +158,54 @@ async function loadMuseumWorks(museumId) {
 
   try {
     const worksRes = await fetch(`${API_BASE_URL}/museums/${museumId}/works`);
-    const works = await worksRes.json();
+    currentMuseumCatalog = await worksRes.json(); // Salviamo i dati globalmente!
 
     museumNameLabel.innerText = "Catalogo caricato";
-
-    if (works.length === 0) {
-      catalogArea.innerHTML = `<p class="text-secondary">Questo museo non ha ancora opere disponibili.</p>`;
-      return;
-    }
-
-    catalogArea.innerHTML = "";
-    works.forEach((work) => {
-      const workImage = work.image || "/img/fallback-work.jpg";
-      const workAuthor = work.author || "Autore sconosciuto";
-
-      catalogArea.innerHTML += `
-                <div class="col">
-                    <div class="card custom-card h-100">
-                        <div class="row g-0 h-100">
-                            <div class="col-4">
-                                <img src="${workImage}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 120px; width: 100%;">
-                            </div>
-                            <div class="col-8">
-                                <div class="card-body p-2 d-flex flex-column h-100">
-                                    <h6 class="card-title mb-1 text-truncate">${work.name}</h6>
-                                    <p class="small text-secondary mb-2" style="font-size: 0.75rem;">${workAuthor}</p>
-                                    <button class="btn btn-sm btn-outline-light mt-auto w-100" onclick="addToVisit('${work._id}', '${work.name.replace(/'/g, "\\'")}')">
-                                        <i class="bi bi-plus"></i> Aggiungi alla visita
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-    });
+    
+    // Chiamiamo la nuova funzione di render
+    renderCatalog(currentMuseumCatalog);
+    
   } catch (error) {
     console.error("Dettaglio errore intercettato:", error);
     catalogArea.innerHTML = `<p class="text-danger">Errore nel caricamento delle opere.</p>`;
   }
+}
+
+// Dedicata esclusivamente a renderizzare le opere
+function renderCatalog(worksArray) {
+  const catalogArea = document.getElementById("works-catalog-area");
+  
+  if (worksArray.length === 0) {
+    catalogArea.innerHTML = `<p class="text-secondary text-center w-100 mt-4">Nessuna opera corrispondente trovata.</p>`;
+    return;
+  }
+
+  catalogArea.innerHTML = "";
+  worksArray.forEach((work) => {
+    const workImage = work.image || "/img/fallback-work.jpg";
+    const workAuthor = work.author || "Autore sconosciuto";
+
+    catalogArea.innerHTML += `
+      <div class="col">
+          <div class="card custom-card h-100">
+              <div class="row g-0 h-100">
+                  <div class="col-4">
+                      <img src="${workImage}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 120px; width: 100%;">
+                  </div>
+                  <div class="col-8">
+                      <div class="card-body p-2 d-flex flex-column h-100">
+                          <h6 class="card-title mb-1 text-truncate">${work.name}</h6>
+                          <p class="small text-secondary mb-2" style="font-size: 0.75rem;">${workAuthor}</p>
+                          <button class="btn btn-sm btn-outline-light mt-auto w-100" onclick="addToVisit('${work._id}', '${work.name.replace(/'/g, "\\'")}')">
+                              <i class="bi bi-plus"></i> Aggiungi
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    `;
+  });
 }
 
 async function showMuseumSelector() {

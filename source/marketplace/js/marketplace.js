@@ -5,6 +5,7 @@
 // Stato globale
 let cachedMuseums = [];
 let currentItems = [];
+let currentWorks = [];
 let currentMuseumId = null;
 let editModalInstance = null;
 let currentView = 'works';
@@ -54,6 +55,8 @@ async function getMuseums() {
 
   const title = document.getElementById("page-title");
   const backBtn = document.getElementById("back-btn");
+
+  currentMuseumId = null; // Resetta l'ID del museo aperto
 
   // 2. CONTROLLA CHE GLI ELEMENTI ESISTANO PRIMA DI MODIFICARLI
   if (backBtn) {
@@ -198,7 +201,6 @@ function renderMuseumDashboard(museumInfo) {
   loadMuseumSubView(currentView, museumInfo._id);
 }
 
-// controlla se l'utente gestisce un determinato museo
 // controlla se l'utente gestisce un determinato museo (o se è admin)
 async function checkIfMuseumIsManaged(currentMuseumId) {
   if (!currentUser || (currentUser.role !== 'curator' && currentUser.role !== 'admin')) {
@@ -287,6 +289,7 @@ async function loadMuseumSubView(view, museumId) {
     const data = await response.json();
 
     if (view === 'works') {
+      currentWorks = data;
       renderWorksList(data); // Rendering per le Opere
     } else {
       currentItems = data; // Conserviamo gli articoli per l'editor
