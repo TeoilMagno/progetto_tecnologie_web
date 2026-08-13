@@ -13,7 +13,7 @@ campo adozione nel modello work ✅
 id stanza in modello work       ✅
 
 --------------- navigator ---------------
-chiedere domande su file di config per navigator
+chiedere domande su file di config per navigator ✅
 
 tasto next ✅
 chat bot per stile opera, artista etc...
