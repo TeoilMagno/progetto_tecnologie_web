@@ -13,16 +13,11 @@
   <body class="artaround-theme">
     
     <header class="navbar site-header sticky-top px-3">
-      <div class="d-flex align-items-center">
-        <button class="btn text-white me-2 d-none" id="sidebarOpenBtn">
-          <i class="bi bi-list fs-4"></i>
-        </button>
-        <a class="navbar-brand d-flex align-items-center" href="#">
-          <i class="bi bi-bank me-2 text-white"></i>
-          <span class="brand-text">ArtAround</span>
-          <span class="brand-subtitle ms-1 text-white opacity-75">Marketplace</span>
-        </a>
-      </div>
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <i class="bi bi-bank me-2 text-white"></i>
+        <span class="brand-text">ArtAround</span>
+        <span class="brand-subtitle ms-1 text-white opacity-75">Marketplace</span>
+      </a>
       
       <div class="d-flex align-items-center">
         <div class="search-container me-2 position-relative d-flex align-items-center" id="search-container">
@@ -32,19 +27,24 @@
           </button>
         </div>
 
+        <button class="btn text-white me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar">
+          <i class="bi bi-funnel fs-5"></i>
+        </button>
+
         <button class="btn text-white position-relative me-3" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
           <i class="bi bi-cart3 fs-4"></i>
           <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
             0
           </span>
         </button>
+
         <div id="user-area" class="text-white small d-flex align-items-center gap-2"></div>
       </div>
     </header>
 
     <div class="container-fluid">
       <div class="row flex-nowrap">
-        <nav id="sidebar" class="sidebar pt-3"></nav>
+        <nav id="filterSidebar" class="offcanvas offcanvas-start glass-modal text-white pt-3 px-3 border-end border-secondary border-opacity-25" tabindex="-1" style="width: 300px; background: rgba(20, 20, 30, 0.95);"></nav>
 
         <main id="main-content" class="col px-md-4 pt-4 pb-5">
           <div class="page-header d-flex justify-content-between align-items-center pt-3 pb-4 mb-4 border-bottom">

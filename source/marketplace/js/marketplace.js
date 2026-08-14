@@ -78,6 +78,12 @@ async function getMuseums() {
     if (!response.ok) throw new Error("Errore server");
     cachedMuseums = await response.json();
 
+    // Genera l'interfaccia HTML dei filtri per i musei nella sidebar
+    populateFilters('museums');
+
+    // Inizializza i dati in background
+    initializeFiltersData(cachedMuseums);
+
     // Renderizza passandogli esplicitamente l'id (per evitare conflitti)
     renderMuseumsList(cachedMuseums, "content-area");
   } catch (error) {
@@ -264,6 +270,9 @@ function switchMuseumView(view, museumId) {
     tabWorks.classList.remove("tab-custom-active");
     tabWorks.classList.add("btn-glass", "text-secondary");
   }
+
+  // Cambia la sidebar in base alla tab selezionata
+  if (typeof populateFilters === 'function') populateFilters(view);
   
   loadMuseumSubView(view, museumId); //
 }
@@ -481,5 +490,165 @@ async function loadManagedMuseums() {
     renderMuseumsList(managedMuseums, "managed-museums-area");
   } catch (error) {
     container.innerHTML = `<div class="alert alert-danger">Errore nel caricamento dei tuoi musei.</div>`;
+  }
+}
+// ==========================================
+// MODULO FILTRI AVANZATI (Booking Style)
+// ==========================================
+
+let userCoords = null;
+let museumCoordsMap = {}; // Cache coordinate: { "museumId": {lat, lon} }
+
+// 1. Inizializza i dati in background appena i musei sono caricati
+async function initializeFiltersData(museums) {
+  const tagsSet = new Set();
+
+  for (const museum of museums) {
+    // A. Raccogliamo tutti gli stili/tag univoci
+    if (museum.tags) museum.tags.forEach(t => tagsSet.add(t));
+
+    // B. Geocoding dell'indirizzo (Simulato/Esterno) in background
+    if (museum.address && !museumCoordsMap[museum._id]) {
+      try {
+        const query = encodeURIComponent(museum.address);
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
+        const data = await res.json();
+        if (data.length > 0) {
+          museumCoordsMap[museum._id] = { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+        }
+      } catch (e) { console.warn("Geocoding fallito per:", museum.address); }
+    }
+  }
+
+  // Stampiamo le opzioni nel menu a tendina in ordine alfabetico
+  renderStyleFilters(Array.from(tagsSet).sort());
+}
+
+// 2. Disegna le opzioni per gli stili nel tag <select>
+function renderStyleFilters(tags) {
+  const select = document.getElementById("filter-style-select");
+  if (!select) return;
+
+  // Mantiene l'opzione di default e aggiunge i tag
+  select.innerHTML = `<option value="">Tutti gli stili</option>` + 
+    tags.map(tag => `<option value="${tag}">${tag}</option>`).join('');
+}
+
+// 3. APPLICA I FILTRI (Resa Async per supportare la ricerca della città)
+async function applyMuseumFilters() {
+  if (currentMuseumId !== null) return; 
+
+  const locationInput = document.getElementById("filter-location-input")?.value.trim();
+  const maxDistance = parseInt(document.getElementById("distance-slider")?.value || 500);
+  const selectedStyle = document.getElementById("filter-style-select")?.value;
+
+  // A. Calcola le coordinate se l'utente ha scritto una città manualmente
+  if (locationInput) {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationInput)}`);
+      const data = await res.json();
+      if (data.length > 0) {
+        userCoords = { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+      } else {
+        alert("Città non trovata! Riprova con un altro nome.");
+        return;
+      }
+    } catch (e) {
+      alert("Errore nel servizio di localizzazione.");
+      return;
+    }
+  }
+
+  // B. Filtra l'elenco dei musei
+  let filtered = cachedMuseums.filter(museum => {
+    
+    // Filtro Stile
+    if (selectedStyle && selectedStyle !== "") {
+      if (!museum.tags || !museum.tags.includes(selectedStyle)) return false;
+    }
+
+    // Filtro Distanza
+    if (userCoords && maxDistance < 500) {
+      const mCoords = museumCoordsMap[museum._id];
+      if (mCoords) {
+        const km = getDistanceFromLatLonInKm(userCoords.lat, userCoords.lon, mCoords.lat, mCoords.lon);
+        if (km > maxDistance) return false;
+      } else {
+        return false; // Se non abbiamo le coordinate del museo, lo escludiamo dalla ricerca per distanza
+      }
+    }
+
+    return true;
+  });
+
+  renderMuseumsList(filtered);
+}
+
+function resetFilters() {
+  userCoords = null;
+  const distSlider = document.getElementById("distance-slider");
+  if (distSlider) distSlider.value = 500;
+  
+  const distVal = document.getElementById("distance-value");
+  if (distVal) distVal.innerText = "500+ km";
+  
+  const locInput = document.getElementById("filter-location-input");
+  if (locInput) locInput.value = "";
+  
+  const styleSelect = document.getElementById("filter-style-select");
+  if (styleSelect) styleSelect.value = "";
+  
+  const geoBtn = document.getElementById("btn-geolocate");
+  if (geoBtn) {
+    geoBtn.innerHTML = `<i class="bi bi-geo-alt me-1"></i> Usa la mia posizione GPS`;
+    geoBtn.classList.replace("btn-outline-success", "btn-outline-info");
+  }
+
+  renderMuseumsList(cachedMuseums);
+}
+
+// Formula matematica (Haversine) per calcolare i km
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  const R = 6371; 
+  const dLat = (lat2-lat1) * (Math.PI/180);
+  const dLon = (lon2-lon1) * (Math.PI/180);
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1*(Math.PI/180)) * Math.cos(lat2*(Math.PI/180)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+}
+
+// Collega gli eventi 
+function attachMuseumFilterEvents() {
+  const geoBtn = document.getElementById("btn-geolocate");
+  if (geoBtn) {
+    geoBtn.addEventListener("click", () => {
+      geoBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Ricerca...`;
+      
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          userCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+          // Svuota l'input testuale se usa il GPS
+          const locInput = document.getElementById("filter-location-input");
+          if (locInput) locInput.value = "";
+          
+          geoBtn.innerHTML = `<i class="bi bi-geo-alt-fill text-success me-1"></i> Posizione GPS Attiva`;
+          geoBtn.classList.replace("btn-outline-info", "btn-outline-success");
+        },
+        (err) => {
+          alert("Impossibile recuperare la posizione. Controlla i permessi del tuo browser.");
+          geoBtn.innerHTML = `<i class="bi bi-geo-alt me-1"></i> Usa la mia posizione GPS`;
+        }
+      );
+    });
+  }
+
+  const distanceSlider = document.getElementById("distance-slider");
+  if (distanceSlider) {
+    distanceSlider.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value);
+      const distanceLabel = document.getElementById("distance-value");
+      if (distanceLabel) {
+        distanceLabel.innerText = val >= 500 ? "500+ km" : `${val} km`;
+      }
+    });
   }
 }
