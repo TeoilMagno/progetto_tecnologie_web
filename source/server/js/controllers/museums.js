@@ -2,6 +2,7 @@ const Museum = require("../models/museums");
 const Section = require("../models/sections");
 const Work = require("../models/works");
 const { User } = require("../models/users");
+const Visit = require("../models/visits");
 
 // utilizzato da admin
 exports.getAllMuseums = async () => {
@@ -13,7 +14,7 @@ exports.getAllMuseums = async () => {
 };
 
 exports.saveMuseum = async (museumData, userId) => {
-  const { name, address, contact_email, contact_phone, image, tags, sections } = museumData;
+  const { name, address, contact_email, contact_phone, image, tags, ticketPrice, sections, openingHours, openingDays, services, accessibility } = museumData;
 
   // validazione modello
   const museumToValidate = new Museum({
@@ -22,7 +23,12 @@ exports.saveMuseum = async (museumData, userId) => {
     contact_email,
     contact_phone,
     image,
-    tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags
+    tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags,
+    ticketPrice: typeof ticketPrice === 'number' ? ticketPrice : 0,
+    openingDays,
+    openingHours,
+    services,
+    accessibility
   });
   
   await museumToValidate.validate();
@@ -85,6 +91,23 @@ exports.saveMuseum = async (museumData, userId) => {
     // aggiorniamo il museo con gli ID delle sezioni
     museumResult.sections = savedSectionIds;
     await museumResult.save();
+
+    // creiamo IMMEDIATAMENTE la visita libera associata
+    const standardVisit = new Visit({
+      title: "Visita libera",
+      description: "Ingresso base con accesso a tutte le opere in esposizione.",
+      museumId: museumResult._id, // Colleghiamo al nuovo museo
+      creator: userId, 
+      price: museumResult.ticketPrice, 
+      isDraft: false, 
+      isPublic: true, // Visibile a tutti da subito
+      visitType: 'standard', 
+      targetAudience: ['all'], 
+      accessibility: museumResult.accessibility || ['none'], // Ereditiamo dal museo
+      works: workIds
+    });
+
+    await standardVisit.save();
   }
 
   if (userId) {
@@ -99,6 +122,16 @@ exports.saveMuseum = async (museumData, userId) => {
 };
 
 exports.updateMuseum = async (museumId, updateData) => {
+  const updatedMuseum = await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
+  // Se il curatore ha modificato il prezzo, sincronizziamo la visita libera
+  if (updateData.ticketPrice !== undefined) {
+    const Visit = require("../models/visits");
+    await Visit.findOneAndUpdate(
+      { museumId: museumId, visitType: 'standard' },
+      { price: updateData.ticketPrice }
+    );
+  }
+
   return await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
 };
 

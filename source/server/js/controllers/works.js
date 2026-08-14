@@ -1,4 +1,5 @@
 const Work = require('../models/works');
+const Visit = require('../models/visits');
 
 exports.getWorksById = async (workIds) => {
   return await Work.find({ _id: { $in: workIds } });
@@ -32,5 +33,11 @@ exports.deleteWorkById = async (workId, museumId) => {
     error.statusCode = 403;
     throw error;
   }
+  
+  await Visit.findOneAndUpdate(
+    { museumId: museumId, visitType: 'standard' },
+    { $pull: { works: workId } } 
+  );
+
   return deletedWork;
 };

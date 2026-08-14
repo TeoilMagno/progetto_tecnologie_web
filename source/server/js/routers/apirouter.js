@@ -14,6 +14,7 @@ const Work = require("../models/works");
 const { Section } = require("../models/sections");
 const Museum = require("../models/museums");
 const Adoption = require("../models/adoptions");
+const Visit = require("../models/visits");
 
 // Controllers
 const museumController = require("../controllers/museums");
@@ -306,9 +307,19 @@ apiRouter.post("/add-work", [auth.isCurator, auth.isMuseumOwner], async (req, re
     const newWork = new Work({
       ...work,
       museumId: museumId, // Evitiamo che l'utente si inventi cose
-      roomId: work.roomId || null // Valorizza il campo roomId sul DB!
+      roomId: work.roomId || null, // Valorizza il campo roomId sul DB!
     });
     const savedWork = await newWork.save();
+
+    await Visit.findOneAndUpdate(
+      { 
+        museumId: savedWork.museumId, 
+        visitType: 'standard' // Troviamo la visita libera di QUESTO museo
+      },
+      { 
+        $push: { works: savedWork._id } // Inseriamo l'ID della nuova opera
+      }
+    );
 
     // Collega l'ID dell'opera alla sezione tramite il controller
     await sectionController.addWorkToSection(sectionId, savedWork._id);

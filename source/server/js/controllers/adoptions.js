@@ -2,6 +2,7 @@ const Adoption = require('../models/adoptions');
 const Work = require('../models/works');
 const Museum = require('../models/museums');
 const { User } = require('../models/users');
+const Visit = require('../models/museums');
 
 exports.getWorkByAdoption = async (adoptionId) => {
   try {
@@ -153,6 +154,10 @@ exports.completeAdoption = async (adoptionId, user) => {
     await work.save(); 
   }
 
+  // Operazione inversa: togli dalla Visita Libera ospite e rimetti in quella originaria
+  await Visit.findOneAndUpdate({ museumId: adoption.toMuseumId, visitType: 'standard' }, { $pull: { works: adoption.workId } });
+  await Visit.findOneAndUpdate({ museumId: adoption.fromMuseumId, visitType: 'standard' }, { $push: { works: adoption.workId } });
+
   return adoption;
 };
 
@@ -183,6 +188,10 @@ exports.confirmArrival = async (adoptionId, user) => {
     work.adoptionId = adoption._id;
     await work.save();
   }
+
+  // Togli dalla Visita Libera originaria e metti in quella nuova
+  await Visit.findOneAndUpdate({ museumId: adoption.fromMuseumId, visitType: 'standard' }, { $pull: { works: adoption.workId } });
+  await Visit.findOneAndUpdate({ museumId: adoption.toMuseumId, visitType: 'standard' }, { $push: { works: adoption.workId } });
 
   return adoption;
 };

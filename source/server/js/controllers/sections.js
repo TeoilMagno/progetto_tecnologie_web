@@ -179,7 +179,7 @@ exports.deleteRoomFromSection = async (sectionId, roomId, museumId) => {
   
   for (const w of worksInRoom) {
     // elimina l'opera fisica dalla collezione Works
-    await Work.findByIdAndDelete(w._id);
+    await deleteWorkById(w._id, museumId);
     
     // rimuove il riferimento dell'opera anche dall'array "works" della sezione
     section.works = section.works.filter(sw => sw.workId && sw.workId.toString() !== w._id.toString());
