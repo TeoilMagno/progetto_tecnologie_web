@@ -9,13 +9,19 @@ const workSchema = new Schema({
   },
 
   author: {
+    type: Schema.Types.ObjectId,
+    ref: 'Author',
+    required: true
+  },
+
+  technique: { // tecnica es. dipinto a olio, scultura, ecc
     type: String,
     required: true
   },
 
-  style: {
-    type: String,
-    required: true
+  style: { // riferimento al movimento/stile es. Barocco, Cubismo
+    type: Schema.Types.ObjectId,
+    ref: 'Style'
   },
 
   year: {
@@ -29,13 +35,34 @@ const workSchema = new Schema({
   },
 
   description: {
-    type: [{
-      length: Number,
-      tone: String,
-      description: String,
-    }],
-    default: []
+    simple: {
+      short: { type: String },
+      medium: { type: String },
+      long: { type: String },
+      exhaustive: { type: String }
+    },
+    medium: {
+      short: { type: String },
+      medium: { type: String },
+      long: { type: String },
+      exhaustive: { type: String }
+    },
+    professional: {
+      short: { type: String },
+      medium: { type: String },
+      long: { type: String },
+      exhaustive: { type: String }
+    },
+    expert: {
+      short: { type: String },
+      medium: { type: String },
+      long: { type: String },
+      exhaustive: { type: String }
+    }
   },
+
+  funFact: { type: String}, // Curiosità 
+  paraphrase: { type: String }, // Parafrasi o spiegazione semplificata dell'opera
   
   museumId: {
     type: Schema.Types.ObjectId,

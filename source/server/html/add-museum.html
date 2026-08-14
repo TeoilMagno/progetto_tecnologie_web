@@ -25,17 +25,18 @@
   </header>
 
   <div class="form-wrapper">
-    <h1 class="aura-title">Nuovo Museo</h1>
+    <h1 class="aura-title">Crea un Nuovo Museo</h1>
+    <p class="text-secondary mb-4 text-center">Inserisci i dati principali. Potrai aggiungere le sezioni e le opere nel passaggio successivo.</p>
 
     <form id="museumForm" class="glass-panel">
       <div class="row g-3">
         <div class="col-md-6">
-          <label class="form-label-aura">Nome Museo</label>
-          <input type="text" name="name" class="form-control input-aura" placeholder="Es: Louvre" />
+          <label class="form-label-aura">Nome Museo *</label>
+          <input type="text" name="name" class="form-control input-aura" placeholder="Es: Louvre" required />
         </div>
         <div class="col-md-6">
-          <label class="form-label-aura">Indirizzo</label>
-          <input type="text" name="address" class="form-control input-aura" placeholder="Via/Piazza..." />
+          <label class="form-label-aura">Indirizzo *</label>
+          <input type="text" name="address" class="form-control input-aura" placeholder="Via/Piazza..." required />
         </div>
         <div class="col-md-6">
           <label class="form-label-aura">Email di Contatto</label>
@@ -46,33 +47,24 @@
           <input type="text" name="contact_phone" class="form-control input-aura" />
         </div>
         <div class="col-12">
-          <label class="form-label-aura">URL Immagine Museo</label>
-          <input type="text" name="image" class="form-control input-aura" />
+          <label class="form-label-aura">URL Immagine Copertina</label>
+          <input type="url" name="image" class="form-control input-aura" />
         </div>
-        <div class="col-12 mb-4">
+        <div class="col-12 mb-2">
           <label class="form-label-aura">Tags (separati da virgola)</label>
-          <textarea name="tags" class="form-control input-aura" rows="2"></textarea>
+          <textarea name="tags" class="form-control input-aura" rows="2" placeholder="Arte, Rinascimento, Firenze..."></textarea>
         </div>
       </div>
 
-      <div id="sections-region"></div>
-
-      <button type="button" class="btn btn-glass w-100 mb-4" onclick="renderAddSection()">
-        <i class="bi bi-plus-lg me-2"></i>Aggiungi Sezione
-      </button>
-
       <div class="d-flex gap-3 divider-top pt-4">
-        <button type="button" class="btn btn-gradient px-5" onclick="museumHandleSave(event)">
-          Salva Museo
+        <button type="button" class="btn btn-gradient w-100 py-2 fs-5" onclick="museumHandleSave(event)">
+          Crea Museo e Vai all'Editor <i class="bi bi-arrow-right ms-2"></i>
         </button>
-        <button type="reset" class="btn btn-glass">Reset</button>
       </div>
     </form>
   </div>
 
   <script src="/marketplace/js/config.js"></script>
-  <script src="/marketplace/js/add-work.js"></script>
-  <script src="/marketplace/js/add-section.js"></script>
   <script src="/marketplace/js/add-museum.js"></script>
 </body>
 </html>

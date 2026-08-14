@@ -198,6 +198,47 @@ apiRouter.delete("/sections/:id", [auth.isCurator, auth.isMuseumOwner], async (r
   }
 });
 
+// -------------- rooms -----------------------
+
+// Aggiungi una stanza a una sezione
+// * nel body deve esserci il museumId
+apiRouter.post("/sections/:sectionId/rooms", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
+  try {
+    const { roomData, museumId } = req.body;
+    const newRoom = await sectionController.addRoomToSection(req.params.sectionId, roomData, museumId);
+    res.status(201).json(newRoom);
+  } catch (error) {
+    console.error("Errore aggiunta stanza:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Modifica (rinomina) una Stanza
+// * nel body deve esserci il museumId
+apiRouter.put("/sections/:sectionId/rooms/:roomId", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
+  try {
+    const { roomData, museumId } = req.body;
+    const updatedRoom = await sectionController.updateRoomInSection(req.params.sectionId, req.params.roomId, roomData, museumId);
+    res.json(updatedRoom);
+  } catch (error) {
+    console.error("Errore modifica stanza:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Elimina una Stanza
+// * nel body deve esserci il museumId
+apiRouter.delete("/sections/:sectionId/rooms/:roomId", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
+  try {
+    const { museumId } = req.body;
+    await sectionController.deleteRoomFromSection(req.params.sectionId, req.params.roomId, museumId);
+    res.json({ message: "Stanza eliminata con successo" });
+  } catch (error) {
+    console.error("Errore eliminazione stanza:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 //--------------- works -----------------------
 
 // ? ha senso dato che c'e' gia' la rotta per ottenere le opere di ogni sezione e ogni sezione di un museo
@@ -220,7 +261,6 @@ apiRouter.get("/museums/:id/works", async (req, res) => {
   }
 });
 
-// TODO: manca il lato frontend di queste rott e edi quelle per le sezioni
 // per la modifica di un'opera
 // * nel body deve esserci il museumId, potrei anche fare il controllo nel controller ma dovrei prendere l'oggetto dal db per poi dire che non
 apiRouter.put("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, res) => {
@@ -235,7 +275,7 @@ apiRouter.put("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, res
 
 // elimina un'opera 
 // * il frontend deve inveare l'ID della sezione da cui toglierla
-apiRouter.delete("/works/:id", auth.isCurator, async (req, res) => {
+apiRouter.delete("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, res) => {
   try {
     const workId = req.params.id;
     const { sectionId, museumId } = req.body; 
@@ -257,19 +297,20 @@ apiRouter.delete("/works/:id", auth.isCurator, async (req, res) => {
 //------------------ form ------------------------
 
 // Rotta per creare e aggiungere un'opera sul db
-// * il frontend deve inviare museumId
+// * il frontend deve inviare museumId e roomId (se l'opera è in una stanza)
 apiRouter.post("/add-work", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
   try {
     const { work, sectionId, museumId } = req.body;
 
-    // salva la nuova opera su MongoDB
+    // Salviamo la nuova opera inserendo esplicitamente il roomId e il museumId verificato
     const newWork = new Work({
       ...work,
-      museumId: museumId // evitiamo che l'utente si inventi cose
+      museumId: museumId, // Evitiamo che l'utente si inventi cose
+      roomId: work.roomId || null // Valorizza il campo roomId sul DB!
     });
     const savedWork = await newWork.save();
 
-    // collega l'ID dell'opera alla sezione tramite il controller
+    // Collega l'ID dell'opera alla sezione tramite il controller
     await sectionController.addWorkToSection(sectionId, savedWork._id);
 
     res
@@ -345,6 +386,7 @@ apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
 apiRouter.get("/current-user", (req, res) => {
   if (req.isAuthenticated()) {
     res.status(200).json({
+      _id: req.user._id,
       username: req.user.username || req.user.name,
       role: req.user.role,
     });
@@ -454,6 +496,18 @@ apiRouter.put("/visits/:id", auth.isLoggedIn, async (req, res) => {
   }
 });
 
+// rotta per eliminare una visita o bozza
+apiRouter.delete("/visits/:id", auth.isLoggedIn, async (req, res) => {
+  try {
+    await visitController.deleteVisitById(req.params.id, req.user);
+    res.json({ message: "Visita eliminata con successo" });
+  } catch (error) {
+    console.error("Errore eliminazione visita:", error);
+    const status = error.statusCode || 500;
+    res.status(status).json({ error: error.message || "Errore interno del server" });
+  }
+});
+
 // ----------------------- ordini & checkout ----------------------------
 
 // Riceve il carrello dal frontend e processa l'acquisto
@@ -479,6 +533,105 @@ apiRouter.get("/my-orders", auth.isLoggedIn, async (req, res) => {
   } catch (error) {
     console.error("Errore nel recupero degli ordini:", error);
     res.status(500).json({ error: "Impossibile recuperare lo storico ordini" });
+  }
+});
+
+// ----------------------- adoptions ----------------------------
+
+// TODO: controllare sicurezza -> auth.isMuseumOwner
+// Crea richiesta di adozione (status: pending)
+apiRouter.post("/adoptions", auth.isCurator, async (req, res) => {
+  try {
+    const adoption = await adoptionController.createAdoptionRequest(req.body, req.user);
+    res.status(201).json({ message: "Richiesta di adozione inviata!", adoption });
+  } catch (error) {
+    console.error("Errore creazione adozione:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Recupera le adozioni del curatore loggato (sia inviate che ricevute)
+apiRouter.get("/my-adoptions", auth.isCurator, async (req, res) => {
+  try {
+    const adoptions = await adoptionController.getUserAdoptions(req.user._id);
+    res.json(adoptions);
+  } catch (error) {
+    console.error("Errore recupero adozioni:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Rispondi alla richiesta (accetta 'accepted' o rifiuta 'refused')
+apiRouter.put("/adoptions/:id/respond", auth.isCurator, async (req, res) => {
+  try {
+    const { status, targetRoomId } = req.body;
+    const adoption = await adoptionController.respondToAdoption(req.params.id, status, targetRoomId, req.user);
+    res.json({ message: `Adozione aggiornata in stato: ${status}`, adoption });
+  } catch (error) {
+    console.error("Errore risposta adozione:", error);
+    const code = error.statusCode || 500;
+    res.status(code).json({ error: error.message });
+  }
+});
+
+// Conferma arrivo opera al museo di destinazione (status: active)
+apiRouter.put("/adoptions/:id/arrive", auth.isCurator, async (req, res) => {
+  try {
+    const adoption = await adoptionController.confirmArrival(req.params.id, req.user);
+    res.json({ message: "Arrivo confermato! L'opera è ora esposta nel tuo museo.", adoption });
+  } catch (error) {
+    console.error("Errore conferma arrivo:", error);
+    const code = error.statusCode || 500;
+    res.status(code).json({ error: error.message });
+  }
+});
+
+// Termina l'adozione e restituisce l'opera al museo originario (status: completed)
+apiRouter.put("/adoptions/:id/complete", auth.isCurator, async (req, res) => {
+  try {
+    const adoption = await adoptionController.completeAdoption(req.params.id, req.user);
+    res.json({ message: "Adozione completata, opera restituita al museo originario!", adoption });
+  } catch (error) {
+    console.error("Errore completamento adozione:", error);
+    const code = error.statusCode || 500;
+    res.status(code).json({ error: error.message });
+  }
+});
+
+// ----------------------- admin dashboard ----------------------------
+
+// Recupera tutti gli utenti che hanno chiesto di diventare curatori
+apiRouter.get("/admin/pending-curators", auth.isAdmin, async (req, res) => {
+  try {
+    // Troviamo chi ha il curator_status su 'pending'
+    const pendingUsers = await User.find({ curator_status: 'pending' }, 'username email name role curator_status');
+    res.json(pendingUsers);
+  } catch (error) {
+    res.status(500).json({ error: "Errore nel recupero delle richieste" });
+  }
+});
+
+// Approva o rifiuta un curatore
+apiRouter.put("/admin/curators/:id/respond", auth.isAdmin, async (req, res) => {
+  try {
+    const { action } = req.body; // 'approve' o 'reject'
+    const user = await User.findById(req.params.id);
+
+    if (!user) return res.status(404).json({ error: "Utente non trovato" });
+
+    if (action === 'approve') {
+      user.role = 'curator'; // Diventa curatore a tutti gli effetti
+      user.curator_status = 'approved';
+    } else if (action === 'reject') {
+      user.curator_status = 'rejected'; // Rimane visitor
+    } else {
+      return res.status(400).json({ error: "Azione non valida" });
+    }
+
+    await user.save();
+    res.json({ message: `Utente ${user.username} ${action === 'approve' ? 'approvato come curatore' : 'rifiutato'}.` });
+  } catch (error) {
+    res.status(500).json({ error: "Errore durante l'aggiornamento del ruolo" });
   }
 });
 

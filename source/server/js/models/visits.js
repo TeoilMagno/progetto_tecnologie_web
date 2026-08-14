@@ -16,7 +16,33 @@ const visitSchema = new mongoose.Schema({
     isPublic: { type: Boolean, default: false }, // true = pubblica sul marketplace, false = privata
     duration: { type: Number }, // Durata stimata in minuti
     language: { type: String, default: 'it' },
-    coverImage: { type: String } // Immagine di anteprima per la card nel marketplace
+    coverImage: { type: String }, // Immagine di anteprima per la card nel marketplace
+
+    // standard -> visita libera
+    visitType: { 
+        type: String, 
+        enum: ['standard', 'custom'], 
+        default: 'custom' // Tutte le visite create dagli utenti saranno 'custom'
+    },
+
+    targetAudience: { 
+      type: [String], 
+      enum: ['kids', 'families', 'adults', 'schools', 'all'],
+      default: ['all'] 
+    },
+
+    accessibility: [{ 
+        type: String, 
+        enum: [
+            'wheelchair_accessible', 
+            'blind_friendly', 
+            'deaf_friendly', 
+            'dsa_friendly', 
+            'sensory_friendly', 
+            'none'
+        ],
+        default: ['none']
+    }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Visit', visitSchema);

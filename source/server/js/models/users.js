@@ -11,6 +11,14 @@ const userSchema = new mongoose.Schema({
     enum: ['curator', 'visitor', 'admin'],
     default: 'visitor'
   },
+
+  // tracciamento dello stato di richiesta curatore
+  curator_status: {
+    type: String,
+    enum: ['none', 'pending', 'approved', 'rejected'],
+    default: 'none'
+  },
+
   // Musei gestiti (per curatori)
   managed_museums: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Museum' }],
 

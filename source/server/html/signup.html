@@ -26,6 +26,14 @@
     </div>
 
     <form action="/signup" method="post" id="signupForm">
+      <div class="d-flex justify-content-center align-items-center mb-4 mt-2">
+        <span class="text-info fw-bold small me-2 transition-all" id="label-visitor">Visitatore</span>
+        <div class="form-check form-switch mb-0">
+          <input class="form-check-input bg-secondary border-secondary shadow-none" type="checkbox" id="role-toggle" style="width: 3rem; height: 1.5rem; cursor: pointer;">
+        </div>
+        <span class="text-secondary small ms-2 transition-all" id="label-curator">Curatore</span>
+      </div>
+      <input type="hidden" id="requested_role" name="requested_role" value="visitor">
       <div class="mb-3">
         <label class="form-label-aura" for="username">Username</label>
         <input type="text" id="username" name="username" class="form-control input-aura" placeholder="es. mariorossi" required />
@@ -48,6 +56,22 @@
 
   <script src="/js/config.js"></script>
   <script>
+    document.getElementById('role-toggle').addEventListener('change', function(e) {
+      const roleInput = document.getElementById('requested_role');
+      const labelVis = document.getElementById('label-visitor');
+      const labelCur = document.getElementById('label-curator');
+      
+      if (e.target.checked) {
+        roleInput.value = 'curator';
+        labelCur.className = 'text-info fw-bold small ms-2 transition-all';
+        labelVis.className = 'text-secondary small me-2 transition-all';
+      } else {
+        roleInput.value = 'visitor';
+        labelVis.className = 'text-info fw-bold small me-2 transition-all';
+        labelCur.className = 'text-secondary small ms-2 transition-all';
+      }
+    });
+    
     document.getElementById('signupForm').addEventListener('submit', function(e) {
       const pw = document.getElementById('new-password').value;
       const pw2 = document.getElementById('confirm-password').value;

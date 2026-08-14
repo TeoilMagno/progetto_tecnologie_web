@@ -48,7 +48,7 @@ router.get('/my-visits', auth.isLoggedInPage, (req, res) => {
 });
 
 // pagina di dettaglio delle visite
-router.get('/visit-details', (req, res) => {
+router.get('/visit-details', auth.isLoggedInPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'visit-details.html'));
 });
 
@@ -69,13 +69,23 @@ router.get('/my-museums', auth.isCuratorPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-museums.html'));
 });
 
-router.get('/navigator/visits/:visitId', (req, res) => {
+router.get('/navigator/visits/:visitId', auth.isLoggedInPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'dist', 'index.html'));
 }); 
 
 // pagina dello storico deli ordini
 router.get('/my-orders', auth.isLoggedInPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-orders.html'));
+});
+
+// pagina delle adozioni in corso e completate di un curatore
+router.get('/my-adoptions', auth.isCuratorPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-adoptions.html'));
+});
+
+// pagina delle adozioni in corso e completate di un curatore
+router.get('/admin-dashboard', auth.isAdminPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'admin-dashboard.html'));
 });
 
 module.exports = router;

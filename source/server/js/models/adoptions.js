@@ -43,17 +43,25 @@ const adoptionSchema = new Schema({
     required: true
   },
 
+  // dobbiamo sapere da dove proviene l'opera
+  fromRoomId: {
+    type: mongoose.Schema.Types.ObjectId
+  },
+  toRoomId: {
+    type: mongoose.Schema.Types.ObjectId
+  },
+
   status: { 
     type: String, 
-    enum: ['pending', 'completed', 'accepted', 'refused' ]
+    enum: ['pending', 'completed', 'accepted', 'refused', 'active' ],
     //pending: è stata fatta richiesta al curatore che possiede l'opera
-    //accepted: la richiesta di adozione è stata accetta, status rimane accepted fino a fine adozione, quindi fino a endDate
+    //accepted: la richiesta di adozione è stata accetta
     //refused: la richiesta di adozione è stata rifiutata
+    //active: all'arrivo dell'opera al museo il curatore segna che e' iniziata l'adozione, status rimane active fino a fine adozione, quindi fino a endDate
     //completed: dopo endDate, il curatore segna manualmente l'adozione come completata quando l'opera torna al museo che l'ha prestata
+    default: 'pending'
   }
-});
+}, { timestamps: true });
 
 const Adoption = mongoose.model('Adoption', adoptionSchema);
-
-//esportiamo per rendere il file richiamabile da altri file .js
 module.exports = Adoption;

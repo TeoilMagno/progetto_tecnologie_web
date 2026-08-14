@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="/marketplace/css/style.css" />
     <link rel="stylesheet" href="/marketplace/css/visits.css" />
+    <link rel="stylesheet" href="/marketplace/css/search-bar.css" />
   </head>
   <body class="artaround-theme">
     
@@ -19,9 +20,16 @@
           <span class="brand-text">ArtAround</span>
           <span class="brand-subtitle ms-1 text-white opacity-75">Editor Visita</span>
         </a>
-      </div>
+      </div> 
       
       <div class="d-flex align-items-center gap-3">
+        <div class="search-container position-relative d-flex align-items-center" id="search-container">
+          <input type="text" id="catalog-search-input" class="search-input form-control bg-transparent text-white border-0" placeholder="Cerca per opera o autore...">
+          <button class="btn text-white" id="search-toggle-btn">
+            <i class="bi bi-search fs-5"></i>
+          </button>
+        </div>
+
         <div id="user-area" class="text-white small d-flex align-items-center gap-2"></div>
         
         <a href="javascript:history.length > 1 ? history.back() : window.location.href='/my-visits'" class="btn btn-sm btn-glass rounded-pill px-3">
@@ -114,18 +122,21 @@
 
           </div>
           
-          <div class="modal-footer border-top-custom d-flex justify-content-between">
-            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+          <div class="modal-footer border-top-custom p-3 flex-column gap-2">
+            <!-- Tasto per salvare la bozza -->
+            <button id="save-draft-btn" class="btn btn-outline-info w-100 m-0" onclick="submitVisit(true)">
+              <i class="bi bi-pencil-square me-1"></i> Salva Bozza
+            </button>
             
-            <div class="d-flex gap-2">
-              <button type="button" class="btn btn-glass text-warning border-warning px-3" id="save-draft-btn" onclick="submitVisit(true)">
-                <i class="bi bi-pencil-square me-1"></i> Salva bozza
-              </button>
-              
-              <button type="button" class="btn btn-gradient px-3" id="confirm-save-visit-btn" onclick="submitVisit(false)">
-                Salva
-              </button>
-            </div>
+            <!-- Tasto per il salvataggio definitivo -->
+            <button id="confirm-save-visit-btn" class="btn btn-gradient w-100 m-0" onclick="submitVisit(false)">
+              Salva Definitivo
+            </button>
+            
+            <!-- Tasto per l'eliminazione -->
+            <button id="delete-visit-btn" class="btn btn-outline-danger w-100 m-0 d-none" onclick="deleteVisit()">
+              <i class="bi bi-trash me-1"></i> Elimina Bozza
+            </button>
           </div>
 
         </div>
@@ -135,6 +146,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/marketplace/js/config.js"></script>
     <script src="/vendor/sortablejs/Sortable.min.js"></script>
+    <script src="/marketplace/js/search-bar.js"></script>
     <script src="/marketplace/js/add-visit.js"></script>
   </body>
 </html>

@@ -8,6 +8,11 @@ exports.isLoggedIn = (req, res, next) => {
   return res.status(401).json({ error: 'Devi effettuare il login per continuare.' });
 };
 
+exports.isAdmin = (req, res, next) => {
+  if (req.user?.role === 'admin') return next();
+  return res.status(403).json({ error: 'Accesso negato: solo gli admin possono modificare i contenuti.' });
+};
+
 // Middleware per le pagine HTML: se non è curatore, caricamento della pagina 403
 exports.isCuratorPage = (req, res, next) => {
   if (req.user?.role === 'curator' || req.user?.role === 'admin') {
@@ -25,6 +30,16 @@ exports.isLoggedInPage = (req, res, next) => {
   }
   
   res.redirect('/login?msg=login_required'); // teniamo traccia di quando il redirect al login e' forzato
+};
+
+// Middleware per le pagine HTML: se non è curatore, caricamento della pagina 403
+exports.isAdminPage = (req, res, next) => {
+  if (req.user?.role === 'admin') {
+    return next(); 
+  }
+
+  const path = require('path');
+  res.status(403).sendFile(path.join(__dirname, '..', '..', 'html', '403.html'));
 };
 
 // non c'e' il controllo sullo user perche' va abbinato a iscurator
