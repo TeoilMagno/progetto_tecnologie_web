@@ -6,7 +6,6 @@ export default function RoomLayer({ onBack, section, visitedWorks, activeWorkId,
   //const API_BASE_URL = window.location.origin + "/api";
 
   useEffect(() => {
-    console.log(section);
     fetch(`${API_BASE_URL}/sections/${section._id}/works`)
       .then((response) => response.json())
       .then((data) => {

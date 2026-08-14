@@ -4,17 +4,16 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
   // --- LOGICA TRASCINAMENTO BOTTOM SHEET ---
   const [dragStartY, setDragStartY] = useState(null);
   const [dragCurrentY, setDragCurrentY] = useState(0);
+  const [currentDescIndex, setCurrentDescIndex] = useState(0);
 
   const handlePointerDown = (e) => {
     setDragStartY(e.clientY);
-    // Questo trucco dice al browser: "Continua a seguire il mouse/dito anche se esce dal div"
     e.target.setPointerCapture(e.pointerId); 
   };
 
   const handlePointerMove = (e) => {
     if (!dragStartY) return;
     const delta = e.clientY - dragStartY;
-    // Permettiamo il trascinamento solo verso il BASSO
     if (delta > 0) setDragCurrentY(delta); 
   };
   
@@ -30,11 +29,28 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
     e.target.releasePointerCapture(e.pointerId);
   };
 
+  const handleMoreDesc = () => {
+    if (work?.description && currentDescIndex < work.description.length - 1) {
+      const nextIndex = currentDescIndex + 1;
+      setCurrentDescIndex(nextIndex);
+      onSpeak(work.description[nextIndex].description)
+    }
+  }
+
+  const handleLessDesc = () => {
+    if (work?.description && currentDescIndex > 0) {
+      const nextIndex = currentDescIndex - 1;
+      setCurrentDescIndex(nextIndex);
+      onSpeak(work.description[nextIndex].description)
+    }
+  }
+
   // Resettiamo la posizione del menu se l'utente lo chiude con la X
   useEffect(() => {
     if (!work) {
       setDragCurrentY(0);
     }
+    setCurrentDescIndex(0);
   }, [work]);
 
   return (
@@ -113,15 +129,24 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
 
               {/* Tasti */}
               <div className="d-flex gap-2">
+                <button
+                  onClick={handleLessDesc}
+                  className="btn btn-outline-light flex-grow-1 rounded-pill" style={{ borderColor: "rgba(255,255,255,0.2)" }}
+                >
+                  <i className="bi bi-volume-up me-2"></i> Dimmi di meno
+                </button>
                 <button 
-                  onClick={() => onSpeak(work.description?.[0]?.description)}
+                  onClick={() => onSpeak(work.description?.[currentDescIndex]?.description)}
                   className="btn btn-info flex-grow-1 rounded-pill" 
                   style={{ fontWeight: 600 }}
                 >
                   <i className="bi bi-volume-up me-2"></i> Ascolta
                 </button>
-                <button className="btn btn-outline-light flex-grow-1 rounded-pill" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
-                  Altre Opzioni
+                <button
+                  onClick={handleMoreDesc}
+                  className="btn btn-outline-light flex-grow-1 rounded-pill" style={{ borderColor: "rgba(255,255,255,0.2)" }}
+                >
+                  <i className="bi bi-volume-up me-2"></i> Dimmi di più
                 </button>
               </div>
             </div>
