@@ -38,6 +38,8 @@ const museumSchema = new Schema({
     trim: true
   },
 
+  ticketPrice: { type: Number, default: 0 },
+
   // I servizi offerti a livello generale (piu' facile da filtrare di facilities)
   services: [{ 
     type: String, 
