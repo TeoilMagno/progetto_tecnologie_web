@@ -32,11 +32,7 @@ const itemSchema = new Schema({
   quantity: {
     type: Number,
     required: true
-  },
-
-  duration: String,
-  
-  tone: String
+  }
 });
 
 

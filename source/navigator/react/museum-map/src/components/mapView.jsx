@@ -11,7 +11,7 @@ export default function MapView({ visitId }) {
   const [visitedWorks, setVisitedWorks] = useState([]);
   const [allMuseumWorks, setAllMuseumWorks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const API_BASE_URL = window.location.origin + "/api";
+  //const API_BASE_URL = window.location.origin + "/api";
 
   // Navigator state
   const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);

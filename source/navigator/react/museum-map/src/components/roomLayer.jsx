@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 export default function RoomLayer({ onBack, section, visitedWorks, activeWorkId, onWorkClick }) {
   const [works, setWorks] = useState([]);
   const [filteredWorks, setFilteredWorks] = useState([]);
-  const API_BASE_URL = window.location.origin + "/api";
+  //const API_BASE_URL = window.location.origin + "/api";
 
   useEffect(() => {
     console.log(section);
