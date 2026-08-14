@@ -35,12 +35,30 @@ const workSchema = new Schema({
   },
 
   description: {
-    type: [{
-      length: Number,
-      tone: String,
-      description: String,
-    }],
-    default: []
+    simple: {
+      short: { type: String },
+      medium: { type: String },
+      long: { type: String },
+      exhaustive: { type: String }
+    },
+    medium: {
+      short: { type: String },
+      medium: { type: String },
+      long: { type: String },
+      exhaustive: { type: String }
+    },
+    professional: {
+      short: { type: String },
+      medium: { type: String },
+      long: { type: String },
+      exhaustive: { type: String }
+    },
+    expert: {
+      short: { type: String },
+      medium: { type: String },
+      long: { type: String },
+      exhaustive: { type: String }
+    }
   },
 
   funFact: { type: String}, // Curiosità 
