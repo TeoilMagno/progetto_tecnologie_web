@@ -1,4 +1,6 @@
 const Visit = require("../models/visits");
+const Work = require("../models/works");
+const { calculateVisitDuration } = require('../utils/visitCalculator')
 
 exports.createVisit = async (visitPayload, user) => {
   const {
@@ -113,4 +115,23 @@ exports.deleteVisitById = async (visitId, user) => {
   }
 
   return deletedVisit;
+};
+
+exports.estimateDuration = async (workIds, preferredLength) => {
+  // Se non ci sono opere selezionate, il tempo è 0
+  if (!workIds || workIds.length === 0) {
+    return 0;
+  }
+
+  // recuperiamo i roomId delle opere
+  const works = await Work.find({ _id: { $in: workIds } }).select('_id roomId');
+
+  // Mongoose non garantisce l'ordine con l'operatore $in.
+  // Riordiniamo l'array rispettando l'ordine esatto inviato dal frontend.
+  const orderedWorks = workIds.map(id => 
+    works.find(w => w._id.toString() === id.toString())
+  ).filter(w => w != null);
+
+  // Restituiamo il calcolo pulito
+  return calculateVisitDuration(orderedWorks, preferredLength);
 };

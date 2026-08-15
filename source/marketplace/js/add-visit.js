@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Nuovo ordine della visita:", currentVisitCart);
 
         triggerAutoSave();
+        triggerDurationUpdate();
       },
     });
   }
@@ -125,6 +126,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (currentMuseumId) {
           loadMuseumWorks(currentMuseumId);
         }
+
+        triggerDurationUpdate();
       }
     } catch (e) {
       console.error("Errore nel caricamento della bozza", e);
@@ -251,6 +254,7 @@ function addToVisit(workId, workName) {
   renderVisitCart();
 
   triggerAutoSave();
+  triggerDurationUpdate();
 }
 
 function removeFromVisit(workId) {
@@ -258,6 +262,7 @@ function removeFromVisit(workId) {
   renderVisitCart();
 
   triggerAutoSave();
+  triggerDurationUpdate();
 }
 
 function renderVisitCart() {
@@ -520,5 +525,43 @@ async function deleteVisit() {
   } catch (error) {
     console.error("Errore eliminazione:", error);
     alert("Errore di connessione con il server.");
+  }
+}
+
+// Funzione chiamata dal menu a tendina o dai cambiamenti del carrello
+function triggerDurationUpdate() {
+  const currentPrefLength = document.getElementById("visit-pref-length")?.value || 'medium';
+  // Estraiamo solo gli ID dal carrello attuale
+  const workIds = currentVisitCart.map(work => work.id);
+  
+  updateUIEstimatedDuration(workIds, currentPrefLength);
+}
+
+// Chiamata API vera e propria
+async function updateUIEstimatedDuration(workIds, currentPrefLength) {
+  const durationBadge = document.getElementById("tour-duration-badge");
+  if (!durationBadge) return;
+
+  if (workIds.length === 0) {
+    durationBadge.innerText = "0 min";
+    return;
+  }
+
+  durationBadge.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span>`;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/visits/estimate-duration`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workIds, preferredLength: currentPrefLength })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      durationBadge.innerText = `${data.duration} min`;
+    }
+  } catch (error) {
+    console.error("Impossibile calcolare il tempo stimato:", error);
+    durationBadge.innerText = "Errore";
   }
 }

@@ -521,6 +521,18 @@ apiRouter.delete("/visits/:id", auth.isLoggedIn, async (req, res) => {
   }
 });
 
+// Calcola la durata stimata della visita 
+apiRouter.post("/visits/estimate-duration", async (req, res) => {
+  try {
+    const { workIds, preferredLength } = req.body;
+    const duration = await visitController.estimateDuration(workIds, preferredLength);
+    res.json({ duration });
+  } catch (error) {
+    console.error("CRASH DURANTE IL CALCOLO STIMA:", error);
+    res.status(500).json({ error: error.message, stack: error.stack });
+  }
+});
+
 // ----------------------- ordini & checkout ----------------------------
 
 // Riceve il carrello dal frontend e processa l'acquisto
