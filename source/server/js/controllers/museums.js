@@ -61,6 +61,7 @@ exports.saveMuseum = async (museumData, userId) => {
   const museumResult = await museumToValidate.save();
   const museumId = museumResult._id;
   let savedSectionIds = [];
+  let allSavedWorkIds = [];
 
   if (sections && sections.length > 0) {
     for (const s of sections) {
@@ -74,6 +75,8 @@ exports.saveMuseum = async (museumData, userId) => {
         }));
         const savedWorks = await Work.insertMany(worksToInsert);
         workIds = savedWorks.map(w => w._id);
+
+        allSavedWorkIds.push(...workIds);
       }
 
       // Salviamo la sezione
@@ -91,8 +94,9 @@ exports.saveMuseum = async (museumData, userId) => {
     // aggiorniamo il museo con gli ID delle sezioni
     museumResult.sections = savedSectionIds;
     await museumResult.save();
+  }
 
-    // creiamo IMMEDIATAMENTE la visita libera associata
+  // creiamo la visita libera associata
     const standardVisit = new Visit({
       title: "Visita libera",
       description: "Ingresso base con accesso a tutte le opere in esposizione.",
@@ -104,11 +108,10 @@ exports.saveMuseum = async (museumData, userId) => {
       visitType: 'standard', 
       targetAudience: ['all'], 
       accessibility: museumResult.accessibility || ['none'], // Ereditiamo dal museo
-      works: workIds
+      works: allSavedWorkIds
     });
 
     await standardVisit.save();
-  }
 
   if (userId) {
     await User.findByIdAndUpdate(

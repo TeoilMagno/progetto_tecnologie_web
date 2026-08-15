@@ -24,6 +24,7 @@ const sectionController = require("../controllers/sections");
 const visitController = require("../controllers/visits");
 const orderController = require("../controllers/orders");
 const adoptionController = require("../controllers/adoptions");
+const authorController = require("../controllers/authors");
 
 // Middleware
 const auth = require("../middleware/roles");
@@ -643,6 +644,52 @@ apiRouter.put("/admin/curators/:id/respond", auth.isAdmin, async (req, res) => {
     res.json({ message: `Utente ${user.username} ${action === 'approve' ? 'approvato come curatore' : 'rifiutato'}.` });
   } catch (error) {
     res.status(500).json({ error: "Errore durante l'aggiornamento del ruolo" });
+  }
+});
+
+// ----------------------- authors ----------------------------
+
+// Cerca autori (GET /api/authors/search?q=leonardo)
+apiRouter.get("/authors/search", auth.isCurator, async (req, res) => {
+  try {
+    const authors = await authorController.searchAuthors(req.query.q);
+    res.json(authors);
+  } catch (error) {
+    console.error("Errore ricerca autori:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Ottieni i dettagli completi di un autore e delle sue descrizioni
+apiRouter.get("/authors/:id", auth.isCurator, async (req, res) => {
+  try {
+    const author = await authorController.getAuthorById(req.params.id);
+    res.json(author);
+  } catch (error) {
+    console.error("Errore recupero autore:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Crea un nuovo autore
+apiRouter.post("/authors", auth.isCurator, async (req, res) => {
+  try {
+    const savedAuthor = await authorController.createAuthor(req.body);
+    res.status(201).json(savedAuthor);
+  } catch (error) {
+    console.error("Errore creazione autore:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Aggiungi una nuova scheda descrittiva a un autore esistente
+apiRouter.put("/authors/:id/data", auth.isCurator, async (req, res) => {
+  try {
+    const updatedAuthor = await authorController.addAuthorData(req.params.id, req.body);
+    res.json(updatedAuthor);
+  } catch (error) {
+    console.error("Errore aggiornamento autore:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 });
 

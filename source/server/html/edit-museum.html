@@ -154,27 +154,66 @@
             <form id="work-form">
               <input type="hidden" id="work-id" />
               <input type="hidden" id="work-section-id" />
-              <input type="hidden" id="work-room-id" /> <div class="row g-3">
+              <input type="hidden" id="work-room-id" /> 
+              
+              <div class="row g-3">
+                <!-- Titolo Opera -->
                 <div class="col-md-6">
                   <label class="form-label small text-secondary">Titolo Opera *</label>
                   <input type="text" class="form-control glass-input" id="work-name" required />
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label small text-secondary">Artista / Autore</label>
-                  <input type="text" class="form-control glass-input" id="work-author" />
+
+                <!-- Ricerca Autore con Tendina Dinamica -->
+                <div class="col-md-6 position-relative">
+                  <label class="form-label small text-secondary">Artista / Autore *</label>
+                  <input type="hidden" id="work-author-id" /> 
+                  <input type="text" class="form-control glass-input" id="work-author-search" placeholder="Cerca autore (es. Leonardo)..." autocomplete="off" />
+                  
+                  <!-- Dropdown Risultati (Fuzzy Search) -->
+                  <ul class="dropdown-menu w-100 bg-dark text-white border-secondary border-opacity-50" id="author-search-results" style="display: none; max-height: 200px; overflow-y: auto; position: absolute; z-index: 1050;">
+                  </ul>
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label small text-secondary">Anno / Periodo</label>
-                  <input type="text" class="form-control glass-input" id="work-year" />
+
+                <!-- Contenitore Slider Card (Appare dopo aver selezionato un autore) -->
+                <div class="col-12 mt-2" id="author-cards-container" style="display: none;">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label small text-secondary mb-0">Biografie e Dati Autore</label>
+                    <button type="button" class="btn btn-sm btn-outline-info" onclick="openNewAuthorDataModal()">
+                      <i class="bi bi-plus"></i> Scrivi la tua
+                    </button>
+                  </div>
+                  
+                  <!-- Area a scorrimento orizzontale per le card -->
+                  <div id="author-slider" class="d-flex gap-3 overflow-x-auto pb-2 custom-scrollbar" style="scroll-snap-type: x mandatory;">
+                    <!-- Le card verranno iniettate qui via JS -->
+                  </div>
                 </div>
-                <div class="col-md-6">
+
+                <!-- Tecnica -->
+                <div class="col-md-4">
+                  <label class="form-label small text-secondary">Tecnica *</label>
+                  <input type="text" class="form-control glass-input" id="work-technique" placeholder="Es. Olio su tela" required />
+                </div>
+
+                <!-- Anno / Periodo -->
+                <div class="col-md-4">
+                  <label class="form-label small text-secondary">Anno / Periodo *</label>
+                  <input type="text" class="form-control glass-input" id="work-year" required />
+                </div>
+
+                <!-- Stile -->
+                <div class="col-md-4">
                   <label class="form-label small text-secondary">Stile / Movimento</label>
                   <input type="text" class="form-control glass-input" id="work-style" />
                 </div>
+
+                <!-- URL Immagine -->
                 <div class="col-12">
-                  <label class="form-label small text-secondary">URL Immagine</label>
-                  <input type="url" class="form-control glass-input" id="work-image" />
+                  <label class="form-label small text-secondary">URL Immagine *</label>
+                  <input type="url" class="form-control glass-input" id="work-image" required />
                 </div>
+
+                <!-- Descrizione Culturale Base -->
                 <div class="col-12">
                   <label class="form-label small text-secondary">Descrizione Culturale</label>
                   <textarea class="form-control glass-input" id="work-description" rows="3"></textarea>
@@ -211,6 +250,41 @@
             <button type="button" id="confirm-delete-museum-btn" class="btn btn-danger px-3" disabled onclick="confirmDeleteMuseum()">
               Conferma ed Elimina
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale Dati Autore -->
+    <div class="modal fade" id="authorDataModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content glass-modal text-white">
+          <div class="modal-header border-bottom-custom">
+            <h5 class="modal-title" id="authorDataModalLabel">Biografia Autore</h5>
+            <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="author-data-form">
+              <!-- Se questo è valorizzato, stiamo creando un NUOVO autore, altrimenti stiamo aggiungendo dati a uno esistente -->
+              <input type="hidden" id="new-author-name-input" />
+              
+              <div class="mb-3">
+                <label class="form-label small text-secondary">Date (Nascita - Morte)</label>
+                <input type="text" class="form-control glass-input" id="author-bd" placeholder="Es. 1452 - 1519" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-secondary">Studi / Formazione</label>
+                <input type="text" class="form-control glass-input" id="author-studies" placeholder="Es. Bottega del Verrocchio" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-secondary">Biografia (La tua versione)</label>
+                <textarea class="form-control glass-input" id="author-bio" rows="4" placeholder="Scrivi la biografia curata dal tuo museo..."></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer border-top-custom">
+            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+            <button type="button" class="btn btn-gradient px-3" onclick="saveAuthorData()">Salva Biografia</button>
           </div>
         </div>
       </div>

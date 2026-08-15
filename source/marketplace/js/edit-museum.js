@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("sectionModal")) sectionModalInstance = new bootstrap.Modal(document.getElementById("sectionModal"));
   if (document.getElementById("roomModal")) roomModalInstance = new bootstrap.Modal(document.getElementById("roomModal"));
   if (document.getElementById("deleteMuseumModal")) deleteMuseumModalInstance = new bootstrap.Modal(document.getElementById("deleteMuseumModal"));
+  if (document.getElementById("authorDataModal")) authorDataModalInstance = new bootstrap.Modal(document.getElementById("authorDataModal"));
 
   await fetchCurrentUser();
 
@@ -358,18 +359,23 @@ async function openWorkModal(sectionId, roomId, workId = null) {
     document.getElementById("workModalLabel").innerText = "Modifica Opera";
     document.getElementById("save-work-btn").innerText = "Aggiorna Opera";
     document.getElementById("work-name").value = w.name || "";
-    document.getElementById("work-author").value = w.author || "";
+    document.getElementById("work-author-id").value = w.author?._id || w.author || "";
+    document.getElementById("work-author-search").value = w.author?.name || "Autore Selezionato";
+    document.getElementById("work-technique").value = w.technique || "";
     document.getElementById("work-year").value = w.year || "";
     document.getElementById("work-style").value = w.style || "";
     document.getElementById("work-image").value = w.image || "";
     
     let desc = "";
-    if (w.description && w.description.length > 0) desc = w.description[0].description || "";
+    if (w.description && w.description.simple && w.description.simple.medium) {
+      desc = w.description.simple.medium;
+    }
     document.getElementById("work-description").value = desc;
   } else {
     document.getElementById("workModalLabel").innerText = "Nuova Opera";
     document.getElementById("save-work-btn").innerText = "Crea Opera";
     document.getElementById("work-form").reset();
+    document.getElementById("work-author-id").value = "";
   }
   workModalInstance.show();
 }
@@ -381,15 +387,23 @@ async function saveWorkFromModal() {
   
   const workData = {
     name: document.getElementById("work-name").value.trim(),
-    author: document.getElementById("work-author").value.trim(),
+    author: document.getElementById("work-author-id").value.trim(),
+    technique: document.getElementById("work-technique").value.trim(),
     year: document.getElementById("work-year").value.trim(),
-    style: document.getElementById("work-style").value.trim(),
+    // style: document.getElementById("work-style").value.trim(),
     image: document.getElementById("work-image").value.trim(),
-    description: [{ description: document.getElementById("work-description").value.trim(), tone: "normal", length: 10 }],
+    description: {
+      simple: {
+        medium: document.getElementById("work-description").value.trim()
+      }
+    },
     roomId: roomId
   };
 
-  if (!workData.name) { alert("Il titolo dell'opera è obbligatorio!"); return; }
+  if (!workData.name || !workData.author || !workData.technique) { 
+    alert("Titolo, Autore (da selezionare dalla tendina) e Tecnica sono campi obbligatori!"); 
+    return; 
+  }
 
   try {
     let res;
@@ -422,6 +436,9 @@ async function saveWorkFromModal() {
           collapseBody.innerHTML = tempDiv.querySelector('.accordion-body').innerHTML;
         }
       }
+    } else {
+      const errorData = await res.json();
+      alert("Errore salvataggio: " + (errorData.error || "Riprova."));
     }
   } catch (error) { console.error(error); }
 }
@@ -523,6 +540,204 @@ async function confirmDeleteMuseum() {
       alert("Errore durante l'eliminazione del museo.");
     }
   } catch (error) {
+    console.error(error);
+  }
+}
+
+// ==========================================
+// MODULO RICERCA AUTORI (Fuzzy Search & Debounce)
+// ==========================================
+
+let authorSearchTimeout = null;
+
+// Ascoltatore per la barra di ricerca dell'autore
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("work-author-search");
+  
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const query = e.target.value.trim();
+      
+      // Se l'utente cancella tutto, nascondiamo la tendina e svuotiamo le card
+      if (query.length === 0) {
+        hideAuthorDropdown();
+        document.getElementById("author-cards-container").style.display = "none";
+        document.getElementById("work-author-id").value = "";
+        return;
+      }
+
+      // DEBOUNCING: Cancella il timer precedente se l'utente sta ancora digitando
+      clearTimeout(authorSearchTimeout);
+      
+      // Imposta un nuovo timer di 300 millisecondi
+      authorSearchTimeout = setTimeout(() => {
+        fetchAuthors(query);
+      }, 300);
+    });
+  }
+});
+
+// Chiamata API al Backend
+async function fetchAuthors(query) {
+  const resultsContainer = document.getElementById("author-search-results");
+  
+  try {
+    const res = await fetch(`/api/authors/search?q=${encodeURIComponent(query)}`);
+    if (!res.ok) throw new Error("Errore nella ricerca");
+    
+    const authors = await res.json();
+    renderAuthorDropdown(authors, query);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Stampa i risultati nella tendina
+function renderAuthorDropdown(authors, query) {
+  const resultsContainer = document.getElementById("author-search-results");
+  resultsContainer.innerHTML = "";
+  
+  if (authors.length === 0) {
+    resultsContainer.innerHTML = `
+      <li class="px-3 py-2 small text-secondary">Nessun autore trovato.</li>
+      <li><hr class="dropdown-divider border-secondary border-opacity-25"></li>
+      <li><button type="button" class="dropdown-item text-info small" onclick="createNewAuthor('${query.replace(/'/g, "\\'")}')"><i class="bi bi-plus-circle me-1"></i> Crea nuovo autore: "${query}"</button></li>
+    `;
+  } else {
+    authors.forEach(author => {
+      const safeId = author._id;
+      const safeName = author.name.replace(/'/g, "\\'");
+      resultsContainer.innerHTML += `
+        <li><button type="button" class="dropdown-item text-white small" onclick="selectAuthor('${safeId}', '${safeName}')">${author.name}</button></li>
+      `;
+    });
+  }
+  
+  resultsContainer.style.display = "block";
+}
+
+function hideAuthorDropdown() {
+  document.getElementById("author-search-results").style.display = "none";
+}
+
+// Quando il curatore clicca su un autore dalla tendina
+async function selectAuthor(authorId, authorName) {
+  document.getElementById("work-author-search").value = authorName;
+  document.getElementById("work-author-id").value = authorId;
+  hideAuthorDropdown();
+  
+  const container = document.getElementById("author-cards-container");
+  const slider = document.getElementById("author-slider");
+  container.style.display = "block";
+  slider.innerHTML = `<div class="spinner-border spinner-border-sm text-info m-3"></div>`;
+  
+  try {
+    const res = await fetch(`/api/authors/${authorId}`);
+    if (!res.ok) throw new Error("Errore recupero dati autore");
+    const author = await res.json();
+    
+    slider.innerHTML = "";
+    
+    // Generiamo una card per ogni voce nell'array 'data'
+    if (author.data && author.data.length > 0) {
+      author.data.forEach((d, index) => {
+        // Estraiamo il nome del museo che ha scritto questa biografia (se popolato)
+        const museumName = d.museumId && d.museumId[0] ? d.museumId[0].name : "Altro Museo";
+        
+        slider.innerHTML += `
+          <div class="card bg-dark bg-opacity-50 border-secondary border-opacity-50 flex-shrink-0" style="width: 280px; scroll-snap-align: start;">
+            <div class="card-body p-3">
+              <span class="badge bg-secondary mb-2 bg-opacity-50 border border-secondary text-light" style="font-size: 0.65rem;">
+                <i class="bi bi-bank me-1"></i> ${museumName}
+              </span>
+              <p class="small mb-1 text-info fw-bold">${d.bd || 'Date non specificate'}</p>
+              <p class="small mb-2 text-white-50 text-truncate" title="${d.studies || ''}"><i class="bi bi-mortarboard me-1"></i>${d.studies || 'Formazione non specificata'}</p>
+              <p class="small text-white mb-0" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
+                ${d.bio || 'Nessuna biografia inserita.'}
+              </p>
+            </div>
+          </div>
+        `;
+      });
+    } else {
+      slider.innerHTML = `<p class="small text-secondary m-2">Nessuna biografia presente.</p>`;
+    }
+  } catch (error) {
+    console.error(error);
+    slider.innerHTML = `<p class="small text-danger m-2">Impossibile caricare le biografie.</p>`;
+  }
+}
+
+// ==========================================
+// CREAZIONE E SALVATAGGIO AUTORE
+// ==========================================
+
+// Innescata dal bottone "Crea nuovo autore" nella tendina
+function createNewAuthor(authorName) {
+  hideAuthorDropdown();
+  document.getElementById("work-author-search").value = authorName;
+  document.getElementById("work-author-id").value = ""; // ID vuoto = nuovo autore
+  
+  // Impostiamo il campo hidden per ricordarci il nome
+  document.getElementById("new-author-name-input").value = authorName;
+  
+  document.getElementById("authorDataModalLabel").innerText = `Crea Autore: ${authorName}`;
+  document.getElementById("author-data-form").reset();
+  authorDataModalInstance.show();
+}
+
+// Innescata dal bottone "Scrivi la tua" sopra lo slider
+function openNewAuthorDataModal() {
+  document.getElementById("new-author-name-input").value = ""; // Nome vuoto = autore esistente
+  document.getElementById("authorDataModalLabel").innerText = "Aggiungi la tua Biografia";
+  document.getElementById("author-data-form").reset();
+  authorDataModalInstance.show();
+}
+
+// Salva i dati (capisce da sola se fare POST o PUT)
+async function saveAuthorData() {
+  const newName = document.getElementById("new-author-name-input").value;
+  const existingAuthorId = document.getElementById("work-author-id").value;
+  
+  const payloadData = {
+    museumId: currentMuseumId,
+    bd: document.getElementById("author-bd").value.trim(),
+    studies: document.getElementById("author-studies").value.trim(),
+    bio: document.getElementById("author-bio").value.trim()
+  };
+
+  try {
+    let res;
+    if (newName && !existingAuthorId) {
+      // 1. CREA NUOVO AUTORE (POST)
+      res = await fetch('/api/authors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName, data: payloadData })
+      });
+      if (!res.ok) throw new Error("Errore durante la creazione dell'autore");
+      
+      const savedAuthor = await res.json();
+      // Selezioniamo automaticamente il nuovo autore
+      selectAuthor(savedAuthor._id, savedAuthor.name);
+      
+    } else if (existingAuthorId) {
+      // 2. AGGIUNGI DATI AD AUTORE ESISTENTE (PUT)
+      res = await fetch(`/api/authors/${existingAuthorId}/data`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payloadData)
+      });
+      if (!res.ok) throw new Error("Errore durante l'aggiornamento dell'autore");
+      
+      const updatedAuthor = await res.json();
+      // Ricarichiamo le card
+      selectAuthor(updatedAuthor._id, updatedAuthor.name);
+    }
+    
+    authorDataModalInstance.hide();
+  } catch (error) {
+    alert(error.message);
     console.error(error);
   }
 }
