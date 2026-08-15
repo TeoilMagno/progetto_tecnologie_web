@@ -155,6 +155,8 @@
               <input type="hidden" id="work-id" />
               <input type="hidden" id="work-section-id" />
               <input type="hidden" id="work-room-id" /> 
+              <input type="hidden" id="work-author-data-id" />
+              <input type="hidden" id="work-style-data-id" />
               
               <div class="row g-3">
                 <!-- Titolo Opera -->
@@ -201,10 +203,26 @@
                   <input type="text" class="form-control glass-input" id="work-year" required />
                 </div>
 
-                <!-- Stile -->
-                <div class="col-md-4">
+                <!-- Stile con ricerca dinamica -->
+                <div class="col-md-4 position-relative">
                   <label class="form-label small text-secondary">Stile / Movimento</label>
-                  <input type="text" class="form-control glass-input" id="work-style" />
+                  <input type="hidden" id="work-style-id" />
+                  <input type="text" class="form-control glass-input" id="work-style-search" placeholder="Cerca stile (es. Barocco)..." autocomplete="off" />
+                  
+                  <ul class="dropdown-menu w-100 bg-dark text-white border-secondary border-opacity-50" id="style-search-results" style="display: none; max-height: 200px; overflow-y: auto; position: absolute; z-index: 1050;">
+                  </ul>
+                </div>
+
+                <!-- Contenitore Slider Card Stile -->
+                <div class="col-12 mt-2" id="style-cards-container" style="display: none;">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label small text-secondary mb-0">Definizioni dello Stile</label>
+                    <button type="button" class="btn btn-sm btn-outline-info" onclick="openNewStyleDataModal()">
+                      <i class="bi bi-plus"></i> Scrivi la tua
+                    </button>
+                  </div>
+                  <div id="style-slider" class="d-flex gap-3 overflow-x-auto pb-2 custom-scrollbar" style="scroll-snap-type: x mandatory;">
+                  </div>
                 </div>
 
                 <!-- URL Immagine -->
@@ -285,6 +303,31 @@
           <div class="modal-footer border-top-custom">
             <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
             <button type="button" class="btn btn-gradient px-3" onclick="saveAuthorData()">Salva Biografia</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale Dati Stile -->
+    <div class="modal fade" id="styleDataModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content glass-modal text-white">
+          <div class="modal-header border-bottom-custom">
+            <h5 class="modal-title" id="styleDataModalLabel">Definizione Stile</h5>
+            <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="style-data-form">
+              <input type="hidden" id="new-style-name-input" />
+              <div class="mb-3">
+                <label class="form-label small text-secondary">Descrizione dello Stile</label>
+                <textarea class="form-control glass-input" id="style-description" rows="4" placeholder="Cosa rappresenta questo stile per il tuo museo?"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer border-top-custom">
+            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+            <button type="button" class="btn btn-gradient px-3" onclick="saveStyleData()">Salva Definizione</button>
           </div>
         </div>
       </div>

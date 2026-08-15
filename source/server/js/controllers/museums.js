@@ -3,6 +3,8 @@ const Section = require("../models/sections");
 const Work = require("../models/works");
 const { User } = require("../models/users");
 const Visit = require("../models/visits");
+const Author = require("../models/author");
+const Style = require("../models/style");
 
 // utilizzato da admin
 exports.getAllMuseums = async () => {
@@ -167,6 +169,18 @@ exports.deleteMuseumById = async (museumId) => {
   await User.updateMany(
     { managed_museums: museumId },
     { $pull: { managed_museums: museumId } }
+  );
+
+  // rimuove museumId da tutte le descrizioni degli autori
+  await Author.updateMany(
+    { "data.museumId": museumId },
+    { $pull: { "data.$[].museumId": museumId } }
+  );
+
+  // rimuove museumId da tutte le descrizioni degli stili
+  await Style.updateMany(
+    { "data.museumId": museumId },
+    { $pull: { "data.$[].museumId": museumId } }
   );
 
   return await Museum.findByIdAndDelete(museumId);

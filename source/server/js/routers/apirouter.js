@@ -25,6 +25,7 @@ const visitController = require("../controllers/visits");
 const orderController = require("../controllers/orders");
 const adoptionController = require("../controllers/adoptions");
 const authorController = require("../controllers/authors");
+const styleController = require("../controllers/styles");
 
 // Middleware
 const auth = require("../middleware/roles");
@@ -689,6 +690,66 @@ apiRouter.put("/authors/:id/data", auth.isCurator, async (req, res) => {
     res.json(updatedAuthor);
   } catch (error) {
     console.error("Errore aggiornamento autore:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Usa una descrizione dell'autore esistente
+apiRouter.put("/authors/:id/data/:dataId/adopt", auth.isCurator, async (req, res) => {
+  try {
+    const updatedAuthor = await authorController.adoptAuthorData(req.params.id, req.params.dataId, req.body.museumId);
+    res.json(updatedAuthor);
+  } catch (error) {
+    console.error("Errore adozione card autore:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// ----------------------- styles ----------------------------
+
+apiRouter.get("/styles/search", auth.isCurator, async (req, res) => {
+  try {
+    const styles = await styleController.searchStyles(req.query.q);
+    res.json(styles);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+apiRouter.get("/styles/:id", auth.isCurator, async (req, res) => {
+  try {
+    const style = await styleController.getStyleById(req.params.id);
+    res.json(style);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+apiRouter.post("/styles", auth.isCurator, async (req, res) => {
+  try {
+    const savedStyle = await styleController.createStyle(req.body);
+    res.status(201).json(savedStyle);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+apiRouter.put("/styles/:id/data", auth.isCurator, async (req, res) => {
+  try {
+    const updatedStyle = await styleController.addStyleData(req.params.id, req.body);
+    res.json(updatedStyle);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Usa una definizione di stile esistente
+apiRouter.put("/styles/:id/data/:dataId/adopt", auth.isCurator, async (req, res) => {
+  try {
+    const updatedStyle = await styleController.adoptStyleData(req.params.id, req.params.dataId, req.body.museumId);
+    res.json(updatedStyle);
+  } catch (error) {
+    console.error("Errore adozione stile:", error);
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 });
