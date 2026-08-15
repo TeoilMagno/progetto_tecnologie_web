@@ -565,3 +565,53 @@ async function updateUIEstimatedDuration(workIds, currentPrefLength) {
     durationBadge.innerText = "Errore";
   }
 }
+
+// Funzione che calcola l'approfondimento ideale in base al tempo
+async function autoSelectLength() {
+  const minutesInput = document.getElementById("available-minutes-input").value;
+  const availableMinutes = parseInt(minutesInput);
+
+  if (!availableMinutes || availableMinutes <= 0) {
+    alert("Inserisci un numero di minuti valido.");
+    return;
+  }
+
+  const workIds = currentVisitCart.map(work => work.id);
+  if (workIds.length === 0) {
+    alert("Aggiungi prima qualche opera al tuo percorso!");
+    return;
+  }
+
+  const btn = document.querySelector("button[onclick='autoSelectLength()']");
+  const originalText = btn.innerText;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/visits/recommend-length`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workIds, availableMinutes })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      
+      // 1. Modifichiamo visivamente la tendina per selezionare la voce consigliata
+      const selectEl = document.getElementById("visit-pref-length");
+      if (selectEl) {
+        selectEl.value = data.recommendedLength;
+        
+        // Aggiungiamo un piccolo effetto visivo per far notare il cambiamento
+        selectEl.classList.add("border-success", "text-success");
+        setTimeout(() => selectEl.classList.remove("border-success", "text-success"), 1500);
+      }
+      
+      // 2. Scateniamo l'aggiornamento del calcolatore della durata (il badge azzurro)
+      triggerDurationUpdate();
+    }
+  } catch (error) {
+    console.error("Errore durante il calcolo del ritmo:", error);
+  } finally {
+    btn.innerText = originalText;
+  }
+}

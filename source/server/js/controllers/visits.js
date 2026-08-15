@@ -1,6 +1,6 @@
 const Visit = require("../models/visits");
 const Work = require("../models/works");
-const { calculateVisitDuration } = require('../utils/visitCalculator')
+const { calculateVisitDuration, recommendLengthForTime } = require('../utils/visitCalculator')
 
 exports.createVisit = async (visitPayload, user) => {
   const {
@@ -134,4 +134,14 @@ exports.estimateDuration = async (workIds, preferredLength) => {
 
   // Restituiamo il calcolo pulito
   return calculateVisitDuration(orderedWorks, preferredLength);
+};
+
+exports.recommendLength = async (workIds, availableMinutes) => {
+  if (!workIds || !Array.isArray(workIds)) return 'medium';
+  
+  // Per questo calcolo ci basta sapere QUANTE opere ci sono
+  const worksCount = workIds.length;
+  
+  // Utilizziamo la funzione matematica che avevamo già preparato
+  return recommendLengthForTime(worksCount, availableMinutes);
 };

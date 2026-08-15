@@ -533,6 +533,18 @@ apiRouter.post("/visits/estimate-duration", async (req, res) => {
   }
 });
 
+// Calcola la lunghezza/tono ideale in base al tempo a disposizione
+apiRouter.post("/visits/recommend-length", async (req, res) => {
+  try {
+    const { workIds, availableMinutes } = req.body;
+    const recommendedLength = await visitController.recommendLength(workIds, parseInt(availableMinutes));
+    res.json({ recommendedLength });
+  } catch (error) {
+    console.error("Errore nel calcolo del ritmo raccomandato:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ----------------------- ordini & checkout ----------------------------
 
 // Riceve il carrello dal frontend e processa l'acquisto
