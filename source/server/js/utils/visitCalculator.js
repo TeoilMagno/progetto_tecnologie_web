@@ -47,6 +47,7 @@ exports.calculateVisitDuration = (worksArray, preferredLength = 'medium') => {
   return Math.ceil(totalMinutes); 
 };
 
+// TODO: se c'e' tempo (improbabile) si possono fare chiamate api per capire quali opere meritino di piu' e quali invece possono avere una descrizinoe sommaria
 /**
  * 2. Suggerisce la lunghezza della descrizione in base al tempo a disposizione
  * (In questo caso usiamo una media ponderata forfettaria per il tempo di cammino, 

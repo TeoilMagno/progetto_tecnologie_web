@@ -13,6 +13,7 @@ exports.createVisit = async (visitPayload, user) => {
     isPublic,
     duration,
     language,
+    preferredLength
   } = visitPayload;
 
   // dati di base della visita
@@ -23,6 +24,7 @@ exports.createVisit = async (visitPayload, user) => {
     creator: user._id, // Preso automaticamente dalla sessione
     works,
     duration,
+    preferredLength,
     language: language || "it",
   };
 

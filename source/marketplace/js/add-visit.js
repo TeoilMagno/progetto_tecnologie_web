@@ -322,6 +322,12 @@ async function submitVisit(isSavingAsDraft = false) {
 
   const publicCheckbox = document.getElementById("visit-public");
 
+  const prefLength = document.getElementById("visit-pref-length")?.value || 'medium';
+  
+  // Recuperiamo il numero di minuti dal badge (es. "45 min" -> 45)
+  const durationBadgeText = document.getElementById("tour-duration-badge")?.innerText || "0";
+  const durationNum = parseInt(durationBadgeText) || 0;
+
   // LA MAGIA DEI 3 STATI:
   // Se premo "Salva Bozza", forziamo isPublic a false.
   // Altrimenti, dipende dalla spunta della checkbox.
@@ -342,6 +348,8 @@ async function submitVisit(isSavingAsDraft = false) {
     price: price,
     isPublic: isPublic,
     isDraft: isDraft,
+    duration: durationNum,
+    preferredLength: prefLength
   };
 
   const submitBtn = document.getElementById("confirm-save-visit-btn");
@@ -443,6 +451,11 @@ async function autoSaveDraft() {
     return;
   }
 
+
+  const prefLength = document.getElementById("visit-pref-length")?.value || 'medium';
+  const durationBadgeText = document.getElementById("tour-duration-badge")?.innerText || "0";
+  const durationNum = parseInt(durationBadgeText) || 0;
+
   const payload = {
     title: titleInput || "Bozza in corso...", // Fallback essenziale se non ha ancora aperto la modale
     description: descInput || "",
@@ -451,6 +464,8 @@ async function autoSaveDraft() {
     price: price,
     isPublic: false,
     isDraft: true, // È sempre una bozza
+    duration: durationNum,
+    preferredLength: prefLength
   };
 
   const method = editingVisitId ? "PUT" : "POST";
