@@ -146,9 +146,9 @@ exports.updateMuseum = async (museumId, updateData) => {
   if (updateData.address) {
     const coords = await geocodeAddress(updateData.address);
     updateData.latitude = coords.lat;
-    updateData.longitude = coords.lng;
+    updateData.longitude = coords.lon;
   }
-  
+
   return await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
 };
 
