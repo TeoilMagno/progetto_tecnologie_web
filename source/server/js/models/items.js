@@ -36,7 +36,7 @@ const itemSchema = new Schema({
 
   category: { 
     type: String, 
-    enum: ['book', 'gadget', 'jewelry', 'stationery', 'other'], // stationary -> cancelleria
+    enum: ['book', 'gadget', 'jewelry', 'stationery', 'clothing', 'other'], // stationary -> cancelleria
     default: 'other'
   },
 

@@ -14,6 +14,7 @@ const Work = require("../models/works");
 const { Section } = require("../models/sections");
 const Museum = require("../models/museums");
 const Adoption = require("../models/adoptions");
+const Item = require("../models/items");
 const Visit = require("../models/visits");
 
 // Controllers
@@ -124,6 +125,51 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Errore salvataggio" });
+  }
+});
+
+// 1. Aggiungi quantità allo stock di un item esistente
+apiRouter.put("/items/:id/add-stock", auth.isCurator, async (req, res) => {
+  try {
+    const { quantityToAdd } = req.body;
+    
+    if (!quantityToAdd || isNaN(quantityToAdd) || quantityToAdd <= 0) {
+      return res.status(400).json({ error: "Quantità non valida" });
+    }
+
+    // Usiamo $inc per sommare la quantità in modo sicuro (evita problemi di concorrenza)
+    const updatedItem = await Item.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { quantity: parseInt(quantityToAdd) } },
+      { new: true }
+    );
+
+    if (!updatedItem) return res.status(404).json({ error: "Articolo non trovato" });
+
+    res.json({ message: "Stock aggiornato con successo", item: updatedItem });
+  } catch (error) {
+    console.error("Errore aggiornamento stock:", error);
+    res.status(500).json({ error: "Errore durante l'aggiornamento del magazzino" });
+  }
+});
+
+// 2. Crea un nuovo articolo nel bookshop del museo
+apiRouter.post("/museums/:museumId/items", auth.isCurator, async (req, res) => {
+  try {
+    const { museumId } = req.params;
+    const itemData = req.body;
+
+    const newItem = new Item({
+      ...itemData,
+      museumId: museumId, // Lo agganciamo forzatamente al museo corrente
+      quantity: itemData.quantity || 1
+    });
+
+    await newItem.save();
+    res.status(201).json({ message: "Articolo creato con successo!", item: newItem });
+  } catch (error) {
+    console.error("Errore creazione articolo:", error);
+    res.status(500).json({ error: "Errore durante la creazione dell'articolo" });
   }
 });
 

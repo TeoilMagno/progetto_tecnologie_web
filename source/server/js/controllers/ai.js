@@ -151,7 +151,7 @@ exports.generateAndSaveStyleDescription = async (styleId, museumId, styleName, u
       1. Scrivi un testo di circa 2 o 3 paragrafi.
       2. Spiega il periodo storico in cui è nato, le sue caratteristiche visive principali e i temi fondanti.
       3. Usa un linguaggio divulgativo ma professionale.
-      4. NON usare mai le virgolette doppie all'interno del testo, usa solo l'apostrofo o virgolette singole.
+      4. REGOLE JSON RIGOROSE: Devi usare le virgolette doppie (") per la chiave e per racchiudere l'intero valore testuale. Tuttavia, ALL'INTERNO del testo della descrizione, ti è severamente vietato usare le virgolette doppie. Usa esclusivamente apici singoli (').
       
       Restituisci SOLO un oggetto JSON con questa struttura esatta:
       {

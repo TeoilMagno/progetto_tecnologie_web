@@ -1,5 +1,6 @@
 const Order = require('../models/orders');
-const { User } = require('../models/users'); //
+const { User } = require('../models/users'); 
+const Item = require('../models/items');
 
 // Processa il carrello e crea l'ordine
 exports.processCheckout = async (userId, cartData) => {
@@ -13,6 +14,27 @@ exports.processCheckout = async (userId, cartData) => {
   });
   
   const savedOrder = await newOrder.save();
+
+  // scala la quantita' degli items in magazzino
+  if (items && items.length > 0) {
+    const bulkOps = items.map(cartItem => {
+      const targetId = cartItem.itemId;
+      const qtyToSubtract = cartItem.quantity; 
+
+      return {
+        updateOne: {
+          filter: { _id: targetId },
+          // Usiamo $inc con valore negativo per sottrarre la quantità in modo sicuro
+          update: { $inc: { quantity: -qtyToSubtract } } 
+        }
+      };
+    });
+
+    // Eseguiamo tutte le sottrazioni sul database in un colpo solo
+    if (bulkOps.length > 0) {
+      await Item.bulkWrite(bulkOps);
+    }
+  }
 
   // se ci sono visite guidate, estraiamo gli ID e li aggiungiamo al profilo dell'utente.
   if (visits && visits.length > 0) {
