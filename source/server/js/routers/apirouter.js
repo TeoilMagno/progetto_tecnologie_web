@@ -26,6 +26,7 @@ const orderController = require("../controllers/orders");
 const adoptionController = require("../controllers/adoptions");
 const authorController = require("../controllers/authors");
 const styleController = require("../controllers/styles");
+const aiController = require("../controllers/ai");
 
 // Middleware
 const auth = require("../middleware/roles");
@@ -776,6 +777,41 @@ apiRouter.put("/styles/:id/data/:dataId/adopt", auth.isCurator, async (req, res)
     console.error("Errore adozione stile:", error);
     res.status(error.statusCode || 500).json({ error: error.message });
   }
+});
+
+// ----------------------- ai ----------------------------
+
+// Rotta per generare testi con l'IA (protetta per i soli curatori/admin)
+apiRouter.post("/ai/generate", auth.isCurator, async (req, res) => {
+  try {
+    // Il frontend ci manderà il prompt da eseguire
+    const { prompt } = req.body;
+    
+    if (!prompt) {
+      return res.status(400).json({ error: "Il prompt è obbligatorio." });
+    }
+
+    const generatedText = await aiController.generateContent(prompt);
+    
+    res.json({ text: generatedText });
+  } catch (error) {
+    res.status(500).json({ error: "Errore durante la generazione del testo con l'IA." });
+  }
+});
+
+// Rotta ufficiale per generare le descrizioni di un'opera e salvarle nel DB
+apiRouter.post("/ai/generate-work-desc", async (req, res) => {
+  const { workId, workName, userDescription } = req.body;
+
+  if (!workId || !workName) {
+    return res.status(400).json({ error: "Dati mancanti" });
+  }
+
+  // Rispondiamo SUBITO al frontend per non bloccare l'interfaccia
+  res.status(202).json({ message: "Generazione avviata in background..." });
+
+  // MA lanciamo la funzione senza l'await, così il server ci lavora in parallelo!
+  aiController.generateAndSaveWorkDescriptions(workId, workName, userDescription);
 });
 
 module.exports = apiRouter;

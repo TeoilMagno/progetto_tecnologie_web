@@ -413,6 +413,7 @@ async function saveWorkFromModal() {
   const sectionId = document.getElementById("work-section-id").value;
   const roomId = document.getElementById("work-room-id").value;
   const workId = document.getElementById("work-id").value;
+  const workDesc = document.getElementById("work-description").value.trim();
   
   const workData = {
     name: document.getElementById("work-name").value.trim(),
@@ -421,11 +422,6 @@ async function saveWorkFromModal() {
     year: document.getElementById("work-year").value.trim(),
     style: document.getElementById("work-style-id").value.trim() || undefined,
     image: document.getElementById("work-image").value.trim(),
-    description: {
-      simple: {
-        medium: document.getElementById("work-description").value.trim()
-      }
-    },
     roomId: roomId
   };
 
@@ -451,7 +447,7 @@ async function saveWorkFromModal() {
     const styleDataId = document.getElementById("work-style-data-id").value;
     
     if (styleId && styleDataId) {
-      await fetch(`/api/styles/${styleId}/data/${styleDataId}/adopt`, {
+      await fetch(`${API_BASE_URL}/styles/${styleId}/data/${styleDataId}/adopt`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ museumId: currentMuseumId })
@@ -472,6 +468,25 @@ async function saveWorkFromModal() {
     }
 
     if (res.ok) {
+      // Estraiamo la risposta del server (che contiene i dati salvati dal DB)
+      const responseData = await res.json();
+      
+      // 2. Troviamo l'ID finale: 
+      // Se avevamo workId usiamo quello (modifica). Se non lo avevamo, lo peschiamo dalla risposta (nuova creazione).
+      const finalWorkId = workId || responseData.work?._id;
+
+      // 3. ORA lanciamo l'IA in background usando l'ID corretto e sicuro
+      console.log(`Opera salvata con ID: ${finalWorkId}. Inizio generazione IA in background...`);
+      fetch(`${API_BASE_URL}/ai/generate-work-desc`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workId: finalWorkId, 
+          workName: workData.name,
+          userDescription: workDesc
+        })
+      });
+
       workModalInstance.hide();
       
       // Ricarichiamo SOLTANTO le opere di questa sezione specifica per aggiornare il DOM localmente

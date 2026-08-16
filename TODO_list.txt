@@ -2,9 +2,9 @@ tag ARIA per accessibilità
 
 --------------- marketplace ---------------
 chiamate API ref AI per descrizione opere
-filtri e barra di ricerca per marketplace - da testare e manca per le visite
-scelta lunghezza opera in creazione visite
-stima durata visita "virtuale"
+filtri e barra di ricerca per marketplace - da testare e manca per le visite ✅
+scelta lunghezza opera in creazione visite ✅
+stima durata visita "virtuale" ✅
 piccolo campo metadata per le opere es: indica ref a wikimedia
 
 display sezione per ogni opera nel crea visita
