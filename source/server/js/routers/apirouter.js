@@ -814,4 +814,22 @@ apiRouter.post("/ai/generate-work-desc", async (req, res) => {
   aiController.generateAndSaveWorkDescriptions(workId, workName, userDescription);
 });
 
+// Generazione descrizione autori
+apiRouter.post("/ai/generate-author-desc", async (req, res) => {
+  const { authorId, museumId, authorName, userDescription } = req.body;
+  if (!authorId || !authorName || !museumId) return res.status(400).json({ error: "Dati mancanti" });
+
+  res.status(202).json({ message: "Generazione biografia avviata in background..." });
+  aiController.generateAndSaveAuthorDescription(authorId, museumId, authorName, userDescription);
+});
+
+// Generazione descrizione stili
+apiRouter.post("/ai/generate-style-desc", async (req, res) => {
+  const { styleId, museumId, styleName, userDescription } = req.body;
+  if (!styleId || !styleName || !museumId) return res.status(400).json({ error: "Dati mancanti" });
+
+  res.status(202).json({ message: "Generazione stile avviata in background..." });
+  aiController.generateAndSaveStyleDescription(styleId, museumId, styleName, userDescription);
+});
+
 module.exports = apiRouter;

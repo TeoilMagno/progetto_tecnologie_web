@@ -824,7 +824,7 @@ function openNewAuthorDataModal() {
 
 // Salva i dati (capisce da sola se fare POST o PUT)
 async function saveAuthorData() {
-  const newName = document.getElementById("new-author-name-input").value;
+  const newName = document.getElementById("new-author-name-input").value.trim();
   const existingAuthorId = document.getElementById("work-author-id").value;
   
   const payloadData = {
@@ -836,34 +836,47 @@ async function saveAuthorData() {
 
   try {
     let res;
+    let finalAuthor; // Usiamo una variabile unificata per la risposta
+
     if (newName && !existingAuthorId) {
-      // 1. CREA NUOVO AUTORE (POST)
-      res = await fetch('/api/authors', {
+      // Caso creazione nuovo autore
+      res = await fetch(`${API_BASE_URL}/authors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newName, data: payloadData })
       });
       if (!res.ok) throw new Error("Errore durante la creazione dell'autore");
-      
-      const savedAuthor = await res.json();
-      // Selezioniamo automaticamente il nuovo autore
-      selectAuthor(savedAuthor._id, savedAuthor.name);
+      finalAuthor = await res.json();
       
     } else if (existingAuthorId) {
-      // 2. AGGIUNGI DATI AD AUTORE ESISTENTE (PUT)
-      res = await fetch(`/api/authors/${existingAuthorId}/data`, {
+      // Caso modifica autore esistente
+      res = await fetch(`${API_BASE_URL}/authors/${existingAuthorId}/data`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payloadData)
       });
       if (!res.ok) throw new Error("Errore durante l'aggiornamento dell'autore");
-      
-      const updatedAuthor = await res.json();
-      // Ricarichiamo le card
-      selectAuthor(updatedAuthor._id, updatedAuthor.name);
+      finalAuthor = await res.json();
     }
-    
-    authorDataModalInstance.hide();
+
+    // Se tutto e' andato bene generiamo le descrizioni con l'ia
+    if (finalAuthor) {
+      console.log("Inizio generazione IA per l'autore in background...");
+      fetch(`${API_BASE_URL}/ai/generate-author-desc`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          authorId: finalAuthor._id, 
+          museumId: currentMuseumId,
+          authorName: finalAuthor.name || newName,
+          userDescription: payloadData.bio // Usiamo il testo del form come contesto!
+        })
+      });
+
+      // Selezioniamo automaticamente il nuovo autore e ricarichiamo le card
+      selectAuthor(finalAuthor._id, finalAuthor.name || newName);
+      authorDataModalInstance.hide();
+    }
   } catch (error) {
     alert(error.message);
     console.error(error);
@@ -1025,22 +1038,62 @@ function openNewStyleDataModal() {
 }
 
 async function saveStyleData() {
-  const newName = document.getElementById("new-style-name-input").value;
-  const existingId = document.getElementById("work-style-id").value;
-  const payloadData = { museumId: currentMuseumId, description: document.getElementById("style-description").value.trim() };
+  const newName = document.getElementById("new-style-name-input").value.trim();
+  const existingStyleId = document.getElementById("work-style-id").value;
+  
+  const payloadData = {
+    museumId: currentMuseumId,
+    description: document.getElementById("style-description").value.trim() 
+  };
 
   try {
-    if (newName && !existingId) {
-      const res = await fetch('/api/styles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newName, data: payloadData }) });
-      if (!res.ok) throw new Error("Errore creazione");
-      const savedStyle = await res.json();
-      selectStyle(savedStyle._id, savedStyle.name);
-    } else if (existingId) {
-      const res = await fetch(`/api/styles/${existingId}/data`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payloadData) });
-      if (!res.ok) throw new Error("Errore aggiornamento");
-      const updatedStyle = await res.json();
-      selectStyle(updatedStyle._id, updatedStyle.name);
+    let res;
+    let finalStyle; 
+
+    if (newName && !existingStyleId) {
+      // Creazione nuovo stile
+      res = await fetch(`${API_BASE_URL}/styles`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName, data: payloadData })
+      });
+      if (!res.ok) throw new Error("Errore durante la creazione dello stile");
+      finalStyle = await res.json();
+      
+    } else if (existingStyleId) {
+      // Modifica stile esistente
+      res = await fetch(`${API_BASE_URL}/styles/${existingStyleId}/data`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payloadData)
+      });
+      if (!res.ok) throw new Error("Errore durante l'aggiornamento dello stile");
+      finalStyle = await res.json();
     }
-    styleDataModalInstance.hide();
-  } catch (error) { alert(error.message); }
+
+    // Generazione testo con ia
+    if (finalStyle) {
+      console.log("Inizio generazione IA per lo stile in background...");
+      fetch(`${API_BASE_URL}/ai/generate-style-desc`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          styleId: finalStyle._id, 
+          museumId: currentMuseumId,
+          styleName: finalStyle.name || newName,
+          userDescription: payloadData.description
+        })
+      });
+
+      selectStyle(finalStyle._id, finalStyle.name || newName);
+      
+      // Ipotetica istanza della modale
+      if (typeof styleDataModalInstance !== 'undefined') {
+        styleDataModalInstance.hide();
+      }
+    }
+  } catch (error) {
+    alert(error.message);
+    console.error(error);
+  }
 }

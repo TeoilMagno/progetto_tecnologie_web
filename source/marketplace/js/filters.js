@@ -14,15 +14,12 @@ async function initializeFiltersData(museums) {
     if (museum.tags) museum.tags.forEach(t => tagsSet.add(t));
 
     // B. Geocoding dell'indirizzo (Simulato/Esterno) in background
-    if (museum.address && !museumCoordsMap[museum._id]) {
-      try {
-        const query = encodeURIComponent(museum.address);
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
-        const data = await res.json();
-        if (data.length > 0) {
-          museumCoordsMap[museum._id] = { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
-        }
-      } catch (e) { console.warn("Geocoding fallito per:", museum.address); }
+    const lat = museum.latitude;
+    const lon = museum.longitude;
+    if (lat && lon) {
+      museumCoordsMap[museum._id] = { lat, lon };
+    } else {
+      console.log("ATTENZIONE: museo senza coordinate\n");
     }
   }
 

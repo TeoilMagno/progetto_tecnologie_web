@@ -35,6 +35,11 @@ exports.saveMuseum = async (museumData, userId) => {
   
   await museumToValidate.validate();
 
+  // conversione indirizzo a coordinate tramite OpenStreetMap
+  const coords = await geocodeAddress(museumData.address);
+  museumData.latitude = coords.lat;
+  museumData.longitude = coords.lon;
+
   // Validazione di tutte le sezioni e opere
   if (sections && sections.length > 0) {
     for (const s of sections) {
@@ -137,6 +142,13 @@ exports.updateMuseum = async (museumId, updateData) => {
     );
   }
 
+  // Se l'utente ha modificato l'indirizzo, ricalcoliamo le coordinate
+  if (updateData.address) {
+    const coords = await geocodeAddress(updateData.address);
+    updateData.latitude = coords.lat;
+    updateData.longitude = coords.lng;
+  }
+  
   return await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
 };
 
@@ -185,3 +197,29 @@ exports.deleteMuseumById = async (museumId) => {
 
   return await Museum.findByIdAndDelete(museumId);
 };
+
+// Funzione helper per tradurre l'indirizzo in coordinate
+async function geocodeAddress(address) {
+  try {
+    // Usiamo encodeURIComponent per gestire spazi e virgole nell'indirizzo
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'ArtAround/1.0 (progetto universitario)' 
+      }
+    });
+
+    const data = await response.json();
+    
+    if (data && data.length > 0) {
+      return {
+        lat: parseFloat(data[0].lat),
+        lon: parseFloat(data[0].lon) 
+      };
+    }
+  } catch (error) {
+    console.error("Errore durante il geocoding dell'indirizzo:", error);
+  }
+  return { lat: null, lon: null };
+}

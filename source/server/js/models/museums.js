@@ -13,6 +13,16 @@ const museumSchema = new Schema({
     required: true
   },
 
+  // per i filtri
+  latitude: {
+    type: Number,
+    default: null
+  },
+  longitude: {
+    type: Number,
+    default: null
+  },
+
   contact_email: {
     type: String,
     required: true

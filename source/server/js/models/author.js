@@ -17,10 +17,7 @@ const authorSchema = new Schema({
     bio: { type: String }, // Biografia scritta dal curatore
     bd: { type: String },  // Birth and Death 
     studies: { type: String }, // Formazione/Studi
-    mainWorksId: [{ 
-      type: Schema.Types.ObjectId, 
-      ref: 'Work' 
-    }]
+    mainWorks: { type: String }
   }]
 });
 

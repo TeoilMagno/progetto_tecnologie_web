@@ -1,7 +1,7 @@
 tag ARIA per accessibilità
 
 --------------- marketplace ---------------
-chiamate API ref AI per descrizione opere
+chiamate API ref AI per descrizione opere ✅
 filtri e barra di ricerca per marketplace - da testare e manca per le visite ✅
 scelta lunghezza opera in creazione visite ✅
 stima durata visita "virtuale" ✅
