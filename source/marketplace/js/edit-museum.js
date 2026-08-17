@@ -107,6 +107,7 @@ function renderSectionAccordionItem(section, works, index) {
       const safeRoomName = (room.name || "").replace(/'/g, "\\'");
 
       // HTML delle opere dentro la stanza
+      // HTML delle opere dentro la stanza
       let worksHtml = roomWorks.length === 0 ? `<p class="small text-secondary mb-0">Stanza vuota.</p>` : `
         <div class="row row-cols-1 row-cols-md-2 g-2 mt-2">
           ${roomWorks.map(w => `
@@ -117,8 +118,11 @@ function renderSectionAccordionItem(section, works, index) {
                   <h6 class="mb-0 text-white text-truncate small">${w.name}</h6>
                 </div>
                 <div>
-                  <button class="btn btn-sm text-warning p-1 border-0" onclick="openWorkModal('${section._id}', '${room._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm text-danger p-1 border-0" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
+                  <!-- NUOVO BOTTONE: GESTISCI TESTI -->
+                  <button class="btn btn-sm text-info p-1 border-0" title="Gestisci Testi" onclick="openTextManager('${w._id}')"><i class="bi bi-card-text"></i></button>
+                  
+                  <button class="btn btn-sm text-warning p-1 border-0" title="Modifica Opera" onclick="openWorkModal('${section._id}', '${room._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm text-danger p-1 border-0" title="Elimina Opera" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
                 </div>
               </div>
             </div>
@@ -476,16 +480,18 @@ async function saveWorkFromModal() {
       const finalWorkId = workId || responseData.work?._id;
 
       // 3. ORA lanciamo l'IA in background usando l'ID corretto e sicuro
-      console.log(`Opera salvata con ID: ${finalWorkId}. Inizio generazione IA in background...`);
-      fetch(`${API_BASE_URL}/ai/generate-work-desc`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          workId: finalWorkId, 
-          workName: workData.name,
-          userDescription: workDesc
-        })
-      });
+      if (!workId) {
+        console.log(`Nuova opera salvata con ID: ${finalWorkId}. Inizio generazione IA in background...`);
+        fetch(`${API_BASE_URL}/ai/generate-work-desc`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            workId: finalWorkId, 
+            workName: workData.name,
+            userDescription: workDesc
+          })
+        });
+      }
 
       workModalInstance.hide();
       
@@ -1129,5 +1135,152 @@ async function saveStyleData() {
   } catch (error) {
     alert(error.message);
     console.error(error);
+  }
+}
+
+let textManagerModalInstance = null;
+
+// Inizializza la modale quando la pagina si carica
+document.addEventListener("DOMContentLoaded", () => {
+  const tmModalEl = document.getElementById("textManagerModal");
+  if (tmModalEl) {
+    textManagerModalInstance = new bootstrap.Modal(tmModalEl);
+  }
+});
+
+// Apre la modale ricevendo l'intero oggetto dell'opera
+// Apre la modale ricevendo l'ID dell'opera
+// Apre la modale ricevendo l'ID dell'opera
+function openTextManager(workId) {
+  // Peschiamo l'opera direttamente dalla cache usando l'ID come chiave!
+  tmCurrentWork = worksCache[workId];
+  
+  if (!tmCurrentWork) {
+    alert("Errore: Opera non trovata.");
+    return;
+  }
+
+  document.getElementById("tm-work-name").innerText = tmCurrentWork.name;
+  
+  // Impostiamo i valori di default coerenti con il nuovo HTML
+  document.getElementById("tm-audience").value = "medium";
+  document.getElementById("tm-length").value = "medium";
+
+  loadSpecificText();
+  textManagerModalInstance.show();
+}
+
+// 1. Cerca nell'oggetto nidificato la combinazione esatta e la stampa
+function loadSpecificText() {
+  const aud = document.getElementById("tm-audience").value; // simple, medium, professional, expert
+  const len = document.getElementById("tm-length").value;   // short, medium, long, exhaustive
+  const textarea = document.getElementById("tm-textarea");
+
+  textarea.value = ""; // Svuotiamo prima di cercare
+
+  if (tmCurrentWork && tmCurrentWork.description) {
+    // Navighiamo nell'oggetto: description -> simple -> medium
+    if (tmCurrentWork.description[aud] && tmCurrentWork.description[aud][len]) {
+      textarea.value = tmCurrentWork.description[aud][len];
+    } 
+    // Fallback in caso la descrizione sia la vecchia stringa di test
+    else if (typeof tmCurrentWork.description === 'string' && aud === 'medium' && len === 'medium') {
+      textarea.value = tmCurrentWork.description;
+    }
+  }
+}
+
+// 2. Salva la modifica manuale nel database e aggiorna la cache
+async function saveSpecificText() {
+  const aud = document.getElementById("tm-audience").value;
+  const len = document.getElementById("tm-length").value;
+  const newText = document.getElementById("tm-textarea").value.trim();
+
+  if (!tmCurrentWork) return;
+
+  // Se l'oggetto description non esiste o è una vecchia stringa, lo formattiamo correttamente
+  if (!tmCurrentWork.description || typeof tmCurrentWork.description === 'string') {
+    tmCurrentWork.description = { simple: {}, medium: {}, professional: {}, expert: {} };
+  }
+  if (!tmCurrentWork.description[aud]) {
+    tmCurrentWork.description[aud] = {};
+  }
+
+  // Aggiorniamo il testo nella nostra cache locale
+  tmCurrentWork.description[aud][len] = newText;
+
+  try {
+    // Usiamo l'endpoint di aggiornamento dell'opera per sovrascrivere l'oggetto description
+    const res = await fetch(`${API_BASE_URL}/works/${tmCurrentWork._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        description: tmCurrentWork.description, 
+        museumId: currentMuseumId 
+      })
+    });
+
+    if (res.ok) {
+      alert("Testo personalizzato salvato con successo!");
+    } else {
+      alert("Errore durante il salvataggio.");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// 3. Genera il testo per UNA SINGOLA Cella (Risparmio Token!)
+async function generateSpecificTextWithAI() {
+  const aud = document.getElementById("tm-audience").value;
+  const len = document.getElementById("tm-length").value;
+  const textarea = document.getElementById("tm-textarea");
+
+  if (!tmCurrentWork) return;
+
+  // Peschiamo il contesto inserito nel form principale (se presente)
+  const baseContext = document.getElementById("work-description")?.value || "Basati sulle tue conoscenze storiche.";
+
+  const prompt = `
+    Sei un esperto curatore d'arte e storico. Il tuo compito è generare una descrizoine per l'opera d'arte "${tmCurrentWork.name}".
+
+    Considera che esistono questi 4 registri linguistici:
+      - simple: per bambini o principianti assoluti (linguaggio molto semplice, concetti base).
+      - medium: per il visitatore medio (divulgativo, coinvolgente).
+      - professional: per appassionati o studenti d'arte (terminologia tecnica, cenni al movimento artistico).
+      - expert: per storici dell'arte (analisi critica profonda, contesto socio-culturale, tecnica).
+    E queste 4 lunghezze di descrizione:
+      - short: 3 secondi (1 frase sintetica). NOTA BENE: Puoi usare la stessa identica frase "short" per tutti e 4 i registri per risparmiare tempo.
+      - medium: 15 secondi (2-3 frasi).
+      - long: 1 minuto (circa 2-3 paragrafi).
+      - exhaustive: 4 minuti (analisi completa e lunghissima).
+
+    Devi scrivere la descrizione basandoti sulle seguenti istruzioni:
+      1. Tieni conto della contesto fornito dal curatore: ${baseContext}
+      2. Usa il registro linguistico richiesto: ${aud} 
+      3. Lunghezza richiesta: ${len} 
+      
+    Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza virgolette iniziali/finali o formattazione markdown.
+  `;
+
+  textarea.value = "Pensiero in corso (1-3 secondi)...";
+  
+  try {
+    const res = await fetch(`${API_BASE_URL}/ai/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      textarea.value = data.text;
+      // Nota: Il testo è stato inserito nella textarea, ma NON salvato nel DB. 
+      // L'utente deve cliccare su "Salva Modifica Manuale" per confermare la scelta dell'IA.
+    } else {
+      textarea.value = "Errore durante la generazione. L'IA potrebbe essere offline.";
+    }
+  } catch (e) {
+    textarea.value = "Errore di connessione al server.";
   }
 }
