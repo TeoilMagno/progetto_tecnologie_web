@@ -1,0 +1,64 @@
+tag ARIA per accessibilità
+
+--------------- marketplace ---------------
+chiamate API ref AI per descrizione opere
+filtri e barra di ricerca per marketplace
+scelta lunghezza opera in creazione visite
+stima durata visita "virtuale"
+piccolo campo metadata per le opere es: indica ref a wikimedia
+display sezione per ogni opera nel crea visita
+
+modello adozioni                ✅
+campo adozione nel modello work ✅
+id stanza in modello work       ✅
+
+--------------- navigator ---------------
+chiedere domande su file di config per navigator ✅
+
+tasto next ✅
+chat bot per stile opera, artista etc...
+generazione audio sintetico ✅
+comandi vocali per l'opera
+consiglia altre opere a fine visita ✅
+
+--------------- models ---------------
+
+model author: {
+    name:
+    data: [{
+      museumId: []
+      bio: autore
+      bd: birt and death
+      studies:
+      mainWorksId:
+      }]
+  }
+
+cambiare work.style in tecnic
+funFacts / ff (forfait) opera
+parafrasi opera
+
+
+style: {
+  name: barocco, cubismo, etc...
+  data: {
+      museumId: []
+      description
+    }
+}
+
+servizi offerti dal museo: bagni, bar, servizi per DSA, guardaroba, ...
+
+facilities: [{
+  roomId:
+  enum servizi:
+  x:
+  y:
+  inSection: {
+      sectionId:
+      x:
+      y:
+  }
+}]
+
+orari apertura, giorni di apertura

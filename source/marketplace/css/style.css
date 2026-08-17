@@ -1,18 +1,18 @@
+/* VARIABILI GLOBALI */
 :root {
     --bg-dark: #09090b;       
     --text-primary: #ffffff;
     --text-secondary: #a1a1aa;
     --card-bg: rgba(255, 255, 255, 0.03);
     --border-color: rgba(255, 255, 255, 0.1);
-    /* Gradiente "AURA" Viola/Rosa/Blu */
     --accent-gradient: linear-gradient(90deg, #00ccff 0%, #7a1dd0 50%, #ec4899 100%);
-    /* Luce viola dall'alto */
     --aura-glow: radial-gradient(circle at 50% -20%, rgba(58, 168, 237, 0.4), transparent 70%);
 }
 
-body {
-    background-color: var(--bg-dark) !important;
-    color: var(--text-primary) !important;
+/* BASE: Agganciato alla classe artaround-theme per priorità su Bootstrap */
+body.artaround-theme {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-image: var(--aura-glow);
     background-attachment: fixed;
@@ -20,36 +20,15 @@ body {
     min-height: 100vh;
 }
 
-/* SIDEBAR TRASPARENTE */
-#sidebar {
-    background-color: transparent !important;
-    border-right: 1px solid var(--border-color) !important;
-}
-
-#sidebar .nav-link {
-    color: var(--text-secondary) !important;
-    font-weight: 500;
-    padding: 12px 15px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    margin-bottom: 5px;
-}
-
-#sidebar .nav-link:hover, #sidebar .nav-link.active {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff !important;
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); /* Bagliore Neon */
-    border-left: 3px solid #d8b4fe;
-}
-
 /* HEADER */
-header.navbar {
-    background-color: rgba(9, 9, 11, 0.8) !important;
+.site-header {
+    background-color: rgba(9, 9, 11, 0.8);
     border-bottom: 1px solid var(--border-color);
     backdrop-filter: blur(10px);
+    height: 63px;
 }
 
-.navbar-brand span.fw-bold {
+.brand-text {
     background: var(--accent-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -57,8 +36,8 @@ header.navbar {
     font-size: 1.5rem;
 }
 
-/* TITOLO SFUMATO */
-#page-title {
+/* TYPOGRAPHY */
+.page-title {
     font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 0;
@@ -67,11 +46,107 @@ header.navbar {
     -webkit-text-fill-color: transparent;
 }
 
-/* CARD (GLASSMORPHISM) */
+.page-header {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* SIDEBAR TRASPARENTE */
+#sidebar {
+    background-color: transparent;
+    border-right: 1px solid var(--border-color);
+    width: 250px; 
+    min-width: 250px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-x: hidden;
+    white-space: nowrap;
+    will-change: width, opacity;
+
+    /* LA MAGIA STICKY */
+    position: sticky;
+    top: 70px; /* Si ferma esattamente alla fine dell'header (70px) */
+    height: calc(100vh - 70px); /* Prende tutto lo schermo MENO l'header */
+    overflow-y: auto; /* Permette lo scroll interno se hai 100 voci di menu */
+    
+    /* Disattiviamo il min-height che sfalsava le misure */
+    min-height: auto !important;
+}
+
+/* nasconde la scrollbar interna della sidebar */
+#sidebar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, nuovo Edge */
+}
+#sidebar {
+    -ms-overflow-style: none;  /* Vecchio IE e Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+#sidebar.collapsed {
+    width: 0;
+    min-width: 0;
+    opacity: 0;
+    visibility: hidden;
+    border-right: 0 solid transparent;
+}
+
+.sidebar-title {
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.sidebar-nav .nav-link {
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.sidebar-nav .nav-link:hover, 
+.sidebar-nav .nav-link.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+    border-left: 3px solid #d8b4fe;
+}
+
+/* Rende la sidebar appiccicosa e la ferma esattamente sotto l'header */
+#sidebar .position-sticky {
+    top: 75px; /* Spazio per l'header (che è alto circa 70-75px) */
+    height: calc(100vh - 75px); /* Altezza totale dello schermo meno l'header */
+    overflow-y: auto; /* Se il menu diventa lunghissimo, si potrà scorrere! */
+}
+
+/* Nasconde la barra di scorrimento del menu per un look più pulito, ma permette lo scroll */
+#sidebar .position-sticky::-webkit-scrollbar {
+    display: none;
+}
+
+/* CONTENUTO PRINCIPALE */
+#main-content {
+    flex: 1; 
+    min-width: 0; 
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+#sidebarOpenBtn.show-btn {
+    display: inline-block;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* COMPONENTI: CARD GLASSMORPHISM */
 .custom-card {
-    background-color: var(--card-bg) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 16px !important;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
     backdrop-filter: blur(10px);
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
     overflow: hidden;
@@ -80,19 +155,136 @@ header.navbar {
 .custom-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 40px -10px rgba(168, 85, 247, 0.4);
-    border-color: rgba(168, 85, 247, 0.6) !important;
+    border-color: rgba(168, 85, 247, 0.6);
 }
 
-.card-title {
-    color: #fff !important;
+.custom-card .card-title {
+    color: #fff;
     font-weight: 700;
 }
 
-.card-text, .text-muted {
-    color: var(--text-secondary) !important;
+.custom-card .card-text {
+    color: var(--text-secondary);
 }
 
-/* TAG E BADGE */
+.custom-card .explore {
+  margin-top: 5px;
+  padding-top: 3px;
+  border-top: 1px solid;
+  border-radius: 0.5;
+  border-color: rgb(94, 99, 96);
+  color: var(--text-secondary);
+  background-color: rgba(0, 0, 0, 0,);
+}
+
+/* COMPONENTI: PULSANTI */
+.btn-gradient {
+    background: var(--accent-gradient);
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 10px 24px;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-gradient:hover {
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+    transform: scale(1.02);
+    color: white;
+}
+
+.btn-glass {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 50px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-glass:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+/* Questa è la classe per aggiustare il problema del bottone blu al passaggio del mouse */
+.btn-outline-hover-white {
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.btn-outline-hover-white:hover {
+    color: #ffffff !important; /* Qui un piccolo important assicura che superi il default di Bootstrap, ma è confinato a questa specifica classe! */
+}
+
+.btn-create-visit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: #00ccff;                 
+    border: 1px solid rgba(0, 204, 255, 0.5);
+    border-radius: 50px;            
+    text-transform: uppercase;       
+    font-size: 0.75rem;             
+    font-weight: 600;               
+    padding: 4px 14px;              
+    text-decoration: none;          /* Rimuove la sottolineatura nativa dei link <a> */
+    transition: all 0.2s ease-in-out; 
+    cursor: pointer;
+
+    /* Le seguenti righe servono a rimuovere l'ereditarieta' della trasparenza del titolo */
+    -webkit-text-fill-color: currentColor;
+}
+
+/* Stato Hover (Quando passi sopra col mouse) */
+.btn-create-visit:hover {
+    background-color: #0d6efd;      /* Sfondo blu di Bootstrap */
+    border-color: #0d6efd;          /* Bordo blu coordinato */
+    color: #ffffff;                 /* Forza il testo a diventare BIANCO lucido */
+    text-decoration: none;          /* Sicurezza anti-sottolineatura */
+}
+
+/* Forza l'icona interna a seguire il testo e diventare bianca all'hover */
+.btn-create-visit:hover i {
+    color: #ffffff;
+}
+
+/* COMPONENTI: MODALI */
+.glass-modal {
+    background-color: #18181b;
+    border: 1px solid var(--border-color);
+    color: #fff;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+}
+
+.glass-modal .border-bottom-custom,
+.glass-modal .border-top-custom {
+    border-color: var(--border-color) !important;
+}
+
+.glass-modal .metadata-title {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-input {
+    background-color: #27272a;
+    border: 1px solid var(--border-color);
+    color: #fff;
+}
+
+.glass-input:focus {
+    background-color: #27272a;
+    color: #fff;
+    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.5);
+    border-color: transparent;
+}
+
+.custom-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* COMPONENTI: VARIE */
 .badge-tag {
     background: rgba(99, 102, 241, 0.15);
     color: #c7d2fe;
@@ -104,52 +296,87 @@ header.navbar {
     margin-right: 5px;
 }
 
-/* BOTTONI */
-.btn-primary {
-    background: var(--accent-gradient) !important;
-    border: none !important;
-    color: white !important;
-    font-weight: 600;
-    border-radius: 50px !important;
-    padding: 10px 24px !important;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
-}
-
-.btn-primary:hover {
-    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
-    transform: scale(1.02);
-}
-
-.btn-outline-secondary {
-    border-color: var(--border-color) !important;
-    color: var(--text-secondary) !important;
-    border-radius: 50px !important;
-}
-
-.btn-outline-secondary:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #fff !important;
-}
-
-/* MODALE SCURO */
-.modal-content {
-    background-color: #18181b !important;
+.custom-dropdown-menu {
+    background: rgba(18, 18, 20, 0.95);
+    backdrop-filter: blur(15px);
     border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.custom-dropdown-menu .dropdown-item {
+    color: var(--text-secondary);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.custom-dropdown-menu .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.08);
     color: #fff;
-    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    transform: translateX(5px);
 }
-.modal-header, .modal-footer {
-    border-color: var(--border-color) !important;
+
+.cursor-pointer { cursor: pointer; }
+
+.dropdown-toggle::after { display: none; }
+
+.custom-arrow {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.form-control, .form-select {
-    background-color: #27272a !important;
-    border-color: var(--border-color) !important;
-    color: #fff !important;
+
+.dropdown-toggle.show .custom-arrow {
+    transform: rotate(180deg);
+    color: #fff;
 }
-.form-control:focus, .form-select:focus {
-    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.5);
-    border-color: transparent !important;
+
+.dropdown-toggle {
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
 }
-.btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
+
+.dropdown-toggle:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    #sidebar {
+        position: fixed;
+        height: 100%;
+        background-color: var(--bg-dark);
+        margin-left: -250px;
+        z-index: 1040;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+}
+
+/* Stile del Tab Attivo: illumina solo i tre lati superiori e il testo */
+.tab-custom-active {
+  background-color: transparent !important;
+  color: var(--bs-primary, #0d6efd) !important; /* Colore azzurro */
+  border: 1px solid rgba(13, 110, 253, 0.4) !important; /* Contorno azzurro delicato */
+  border-bottom: 1px solid transparent !important; /* Rimuove il bordo inferiore per fonderlo con la linea */
+  font-weight: 800 !important;
+}
+
+/* Rende l'hover pulito: intensifica solo il bordo, lo sfondo resta trasparente */
+.tab-custom-active:hover {
+  background-color: transparent !important;
+  border-color: rgba(13, 110, 253, 0.8) !important;
+  color: var(--bs-primary, #0d6efd) !important;
+}
+
+/* Stile del Tab Spento al passaggio del mouse: accenna solo un contorno leggero */
+.btn-glass:hover {
+  background-color: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-bottom: 1px solid transparent !important;
 }

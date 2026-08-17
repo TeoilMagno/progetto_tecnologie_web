@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ArtAround - I Miei Ordini</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/marketplace/css/style.css" />
+    <link rel="stylesheet" href="/marketplace/css/search-bar.css" />
+  </head>
+  <body class="artaround-theme">
+    
+    <header class="navbar site-header sticky-top px-3">
+      <div class="d-flex align-items-center">
+        <a class="btn text-white me-2" href="/">
+          <i class="bi bi-arrow-left fs-4"></i>
+        </a>
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <i class="bi bi-bank me-2 text-white"></i>
+          <span class="brand-text">ArtAround</span>
+          <span class="brand-subtitle ms-1 text-white opacity-75">I Miei Ordini</span>
+        </a>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <div class="search-container position-relative d-flex align-items-center" id="search-container">
+          <input type="text" id="orders-search-input" class="search-input form-control bg-transparent text-white border-0" placeholder="Cerca articolo acquistato o ordine...">
+          <button class="btn text-white" id="search-toggle-btn">
+            <i class="bi bi-search fs-5"></i>
+          </button>
+        </div>
+        <div id="user-area" class="text-white small d-flex align-items-center gap-2"></div>
+      </div>
+    </header>
+
+    <div class="container py-5" style="max-width: 800px;">
+      <h2 class="mb-4 text-white"><i class="bi bi-receipt me-2 text-info"></i>Storico Acquisti</h2>
+      
+      <div id="orders-container" class="d-flex flex-column gap-4">
+        <div class="text-center py-5">
+          <div class="spinner-border text-info" role="status"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/marketplace/js/config.js"></script>
+    <script src="/marketplace/js/search-bar.js"></script>
+    <script src="/marketplace/js/personal-area.js"></script>
+    <script src="/marketplace/js/my-orders.js"></script>
+  </body>
+</html>

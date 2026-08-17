@@ -1,0 +1,35 @@
+/* CSS per il cursore di trascinamento */
+.drag-handle {
+    cursor: grab;
+    transition: color 0.2s ease;
+}
+
+.drag-handle:hover {
+    color: #fff ; /* Illumina l'icona quando ci passi sopra */
+}
+
+/* Fallback se il browser richiede !important per l'override del cursore */
+.drag-handle:active {
+    cursor: grabbing !important;
+}
+
+/* Effetto visivo quando un elemento "lascia il buco" (aggiunto in automatico da SortableJS) */
+.sortable-ghost {
+    opacity: 0.3;
+    background-color: var(--card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px dashed rgba(168, 85, 247, 0.5); /* Bordo tratteggiato viola */
+    border-radius: 16px;
+}
+
+/* Effetto visivo della card MENTRE la stai tenendo sospesa col mouse */
+.sortable-drag {
+    opacity: 1 ;
+    background-color: rgba(18, 18, 20, 0.95) ;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 204, 255, 0.3) ;
+    transform: scale(1.02); /* Ingrandisce leggermente la card per dare l'idea di sollevarla */
+    cursor: grabbing ;
+}
+
+#museum-name-custom {
+    color: white;
+}

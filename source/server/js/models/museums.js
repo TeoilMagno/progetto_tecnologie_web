@@ -36,7 +36,46 @@ const museumSchema = new Schema({
   tags: {
     type: [String],
     trim: true
-  }
+  },
+
+  // I servizi offerti a livello generale (piu' facile da filtrare di facilities)
+  services: [{ 
+    type: String, 
+    enum: ['bathrooms', 'cafe', 'cloakroom', 'accessibility_ramp', 'wifi'] 
+  }],
+
+  // Mappatura geometrica dei servizi sulla mappa SVG (Simile alle opere nelle sezioni)
+  // Se un servizio non e' fisico, i relativi campi saranno impostati a null
+  facilities: [{
+    roomId: { type: Schema.Types.ObjectId }, 
+    serviceType: { 
+      type: String, 
+      enum: ['bathrooms','cafe','restaurant','bookshop','cloakroom','info_desk','elevator','ramp','seating_area','first_aid','parking']},
+    x: { type: Number },
+    y: { type: Number },
+    inSection: {
+      sectionId: { type: Schema.Types.ObjectId, ref: 'Section' },
+      x: { type: Number },
+      y: { type: Number }
+    }
+  }],
+
+  accessibility: [{ 
+    type: String, 
+    enum: [
+      'wheelchair_accessible', 
+      'blind_friendly', 
+      'deaf_friendly', 
+      'dsa_friendly', 
+      'sensory_friendly', 
+      'none'
+    ],
+    default: ['none']
+  }],
+
+  // Es. "Lunedì: Chiuso", "Mar-Dom: 09:00 - 18:00"
+  openingHours: { type: String }, 
+  openingDays: { type: [String], default: [] } // Array per filtri facili (es. ['monday', 'tuesday'])
 });
 
 const Museum = mongoose.model('Museum', museumSchema);

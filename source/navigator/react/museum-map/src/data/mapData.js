@@ -12,7 +12,6 @@ export const mapData = {
         {
           id: "room1",
           name: "Sala 1",
-          color: "#809624",
           shape: {
             type: "polyline",
             points: "643 598.95 699.34 566.65 699.35 566.65 867.84 470.08 890.23 457.25 955.77 419.69 1053.88 476.75 1151.97 419.05 1079.32 379.47 1111.75 361.75 1404.44 269.85 1720.5 451.5 1421.25 625 1365.25 593 1166.5 706.5 1221.75 738.75 951.94 894.25 852.17 836.67 852.16 836.67 737.38 903.12 638.56 845.75 595.81 871.06 510.31 821.19 604.25 768.12 619.62 748.84 662.38 695.19 641.56 683.38 669.5 659.56 604.62 620.94"
@@ -21,11 +20,28 @@ export const mapData = {
         {
           id: "room2",
           name: "Sala 1",
-          color: "#809624",
           shape: {
             type: "polyline",
             points: "911.25 591 669.5 731.25 852.16 836.67"
           }
+        }
+      ],
+      works: [
+        {
+          id: 1,
+          name: "Monna Lisa",
+          author: "Leonardo Da Vinci",
+          x: 1200,
+          y: 300,
+          image: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
+        },
+        {
+          id: 2,
+          name: "David",
+          author: "Michelangelo",
+          x: 1000,
+          y: 150,
+          image: "https://upload.wikimedia.org/wikipedia/commons/8/80/Michelangelo%27s_David_-_right_view_2.jpg"
         }
       ]
     },
@@ -41,7 +57,6 @@ export const mapData = {
         {
           id: "room2",
           name: "Sala 2",
-          color: "#00a7a7",
           shape: {
             type: "polyline",
             points: "604.62 620.94 476.42 694.75 467.19 700.06 424.52 676.14 389.86 656.15 389.85 656.15 364.74 670.88 398.3 691.32 291.88 752.94 182 692.56 292.25 626.75 324.4 646.32 348.83 632.5 278.38 591.88 380.94 532.2 509.75 457.25 491.55 440.65 403.25 360.12 511.95 298.34 624.25 363 576.51 261.65 630.88 230.75 674.29 256 884 143.12 1093.62 153.88 1102.48 157.15 1397.75 266 1404.44 269.85 1111.75 361.75 1079.32 379.47 1036.25 356 942.64 412.06 955.77 419.69 890.23 457.25 867.84 470.08 753.24 535.76 699.35 566.65 699.34 566.65 642.72 599.1"
@@ -50,7 +65,6 @@ export const mapData = {
         {
           id: "room3",
           name: "Sala 3",
-          color: "#00a7a7",
           shape: {
             type: "polygon",
             points: "1151.97 419.05 1053.88 476.75 955.77 419.69 942.64 412.06 1036.25 356 1079.32 379.47 1151.97 419.05"
@@ -59,7 +73,6 @@ export const mapData = {
         {
           id: "room4",
           name: "Sala 4",
-          color: "#00a7a7",
           shape: {
             type: "polyline",
             points: "735.85 366.41 683.75 335.75 841.25 243.5 995.75 332.63"
@@ -68,7 +81,6 @@ export const mapData = {
         {
           id: "room5",
           name: "Scale",
-          color: "#00a7a7",
           shape: {
             type: "polyline",
             points: "424.52 676.14 425.56 675.54 488.19 639.44"
@@ -77,7 +89,6 @@ export const mapData = {
         {
           id: "room6",
           name: "sala 2",
-          color: "#00a7a7",
           shape: {
             type: "polyline",
             points: "577.46 496.32 671.32 550.48 699.34 566.65"

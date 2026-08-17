@@ -1,0 +1,10 @@
+{
+  "commands_map": {
+    "ascolta": "PLAY",
+    "leggi": "PLAY",
+    "dimmi di più": "NEXT_DESC",
+    "avanti": "NEXT_DESC",
+    "chiudi": "CLOSE",
+    "esci": "CLOSE"
+  }
+}

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>ArtAround - Accedi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/marketplace/css/style.css"/>
+  <link rel="stylesheet" href="/marketplace/css/forms-style.css"/>
+</head>
+<body class="artaround-theme d-flex align-items-center justify-content-center" style="min-height: 100vh">
+  <div class="glass-panel" style="width: 100%; max-width: 400px">
+    <h2 class="aura-title text-center">Accedi</h2>
+
+      <div id="alert-container" class="mb-3"></div>
+
+      <a
+        href="/login/federated/google"
+        class="btn w-100 mb-2"
+        style="
+          background: #fff;
+          border: 1px solid #ddd;
+          color: #444;
+          font-weight: 500;
+        "
+      >
+        <img
+          src="https://www.svgrepo.com/show/475656/google-color.svg"
+          width="20"
+          style="margin-right: 8px; vertical-align: middle"
+        />
+        Accedi con Google
+      </a>
+
+      <a
+        href="/login/federated/facebook"
+        class="btn w-100 mb-3"
+        style="background: #1877f2; color: #fff; font-weight: 500"
+      >
+        <img
+          src="https://www.svgrepo.com/show/475647/facebook-color.svg"
+          width="20"
+          style="margin-right: 8px; vertical-align: middle"
+        />
+        Accedi con Facebook
+      </a>
+
+      <div class="d-flex align-items-center mb-3">
+        <hr style="flex: 1; border-color: rgba(255, 255, 255, 0.1)" />
+        <span class="px-2 text-secondary small">oppure</span>
+        <hr style="flex: 1; border-color: rgba(255, 255, 255, 0.1)" />
+      </div>
+
+      <form action="/login/password" method="post">
+        <div class="mb-3">
+          <label class="form-label-aura" for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-control input-aura"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label class="form-label-aura" for="current-password">Password</label>
+          <input
+            type="password"
+            id="current-password"
+            name="password"
+            class="form-control input-aura"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-gradient w-100">
+          Entra in ArtAround
+        </button>
+      </form>
+
+      <p class="text-secondary small mt-3 text-center">
+        Non hai un account?
+        <a href="/signup" class="text-info text-decoration-none">Registrati</a>
+      </p>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Controlliamo se il login e' stato forzato per informare l'utente
+        if (urlParams.get("msg") === "login_required") {
+          const alertContainer = document.getElementById("alert-container");
+
+          alertContainer.innerHTML = `
+          <div class="alert alert-warning alert-dismissible fade show border-warning" 
+              style="background: rgba(255, 193, 7, 0.1); backdrop-filter: blur(5px); color: #ffc107;" 
+              role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          È necessario effettuare l'accesso per visualizzare quella pagina.
+          </div>
+        `;
+
+          // puliamo l'URL in alto senza ricaricare la pagina
+          // Così se l'utente aggiorna la pagina, l'avviso non ricompare.
+          window.history.replaceState(null, "", window.location.pathname);
+        }
+      });
+    </script>
+  </body>
+</html>

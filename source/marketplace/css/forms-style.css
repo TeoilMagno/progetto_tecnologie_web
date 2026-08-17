@@ -1,0 +1,92 @@
+/* Container principale per il form */
+.form-wrapper {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Titoli con gradiente */
+.aura-title {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+/* Card in stile Glassmorphism */
+.glass-panel {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Stile per le etichette degli input */
+.glass-panel .form-label-aura {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Sfruttiamo la specificità: 
+  .glass-panel .input-aura è più forte di .form-control di Bootstrap, 
+  quindi non abbiamo bisogno di !important.
+*/
+.glass-panel .input-aura {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+/* Correggiamo il placeholder per renderlo leggibile sullo sfondo scuro */
+.glass-panel .input-aura::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.glass-panel .input-aura:focus {
+    border-color: #7a1dd0;
+    box-shadow: 0 0 15px rgba(122, 29, 208, 0.4);
+    background-color: rgba(255, 255, 255, 0.08);
+    outline: none;
+}
+
+/* Blocchi Sezione e Opere */
+.section-block-aura {
+    border-left: 4px solid #7a1dd0;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.work-block-aura {
+    border-left: 3px solid #00ccff;
+    background-color: rgba(0, 204, 255, 0.02);
+    margin-left: 1rem;
+    padding: 1rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 1rem;
+}
+
+.room-block-aura {
+    border-left: 3px solid #00ff33;
+    background-color: rgba(0, 204, 255, 0.02);
+    margin-left: 1rem;
+    padding: 1rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 1rem;
+}
+
+/* Un divisore pulito che non usa la classe border di Bootstrap */
+.divider-top {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
