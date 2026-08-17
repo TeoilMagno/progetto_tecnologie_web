@@ -60,7 +60,7 @@ app.use('/api', apiRouter);
 const sortablePath = path.join(__dirname, '..', '..', '..', 'node_modules', 'sortablejs');
 app.use('/vendor/sortablejs', express.static(sortablePath));
 
-// Avviamo il SERVER HTTPS (non app.listen)
+
 app.listen(PORT, () => {
   console.log(`listening on port: ${PORT}`);
 });

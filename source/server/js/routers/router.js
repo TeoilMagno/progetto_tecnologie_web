@@ -18,6 +18,11 @@ router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'..','..','html','index.html'));
 });
 
+// Favicon route
+router.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', '..', 'marketplace', 'favicon.svg'));
+});
+
 // Per aggiungere un museo
 router.get('/add-museum', auth.isCuratorPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'add-museum.html');
@@ -88,9 +93,9 @@ router.get('/admin-dashboard', auth.isAdminPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'admin-dashboard.html'));
 });
 
-// Ottiene l'html per i musei creati dal currentUser
-router.get('/my-museums', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-museums.html'));
+// ─── 404 Handler ───────────────────────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, '..', 'html', '404.html'));
 });
 
 module.exports = router;

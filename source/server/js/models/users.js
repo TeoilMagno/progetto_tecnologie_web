@@ -12,6 +12,12 @@ const userSchema = new mongoose.Schema({
     default: 'visitor'
   },
 
+  type: {
+    type: String,
+    enum: ['student', 'teacher', 'none'],
+    default: 'none'
+  },
+
   // tracciamento dello stato di richiesta curatore
   curator_status: {
     type: String,

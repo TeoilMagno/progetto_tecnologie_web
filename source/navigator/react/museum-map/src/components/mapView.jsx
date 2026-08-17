@@ -21,6 +21,13 @@ export default function MapView({ visitId }) {
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
 
+  // Navigator state
+  const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);
+  const [playMode, setPlayMode] = useState("read"); // 'read' or 'listen'
+  const [inputMode, setInputMode] = useState("write"); // 'write' or 'speak'
+  const [showEndModal, setShowEndModal] = useState(false);
+  const [suggestedWorks, setSuggestedWorks] = useState([]);
+
   useEffect(() => {
     const fetchVisitData = async () => {
       try {
@@ -124,6 +131,7 @@ export default function MapView({ visitId }) {
     }
     
     return null;
+    }
   };
 
   const handleNext = () => {
@@ -195,6 +203,7 @@ export default function MapView({ visitId }) {
             <svg 
               viewBox="0 0 2000 2000" 
               style={{ width: "2000px", height: "2000px", willChange: "transform" }}
+              style={{ width: "2000px", height: "2000px" }}
             >
               {!selectedSection && (
                 <g>
