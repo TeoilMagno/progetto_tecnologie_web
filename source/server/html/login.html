@@ -87,22 +87,43 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const urlParams = new URLSearchParams(window.location.search);
+        const alertContainer = document.getElementById("alert-container");
 
-        // Controlliamo se il login e' stato forzato per informare l'utente
-        if (urlParams.get("msg") === "login_required") {
-          const alertContainer = document.getElementById("alert-container");
+        // Controlliamo se ci sono errori di login specifici
+        const loginError = urlParams.get("error");
+        if (loginError) {
+          let errorText = "Credenziali non valide. Riprova.";
+          if (loginError === "username_not_found") {
+            errorText = "L'username inserito non esiste. Registrati o verifica l'username.";
+          } else if (loginError === "incorrect_password") {
+            errorText = "Password non corretta. Riprova.";
+          }
 
           alertContainer.innerHTML = `
-          <div class="alert alert-warning alert-dismissible fade show border-warning" 
-              style="background: rgba(255, 193, 7, 0.1); backdrop-filter: blur(5px); color: #ffc107;" 
-              role="alert">
-          <i class="bi bi-exclamation-triangle-fill me-2"></i>
-          È necessario effettuare l'accesso per visualizzare quella pagina.
-          </div>
-        `;
+            <div class="alert alert-danger alert-dismissible fade show border-danger" 
+                style="background: rgba(220, 53, 69, 0.1); backdrop-filter: blur(5px); color: #dc3545;" 
+                role="alert">
+              <i class="bi bi-exclamation-octagon-fill me-2"></i>
+              ${errorText}
+            </div>
+          `;
 
           // puliamo l'URL in alto senza ricaricare la pagina
-          // Così se l'utente aggiorna la pagina, l'avviso non ricompare.
+          window.history.replaceState(null, "", window.location.pathname);
+        }
+
+        // Controlliamo se il login e' stato forzato per informare l'utente
+        else if (urlParams.get("msg") === "login_required") {
+          alertContainer.innerHTML = `
+            <div class="alert alert-warning alert-dismissible fade show border-warning" 
+                style="background: rgba(255, 193, 7, 0.1); backdrop-filter: blur(5px); color: #ffc107;" 
+                role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              È necessario effettuare l'accesso per visualizzare quella pagina.
+            </div>
+          `;
+
+          // puliamo l'URL in alto senza ricaricare la pagina
           window.history.replaceState(null, "", window.location.pathname);
         }
       });

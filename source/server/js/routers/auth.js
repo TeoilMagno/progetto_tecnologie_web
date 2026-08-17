@@ -15,10 +15,19 @@ router.get('/signup', (req, res) => {
 });
 
 // ─── Local login ──────────────────────────────────────────────────────────
-router.post('/login/password', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login'
-}));
+router.post('/login/password', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
+    if (!user) {
+      const errorType = info && info.message ? info.message : 'invalid_credentials';
+      return res.redirect(`/login?error=${errorType}`);
+    }
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      return res.redirect('/');
+    });
+  })(req, res, next);
+});
 
 // ─── Local signup ─────────────────────────────────────────────────────────
 router.post('/signup', async (req, res, next) => {

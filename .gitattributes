@@ -1,0 +1,8 @@
+# Configurazione standard Git per la gestione dei fine riga (Line Endings)
+* text=auto
+
+# Preserva i fine riga LF per i file autogenerati nelle cartelle di build (dist)
+# Questo evita i warning di conversione LF -> CRLF su Windows per i file compilati da Vite/Rollup
+**/dist/**/*.js text eol=lf
+**/dist/**/*.css text eol=lf
+**/dist/**/*.html text eol=lf
