@@ -93,9 +93,9 @@ router.get('/admin-dashboard', auth.isAdminPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'admin-dashboard.html'));
 });
 
-// ─── 404 Handler ───────────────────────────────────────────────────────────
-app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, '..', 'html', '404.html'));
+router.get('/prova-navigator', (req, res) => {
+  console.log("ucciditi")
+  res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'dist', 'index.html'));
 });
 
 module.exports = router;

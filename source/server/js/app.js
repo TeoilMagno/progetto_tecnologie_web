@@ -37,6 +37,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/marketplace", express.static(path.join(__dirname, '..', '..', 'marketplace')));
 app.use("/navigator",   express.static(path.join(__dirname, '..', '..', 'navigator', 'react', 'museum-map', 'dist')));
+app.use("/navigator",   express.static(path.join(__dirname, '..', '..', 'navigator', 'dist')));
 
 // ─── Sessione e Passport ───────────────────────────────────────────────────
 app.use(session({
@@ -60,6 +61,10 @@ app.use('/api', apiRouter);
 const sortablePath = path.join(__dirname, '..', '..', '..', 'node_modules', 'sortablejs');
 app.use('/vendor/sortablejs', express.static(sortablePath));
 
+// ─── 404 Handler ───────────────────────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, '..', 'html', '404.html'));
+});
 
 app.listen(PORT, () => {
   console.log(`listening on port: ${PORT}`);

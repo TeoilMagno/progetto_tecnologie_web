@@ -2,12 +2,9 @@ const Museum = require("../models/museums");
 const Section = require("../models/sections");
 const Work = require("../models/works");
 const { User } = require("../models/users");
-<<<<<<< HEAD
 const Visit = require("../models/visits");
 const Author = require("../models/author");
 const Style = require("../models/style");
-=======
->>>>>>> alex
 
 // utilizzato da admin
 exports.getAllMuseums = async () => {
@@ -199,8 +196,4 @@ exports.deleteMuseumById = async (museumId) => {
   );
 
   return await Museum.findByIdAndDelete(museumId);
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> alex

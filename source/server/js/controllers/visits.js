@@ -45,16 +45,10 @@ exports.createVisit = async (visitPayload, user) => {
 };
 
 exports.getVisits = async (userId) => {
-<<<<<<< HEAD
-  return await Visit.find({ creator: userId })
-    .populate('museumId')
-    .populate({ path: 'works', populate: { path: 'adoptionId' } });
-}
-=======
   // Trova le visite create dall'utente
   const created = await Visit.find({ creator: userId })
     .populate('museumId')
-    .populate('works');
+    .populate({ path: 'works', populate: { path: 'adoptionId' } });
 
   // Trova l'utente per prenderne le visite acquistate/salvate
   const { User } = require('../models/users');
@@ -78,7 +72,6 @@ exports.getVisits = async (userId) => {
 
   return allVisits;
 };
->>>>>>> alex
 
 exports.getVisitById = async (visitId, user) => {
   const visit = await Visit.findById(visitId).populate('museumId')

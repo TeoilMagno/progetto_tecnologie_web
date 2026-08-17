@@ -444,15 +444,19 @@ apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
 
 // restituisce l'utente loggato, o null se non autenticato
 apiRouter.get("/current-user", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.status(200).json({
-      _id: req.user._id,
-      username: req.user.username || req.user.name,
-      role: req.user.role,
-      type: req.user.type || 'none',
-    });
-  } else {
-    res.json(null);
+  try {
+    if (req.isAuthenticated()) {
+      res.status(200).json({
+        _id: req.user._id,
+        username: req.user.username || req.user.name,
+        role: req.user.role,
+        //type: req.user.type || 'none',
+      });
+    } else {
+      res.json(null);
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
