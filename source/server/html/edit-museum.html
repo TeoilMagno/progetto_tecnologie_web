@@ -285,6 +285,8 @@
             <form id="author-data-form">
               <!-- Se questo è valorizzato, stiamo creando un NUOVO autore, altrimenti stiamo aggiungendo dati a uno esistente -->
               <input type="hidden" id="new-author-name-input" />
+
+              <input type="hidden" id="old-author-data-id" />
               
               <div class="mb-3">
                 <label class="form-label small text-secondary">Date (Nascita - Morte)</label>
@@ -300,10 +302,16 @@
               </div>
             </form>
           </div>
-          <div class="modal-footer border-top-custom">
+          <div class="modal-footer border-top-custom d-flex justify-content-between">
+          <!-- Bottone IA nascosto di default -->
+          <button type="button" class="btn btn-outline-info d-none" id="btn-ai-author" onclick="generateAuthorBioWithAI()">
+            <i class="bi bi-magic me-1"></i> Genera con IA
+          </button>
+          <div>
             <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
             <button type="button" class="btn btn-gradient px-3" onclick="saveAuthorData()">Salva Biografia</button>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -319,16 +327,23 @@
           <div class="modal-body">
             <form id="style-data-form">
               <input type="hidden" id="new-style-name-input" />
+              <input type="hidden" id="old-style-data-id" />
               <div class="mb-3">
                 <label class="form-label small text-secondary">Descrizione dello Stile</label>
                 <textarea class="form-control glass-input" id="style-description" rows="4" placeholder="Cosa rappresenta questo stile per il tuo museo?"></textarea>
               </div>
             </form>
           </div>
-          <div class="modal-footer border-top-custom">
+          <div class="modal-footer border-top-custom d-flex justify-content-between">
+          <!-- Bottone IA nascosto di default -->
+          <button type="button" class="btn btn-outline-info d-none" id="btn-ai-style" onclick="generateStyleDescWithAI()">
+            <i class="bi bi-magic me-1"></i> Genera con IA
+          </button>
+          <div>
             <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
             <button type="button" class="btn btn-gradient px-3" onclick="saveStyleData()">Salva Definizione</button>
           </div>
+        </div>
         </div>
       </div>
     </div>

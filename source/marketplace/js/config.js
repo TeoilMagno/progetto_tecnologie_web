@@ -28,6 +28,7 @@ async function geocodeAddress(address) {
   }
   return { lat: null, lon: null };
 }
+
 // Intercept all alerts and show a beautiful custom toast!
 (function() {
   function initToastContainer() {

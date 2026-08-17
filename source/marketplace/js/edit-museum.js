@@ -2,9 +2,11 @@ let currentMuseumId = null;
 let currentMuseumData = null;
 let museumSections = [];
 let workModalInstance = null;
-let sectionModalInstance = null;
 let roomModalInstance = null;
+let sectionModalInstance = null;
 let deleteMuseumModalInstance = null;
+let currentFetchedAuthor = null;
+let currentFetchedStyle = null;
 
 // Cache globale per tenere in memoria i dati
 let worksCache = {};
@@ -742,9 +744,9 @@ async function selectAuthor(authorId, authorName) {
     const res = await fetch(`/api/authors/${authorId}`);
     if (!res.ok) throw new Error("Errore recupero dati autore");
     const author = await res.json();
+    currentFetchedAuthor = author;
 
     document.getElementById("work-author-search").value = author.name;
-    
     slider.innerHTML = "";
     
     // Cerchiamo se il nostro museo ha già una descrizione pre-selezionata
@@ -782,6 +784,9 @@ async function selectAuthor(authorId, authorName) {
               <p class="small text-white mb-0" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
                 ${d.bio || 'Nessuna biografia inserita.'}
               </p>
+              <div class="mt-auto pt-3 text-end">
+                <button class="btn btn-sm btn-outline-warning py-0 px-2" onclick="event.stopPropagation(); editAuthorData('${d._id}')"><i class="bi bi-pencil"></i> Modifica</button>
+              </div>
             </div>
           </div>
         `;
@@ -845,20 +850,26 @@ function createNewAuthor(authorName) {
   hideAuthorDropdown();
   document.getElementById("work-author-search").value = authorName;
   document.getElementById("work-author-id").value = ""; // ID vuoto = nuovo autore
+  document.getElementById("old-author-data-id").value = "";
   
   // Impostiamo il campo hidden per ricordarci il nome
   document.getElementById("new-author-name-input").value = authorName;
   
   document.getElementById("authorDataModalLabel").innerText = `Crea Autore: ${authorName}`;
   document.getElementById("author-data-form").reset();
+
+  document.getElementById("btn-ai-author").classList.add("d-none");
+
   authorDataModalInstance.show();
 }
 
 // Innescata dal bottone "Scrivi la tua" sopra lo slider
 function openNewAuthorDataModal() {
   document.getElementById("new-author-name-input").value = ""; // Nome vuoto = autore esistente
+  document.getElementById("old-author-data-id").value = "";
   document.getElementById("authorDataModalLabel").innerText = "Aggiungi la tua Biografia";
   document.getElementById("author-data-form").reset();
+  document.getElementById("btn-ai-author").classList.add("d-none");
   authorDataModalInstance.show();
 }
 
@@ -869,6 +880,7 @@ async function saveAuthorData() {
   
   const payloadData = {
     museumId: currentMuseumId,
+    oldDataId: document.getElementById("old-author-data-id").value,
     bd: document.getElementById("author-bd").value.trim(),
     studies: document.getElementById("author-studies").value.trim(),
     bio: document.getElementById("author-bio").value.trim()
@@ -901,17 +913,19 @@ async function saveAuthorData() {
 
     // Se tutto e' andato bene generiamo le descrizioni con l'ia
     if (finalAuthor) {
-      console.log("Inizio generazione IA per l'autore in background...");
-      fetch(`${API_BASE_URL}/ai/generate-author-desc`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          authorId: finalAuthor._id, 
-          museumId: currentMuseumId,
-          authorName: finalAuthor.name || newName,
-          userDescription: payloadData.bio // Usiamo il testo del form come contesto!
-        })
-      });
+      if(!existingAuthorId) {
+        console.log("Inizio generazione IA per l'autore in background...");
+        fetch(`${API_BASE_URL}/ai/generate-author-desc`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            authorId: finalAuthor._id, 
+            museumId: currentMuseumId,
+            authorName: finalAuthor.name || newName,
+            userDescription: payloadData.bio // Usiamo il testo del form come contesto!
+          })
+        });
+      }
 
       // Selezioniamo automaticamente il nuovo autore e ricarichiamo le card
       selectAuthor(finalAuthor._id, finalAuthor.name || newName);
@@ -992,9 +1006,9 @@ async function selectStyle(styleId, styleName) {
     const res = await fetch(`/api/styles/${styleId}`);
     if (!res.ok) throw new Error("Errore recupero dati");
     const style = await res.json();
+    currentFetchedStyle = style;
 
     document.getElementById("work-style-search").value = style.name;
-    
     slider.innerHTML = "";
 
     // Troviamo se c'è una definizione già selezionata dal nostro museo
@@ -1029,6 +1043,9 @@ async function selectStyle(styleId, styleName) {
               <p class="small text-white mb-0" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
                 ${d.description || 'Nessuna descrizione.'}
               </p>
+              <div class="mt-auto pt-3 text-end">
+                <button class="btn btn-sm btn-outline-warning py-0 px-2" onclick="event.stopPropagation(); editStyleData('${d._id}')"><i class="bi bi-pencil"></i> Modifica</button>
+              </div>
             </div>
           </div>
         `;
@@ -1064,16 +1081,20 @@ function createNewStyle(styleName) {
   hideStyleDropdown();
   document.getElementById("work-style-search").value = styleName;
   document.getElementById("work-style-id").value = ""; 
+  document.getElementById("old-style-data-id").value = "";
   document.getElementById("new-style-name-input").value = styleName;
   document.getElementById("styleDataModalLabel").innerText = `Crea Stile: ${styleName}`;
   document.getElementById("style-data-form").reset();
+  document.getElementById("btn-ai-style").classList.add("d-none");
   styleDataModalInstance.show();
 }
 
 function openNewStyleDataModal() {
   document.getElementById("new-style-name-input").value = ""; 
+  document.getElementById("old-style-data-id").value = "";
   document.getElementById("styleDataModalLabel").innerText = "Aggiungi la tua Definizione";
   document.getElementById("style-data-form").reset();
+  document.getElementById("btn-ai-style").classList.add("d-none");
   styleDataModalInstance.show();
 }
 
@@ -1083,6 +1104,7 @@ async function saveStyleData() {
   
   const payloadData = {
     museumId: currentMuseumId,
+    oldDataId: document.getElementById("old-style-data-id").value,
     description: document.getElementById("style-description").value.trim() 
   };
 
@@ -1111,19 +1133,21 @@ async function saveStyleData() {
       finalStyle = await res.json();
     }
 
-    // Generazione testo con ia
+    // Generazione testo con ia (solo se lo stile e' nuovo)
     if (finalStyle) {
-      console.log("Inizio generazione IA per lo stile in background...");
-      fetch(`${API_BASE_URL}/ai/generate-style-desc`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          styleId: finalStyle._id, 
-          museumId: currentMuseumId,
-          styleName: finalStyle.name || newName,
-          userDescription: payloadData.description
-        })
-      });
+      if(!existingStyleId) {
+        console.log("Inizio generazione IA per lo stile in background...");
+        fetch(`${API_BASE_URL}/ai/generate-style-desc`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            styleId: finalStyle._id, 
+            museumId: currentMuseumId,
+            styleName: finalStyle.name || newName,
+            userDescription: payloadData.description
+          })
+        });
+      }
 
       selectStyle(finalStyle._id, finalStyle.name || newName);
       
@@ -1259,7 +1283,7 @@ async function generateSpecificTextWithAI() {
       1. Tieni conto della contesto fornito dal curatore: ${baseContext}
       2. Usa il registro linguistico richiesto: ${aud} 
       3. Lunghezza richiesta: ${len} 
-      
+
     Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza virgolette iniziali/finali o formattazione markdown.
   `;
 
@@ -1283,4 +1307,92 @@ async function generateSpecificTextWithAI() {
   } catch (e) {
     textarea.value = "Errore di connessione al server.";
   }
+}
+
+function editAuthorData(dataId) {
+  if (!currentFetchedAuthor) return;
+  const data = currentFetchedAuthor.data.find(d => d._id === dataId);
+  if (!data) return;
+
+  document.getElementById("new-author-name-input").value = ""; // Lasciamo vuoto, autore esistente
+  document.getElementById("old-author-data-id").value = dataId; // Salviamo il vecchio ID!
+  document.getElementById("author-bd").value = data.bd || "";
+  document.getElementById("author-studies").value = data.studies || "";
+  document.getElementById("author-bio").value = data.bio || "";
+  document.getElementById("btn-ai-author").classList.remove("d-none");
+  document.getElementById("authorDataModalLabel").innerText = "Modifica Biografia";
+  authorDataModalInstance.show();
+}
+
+function editStyleData(dataId) {
+  if (!currentFetchedStyle) return;
+  const data = currentFetchedStyle.data.find(d => d._id === dataId);
+  if (!data) return;
+
+  document.getElementById("new-style-name-input").value = ""; 
+  document.getElementById("old-style-data-id").value = dataId;
+  document.getElementById("style-description").value = data.description || "";
+  document.getElementById("btn-ai-style").classList.remove("d-none");
+  document.getElementById("styleDataModalLabel").innerText = "Modifica Definizione";
+  styleDataModalInstance.show();
+}
+
+// 1. Genera testo specifico Opera (una singola cella)
+async function generateSpecificTextWithAI() {
+  const aud = document.getElementById("tm-audience").value, len = document.getElementById("tm-length").value;
+  const textarea = document.getElementById("tm-textarea");
+  if (!tmCurrentWork) return;
+
+  const baseContext = document.getElementById("work-description")?.value || "Basati sulle tue conoscenze storiche.";
+  const prompt = `Scrivi la descrizione per l'opera "${tmCurrentWork.name}". Contesto: ${baseContext}. Registro linguistico: ${aud}. Lunghezza: ${len}. Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza markdown.`;
+
+  textarea.value = "Generazione in corso...";
+  try {
+    const res = await fetch(`${API_BASE_URL}/ai/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+    if (res.ok) textarea.value = (await res.json()).text;
+    else textarea.value = "Errore API.";
+  } catch (e) { textarea.value = "Errore di connessione."; }
+}
+
+// 2. Genera e riempie tutti i campi dell'Autore
+async function generateAuthorBioWithAI() {
+  const bioTextarea = document.getElementById("author-bio");
+  const authorName = currentFetchedAuthor ? currentFetchedAuthor.name : document.getElementById("new-author-name-input").value;
+  const userContext = bioTextarea.value.trim();
+  
+  const prompt = `Crea scheda biografica per: "${authorName}". Appunti: "${userContext}". Istruzioni: 1. "bio": 2-3 paragrafi. 2. "bd": Date in formato "AAAA - AAAA". 3. "studies": Formazione. 4. "mainWorks": 2-3 frasi sulle opere principali. Restituisci SOLO un JSON valido: {"bio": "...", "bd": "...", "studies": "...", "mainWorks": "..."}. Non usare markdown.`;
+
+  bioTextarea.value = "Compilazione scheda in corso...";
+  try {
+    const res = await fetch(`${API_BASE_URL}/ai/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+    if (res.ok) {
+      // Puliamo eventuale markdown di formattazione di Gemini
+      const cleanText = (await res.json()).text.replace(/```json/g, '').replace(/```/g, '').trim();
+      const data = JSON.parse(cleanText);
+      
+      // Riempiamo i vari input del form
+      if(data.bd) document.getElementById("author-bd").value = data.bd;
+      if(data.studies) document.getElementById("author-studies").value = data.studies;
+      // Uniamo la bio alle opere principali
+      bioTextarea.value = (data.bio || "") + (data.mainWorks ? "\n\nOpere principali: " + data.mainWorks : "");
+    } else { bioTextarea.value = "Errore API."; }
+  } catch (e) { bioTextarea.value = "Errore di parsing dati. Riprova."; console.error(e); }
+}
+
+// 3. Genera e riempie la descrizione dello Stile
+async function generateStyleDescWithAI() {
+  const descTextarea = document.getElementById("style-description");
+  const styleName = currentFetchedStyle ? currentFetchedStyle.name : document.getElementById("new-style-name-input").value;
+  const userContext = descTextarea.value.trim();
+  
+  const prompt = `Spiega lo stile artistico: "${styleName}". Appunti: "${userContext}". Spiega periodo storico e caratteristiche in 2-3 paragrafi. Restituisci SOLO un JSON con struttura {"description": "testo..."}. Niente markdown, usa solo apici singoli nel testo.`;
+
+  descTextarea.value = "Generazione in corso...";
+  try {
+    const res = await fetch(`${API_BASE_URL}/ai/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+    if (res.ok) {
+      const cleanText = (await res.json()).text.replace(/```json/g, '').replace(/```/g, '').trim();
+      descTextarea.value = JSON.parse(cleanText).description || "";
+    } else { descTextarea.value = "Errore API."; }
+  } catch (e) { descTextarea.value = "Errore di parsing dati. Riprova."; }
 }
