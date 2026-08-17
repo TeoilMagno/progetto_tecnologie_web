@@ -5,6 +5,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
   const [dragStartY, setDragStartY] = useState(null);
   const [dragCurrentY, setDragCurrentY] = useState(0);
   const [currentDescIndex, setCurrentDescIndex] = useState(0);
+  const [isListening, setIsListening] = useState(false);
 
   const handlePointerDown = (e) => {
     setDragStartY(e.clientY);
@@ -44,6 +45,66 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
       onSpeak(work.description[nextIndex].description)
     }
   }
+
+  const startListening = () => {
+    // 1. Controllo compatibilità browser
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Il tuo browser non supporta i comandi vocali.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'it-IT'; // riconosciamo l'italiano l'italiano
+    recognition.interimResults = false; // Aspetta che l'utente finisca di parlare
+    recognition.maxAlternatives = 1;
+
+    // Inizia ascolto
+    recognition.onstart = () => {
+      setIsListening(true);
+      // Opzionale: Zittiamo la voce se stava parlando, per non accavallarsi!
+      window.speechSynthesis.cancel(); 
+    };
+
+    // Quando ha capito cosa hai detto
+    recognition.onresult = (event) => {
+      // Estraiamo il testo, lo mettiamo in minuscolo e togliamo gli spazi ai lati
+      const transcript = event.results[0][0].transcript.toLowerCase().trim();
+      console.log("Hai detto:", transcript); // debug
+
+      // --- MAPPATURA ESATTA DEI COMANDI (Fase 1) ---
+      // rimozione eventuale punto finale che a volte l'API aggiunge
+      const cleanTranscript = transcript.replace(/\.$/, ''); 
+
+      if (cleanTranscript === "ascolta" || cleanTranscript === "leggi") {
+        onSpeak(work.description?.[currentDescIndex]?.description);
+      } 
+      else if (cleanTranscript === "dimmi di più" || cleanTranscript === "vai avanti") {
+        handleMoreDesc();
+      } 
+      else if (cleanTranscript === "chiudi" || cleanTranscript === "esci") {
+        onClose();
+      } 
+      else {
+        // --- FUTURA FASE 2: INTEGRAZIONE AI ---
+        // Qui in futuro metterai: const aiResponse = await fetch('/api/ai-mapper', { body: cleanTranscript })
+        alert(`Comando non riconosciuto: "${cleanTranscript}". Riprova con "ascolta", "dimmi di più" o "chiudi".`);
+      }
+    };
+
+    // 4. Gestione fine o errori
+    recognition.onerror = (event) => {
+      console.error("Errore riconoscimento vocale:", event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false); // Spegne il microfono visivamente
+    };
+
+    // Facciamo partire l'ascolto!
+    recognition.start();
+  };
 
   // Resettiamo la posizione del menu se l'utente lo chiude con la X
   useEffect(() => {

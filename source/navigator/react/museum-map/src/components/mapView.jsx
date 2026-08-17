@@ -25,7 +25,7 @@ export default function MapView({ visitId }) {
     const fetchVisitData = async () => {
       try {
         // 1. Scarichiamo i dati della visita
-        const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}/museum`);
+        const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}`);
         const visitData = await visitResponse.json();
 
         // Salviamo le opere della visita nello stato
