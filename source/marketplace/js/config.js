@@ -3,7 +3,6 @@
 // e 'https://www.tuosito.com' in produzione!
 const API_BASE_URL = window.location.origin + "/api";
 
-// Funzione helper per tradurre l'indirizzo in coordinate
 async function geocodeAddress(address) {
   try {
     // Usiamo encodeURIComponent per gestire spazi e virgole nell'indirizzo
