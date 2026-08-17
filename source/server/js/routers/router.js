@@ -94,7 +94,6 @@ router.get('/admin-dashboard', auth.isAdminPage, (req, res) => {
 });
 
 router.get('/prova-navigator', (req, res) => {
-  console.log("ucciditi")
   res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'dist', 'index.html'));
 });
 

@@ -82,6 +82,9 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
       else if (cleanTranscript === "dimmi di più" || cleanTranscript === "vai avanti") {
         handleMoreDesc();
       } 
+      else if (cleanTranscript === "dimmi di meno" || cleanTranscript === "torna indietro") {
+        handleLessDesc();
+      } 
       else if (cleanTranscript === "chiudi" || cleanTranscript === "esci") {
         onClose();
       } 

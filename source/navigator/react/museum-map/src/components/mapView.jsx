@@ -21,13 +21,6 @@ export default function MapView({ visitId }) {
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
 
-  // Navigator state
-  const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);
-  const [playMode, setPlayMode] = useState("read"); // 'read' or 'listen'
-  const [inputMode, setInputMode] = useState("write"); // 'write' or 'speak'
-  const [showEndModal, setShowEndModal] = useState(false);
-  const [suggestedWorks, setSuggestedWorks] = useState([]);
-
   useEffect(() => {
     const fetchVisitData = async () => {
       try {
@@ -131,7 +124,6 @@ export default function MapView({ visitId }) {
     }
     
     return null;
-    }
   };
 
   const handleNext = () => {
