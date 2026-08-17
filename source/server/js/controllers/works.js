@@ -8,7 +8,11 @@ exports.getWorksById = async (workIds) => {
 // Aggiorna un'opera esistente
 exports.updateWorkById = async (workId, updateData, museumId) => {
   const updatedWork = await Work.findOneAndUpdate(
-    { _id: workId, museumId: museumId }, 
+    { 
+      _id: workId, 
+      museumId: museumId, 
+      $or: [{ adoptionId: null }, { adoptionId: { $exists: false } }] 
+    }, 
     updateData, 
     { new: true, runValidators: true }
   );
@@ -25,7 +29,8 @@ exports.updateWorkById = async (workId, updateData, museumId) => {
 exports.deleteWorkById = async (workId, museumId) => {
   const deletedWork = await Work.findOneAndDelete({
     _id: workId,
-    museumId: museumId
+    museumId: museumId,
+    $or: [{ adoptionId: null }, { adoptionId: { $exists: false } }]
   });
 
   if (!deletedWork) {

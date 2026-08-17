@@ -592,7 +592,41 @@ function checkDeleteConfirmationText(e) {
 
 // Conferma eliminazione definitiva museo
 async function confirmDeleteMuseum() {
+  const deleteBtn = document.getElementById("confirm-delete-museum-btn");
+  if (deleteBtn) {
+    deleteBtn.innerText = "Controllo in corso...";
+    deleteBtn.disabled = true;
+  }
+  
   try {
+    const adoptionsRes = await fetch(`${API_BASE_URL}/my-adoptions`);
+    if (adoptionsRes.ok) {
+      const allAdoptions = await adoptionsRes.json();
+      
+      // Filtriamo le adozioni ATTIVE in cui questo museo è il DESTINATARIO (ha ricevuto l'opera)
+      const activeImports = allAdoptions.filter(a => 
+        a.status === 'active' && 
+        (a.toMuseumId?._id === currentMuseumId || a.toMuseumId === currentMuseumId)
+      );
+
+      if (activeImports.length > 0) {
+        const wantsToReturn = confirm(`⚠️ Attenzione! Hai ${activeImports.length} opere in prestito da altri musei.\n\nVuoi restituirle tutte automaticamente prima di eliminare il museo? (Se annulli, l'eliminazione verrà interrotta).`);
+        
+        if (!wantsToReturn) {
+          deleteMuseumModalInstance.hide();
+          return; // Interrompiamo tutto
+        }
+
+        // Restituiamo le opere una per una
+        for (let ad of activeImports) {
+          await fetch(`${API_BASE_URL}/adoptions/${ad._id}/complete`, { 
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+          });
+        }
+      }
+    }
+
     const res = await fetch(`${API_BASE_URL}/museums/${currentMuseumId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
