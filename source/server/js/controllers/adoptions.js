@@ -2,7 +2,7 @@ const Adoption = require('../models/adoptions');
 const Work = require('../models/works');
 const Museum = require('../models/museums');
 const { User } = require('../models/users');
-const Visit = require('../models/museums');
+const Visit = require('../models/visits');
 
 exports.getWorkByAdoption = async (adoptionId) => {
   try {

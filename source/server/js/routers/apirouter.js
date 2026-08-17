@@ -622,7 +622,6 @@ apiRouter.get("/my-orders", auth.isLoggedIn, async (req, res) => {
 
 // ----------------------- adoptions ----------------------------
 
-// TODO: controllare sicurezza -> auth.isMuseumOwner
 // Crea richiesta di adozione (status: pending)
 apiRouter.post("/adoptions", auth.isCurator, async (req, res) => {
   try {

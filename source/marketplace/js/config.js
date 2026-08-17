@@ -27,4 +27,4 @@ async function geocodeAddress(address) {
     console.error("Errore durante il geocoding dell'indirizzo:", error);
   }
   return { lat: null, lon: null };
-}z
+}

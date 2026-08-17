@@ -45,11 +45,15 @@ exports.createVisit = async (visitPayload, user) => {
 };
 
 exports.getVisits = async (userId) => {
-  return await Visit.find({ creator: userId }).populate('museumId')
+  return await Visit.find({ creator: userId })
+    .populate('museumId')
+    .populate({ path: 'works', populate: { path: 'adoptionId' } });
 }
 
 exports.getVisitById = async (visitId, user) => {
-  const visit = await Visit.findById(visitId).populate('museumId').populate('works'); 
+  const visit = await Visit.findById(visitId).populate('museumId')
+    .populate('works')
+    .populate({ path: 'works', populate: { path: 'adoptionId' } }); 
 
   if (!visit) {
     const error = new Error("Visita non trovata");
@@ -95,7 +99,8 @@ exports.getPublicVisits = async () => {
   // Cerchiamo le visite completate (non bozze) e pubbliche
   const visits = await Visit.find({ isPublic: true, isDraft: false })
     .populate('museumId')
-    .populate('works');
+    .populate('works')
+    .populate({ path: 'works', populate: { path: 'adoptionId' } });
 
   return visits;
 };

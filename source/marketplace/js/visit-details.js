@@ -100,6 +100,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             // creiamo il contenuto del riquadro ingrandito
             const popoverContent = `<img src='${work.image}' style='width: 100%; height: auto;'>`;
 
+            // LOGICA ADOZIONE: Mostriamo il warning se l'opera è in prestito o in transito
+            let adoptionWarning = "";
+            const adoption = work.adoptionId || work.adoption; // Dipende da come lo popoli nel backend
+            
+            if (adoption && (adoption.status === 'accepted' || adoption.status === 'active')) {
+              const beginDate = new Date(adoption.beginDate).toLocaleDateString('it-IT');
+              const endDate = new Date(adoption.endDate).toLocaleDateString('it-IT');
+              
+              adoptionWarning = `
+                <div class="alert alert-warning mt-2 mb-0 py-1 px-2 small border-warning text-dark">
+                  <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                  <strong>Attenzione:</strong> la seguente opera non sarà al museo dal <strong>${beginDate}</strong> al <strong>${endDate}</strong>.
+                </div>
+              `;
+            }
+
             timeline.innerHTML += `
                 <li class="timeline-work">
                     <div class="card custom-card p-3">
@@ -121,6 +137,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 <span class="badge bg-dark border border-secondary text-secondary mb-1">Tappa ${index + 1}</span>
                                 <h5 class="h6 mb-1 text-white">${work.name}</h5>
                                 <p class="small text-white-50 mb-0">${descText}</p>
+                                ${adoptionWarning}
                             </div>
                         </div>
                     </div>
