@@ -1,26 +1,27 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const Work = require("../models/works")
 const Author = require('../models/author'); 
-const Style = require('../models/style');   
+const Style = require('../models/style');  
+const Item = require('../models/items');
 
 // Inizializziamo il client usando la chiave segreta dal file .env
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// exports.generateContent = async (prompt) => {
-//   try {
-//     // Usiamo il modello "flash" che è velocissimo e gratuito per i test
-//     const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash-lite" });
+exports.generateContent = async (prompt) => {
+  try {
+    // Usiamo il modello "flash" che è velocissimo e gratuito per i test
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash-lite" });
     
-//     // Invia il prompt a Google e aspetta la magia
-//     const result = await model.generateContent(prompt);
+    // Invia il prompt a Google e aspetta la magia
+    const result = await model.generateContent(prompt);
     
-//     // Estrae solo il testo pulito dalla risposta complessa di Google
-//     return result.response.text();
-//   } catch (error) {
-//     console.error("Errore fatale con Gemini API:", error);
-//     throw error;
-//   }
-// };
+    // Estrae solo il testo pulito dalla risposta complessa di Google
+    return result.response.text();
+  } catch (error) {
+    console.error("Errore fatale con Gemini API:", error);
+    throw error;
+  }
+};
 
 exports.generateAndSaveWorkDescriptions = async (workId, workName, userDescription) => {
   try {
@@ -175,5 +176,22 @@ exports.generateAndSaveStyleDescription = async (styleId, museumId, styleName, u
     console.log(`✅ [AI SUCCESS] Descrizione generata per lo stile: ${styleName}`);
   } catch (error) {
     console.error(`❌ [AI ERROR] Fallita descrizione per ${styleName}:`, error);
+  }
+};
+
+exports.generateAndSaveItemTargetAge = async (itemId, itemName, itemDescription) => {
+  try {
+    const prompt = `Analizza questo articolo di un bookshop museale.
+    Nome: ${itemName}
+    Descrizione: ${itemDescription}
+    Determina la fascia d'età scegliendo UNA o PIÙ opzioni ESCLUSIVAMENTE da: "0-3", "4-7", "8-12", "teens", "adults", "all".
+    Rispondi SOLO con un array JSON, es: ["8-12", "teens"].`;
+
+    let aiResponse = await exports.generateContent(prompt); 
+    const ageArray = JSON.parse(aiResponse.replace(/```json/g, "").replace(/```/g, "").trim());
+
+    await Item.findByIdAndUpdate(itemId, { targetAge: ageArray });
+  } catch (error) {
+    console.error("Errore IA targetAge:", error);
   }
 };

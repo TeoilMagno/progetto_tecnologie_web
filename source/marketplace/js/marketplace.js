@@ -522,7 +522,7 @@ async function loadBookshopItems() {
   container.innerHTML = `<div class="text-center text-secondary my-3"><span class="spinner-border spinner-border-sm"></span> Caricamento articoli...</div>`;
   
   try {
-    const res = await fetch(`/api/museums/${currentBookshopMuseumId}/items`);
+    const res = await fetch(`${API_BASE_URL}/museums/${currentBookshopMuseumId}/items`);
     const items = await res.json();
     
     if (items.length === 0) {
@@ -558,7 +558,7 @@ async function addStock(itemId) {
   }
 
   try {
-    const res = await fetch(`/api/items/${itemId}/add-stock`, {
+    const res = await fetch(`${API_BASE_URL}/items/${itemId}/add-stock`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantityToAdd })
@@ -596,16 +596,35 @@ document.getElementById("new-item-form")?.addEventListener("submit", async (e) =
   };
 
   try {
-    const res = await fetch(`/api/museums/${currentBookshopMuseumId}/items`, {
+    const res = await fetch(`${API_BASE_URL}/museums/${currentBookshopMuseumId}/items`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newItemData)
     });
     
     if (res.ok) {
+      const data = await res.json();
+
       e.target.reset(); // Svuota il form
       toggleNewItemForm(); // Nasconde il form
       await loadBookshopItems(); // Ricarica la lista per mostrare il nuovo nato
+
+      fetch(`${API_BASE_URL}/ai/generate-item-targetage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemId: data.item._id, 
+          itemName: newItemData.name,
+          itemDescription: newItemData.description
+        })
+      })
+      .then(res => res.json())
+      .then(aiResponse => {
+        console.log("Risposta IA ricevuta:", aiResponse);
+        loadBookshopItems(); 
+      })
+      .catch(err => console.error("Errore di rete nella chiamata IA:", err));
+
     } else {
       // Estraiamo il messaggio di errore reale dal server (se Mongoose si arrabbia ancora)
       const errorData = await res.json();

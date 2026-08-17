@@ -40,11 +40,11 @@ const itemSchema = new Schema({
     default: 'other'
   },
 
-  targetAge: { 
+  targetAge: [{ 
     type: [String], 
     enum: ['0-3','4-7','8-12','teens','adults','all'],
     default: ['all'] // es. ['0-3', '4-7', 'adults', 'all']
-  }
+  }]
 });
 
 

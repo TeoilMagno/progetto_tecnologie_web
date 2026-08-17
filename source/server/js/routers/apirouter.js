@@ -877,4 +877,13 @@ apiRouter.post("/ai/generate-style-desc", async (req, res) => {
   aiController.generateAndSaveStyleDescription(styleId, museumId, styleName, userDescription);
 });
 
+// Associazione targetAge per gli itetms
+apiRouter.post("/ai/generate-item-targetage", async (req,res) => {
+  const { itemId, itemName, itemDescription } = req.body;
+  if(!itemId || !itemName || !itemDescription) return res.status(400).json({ error: "Dati mancanti" });
+
+  res.status(202).json({ message: "Associazione targetAge avviata in background..." });
+  aiController.generateAndSaveItemTargetAge(itemId, itemName, itemDescription);
+})
+
 module.exports = apiRouter;
