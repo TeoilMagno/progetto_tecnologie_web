@@ -209,6 +209,24 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
                 >
                   <i className="bi bi-volume-up me-2"></i> Dimmi di più
                 </button>
+                <button
+                  onClick={startListening}
+                  className={`btn rounded-circle d-flex align-items-center justify-content-center`}
+                  style={{ 
+                    width: "45px", 
+                    height: "45px",
+                    // Se sta ascoltando diventa rosso acceso, altrimenti grigio scuro
+                    backgroundColor: isListening ? "#ff4444" : "rgba(255,255,255,0.1)",
+                    color: isListening ? "white" : "#ccc",
+                    border: "none",
+                    transition: "all 0.3s ease",
+                    // Un bell'effetto glow rosso quando è in ascolto
+                    boxShadow: isListening ? "0 0 15px rgba(255, 68, 68, 0.6)" : "none"
+                  }}
+                  title="Comandi vocali"
+                >
+                  <i className={`bi ${isListening ? 'bi-mic-fill' : 'bi-mic'}`}></i>
+                </button>
               </div>
             </div>
           </>
