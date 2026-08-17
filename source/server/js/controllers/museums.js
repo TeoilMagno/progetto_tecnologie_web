@@ -197,29 +197,3 @@ exports.deleteMuseumById = async (museumId) => {
 
   return await Museum.findByIdAndDelete(museumId);
 };
-
-// Funzione helper per tradurre l'indirizzo in coordinate
-async function geocodeAddress(address) {
-  try {
-    // Usiamo encodeURIComponent per gestire spazi e virgole nell'indirizzo
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
-    
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'ArtAround/1.0 (progetto universitario)' 
-      }
-    });
-
-    const data = await response.json();
-    
-    if (data && data.length > 0) {
-      return {
-        lat: parseFloat(data[0].lat),
-        lon: parseFloat(data[0].lon) 
-      };
-    }
-  } catch (error) {
-    console.error("Errore durante il geocoding dell'indirizzo:", error);
-  }
-  return { lat: null, lon: null };
-}

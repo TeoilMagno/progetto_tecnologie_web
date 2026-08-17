@@ -68,18 +68,13 @@ async function applyMuseumFilters() {
 
   // A. Calcola le coordinate se l'utente ha scritto una città manualmente
   if (locationInput) {
-    try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationInput)}`);
-      const data = await res.json();
-      if (data.length > 0) {
-        userCoords = { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
-      } else {
-        alert("Città non trovata! Riprova con un altro nome.");
-        return;
-      }
-    } catch (e) {
-      alert("Errore nel servizio di localizzazione.");
-      return;
+    const coords = await geocodeAddress(locationInput);
+    
+    if (coords && coords.lat !== null && coords.lon !== null) {
+      userCoords = { lat: coords.lat, lon: coords.lon };
+    } else {
+      alert("Città non trovata o servizio non disponibile! Riprova con un altro nome.");
+      return; // Interrompiamo la ricerca
     }
   }
 
@@ -90,35 +85,39 @@ async function applyMuseumFilters() {
       return false;
     }
     
-    // Se lo slider non è al massimo (50), filtriamo per prezzo massimo
     if (!freeEntryOnly && maxPrice < 50 && museumPrice > maxPrice) {
       return false;
     }
 
-    // Filtro Stile (il museo deve avere ALMENO UNO degli stili selezionati)
     if (selectedStyles.length > 0) {
       if (!museum.tags || !selectedStyles.some(style => museum.tags.includes(style))) return false;
     }
 
-    // Filtro Distanza
-    if (userCoords && maxDistance < 500) {
+    // Filtro Distanza (Migliorato)
+    if (userCoords) { 
       const mCoords = museumCoordsMap[museum._id];
       if (mCoords) {
         const km = getDistanceFromLatLonInKm(userCoords.lat, userCoords.lon, mCoords.lat, mCoords.lon);
-        if (km > maxDistance) return false;
+        
+        // Salviamo la distanza nel museo per usarla dopo per l'ordinamento
+        museum.tempDistance = km;
+
+        // Se lo slider NON è al massimo, filtriamo chi è troppo lontano
+        if (maxDistance < 500 && km > maxDistance) {
+          return false; 
+        }
       } else {
-        return false; // Se non abbiamo le coordinate del museo, lo escludiamo dalla ricerca per distanza
+        // Se l'utente cerca per zona, tagliamo fuori i musei senza coordinate
+        return false; 
       }
     }
 
-    // Filtro Servizi: il museo deve avere TUTTI i servizi selezionati dall'utente
     if (selectedServices.length > 0) {
       if (!museum.services || !selectedServices.every(service => museum.services.includes(service))) {
         return false;
       }
     }
 
-    // Filtro Giorni: il museo deve essere aperto nel giorno selezionato
     if (selectedDay && selectedDay !== "") {
       if (!museum.openingDays || !museum.openingDays.includes(selectedDay)) {
         return false;
@@ -127,6 +126,11 @@ async function applyMuseumFilters() {
 
     return true;
   });
+
+  // C. MAGIA: Se abbiamo le coordinate, ordiniamo i risultati dal più vicino!
+  if (userCoords) {
+    filtered.sort((a, b) => (a.tempDistance || 0) - (b.tempDistance || 0));
+  }
 
   renderMuseumsList(filtered);
 }
@@ -188,6 +192,7 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 }
 
 // Collega gli eventi 
+// Collega gli eventi 
 function attachMuseumFilterEvents() {
   // 3. Ricerca interna tra le checkbox degli stili
   const styleSearch = document.getElementById("filter-style-search");
@@ -200,9 +205,8 @@ function attachMuseumFilterEvents() {
         const label = item.querySelector('label').innerText.toLowerCase();
         
         if (query === "") {
-          item.style.display = "block"; // Se la barra è vuota, mostra tutti
+          item.style.display = "block";
         } else {
-          // Usa la fuzzySearch che abbiamo in search-bar.js
           const isMatch = fuzzySearch(query, label);
           item.style.display = isMatch ? "block" : "none";
         }
@@ -212,18 +216,24 @@ function attachMuseumFilterEvents() {
 
   const geoBtn = document.getElementById("btn-geolocate");
   if (geoBtn) {
-    geoBtn.addEventListener("click", () => {
+    geoBtn.addEventListener("click", (e) => {
+      // FONDAMENTALE: Evita che il bottone causi il ricaricamento della pagina!
+      e.preventDefault(); 
+      
       geoBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Ricerca...`;
       
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           userCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-          // Svuota l'input testuale se usa il GPS
+          
           const locInput = document.getElementById("filter-location-input");
-          if (locInput) locInput.value = "";
+          if (locInput) locInput.value = ""; // Svuota l'input di testo
           
           geoBtn.innerHTML = `<i class="bi bi-geo-alt-fill text-success me-1"></i> Posizione GPS Attiva`;
           geoBtn.classList.replace("btn-outline-info", "btn-outline-success");
+
+          // UX TOP: Applica i filtri automaticamente appena il GPS ti trova!
+          applyMuseumFilters();
         },
         (err) => {
           alert("Impossibile recuperare la posizione. Controlla i permessi del tuo browser.");

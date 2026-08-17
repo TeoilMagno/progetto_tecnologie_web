@@ -172,7 +172,7 @@ function renderMuseumDashboard(museumInfo) {
       <a href="/edit-museum?id=${museumInfo._id}" id="edit-museum-btn" class="btn-create-visit ms-2 d-none">
         <i class="bi bi-sliders me-1"></i> Modifica
       </a>
-      <button class="btn btn-outline-info" onclick="openBookshopManager('${museumInfo._id}')">        
+      <button id="edit-stock-btn" class="btn-create-visit ms-2 d-none" onclick="openBookshopManager('${museumInfo._id}')">        
         <i class="bi bi-shop me-1"></i> Gestisci Bookshop
       </button>
     `;
@@ -219,8 +219,12 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
   // se è admin, sblocca il bottone istantaneamente
   if (currentUser.role === 'admin') {
     const editBtn = document.getElementById("edit-museum-btn");
+    const editBshopBtn = document.getElementById("edit-stock-btn");
     if (editBtn) {
       editBtn.classList.remove("d-none");
+    }
+    if (editBshopBtn) {
+      editBshopBtn.classList.remove("d-none");
     }
     return; // Ci fermiamo qui, l'admin ha già i permessi
   }
@@ -241,8 +245,13 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
       // mostriamo il bottone
       if (isManaged) {
         const editBtn = document.getElementById("edit-museum-btn");
+        const editBshopBtn = document.getElementById("edit-stock-btn");
+
         if (editBtn) {
           editBtn.classList.remove("d-none");
+        }
+        if (editBshopBtn) {
+          editBshopBtn.classList.remove("d-none");
         }
       }
     }
