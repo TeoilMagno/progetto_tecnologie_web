@@ -2,6 +2,9 @@ const Museum = require("../models/museums");
 const Section = require("../models/sections");
 const Work = require("../models/works");
 const { User } = require("../models/users");
+const Visit = require("../models/visits");
+const Author = require("../models/author");
+const Style = require("../models/style");
 
 // utilizzato da admin
 exports.getAllMuseums = async () => {
@@ -13,7 +16,7 @@ exports.getAllMuseums = async () => {
 };
 
 exports.saveMuseum = async (museumData, userId) => {
-  const { name, address, contact_email, contact_phone, image, tags, sections } = museumData;
+  const { name, address, contact_email, contact_phone, image, tags, ticketPrice, sections, openingHours, openingDays, services, accessibility } = museumData;
 
   // validazione modello
   const museumToValidate = new Museum({
@@ -22,10 +25,20 @@ exports.saveMuseum = async (museumData, userId) => {
     contact_email,
     contact_phone,
     image,
-    tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags
+    tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags,
+    ticketPrice: typeof ticketPrice === 'number' ? ticketPrice : 0,
+    openingDays,
+    openingHours,
+    services,
+    accessibility
   });
   
   await museumToValidate.validate();
+
+  // conversione indirizzo a coordinate tramite OpenStreetMap
+  const coords = await geocodeAddress(museumData.address);
+  museumData.latitude = coords.lat;
+  museumData.longitude = coords.lon;
 
   // Validazione di tutte le sezioni e opere
   if (sections && sections.length > 0) {
@@ -55,6 +68,7 @@ exports.saveMuseum = async (museumData, userId) => {
   const museumResult = await museumToValidate.save();
   const museumId = museumResult._id;
   let savedSectionIds = [];
+  let allSavedWorkIds = [];
 
   if (sections && sections.length > 0) {
     for (const s of sections) {
@@ -68,6 +82,8 @@ exports.saveMuseum = async (museumData, userId) => {
         }));
         const savedWorks = await Work.insertMany(worksToInsert);
         workIds = savedWorks.map(w => w._id);
+
+        allSavedWorkIds.push(...workIds);
       }
 
       // Salviamo la sezione
@@ -87,6 +103,23 @@ exports.saveMuseum = async (museumData, userId) => {
     await museumResult.save();
   }
 
+  // creiamo la visita libera associata
+    const standardVisit = new Visit({
+      title: "Visita libera",
+      description: "Ingresso base con accesso a tutte le opere in esposizione.",
+      museumId: museumResult._id, // Colleghiamo al nuovo museo
+      creator: userId, 
+      price: museumResult.ticketPrice, 
+      isDraft: false, 
+      isPublic: true, // Visibile a tutti da subito
+      visitType: 'standard', 
+      targetAudience: ['all'], 
+      accessibility: museumResult.accessibility || ['none'], // Ereditiamo dal museo
+      works: allSavedWorkIds
+    });
+
+    await standardVisit.save();
+
   if (userId) {
     await User.findByIdAndUpdate(
       userId,
@@ -99,6 +132,23 @@ exports.saveMuseum = async (museumData, userId) => {
 };
 
 exports.updateMuseum = async (museumId, updateData) => {
+  const updatedMuseum = await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
+  // Se il curatore ha modificato il prezzo, sincronizziamo la visita libera
+  if (updateData.ticketPrice !== undefined) {
+    const Visit = require("../models/visits");
+    await Visit.findOneAndUpdate(
+      { museumId: museumId, visitType: 'standard' },
+      { price: updateData.ticketPrice }
+    );
+  }
+
+  // Se l'utente ha modificato l'indirizzo, ricalcoliamo le coordinate
+  if (updateData.address) {
+    const coords = await geocodeAddress(updateData.address);
+    updateData.latitude = coords.lat;
+    updateData.longitude = coords.lon;
+  }
+
   return await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
 };
 
@@ -131,6 +181,18 @@ exports.deleteMuseumById = async (museumId) => {
   await User.updateMany(
     { managed_museums: museumId },
     { $pull: { managed_museums: museumId } }
+  );
+
+  // rimuove museumId da tutte le descrizioni degli autori
+  await Author.updateMany(
+    { "data.museumId": museumId },
+    { $pull: { "data.$[].museumId": museumId } }
+  );
+
+  // rimuove museumId da tutte le descrizioni degli stili
+  await Style.updateMany(
+    { "data.museumId": museumId },
+    { $pull: { "data.$[].museumId": museumId } }
   );
 
   return await Museum.findByIdAndDelete(museumId);

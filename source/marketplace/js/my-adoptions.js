@@ -211,6 +211,14 @@ async function completeAdoption(adoptionId) {
 async function openNewAdoptionModal() {
   const sourceSelect = document.getElementById("source-museum-select");
   const targetSelect = document.getElementById("target-museum-select");
+  const roomSelect = document.getElementById("target-room-select");
+
+  if(roomSelect) {
+     roomSelect.innerHTML = `<option value="">Prima seleziona un tuo museo...</option>`;
+     roomSelect.disabled = true;
+  }
+
+  targetSelect.onchange = onTargetMuseumChange;
 
   // Popoliamo i musei
   try {
@@ -228,6 +236,50 @@ async function openNewAdoptionModal() {
 
     newAdoptionModalInstance.show();
   } catch (error) { console.error(error); }
+}
+
+async function onTargetMuseumChange() {
+  const toMuseumId = document.getElementById("target-museum-select").value;
+  const roomSelect = document.getElementById("target-room-select");
+
+  if (!toMuseumId) {
+    roomSelect.disabled = true;
+    roomSelect.innerHTML = `<option value="">Prima seleziona un tuo museo...</option>`;
+    return;
+  }
+
+  roomSelect.innerHTML = `<option value="">Caricamento stanze...</option>`;
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/museums/${toMuseumId}/sections`);
+    const sections = await res.json();
+
+    let optionsHtml = `<option value="">Seleziona la stanza in cui esporla...</option>`;
+    let hasRooms = false;
+
+    // Raggruppiamo le stanze per sezione usando <optgroup> (molto elegante visivamente)
+    sections.forEach(sec => {
+      if (sec.rooms && sec.rooms.length > 0) {
+        hasRooms = true;
+        optionsHtml += `<optgroup label="Sezione: ${sec.name}">`;
+        sec.rooms.forEach(room => {
+          optionsHtml += `<option value="${room._id}">${room.name}</option>`;
+        });
+        optionsHtml += `</optgroup>`;
+      }
+    });
+
+    if (!hasRooms) {
+      roomSelect.innerHTML = `<option value="">Nessuna stanza creata in questo museo!</option>`;
+      roomSelect.disabled = true;
+    } else {
+      roomSelect.innerHTML = optionsHtml;
+      roomSelect.disabled = false;
+    }
+  } catch (error) { 
+    console.error(error); 
+    roomSelect.innerHTML = `<option value="">Errore caricamento stanze</option>`;
+  }
 }
 
 async function onSourceMuseumChange() {
@@ -259,10 +311,11 @@ async function onSourceMuseumChange() {
 async function submitAdoptionRequest() {
   const workId = document.getElementById("work-select").value;
   const toMuseumId = document.getElementById("target-museum-select").value;
+  const targetRoomId = document.getElementById("target-room-select").value;
   const beginDate = document.getElementById("begin-date-input").value;
   const endDate = document.getElementById("end-date-input").value;
 
-  if (!workId || !toMuseumId || !beginDate || !endDate) {
+  if (!workId || !toMuseumId || !targetRoomId || !beginDate || !endDate) {
     alert("Tutti i campi sono obbligatori!");
     return;
   }
@@ -295,7 +348,7 @@ async function submitAdoptionRequest() {
     const res = await fetch(`${API_BASE_URL}/adoptions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ workId, toMuseumId, beginDate, endDate })
+      body: JSON.stringify({ workId, toMuseumId, targetRoomId, beginDate, endDate })
     });
 
     if (res.ok) {

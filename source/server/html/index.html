@@ -117,6 +117,81 @@
       </div>
     </div>
 
+    <!-- Modal Gestione Bookshop -->
+    <div class="modal fade" id="bookshopManagerModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content text-bg-dark">
+          <div class="modal-header border-secondary">
+            <h5 class="modal-title"><i class="bi bi-box-seam me-2"></i>Gestione Magazzino Bookshop</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            
+            <!-- Bottone per creare un nuovo articolo -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h6 class="mb-0 text-secondary">Articoli in vendita</h6>
+              <button class="btn btn-sm btn-success" onclick="toggleNewItemForm()">
+                <i class="bi bi-plus-lg"></i> Nuovo Articolo
+              </button>
+            </div>
+
+            <!-- Form nascosto per nuovo articolo -->
+            <div id="new-item-form-container" class="card bg-secondary text-white mb-4 d-none">
+              <div class="card-body">
+                <h6>Aggiungi Nuovo Articolo</h6>
+                <form id="new-item-form">
+                  <div class="row g-2">
+                    <!-- Prima riga: Nome, Prezzo, Quantità -->
+                    <div class="col-md-6">
+                      <input type="text" id="new-item-name" class="form-control form-control-sm text-bg-dark border-secondary" placeholder="Nome (es. Tazza Girasoli)" required>
+                    </div>
+                    <div class="col-md-3">
+                      <input type="number" step="0.01" id="new-item-price" class="form-control form-control-sm text-bg-dark border-secondary" placeholder="Prezzo (€)" required>
+                    </div>
+                    <div class="col-md-3">
+                      <input type="number" id="new-item-qty" class="form-control form-control-sm text-bg-dark border-secondary" placeholder="Q.tà iniziale" required>
+                    </div>
+
+                    <!-- Seconda riga: Immagine e Categoria -->
+                    <div class="col-md-8">
+                      <input type="text" id="new-item-image" class="form-control form-control-sm text-bg-dark border-secondary" placeholder="URL Immagine (obbligatoria)" required>
+                    </div>
+                    <div class="col-md-4">
+                      <select id="new-item-category" class="form-select form-select-sm text-bg-dark border-secondary" required>
+                        <option value="" disabled selected>Categoria...</option>
+                        <!-- CAMBIA QUESTI VALORI IN BASE AL TUO ENUM SU MONGOOSE -->
+                        <option value="book">Libri</option>
+                        <option value="gadget">Gadget</option>
+                        <option value="jewlwry">Gioielleria</option>
+                        <option value="stationery">Cancelleria</option>
+                        <option value="clothing">Abbigliamento</option>
+                        <option value="other">Altro</option>
+                      </select>
+                    </div>
+
+                    <!-- Terza riga: Descrizione e Bottone -->
+                    <div class="col-md-9">
+                      <input type="text" id="new-item-description" class="form-control form-control-sm text-bg-dark border-secondary" placeholder="Breve descrizione dell'articolo (obbligatoria)" required>
+                    </div>
+                    <div class="col-md-3">
+                      <button type="submit" class="btn btn-sm btn-primary w-100 h-100">Salva Articolo</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Lista dinamica degli articoli esistenti -->
+            <div id="bookshop-items-list" class="list-group list-group-flush">
+              <!-- Popolato via JS -->
+              <div class="text-center text-secondary my-3"><span class="spinner-border spinner-border-sm"></span> Caricamento...</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="offcanvas offcanvas-end glass-modal text-white" tabindex="-1" id="cartOffcanvas" style="background: rgba(20, 20, 30, 0.95);">
       <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
         <h5 class="offcanvas-title"><i class="bi bi-cart3 me-2"></i>Il tuo Carrello</h5>
@@ -136,6 +211,7 @@
 
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
       <script src="/marketplace/js/config.js"></script>
+      <script src="/marketplace/js/filters.js"></script>
       <script src="/marketplace/js/personal-area.js"></script>
       <script src="/marketplace/js/marketplace.js"></script>
       <script src="/marketplace/js/sidebar.js"></script>

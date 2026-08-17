@@ -14,9 +14,16 @@ const visitSchema = new mongoose.Schema({
     price: { type: Number, default: 0 },
     isDraft: { type: Boolean, default: true }, // Per gestire le bozze
     isPublic: { type: Boolean, default: false }, // true = pubblica sul marketplace, false = privata
-    duration: { type: Number }, // Durata stimata in minuti
+    duration: { type: Number, default: 0 }, // Durata stimata in minuti
     language: { type: String, default: 'it' },
     coverImage: { type: String }, // Immagine di anteprima per la card nel marketplace
+    
+    // registro della visita -> calcolato dinamicamente alla creazione e durante l'esecuzione della visita
+    preferredLength: {
+        type: String,
+        enum: ['short', 'medium', 'long', 'exhaustive'],
+        default: 'medium'
+    },
 
     // standard -> visita libera
     visitType: { 

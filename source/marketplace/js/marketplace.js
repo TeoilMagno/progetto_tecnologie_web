@@ -168,6 +168,9 @@ function renderMuseumDashboard(museumInfo) {
       <a href="/edit-museum?id=${museumInfo._id}" id="edit-museum-btn" class="btn-create-visit ms-2 d-none">
         <i class="bi bi-sliders me-1"></i> Modifica
       </a>
+      <button id="edit-stock-btn" class="btn-create-visit ms-2 d-none" onclick="openBookshopManager('${museumInfo._id}')">        
+        <i class="bi bi-shop me-1"></i> Gestisci Bookshop
+      </button>
     `;
     
     // controlliamo se l'utente puo' mostrare
@@ -212,8 +215,12 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
   // se è admin, sblocca il bottone istantaneamente
   if (currentUser.role === 'admin') {
     const editBtn = document.getElementById("edit-museum-btn");
+    const editBshopBtn = document.getElementById("edit-stock-btn");
     if (editBtn) {
       editBtn.classList.remove("d-none");
+    }
+    if (editBshopBtn) {
+      editBshopBtn.classList.remove("d-none");
     }
     return; // Ci fermiamo qui, l'admin ha già i permessi
   }
@@ -234,8 +241,13 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
       // mostriamo il bottone
       if (isManaged) {
         const editBtn = document.getElementById("edit-museum-btn");
+        const editBshopBtn = document.getElementById("edit-stock-btn");
+
         if (editBtn) {
           editBtn.classList.remove("d-none");
+        }
+        if (editBshopBtn) {
+          editBshopBtn.classList.remove("d-none");
         }
       }
     }
@@ -295,6 +307,7 @@ async function loadMuseumSubView(view, museumId) {
 
     if (view === 'works') {
       currentWorks = data;
+      initializeWorkFiltersData(data);
       renderWorksList(data); // Rendering per le Opere
     } else {
       currentItems = data; // Conserviamo gli articoli per l'editor
@@ -488,163 +501,132 @@ async function loadManagedMuseums() {
     container.innerHTML = `<div class="alert alert-danger">Errore nel caricamento dei tuoi musei.</div>`;
   }
 }
-// ==========================================
-// MODULO FILTRI AVANZATI (Booking Style)
-// ==========================================
+let currentBookshopMuseumId = null;
 
-let userCoords = null;
-let museumCoordsMap = {}; // Cache coordinate: { "museumId": {lat, lon} }
-
-// 1. Inizializza i dati in background appena i musei sono caricati
-async function initializeFiltersData(museums) {
-  const tagsSet = new Set();
-
-  for (const museum of museums) {
-    // A. Raccogliamo tutti gli stili/tag univoci
-    if (museum.tags) museum.tags.forEach(t => tagsSet.add(t));
-
-    // B. Geocoding dell'indirizzo (Simulato/Esterno) in background
-    if (museum.address && !museumCoordsMap[museum._id]) {
-      try {
-        const query = encodeURIComponent(museum.address);
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
-        const data = await res.json();
-        if (data.length > 0) {
-          museumCoordsMap[museum._id] = { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
-        }
-      } catch (e) { console.warn("Geocoding fallito per:", museum.address); }
-    }
-  }
-
-  // Stampiamo le opzioni nel menu a tendina in ordine alfabetico
-  renderStyleFilters(Array.from(tagsSet).sort());
+// Apre il modal e scarica gli items
+async function openBookshopManager(museumId) {
+  currentBookshopMuseumId = museumId;
+  const modal = new bootstrap.Modal(document.getElementById('bookshopManagerModal'));
+  modal.show();
+  
+  await loadBookshopItems();
 }
 
-// 2. Disegna le opzioni per gli stili nel tag <select>
-function renderStyleFilters(tags) {
-  const select = document.getElementById("filter-style-select");
-  if (!select) return;
-
-  // Mantiene l'opzione di default e aggiunge i tag
-  select.innerHTML = `<option value="">Tutti gli stili</option>` + 
-    tags.map(tag => `<option value="${tag}">${tag}</option>`).join('');
-}
-
-// 3. APPLICA I FILTRI (Resa Async per supportare la ricerca della città)
-async function applyMuseumFilters() {
-  if (currentMuseumId !== null) return; 
-
-  const locationInput = document.getElementById("filter-location-input")?.value.trim();
-  const maxDistance = parseInt(document.getElementById("distance-slider")?.value || 500);
-  const selectedStyle = document.getElementById("filter-style-select")?.value;
-
-  // A. Calcola le coordinate se l'utente ha scritto una città manualmente
-  if (locationInput) {
-    try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationInput)}`);
-      const data = await res.json();
-      if (data.length > 0) {
-        userCoords = { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
-      } else {
-        alert("Città non trovata! Riprova con un altro nome.");
-        return;
-      }
-    } catch (e) {
-      alert("Errore nel servizio di localizzazione.");
+// Scarica e renderizza la lista degli oggetti
+async function loadBookshopItems() {
+  const container = document.getElementById("bookshop-items-list");
+  container.innerHTML = `<div class="text-center text-secondary my-3"><span class="spinner-border spinner-border-sm"></span> Caricamento articoli...</div>`;
+  
+  try {
+    const res = await fetch(`${API_BASE_URL}/museums/${currentBookshopMuseumId}/items`);
+    const items = await res.json();
+    
+    if (items.length === 0) {
+      container.innerHTML = `<div class="alert alert-dark text-center">Nessun articolo presente nel bookshop.</div>`;
       return;
     }
+
+    container.innerHTML = items.map(item => `
+      <div class="list-group-item bg-dark border-secondary text-white d-flex justify-content-between align-items-center">
+        <div>
+          <h6 class="mb-0">${item.name || item.title}</h6>
+          <small class="text-secondary">Prezzo: €${item.price} | Categoria: ${item.category || 'N/D'} | In magazzino: <strong class="text-warning" id="stock-val-${item._id}">${item.quantity}</strong></small>
+        </div>
+        <div class="d-flex gap-2">
+          <input type="number" id="add-qty-${item._id}" class="form-control form-control-sm" style="width: 70px;" min="1" placeholder="+ Q.tà">
+          <button class="btn btn-sm btn-outline-success" onclick="addStock('${item._id}')">Aggiungi</button>
+        </div>
+      </div>
+    `).join('');
+  } catch (error) {
+    container.innerHTML = `<div class="alert alert-danger">Errore nel caricamento degli articoli.</div>`;
+  }
+}
+
+// Chiamata API per aggiungere pezzi in magazzino
+async function addStock(itemId) {
+  const input = document.getElementById(`add-qty-${itemId}`);
+  const quantityToAdd = input.value;
+
+  if (!quantityToAdd || quantityToAdd <= 0) {
+    alert("Inserisci una quantità valida da aggiungere.");
+    return;
   }
 
-  // B. Filtra l'elenco dei musei
-  let filtered = cachedMuseums.filter(museum => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/items/${itemId}/add-stock`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ quantityToAdd })
+    });
     
-    // Filtro Stile
-    if (selectedStyle && selectedStyle !== "") {
-      if (!museum.tags || !museum.tags.includes(selectedStyle)) return false;
+    if (res.ok) {
+      const data = await res.json();
+      // Aggiorniamo visivamente il numero senza ricaricare tutto
+      document.getElementById(`stock-val-${itemId}`).innerText = data.item.quantity;
+      input.value = ''; // Svuotiamo l'input
+    } else {
+      alert("Errore durante l'aggiunta dello stock.");
     }
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-    // Filtro Distanza
-    if (userCoords && maxDistance < 500) {
-      const mCoords = museumCoordsMap[museum._id];
-      if (mCoords) {
-        const km = getDistanceFromLatLonInKm(userCoords.lat, userCoords.lon, mCoords.lat, mCoords.lon);
-        if (km > maxDistance) return false;
-      } else {
-        return false; // Se non abbiamo le coordinate del museo, lo escludiamo dalla ricerca per distanza
-      }
+// --- Gestione Nuovo Articolo ---
+
+function toggleNewItemForm() {
+  document.getElementById("new-item-form-container").classList.toggle("d-none");
+}
+
+document.getElementById("new-item-form")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  
+  const newItemData = {
+    name: document.getElementById("new-item-name").value,
+    price: parseFloat(document.getElementById("new-item-price").value),
+    quantity: parseInt(document.getElementById("new-item-qty").value),
+    category: document.getElementById("new-item-category").value,
+    image: document.getElementById("new-item-image").value,       // <-- Nuovo campo catturato
+    description: document.getElementById("new-item-description").value // <-- Nuovo campo catturato
+  };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/museums/${currentBookshopMuseumId}/items`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newItemData)
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+
+      e.target.reset(); // Svuota il form
+      toggleNewItemForm(); // Nasconde il form
+      await loadBookshopItems(); // Ricarica la lista per mostrare il nuovo nato
+
+      fetch(`${API_BASE_URL}/ai/generate-item-targetage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemId: data.item._id, 
+          itemName: newItemData.name,
+          itemDescription: newItemData.description
+        })
+      })
+      .then(res => res.json())
+      .then(aiResponse => {
+        console.log("Risposta IA ricevuta:", aiResponse);
+        loadBookshopItems(); 
+      })
+      .catch(err => console.error("Errore di rete nella chiamata IA:", err));
+
+    } else {
+      // Estraiamo il messaggio di errore reale dal server (se Mongoose si arrabbia ancora)
+      const errorData = await res.json();
+      alert("Errore durante la creazione dell'articolo: " + (errorData.error || "Controlla i dati."));
     }
-
-    return true;
-  });
-
-  renderMuseumsList(filtered);
-}
-
-function resetFilters() {
-  userCoords = null;
-  const distSlider = document.getElementById("distance-slider");
-  if (distSlider) distSlider.value = 500;
-  
-  const distVal = document.getElementById("distance-value");
-  if (distVal) distVal.innerText = "500+ km";
-  
-  const locInput = document.getElementById("filter-location-input");
-  if (locInput) locInput.value = "";
-  
-  const styleSelect = document.getElementById("filter-style-select");
-  if (styleSelect) styleSelect.value = "";
-  
-  const geoBtn = document.getElementById("btn-geolocate");
-  if (geoBtn) {
-    geoBtn.innerHTML = `<i class="bi bi-geo-alt me-1"></i> Usa la mia posizione GPS`;
-    geoBtn.classList.replace("btn-outline-success", "btn-outline-info");
+  } catch (error) {
+    console.error(error);
   }
-
-  renderMuseumsList(cachedMuseums);
-}
-
-// Formula matematica (Haversine) per calcolare i km
-function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-  const R = 6371; 
-  const dLat = (lat2-lat1) * (Math.PI/180);
-  const dLon = (lon2-lon1) * (Math.PI/180);
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1*(Math.PI/180)) * Math.cos(lat2*(Math.PI/180)) * Math.sin(dLon/2) * Math.sin(dLon/2);
-  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
-}
-
-// Collega gli eventi 
-function attachMuseumFilterEvents() {
-  const geoBtn = document.getElementById("btn-geolocate");
-  if (geoBtn) {
-    geoBtn.addEventListener("click", () => {
-      geoBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Ricerca...`;
-      
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          userCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-          // Svuota l'input testuale se usa il GPS
-          const locInput = document.getElementById("filter-location-input");
-          if (locInput) locInput.value = "";
-          
-          geoBtn.innerHTML = `<i class="bi bi-geo-alt-fill text-success me-1"></i> Posizione GPS Attiva`;
-          geoBtn.classList.replace("btn-outline-info", "btn-outline-success");
-        },
-        (err) => {
-          alert("Impossibile recuperare la posizione. Controlla i permessi del tuo browser.");
-          geoBtn.innerHTML = `<i class="bi bi-geo-alt me-1"></i> Usa la mia posizione GPS`;
-        }
-      );
-    });
-  }
-
-  const distanceSlider = document.getElementById("distance-slider");
-  if (distanceSlider) {
-    distanceSlider.addEventListener("input", (e) => {
-      const val = parseInt(e.target.value);
-      const distanceLabel = document.getElementById("distance-value");
-      if (distanceLabel) {
-        distanceLabel.innerText = val >= 500 ? "500+ km" : `${val} km`;
-      }
-    });
-  }
-}
+});

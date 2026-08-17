@@ -66,6 +66,19 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
 
     // TODO: (Inserisci statusBadge in cima alla card e actionButton nel footer della card)
 
+    let missingWarning = "";
+    const hasMissingWorks = visit.works && visit.works.some(work => {
+      const adoption = work.adoptionId || work.adoption;
+      return adoption && (adoption.status === 'accepted' || adoption.status === 'active');
+    });
+
+    if (hasMissingWorks) {
+      missingWarning = `
+        <div class="mt-2 text-warning small fw-bold">
+          <i class="bi bi-exclamation-triangle-fill me-1"></i> Attenzione: contiene opere temporaneamente in prestito
+        </div>`;
+    }
+
     container.innerHTML += `
       <div class="col">
         <div class="card h-100 custom-card" onclick="window.location.href='/visit-details?id=${visit._id}'">
@@ -79,6 +92,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
               <i class="bi bi-bank me-1"></i> ${visit.museumId ? visit.museumId.name : "Senza museo"}
             </h6>
             <p class="card-text small text-secondary">${visit.description || ""}</p>
+            ${missingWarning}
             <div class="d-flex justify-content-between mb-2">
               ${actionButton}
             </div>

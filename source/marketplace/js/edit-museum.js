@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("sectionModal")) sectionModalInstance = new bootstrap.Modal(document.getElementById("sectionModal"));
   if (document.getElementById("roomModal")) roomModalInstance = new bootstrap.Modal(document.getElementById("roomModal"));
   if (document.getElementById("deleteMuseumModal")) deleteMuseumModalInstance = new bootstrap.Modal(document.getElementById("deleteMuseumModal"));
+  if (document.getElementById("authorDataModal")) authorDataModalInstance = new bootstrap.Modal(document.getElementById("authorDataModal"));
 
   await fetchCurrentUser();
 
@@ -358,19 +359,53 @@ async function openWorkModal(sectionId, roomId, workId = null) {
     document.getElementById("workModalLabel").innerText = "Modifica Opera";
     document.getElementById("save-work-btn").innerText = "Aggiorna Opera";
     document.getElementById("work-name").value = w.name || "";
-    document.getElementById("work-author").value = w.author || "";
+    
+    // Recupero Dati Autore
+    const authorId = w.author?._id || w.author || "";
+    const authorName = w.author?.name || (authorId ? "Autore Selezionato" : ""); 
+    document.getElementById("work-author-id").value = authorId;
+    document.getElementById("work-author-search").value = authorName; 
+    
+    // Recupero Dati Stile
+    const styleId = w.style?._id || w.style || "";
+    const styleName = w.style?.name || (styleId ? "Stile Selezionato" : ""); 
+    document.getElementById("work-style-id").value = styleId;
+    document.getElementById("work-style-search").value = styleName; 
+    
+    document.getElementById("work-technique").value = w.technique || "";
     document.getElementById("work-year").value = w.year || "";
-    document.getElementById("work-style").value = w.style || "";
     document.getElementById("work-image").value = w.image || "";
     
     let desc = "";
-    if (w.description && w.description.length > 0) desc = w.description[0].description || "";
+    if (w.description && w.description.simple && w.description.simple.medium) {
+      desc = w.description.simple.medium;
+    }
     document.getElementById("work-description").value = desc;
+
+    // --- LA MAGIA: Inneschiamo le card visive! ---
+    if (authorId) selectAuthor(authorId, authorName);
+    else document.getElementById("author-cards-container").style.display = "none";
+
+    if (styleId) selectStyle(styleId, styleName);
+    else document.getElementById("style-cards-container").style.display = "none";
+    // ---------------------------------------------
+
   } else {
     document.getElementById("workModalLabel").innerText = "Nuova Opera";
     document.getElementById("save-work-btn").innerText = "Crea Opera";
     document.getElementById("work-form").reset();
+    
+    // Pulizia campi nascosti
+    document.getElementById("work-author-id").value = "";
+    document.getElementById("work-style-id").value = "";
+    document.getElementById("work-author-data-id").value = "";
+    document.getElementById("work-style-data-id").value = "";
+    
+    // Nascondiamo gli slider delle card se l'opera è nuova
+    document.getElementById("author-cards-container").style.display = "none";
+    document.getElementById("style-cards-container").style.display = "none";
   }
+  
   workModalInstance.show();
 }
 
@@ -378,20 +413,47 @@ async function saveWorkFromModal() {
   const sectionId = document.getElementById("work-section-id").value;
   const roomId = document.getElementById("work-room-id").value;
   const workId = document.getElementById("work-id").value;
+  const workDesc = document.getElementById("work-description").value.trim();
   
   const workData = {
     name: document.getElementById("work-name").value.trim(),
-    author: document.getElementById("work-author").value.trim(),
+    author: document.getElementById("work-author-id").value.trim(),
+    technique: document.getElementById("work-technique").value.trim(),
     year: document.getElementById("work-year").value.trim(),
-    style: document.getElementById("work-style").value.trim(),
+    style: document.getElementById("work-style-id").value.trim() || undefined,
     image: document.getElementById("work-image").value.trim(),
-    description: [{ description: document.getElementById("work-description").value.trim(), tone: "normal", length: 10 }],
     roomId: roomId
   };
 
-  if (!workData.name) { alert("Il titolo dell'opera è obbligatorio!"); return; }
+  if (!workData.name || !workData.author || !workData.technique) { 
+    alert("Titolo, Autore (da selezionare dalla tendina) e Tecnica sono campi obbligatori!"); 
+    return; 
+  }
 
   try {
+    const authorId = workData.author;
+    const authorDataId = document.getElementById("work-author-data-id").value;
+    
+    // Se l'utente ha selezionato un autore e una specifica card, eseguiamo l'adozione al volo
+    if (authorId && authorDataId) {
+      await fetch(`${API_BASE_URL}/authors/${authorId}/data/${authorDataId}/adopt`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ museumId: currentMuseumId })
+      });
+    }
+
+    const styleId = workData.style; // (Preso dall'hidden input)
+    const styleDataId = document.getElementById("work-style-data-id").value;
+    
+    if (styleId && styleDataId) {
+      await fetch(`${API_BASE_URL}/styles/${styleId}/data/${styleDataId}/adopt`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ museumId: currentMuseumId })
+      });
+    }
+
     let res;
     if (workId) {
       res = await fetch(`${API_BASE_URL}/works/${workId}`, {
@@ -406,6 +468,25 @@ async function saveWorkFromModal() {
     }
 
     if (res.ok) {
+      // Estraiamo la risposta del server (che contiene i dati salvati dal DB)
+      const responseData = await res.json();
+      
+      // 2. Troviamo l'ID finale: 
+      // Se avevamo workId usiamo quello (modifica). Se non lo avevamo, lo peschiamo dalla risposta (nuova creazione).
+      const finalWorkId = workId || responseData.work?._id;
+
+      // 3. ORA lanciamo l'IA in background usando l'ID corretto e sicuro
+      console.log(`Opera salvata con ID: ${finalWorkId}. Inizio generazione IA in background...`);
+      fetch(`${API_BASE_URL}/ai/generate-work-desc`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workId: finalWorkId, 
+          workName: workData.name,
+          userDescription: workDesc
+        })
+      });
+
       workModalInstance.hide();
       
       // Ricarichiamo SOLTANTO le opere di questa sezione specifica per aggiornare il DOM localmente
@@ -422,6 +503,9 @@ async function saveWorkFromModal() {
           collapseBody.innerHTML = tempDiv.querySelector('.accordion-body').innerHTML;
         }
       }
+    } else {
+      const errorData = await res.json();
+      alert("Errore salvataggio: " + (errorData.error || "Riprova."));
     }
   } catch (error) { console.error(error); }
 }
@@ -508,7 +592,41 @@ function checkDeleteConfirmationText(e) {
 
 // Conferma eliminazione definitiva museo
 async function confirmDeleteMuseum() {
+  const deleteBtn = document.getElementById("confirm-delete-museum-btn");
+  if (deleteBtn) {
+    deleteBtn.innerText = "Controllo in corso...";
+    deleteBtn.disabled = true;
+  }
+  
   try {
+    const adoptionsRes = await fetch(`${API_BASE_URL}/my-adoptions`);
+    if (adoptionsRes.ok) {
+      const allAdoptions = await adoptionsRes.json();
+      
+      // Filtriamo le adozioni ATTIVE in cui questo museo è il DESTINATARIO (ha ricevuto l'opera)
+      const activeImports = allAdoptions.filter(a => 
+        a.status === 'active' && 
+        (a.toMuseumId?._id === currentMuseumId || a.toMuseumId === currentMuseumId)
+      );
+
+      if (activeImports.length > 0) {
+        const wantsToReturn = confirm(`⚠️ Attenzione! Hai ${activeImports.length} opere in prestito da altri musei.\n\nVuoi restituirle tutte automaticamente prima di eliminare il museo? (Se annulli, l'eliminazione verrà interrotta).`);
+        
+        if (!wantsToReturn) {
+          deleteMuseumModalInstance.hide();
+          return; // Interrompiamo tutto
+        }
+
+        // Restituiamo le opere una per una
+        for (let ad of activeImports) {
+          await fetch(`${API_BASE_URL}/adoptions/${ad._id}/complete`, { 
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+          });
+        }
+      }
+    }
+
     const res = await fetch(`${API_BASE_URL}/museums/${currentMuseumId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -523,6 +641,493 @@ async function confirmDeleteMuseum() {
       alert("Errore durante l'eliminazione del museo.");
     }
   } catch (error) {
+    console.error(error);
+  }
+}
+
+// ==========================================
+// MODULO RICERCA AUTORI (Fuzzy Search & Debounce)
+// ==========================================
+
+let authorSearchTimeout = null;
+
+// Ascoltatore per la barra di ricerca dell'autore
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("work-author-search");
+  
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const query = e.target.value.trim();
+      
+      // Se l'utente cancella tutto, nascondiamo la tendina e svuotiamo le card
+      if (query.length === 0) {
+        hideAuthorDropdown();
+        document.getElementById("author-cards-container").style.display = "none";
+        document.getElementById("work-author-id").value = "";
+        return;
+      }
+
+      // DEBOUNCING: Cancella il timer precedente se l'utente sta ancora digitando
+      clearTimeout(authorSearchTimeout);
+      
+      // Imposta un nuovo timer di 300 millisecondi
+      authorSearchTimeout = setTimeout(() => {
+        fetchAuthors(query);
+      }, 300);
+    });
+  }
+});
+
+// Chiamata API al Backend
+async function fetchAuthors(query) {
+  const resultsContainer = document.getElementById("author-search-results");
+  
+  try {
+    const res = await fetch(`/api/authors/search?q=${encodeURIComponent(query)}`);
+    if (!res.ok) throw new Error("Errore nella ricerca");
+    
+    const authors = await res.json();
+    renderAuthorDropdown(authors, query);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Stampa i risultati nella tendina
+function renderAuthorDropdown(authors, query) {
+  const resultsContainer = document.getElementById("author-search-results");
+  resultsContainer.innerHTML = "";
+  
+  if (authors.length === 0) {
+    resultsContainer.innerHTML = `
+      <li class="px-3 py-2 small text-secondary">Nessun autore trovato.</li>
+      <li><hr class="dropdown-divider border-secondary border-opacity-25"></li>
+      <li><button type="button" class="dropdown-item text-info small" onclick="createNewAuthor('${query.replace(/'/g, "\\'")}')"><i class="bi bi-plus-circle me-1"></i> Crea nuovo autore: "${query}"</button></li>
+    `;
+  } else {
+    authors.forEach(author => {
+      const safeId = author._id;
+      const safeName = author.name.replace(/'/g, "\\'");
+      resultsContainer.innerHTML += `
+        <li><button type="button" class="dropdown-item text-white small" onclick="selectAuthor('${safeId}', '${safeName}')">${author.name}</button></li>
+      `;
+    });
+  }
+  
+  resultsContainer.style.display = "block";
+}
+
+function hideAuthorDropdown() {
+  document.getElementById("author-search-results").style.display = "none";
+}
+
+// Quando il curatore clicca su un autore dalla tendina
+async function selectAuthor(authorId, authorName) {
+  document.getElementById("work-author-search").value = authorName;
+  document.getElementById("work-author-id").value = authorId;
+  hideAuthorDropdown();
+  
+  const container = document.getElementById("author-cards-container");
+  const slider = document.getElementById("author-slider");
+  container.style.display = "block";
+  slider.innerHTML = `<div class="spinner-border spinner-border-sm text-info m-3"></div>`;
+  
+  try {
+    const res = await fetch(`/api/authors/${authorId}`);
+    if (!res.ok) throw new Error("Errore recupero dati autore");
+    const author = await res.json();
+
+    document.getElementById("work-author-search").value = author.name;
+    
+    slider.innerHTML = "";
+    
+    // Cerchiamo se il nostro museo ha già una descrizione pre-selezionata
+    let preselectedDataId = "";
+    if (author.data && author.data.length > 0) {
+      author.data.forEach(d => {
+        if (d.museumId && d.museumId.some(m => (m._id || m).toString() === currentMuseumId)) {
+          preselectedDataId = d._id;
+        }
+      });
+
+      // Impostiamo il campo nascosto con l'ID della descrizione già in uso (se esiste)
+      document.getElementById("work-author-data-id").value = preselectedDataId;
+
+      author.data.forEach((d) => {
+        const museumName = d.museumId && d.museumId.length > 0 && d.museumId[0].name ? d.museumId[0].name : "Altro Museo";
+        const isSelected = preselectedDataId === d._id;
+        
+        // Classi dinamiche per l'highlight
+        const borderClass = isSelected ? "border-success bg-success bg-opacity-25" : "border-secondary bg-dark bg-opacity-50";
+        const checkIcon = isSelected ? `<i class="bi bi-check-circle-fill text-success position-absolute top-0 end-0 m-2 fs-5 author-check-icon"></i>` : "";
+
+        slider.innerHTML += `
+          <div class="card ${borderClass} author-card-item flex-shrink-0 position-relative" 
+               style="width: 280px; scroll-snap-align: start; cursor: pointer; transition: all 0.2s;" 
+               id="author-card-${d._id}"
+               onclick="highlightAuthorCard('${d._id}')">
+            ${checkIcon}
+            <div class="card-body p-3 d-flex flex-column">
+              <span class="badge bg-secondary mb-2 bg-opacity-50 border border-secondary text-light w-auto align-self-start" style="font-size: 0.65rem;">
+                <i class="bi bi-bank me-1"></i> ${museumName}
+              </span>
+              <p class="small mb-1 text-info fw-bold">${d.bd || 'Date non specificate'}</p>
+              <p class="small mb-2 text-white-50 text-truncate" title="${d.studies || ''}"><i class="bi bi-mortarboard me-1"></i>${d.studies || 'Formazione non specificata'}</p>
+              <p class="small text-white mb-0" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
+                ${d.bio || 'Nessuna biografia inserita.'}
+              </p>
+            </div>
+          </div>
+        `;
+      });
+    } else {
+      slider.innerHTML = `<p class="small text-secondary m-2">Nessuna biografia presente.</p>`;
+    }
+  } catch (error) {
+    console.error(error);
+    slider.innerHTML = `<p class="small text-danger m-2">Impossibile caricare le biografie.</p>`;
+  }
+}
+
+// Gestisce il click visivo sulla card dell'autore
+function highlightAuthorCard(dataId) {
+  // 1. Salviamo la scelta nel campo nascosto
+  document.getElementById("work-author-data-id").value = dataId;
+  
+  // 2. Resettiamo tutte le card togliendo il verde
+  document.querySelectorAll('.author-card-item').forEach(card => {
+    card.classList.remove('border-success', 'bg-success', 'bg-opacity-25');
+    card.classList.add('border-secondary', 'bg-dark', 'bg-opacity-50');
+    const icon = card.querySelector('.author-check-icon');
+    if (icon) icon.remove();
+  });
+
+  // 3. Illuminiamo solo la card cliccata
+  const selectedCard = document.getElementById(`author-card-${dataId}`);
+  if (selectedCard) {
+    selectedCard.classList.remove('border-secondary', 'bg-dark', 'bg-opacity-50');
+    selectedCard.classList.add('border-success', 'bg-success', 'bg-opacity-25');
+    selectedCard.insertAdjacentHTML('afterbegin', `<i class="bi bi-check-circle-fill text-success position-absolute top-0 end-0 m-2 fs-5 author-check-icon"></i>`);
+  }
+}
+
+async function adoptAuthorCard(authorId, dataId) {
+  try {
+    const res = await fetch(`/api/authors/${authorId}/data/${dataId}/adopt`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ museumId: currentMuseumId })
+    });
+    
+    if (!res.ok) throw new Error("Errore durante l'adozione della biografia");
+    
+    const updatedAuthor = await res.json();
+    // Ricarichiamo le card per far apparire il badge verde!
+    selectAuthor(updatedAuthor._id, updatedAuthor.name); 
+  } catch (error) {
+    alert(error.message);
+    console.error(error);
+  }
+}
+
+// ==========================================
+// CREAZIONE E SALVATAGGIO AUTORE
+// ==========================================
+
+// Innescata dal bottone "Crea nuovo autore" nella tendina
+function createNewAuthor(authorName) {
+  hideAuthorDropdown();
+  document.getElementById("work-author-search").value = authorName;
+  document.getElementById("work-author-id").value = ""; // ID vuoto = nuovo autore
+  
+  // Impostiamo il campo hidden per ricordarci il nome
+  document.getElementById("new-author-name-input").value = authorName;
+  
+  document.getElementById("authorDataModalLabel").innerText = `Crea Autore: ${authorName}`;
+  document.getElementById("author-data-form").reset();
+  authorDataModalInstance.show();
+}
+
+// Innescata dal bottone "Scrivi la tua" sopra lo slider
+function openNewAuthorDataModal() {
+  document.getElementById("new-author-name-input").value = ""; // Nome vuoto = autore esistente
+  document.getElementById("authorDataModalLabel").innerText = "Aggiungi la tua Biografia";
+  document.getElementById("author-data-form").reset();
+  authorDataModalInstance.show();
+}
+
+// Salva i dati (capisce da sola se fare POST o PUT)
+async function saveAuthorData() {
+  const newName = document.getElementById("new-author-name-input").value.trim();
+  const existingAuthorId = document.getElementById("work-author-id").value;
+  
+  const payloadData = {
+    museumId: currentMuseumId,
+    bd: document.getElementById("author-bd").value.trim(),
+    studies: document.getElementById("author-studies").value.trim(),
+    bio: document.getElementById("author-bio").value.trim()
+  };
+
+  try {
+    let res;
+    let finalAuthor; // Usiamo una variabile unificata per la risposta
+
+    if (newName && !existingAuthorId) {
+      // Caso creazione nuovo autore
+      res = await fetch(`${API_BASE_URL}/authors`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName, data: payloadData })
+      });
+      if (!res.ok) throw new Error("Errore durante la creazione dell'autore");
+      finalAuthor = await res.json();
+      
+    } else if (existingAuthorId) {
+      // Caso modifica autore esistente
+      res = await fetch(`${API_BASE_URL}/authors/${existingAuthorId}/data`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payloadData)
+      });
+      if (!res.ok) throw new Error("Errore durante l'aggiornamento dell'autore");
+      finalAuthor = await res.json();
+    }
+
+    // Se tutto e' andato bene generiamo le descrizioni con l'ia
+    if (finalAuthor) {
+      console.log("Inizio generazione IA per l'autore in background...");
+      fetch(`${API_BASE_URL}/ai/generate-author-desc`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          authorId: finalAuthor._id, 
+          museumId: currentMuseumId,
+          authorName: finalAuthor.name || newName,
+          userDescription: payloadData.bio // Usiamo il testo del form come contesto!
+        })
+      });
+
+      // Selezioniamo automaticamente il nuovo autore e ricarichiamo le card
+      selectAuthor(finalAuthor._id, finalAuthor.name || newName);
+      authorDataModalInstance.hide();
+    }
+  } catch (error) {
+    alert(error.message);
+    console.error(error);
+  }
+}
+
+// ==========================================
+// MODULO RICERCA STILI (Fuzzy Search)
+// ==========================================
+
+let styleSearchTimeout = null;
+let styleDataModalInstance = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (document.getElementById("styleDataModal")) styleDataModalInstance = new bootstrap.Modal(document.getElementById("styleDataModal"));
+
+  const styleInput = document.getElementById("work-style-search");
+  if (styleInput) {
+    styleInput.addEventListener("input", (e) => {
+      const query = e.target.value.trim();
+      if (query.length === 0) {
+        hideStyleDropdown();
+        document.getElementById("style-cards-container").style.display = "none";
+        document.getElementById("work-style-id").value = "";
+        return;
+      }
+      clearTimeout(styleSearchTimeout);
+      styleSearchTimeout = setTimeout(() => { fetchStyles(query); }, 300);
+    });
+  }
+});
+
+async function fetchStyles(query) {
+  try {
+    const res = await fetch(`/api/styles/search?q=${encodeURIComponent(query)}`);
+    if (!res.ok) throw new Error("Errore ricerca stile");
+    const styles = await res.json();
+    renderStyleDropdown(styles, query);
+  } catch (error) { console.error(error); }
+}
+
+function renderStyleDropdown(styles, query) {
+  const container = document.getElementById("style-search-results");
+  container.innerHTML = "";
+  if (styles.length === 0) {
+    container.innerHTML = `
+      <li class="px-3 py-2 small text-secondary">Nessuno stile trovato.</li>
+      <li><hr class="dropdown-divider border-secondary border-opacity-25"></li>
+      <li><button type="button" class="dropdown-item text-info small" onclick="createNewStyle('${query.replace(/'/g, "\\'")}')"><i class="bi bi-plus-circle me-1"></i> Crea nuovo: "${query}"</button></li>
+    `;
+  } else {
+    styles.forEach(s => {
+      const safeName = s.name.replace(/'/g, "\\'");
+      container.innerHTML += `<li><button type="button" class="dropdown-item text-white small" onclick="selectStyle('${s._id}', '${safeName}')">${s.name}</button></li>`;
+    });
+  }
+  container.style.display = "block";
+}
+
+function hideStyleDropdown() { document.getElementById("style-search-results").style.display = "none"; }
+
+async function selectStyle(styleId, styleName) {
+  document.getElementById("work-style-search").value = styleName;
+  document.getElementById("work-style-id").value = styleId;
+  hideStyleDropdown();
+  
+  const container = document.getElementById("style-cards-container");
+  const slider = document.getElementById("style-slider");
+  container.style.display = "block";
+  slider.innerHTML = `<div class="spinner-border spinner-border-sm text-info m-3"></div>`;
+  
+  try {
+    const res = await fetch(`/api/styles/${styleId}`);
+    if (!res.ok) throw new Error("Errore recupero dati");
+    const style = await res.json();
+
+    document.getElementById("work-style-search").value = style.name;
+    
+    slider.innerHTML = "";
+
+    // Troviamo se c'è una definizione già selezionata dal nostro museo
+    let preselectedDataId = "";
+    if (style.data && style.data.length > 0) {
+      style.data.forEach(d => {
+        if (d.museumId && d.museumId.some(m => (m._id || m).toString() === currentMuseumId)) {
+          preselectedDataId = d._id;
+        }
+      });
+
+      // Salviamo l'id nel form nascosto (che avevamo inserito nell'html prima)
+      document.getElementById("work-style-data-id").value = preselectedDataId;
+
+      style.data.forEach((d) => {
+        const museumName = d.museumId && d.museumId.length > 0 && d.museumId[0].name ? d.museumId[0].name : "Altro Museo";
+        const isSelected = preselectedDataId === d._id;
+        
+        const borderClass = isSelected ? "border-success bg-success bg-opacity-25" : "border-secondary bg-dark bg-opacity-50";
+        const checkIcon = isSelected ? `<i class="bi bi-check-circle-fill text-success position-absolute top-0 end-0 m-2 fs-5 style-check-icon"></i>` : "";
+
+        slider.innerHTML += `
+          <div class="card ${borderClass} style-card-item flex-shrink-0 position-relative" 
+               style="width: 280px; scroll-snap-align: start; cursor: pointer; transition: all 0.2s;" 
+               id="style-card-${d._id}"
+               onclick="highlightStyleCard('${d._id}')">
+            ${checkIcon}
+            <div class="card-body p-3 d-flex flex-column">
+              <span class="badge bg-secondary mb-2 bg-opacity-50 border border-secondary text-light w-auto align-self-start" style="font-size: 0.65rem;">
+                <i class="bi bi-bank me-1"></i> ${museumName}
+              </span>
+              <p class="small text-white mb-0" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
+                ${d.description || 'Nessuna descrizione.'}
+              </p>
+            </div>
+          </div>
+        `;
+      });
+    } else {
+      slider.innerHTML = `<p class="small text-secondary m-2">Nessuna definizione presente.</p>`;
+    }
+  } catch (error) {
+    slider.innerHTML = `<p class="small text-danger m-2">Errore caricamento.</p>`;
+  }
+}
+
+// Gestisce il click visivo sulla card dello stile
+function highlightStyleCard(dataId) {
+  document.getElementById("work-style-data-id").value = dataId;
+  
+  document.querySelectorAll('.style-card-item').forEach(card => {
+    card.classList.remove('border-success', 'bg-success', 'bg-opacity-25');
+    card.classList.add('border-secondary', 'bg-dark', 'bg-opacity-50');
+    const icon = card.querySelector('.style-check-icon');
+    if (icon) icon.remove();
+  });
+
+  const selectedCard = document.getElementById(`style-card-${dataId}`);
+  if (selectedCard) {
+    selectedCard.classList.remove('border-secondary', 'bg-dark', 'bg-opacity-50');
+    selectedCard.classList.add('border-success', 'bg-success', 'bg-opacity-25');
+    selectedCard.insertAdjacentHTML('afterbegin', `<i class="bi bi-check-circle-fill text-success position-absolute top-0 end-0 m-2 fs-5 style-check-icon"></i>`);
+  }
+}
+
+function createNewStyle(styleName) {
+  hideStyleDropdown();
+  document.getElementById("work-style-search").value = styleName;
+  document.getElementById("work-style-id").value = ""; 
+  document.getElementById("new-style-name-input").value = styleName;
+  document.getElementById("styleDataModalLabel").innerText = `Crea Stile: ${styleName}`;
+  document.getElementById("style-data-form").reset();
+  styleDataModalInstance.show();
+}
+
+function openNewStyleDataModal() {
+  document.getElementById("new-style-name-input").value = ""; 
+  document.getElementById("styleDataModalLabel").innerText = "Aggiungi la tua Definizione";
+  document.getElementById("style-data-form").reset();
+  styleDataModalInstance.show();
+}
+
+async function saveStyleData() {
+  const newName = document.getElementById("new-style-name-input").value.trim();
+  const existingStyleId = document.getElementById("work-style-id").value;
+  
+  const payloadData = {
+    museumId: currentMuseumId,
+    description: document.getElementById("style-description").value.trim() 
+  };
+
+  try {
+    let res;
+    let finalStyle; 
+
+    if (newName && !existingStyleId) {
+      // Creazione nuovo stile
+      res = await fetch(`${API_BASE_URL}/styles`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName, data: payloadData })
+      });
+      if (!res.ok) throw new Error("Errore durante la creazione dello stile");
+      finalStyle = await res.json();
+      
+    } else if (existingStyleId) {
+      // Modifica stile esistente
+      res = await fetch(`${API_BASE_URL}/styles/${existingStyleId}/data`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payloadData)
+      });
+      if (!res.ok) throw new Error("Errore durante l'aggiornamento dello stile");
+      finalStyle = await res.json();
+    }
+
+    // Generazione testo con ia
+    if (finalStyle) {
+      console.log("Inizio generazione IA per lo stile in background...");
+      fetch(`${API_BASE_URL}/ai/generate-style-desc`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          styleId: finalStyle._id, 
+          museumId: currentMuseumId,
+          styleName: finalStyle.name || newName,
+          userDescription: payloadData.description
+        })
+      });
+
+      selectStyle(finalStyle._id, finalStyle.name || newName);
+      
+      // Ipotetica istanza della modale
+      if (typeof styleDataModalInstance !== 'undefined') {
+        styleDataModalInstance.hide();
+      }
+    }
+  } catch (error) {
+    alert(error.message);
     console.error(error);
   }
 }

@@ -14,6 +14,8 @@ const Work = require("../models/works");
 const { Section } = require("../models/sections");
 const Museum = require("../models/museums");
 const Adoption = require("../models/adoptions");
+const Item = require("../models/items");
+const Visit = require("../models/visits");
 
 // Controllers
 const museumController = require("../controllers/museums");
@@ -23,6 +25,9 @@ const sectionController = require("../controllers/sections");
 const visitController = require("../controllers/visits");
 const orderController = require("../controllers/orders");
 const adoptionController = require("../controllers/adoptions");
+const authorController = require("../controllers/authors");
+const styleController = require("../controllers/styles");
+const aiController = require("../controllers/ai");
 
 // Middleware
 const auth = require("../middleware/roles");
@@ -120,6 +125,51 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Errore salvataggio" });
+  }
+});
+
+// 1. Aggiungi quantità allo stock di un item esistente
+apiRouter.put("/items/:id/add-stock", auth.isCurator, async (req, res) => {
+  try {
+    const { quantityToAdd } = req.body;
+    
+    if (!quantityToAdd || isNaN(quantityToAdd) || quantityToAdd <= 0) {
+      return res.status(400).json({ error: "Quantità non valida" });
+    }
+
+    // Usiamo $inc per sommare la quantità in modo sicuro (evita problemi di concorrenza)
+    const updatedItem = await Item.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { quantity: parseInt(quantityToAdd) } },
+      { new: true }
+    );
+
+    if (!updatedItem) return res.status(404).json({ error: "Articolo non trovato" });
+
+    res.json({ message: "Stock aggiornato con successo", item: updatedItem });
+  } catch (error) {
+    console.error("Errore aggiornamento stock:", error);
+    res.status(500).json({ error: "Errore durante l'aggiornamento del magazzino" });
+  }
+});
+
+// 2. Crea un nuovo articolo nel bookshop del museo
+apiRouter.post("/museums/:museumId/items", auth.isCurator, async (req, res) => {
+  try {
+    const { museumId } = req.params;
+    const itemData = req.body;
+
+    const newItem = new Item({
+      ...itemData,
+      museumId: museumId, // Lo agganciamo forzatamente al museo corrente
+      quantity: itemData.quantity || 1
+    });
+
+    await newItem.save();
+    res.status(201).json({ message: "Articolo creato con successo!", item: newItem });
+  } catch (error) {
+    console.error("Errore creazione articolo:", error);
+    res.status(500).json({ error: "Errore durante la creazione dell'articolo" });
   }
 });
 
@@ -306,9 +356,19 @@ apiRouter.post("/add-work", [auth.isCurator, auth.isMuseumOwner], async (req, re
     const newWork = new Work({
       ...work,
       museumId: museumId, // Evitiamo che l'utente si inventi cose
-      roomId: work.roomId || null // Valorizza il campo roomId sul DB!
+      roomId: work.roomId || null, // Valorizza il campo roomId sul DB!
     });
     const savedWork = await newWork.save();
+
+    await Visit.findOneAndUpdate(
+      { 
+        museumId: savedWork.museumId, 
+        visitType: 'standard' // Troviamo la visita libera di QUESTO museo
+      },
+      { 
+        $push: { works: savedWork._id } // Inseriamo l'ID della nuova opera
+      }
+    );
 
     // Collega l'ID dell'opera alla sezione tramite il controller
     await sectionController.addWorkToSection(sectionId, savedWork._id);
@@ -508,6 +568,30 @@ apiRouter.delete("/visits/:id", auth.isLoggedIn, async (req, res) => {
   }
 });
 
+// Calcola la durata stimata della visita 
+apiRouter.post("/visits/estimate-duration", async (req, res) => {
+  try {
+    const { workIds, preferredLength } = req.body;
+    const duration = await visitController.estimateDuration(workIds, preferredLength);
+    res.json({ duration });
+  } catch (error) {
+    console.error("CRASH DURANTE IL CALCOLO STIMA:", error);
+    res.status(500).json({ error: error.message, stack: error.stack });
+  }
+});
+
+// Calcola la lunghezza/tono ideale in base al tempo a disposizione
+apiRouter.post("/visits/recommend-length", async (req, res) => {
+  try {
+    const { workIds, availableMinutes } = req.body;
+    const recommendedLength = await visitController.recommendLength(workIds, parseInt(availableMinutes));
+    res.json({ recommendedLength });
+  } catch (error) {
+    console.error("Errore nel calcolo del ritmo raccomandato:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ----------------------- ordini & checkout ----------------------------
 
 // Riceve il carrello dal frontend e processa l'acquisto
@@ -538,7 +622,6 @@ apiRouter.get("/my-orders", auth.isLoggedIn, async (req, res) => {
 
 // ----------------------- adoptions ----------------------------
 
-// TODO: controllare sicurezza -> auth.isMuseumOwner
 // Crea richiesta di adozione (status: pending)
 apiRouter.post("/adoptions", auth.isCurator, async (req, res) => {
   try {
@@ -634,5 +717,173 @@ apiRouter.put("/admin/curators/:id/respond", auth.isAdmin, async (req, res) => {
     res.status(500).json({ error: "Errore durante l'aggiornamento del ruolo" });
   }
 });
+
+// ----------------------- authors ----------------------------
+
+// Cerca autori (GET /api/authors/search?q=leonardo)
+apiRouter.get("/authors/search", auth.isCurator, async (req, res) => {
+  try {
+    const authors = await authorController.searchAuthors(req.query.q);
+    res.json(authors);
+  } catch (error) {
+    console.error("Errore ricerca autori:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Ottieni i dettagli completi di un autore e delle sue descrizioni
+apiRouter.get("/authors/:id", auth.isCurator, async (req, res) => {
+  try {
+    const author = await authorController.getAuthorById(req.params.id);
+    res.json(author);
+  } catch (error) {
+    console.error("Errore recupero autore:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Crea un nuovo autore
+apiRouter.post("/authors", auth.isCurator, async (req, res) => {
+  try {
+    const savedAuthor = await authorController.createAuthor(req.body);
+    res.status(201).json(savedAuthor);
+  } catch (error) {
+    console.error("Errore creazione autore:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Aggiungi una nuova scheda descrittiva a un autore esistente
+apiRouter.put("/authors/:id/data", auth.isCurator, async (req, res) => {
+  try {
+    const updatedAuthor = await authorController.addAuthorData(req.params.id, req.body);
+    res.json(updatedAuthor);
+  } catch (error) {
+    console.error("Errore aggiornamento autore:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Usa una descrizione dell'autore esistente
+apiRouter.put("/authors/:id/data/:dataId/adopt", auth.isCurator, async (req, res) => {
+  try {
+    const updatedAuthor = await authorController.adoptAuthorData(req.params.id, req.params.dataId, req.body.museumId);
+    res.json(updatedAuthor);
+  } catch (error) {
+    console.error("Errore adozione card autore:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// ----------------------- styles ----------------------------
+
+apiRouter.get("/styles/search", auth.isCurator, async (req, res) => {
+  try {
+    const styles = await styleController.searchStyles(req.query.q);
+    res.json(styles);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+apiRouter.get("/styles/:id", auth.isCurator, async (req, res) => {
+  try {
+    const style = await styleController.getStyleById(req.params.id);
+    res.json(style);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+apiRouter.post("/styles", auth.isCurator, async (req, res) => {
+  try {
+    const savedStyle = await styleController.createStyle(req.body);
+    res.status(201).json(savedStyle);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+apiRouter.put("/styles/:id/data", auth.isCurator, async (req, res) => {
+  try {
+    const updatedStyle = await styleController.addStyleData(req.params.id, req.body);
+    res.json(updatedStyle);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// Usa una definizione di stile esistente
+apiRouter.put("/styles/:id/data/:dataId/adopt", auth.isCurator, async (req, res) => {
+  try {
+    const updatedStyle = await styleController.adoptStyleData(req.params.id, req.params.dataId, req.body.museumId);
+    res.json(updatedStyle);
+  } catch (error) {
+    console.error("Errore adozione stile:", error);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+});
+
+// ----------------------- ai ----------------------------
+
+// Rotta per generare testi con l'IA (protetta per i soli curatori/admin)
+apiRouter.post("/ai/generate", auth.isCurator, async (req, res) => {
+  try {
+    // Il frontend ci manderà il prompt da eseguire
+    const { prompt } = req.body;
+    
+    if (!prompt) {
+      return res.status(400).json({ error: "Il prompt è obbligatorio." });
+    }
+
+    const generatedText = await aiController.generateContent(prompt);
+    
+    res.json({ text: generatedText });
+  } catch (error) {
+    res.status(500).json({ error: "Errore durante la generazione del testo con l'IA." });
+  }
+});
+
+// Rotta ufficiale per generare le descrizioni di un'opera e salvarle nel DB
+apiRouter.post("/ai/generate-work-desc", async (req, res) => {
+  const { workId, workName, userDescription } = req.body;
+
+  if (!workId || !workName) {
+    return res.status(400).json({ error: "Dati mancanti" });
+  }
+
+  // Rispondiamo SUBITO al frontend per non bloccare l'interfaccia
+  res.status(202).json({ message: "Generazione avviata in background..." });
+
+  // MA lanciamo la funzione senza l'await, così il server ci lavora in parallelo!
+  aiController.generateAndSaveWorkDescriptions(workId, workName, userDescription);
+});
+
+// Generazione descrizione autori
+apiRouter.post("/ai/generate-author-desc", async (req, res) => {
+  const { authorId, museumId, authorName, userDescription } = req.body;
+  if (!authorId || !authorName || !museumId) return res.status(400).json({ error: "Dati mancanti" });
+
+  res.status(202).json({ message: "Generazione biografia avviata in background..." });
+  aiController.generateAndSaveAuthorDescription(authorId, museumId, authorName, userDescription);
+});
+
+// Generazione descrizione stili
+apiRouter.post("/ai/generate-style-desc", async (req, res) => {
+  const { styleId, museumId, styleName, userDescription } = req.body;
+  if (!styleId || !styleName || !museumId) return res.status(400).json({ error: "Dati mancanti" });
+
+  res.status(202).json({ message: "Generazione stile avviata in background..." });
+  aiController.generateAndSaveStyleDescription(styleId, museumId, styleName, userDescription);
+});
+
+// Associazione targetAge per gli itetms
+apiRouter.post("/ai/generate-item-targetage", async (req,res) => {
+  const { itemId, itemName, itemDescription } = req.body;
+  if(!itemId || !itemName || !itemDescription) return res.status(400).json({ error: "Dati mancanti" });
+
+  res.status(202).json({ message: "Associazione targetAge avviata in background..." });
+  aiController.generateAndSaveItemTargetAge(itemId, itemName, itemDescription);
+})
 
 module.exports = apiRouter;

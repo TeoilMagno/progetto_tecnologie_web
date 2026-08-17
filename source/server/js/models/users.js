@@ -29,7 +29,16 @@ const userSchema = new mongoose.Schema({
   purchased_visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visit' }],
   preferences: {
     favorite_styles:  [String],
-    visit_history:    [mongoose.Schema.Types.ObjectId]
+    visit_history:    [mongoose.Schema.Types.ObjectId],
+    expertiseLevel: { 
+      type: String, 
+      enum: ['simple', 'medium', 'professional', 'expert'],
+      default: 'medium' 
+    },
+    interactionsCount: { // Contatore per capire quando fare il "salto" di livello
+      simpler_requests: { type: Number, default: 0 },
+      deeper_requests: { type: Number, default: 0 }
+    }
   }
 });
 

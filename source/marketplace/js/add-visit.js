@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Nuovo ordine della visita:", currentVisitCart);
 
         triggerAutoSave();
+        triggerDurationUpdate();
       },
     });
   }
@@ -125,6 +126,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (currentMuseumId) {
           loadMuseumWorks(currentMuseumId);
         }
+
+        triggerDurationUpdate();
       }
     } catch (e) {
       console.error("Errore nel caricamento della bozza", e);
@@ -251,6 +254,7 @@ function addToVisit(workId, workName) {
   renderVisitCart();
 
   triggerAutoSave();
+  triggerDurationUpdate();
 }
 
 function removeFromVisit(workId) {
@@ -258,6 +262,7 @@ function removeFromVisit(workId) {
   renderVisitCart();
 
   triggerAutoSave();
+  triggerDurationUpdate();
 }
 
 function renderVisitCart() {
@@ -317,6 +322,12 @@ async function submitVisit(isSavingAsDraft = false) {
 
   const publicCheckbox = document.getElementById("visit-public");
 
+  const prefLength = document.getElementById("visit-pref-length")?.value || 'medium';
+  
+  // Recuperiamo il numero di minuti dal badge (es. "45 min" -> 45)
+  const durationBadgeText = document.getElementById("tour-duration-badge")?.innerText || "0";
+  const durationNum = parseInt(durationBadgeText) || 0;
+
   // LA MAGIA DEI 3 STATI:
   // Se premo "Salva Bozza", forziamo isPublic a false.
   // Altrimenti, dipende dalla spunta della checkbox.
@@ -337,6 +348,8 @@ async function submitVisit(isSavingAsDraft = false) {
     price: price,
     isPublic: isPublic,
     isDraft: isDraft,
+    duration: durationNum,
+    preferredLength: prefLength
   };
 
   const submitBtn = document.getElementById("confirm-save-visit-btn");
@@ -438,6 +451,11 @@ async function autoSaveDraft() {
     return;
   }
 
+
+  const prefLength = document.getElementById("visit-pref-length")?.value || 'medium';
+  const durationBadgeText = document.getElementById("tour-duration-badge")?.innerText || "0";
+  const durationNum = parseInt(durationBadgeText) || 0;
+
   const payload = {
     title: titleInput || "Bozza in corso...", // Fallback essenziale se non ha ancora aperto la modale
     description: descInput || "",
@@ -446,6 +464,8 @@ async function autoSaveDraft() {
     price: price,
     isPublic: false,
     isDraft: true, // È sempre una bozza
+    duration: durationNum,
+    preferredLength: prefLength
   };
 
   const method = editingVisitId ? "PUT" : "POST";
@@ -520,5 +540,93 @@ async function deleteVisit() {
   } catch (error) {
     console.error("Errore eliminazione:", error);
     alert("Errore di connessione con il server.");
+  }
+}
+
+// Funzione chiamata dal menu a tendina o dai cambiamenti del carrello
+function triggerDurationUpdate() {
+  const currentPrefLength = document.getElementById("visit-pref-length")?.value || 'medium';
+  // Estraiamo solo gli ID dal carrello attuale
+  const workIds = currentVisitCart.map(work => work.id);
+  
+  updateUIEstimatedDuration(workIds, currentPrefLength);
+}
+
+// Chiamata API vera e propria
+async function updateUIEstimatedDuration(workIds, currentPrefLength) {
+  const durationBadge = document.getElementById("tour-duration-badge");
+  if (!durationBadge) return;
+
+  if (workIds.length === 0) {
+    durationBadge.innerText = "0 min";
+    return;
+  }
+
+  durationBadge.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span>`;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/visits/estimate-duration`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workIds, preferredLength: currentPrefLength })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      durationBadge.innerText = `${data.duration} min`;
+    }
+  } catch (error) {
+    console.error("Impossibile calcolare il tempo stimato:", error);
+    durationBadge.innerText = "Errore";
+  }
+}
+
+// Funzione che calcola l'approfondimento ideale in base al tempo
+async function autoSelectLength() {
+  const minutesInput = document.getElementById("available-minutes-input").value;
+  const availableMinutes = parseInt(minutesInput);
+
+  if (!availableMinutes || availableMinutes <= 0) {
+    alert("Inserisci un numero di minuti valido.");
+    return;
+  }
+
+  const workIds = currentVisitCart.map(work => work.id);
+  if (workIds.length === 0) {
+    alert("Aggiungi prima qualche opera al tuo percorso!");
+    return;
+  }
+
+  const btn = document.querySelector("button[onclick='autoSelectLength()']");
+  const originalText = btn.innerText;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/visits/recommend-length`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workIds, availableMinutes })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      
+      // 1. Modifichiamo visivamente la tendina per selezionare la voce consigliata
+      const selectEl = document.getElementById("visit-pref-length");
+      if (selectEl) {
+        selectEl.value = data.recommendedLength;
+        
+        // Aggiungiamo un piccolo effetto visivo per far notare il cambiamento
+        selectEl.classList.add("border-success", "text-success");
+        setTimeout(() => selectEl.classList.remove("border-success", "text-success"), 1500);
+      }
+      
+      // 2. Scateniamo l'aggiornamento del calcolatore della durata (il badge azzurro)
+      triggerDurationUpdate();
+    }
+  } catch (error) {
+    console.error("Errore durante il calcolo del ritmo:", error);
+  } finally {
+    btn.innerText = originalText;
   }
 }
