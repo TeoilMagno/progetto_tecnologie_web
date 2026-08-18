@@ -229,7 +229,7 @@ window.populateFilters = function(context) {
         <h6 class="text-uppercase text-secondary small fw-bold mb-3">Accessibilità</h6>
         <div class="form-check mb-2">
           <input class="form-check-input visit-acc-cb" type="checkbox" id="v-acc-wheel" value="wheelchair_accessible" onchange="applyVisitFilters()">
-          <label class="form-check-label text-white small" for="v-acc-wheel">Accesso Sedia a Rotelle</label>
+          <label class="form-check-label text-white small" for="v-acc-wheel">Sedia a Rotelle</label>
         </div>
         <div class="form-check mb-2">
           <input class="form-check-input visit-acc-cb" type="checkbox" id="v-acc-blind" value="blind_friendly" onchange="applyVisitFilters()">
@@ -240,13 +240,17 @@ window.populateFilters = function(context) {
           <label class="form-check-label text-white small" for="v-acc-deaf">Sordi (Testo/LIS)</label>
         </div>
         <div class="form-check mb-2">
+          <input class="form-check-input visit-acc-cb" type="checkbox" id="v-acc-dsa" value="dsa_friendly" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-acc-dsa">DSA Friendly (Testi Semplificati)</label>
+        </div>
+        <div class="form-check mb-2">
           <input class="form-check-input visit-acc-cb" type="checkbox" id="v-acc-sensory" value="sensory_friendly" onchange="applyVisitFilters()">
-          <label class="form-check-label text-white small" for="v-acc-sensory">Sensory Friendly</label>
+          <label class="form-check-label text-white small" for="v-acc-sensory">Sensory Friendly (Ambiente Calmo)</label>
         </div>
       </div>
 
       <div class="filter-section mb-4">
-        <h6 class="text-uppercase text-secondary small fw-bold mb-3">Pubblico</h6>
+        <h6 class="text-uppercase text-secondary small fw-bold mb-3">Pubblico Consigliato</h6>
         <div class="form-check mb-2">
           <input class="form-check-input visit-target-cb" type="checkbox" id="v-targ-kids" value="kids" onchange="applyVisitFilters()">
           <label class="form-check-label text-white small" for="v-targ-kids">Bambini</label>
@@ -254,6 +258,14 @@ window.populateFilters = function(context) {
         <div class="form-check mb-2">
           <input class="form-check-input visit-target-cb" type="checkbox" id="v-targ-fam" value="families" onchange="applyVisitFilters()">
           <label class="form-check-label text-white small" for="v-targ-fam">Famiglie</label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-target-cb" type="checkbox" id="v-targ-adults" value="adults" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-targ-adults">Adulti</label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-target-cb" type="checkbox" id="v-targ-schools" value="schools" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-targ-schools">Scuole</label>
         </div>
       </div>
 
