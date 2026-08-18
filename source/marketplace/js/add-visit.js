@@ -104,6 +104,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("visit-price").value = draft.price || "";
         document.getElementById("visit-public").checked = draft.isPublic || false;
 
+        toggleCuratorDetails();
+
         isCurrentVisitDraft = draft.isDraft !== false;
 
         // Ripristino checkbox Target
@@ -155,16 +157,46 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // controlla se lo user e' un curatore o un visitatore
+// controlla se lo user gestisce il museo attuale per sbloccare la pubblicazione
 async function checkUserRole() {
   try {
     const response = await fetch(`${API_BASE_URL}/current-user`);
     if (response.ok) {
       const user = await response.json();
-      // se lo user e' un curatore mostriamo le opzioni eslcusive per curatori
-      if (user?.role === "curator" || user?.role === "admin") {
-        document
-          .getElementById("curator-options-area")
-          .classList.remove("d-none");
+      
+      // Se è un admin, ha poteri assoluti ovunque
+      if (user?.role === "admin") {
+        document.getElementById("curator-options-area").classList.remove("d-none");
+        return;
+      }
+
+      // Se è un curatore, sblocchiamo le opzioni SOLO se gestisce questo specifico museo
+      if (user?.role === "curator") {
+        const museumsRes = await fetch(`${API_BASE_URL}/my-museums`);
+        
+        if (museumsRes.ok) {
+          const managedMuseums = await museumsRes.json();
+          
+          // Usiamo un interval perché se stiamo caricando una bozza, 
+          // currentMuseumId potrebbe impiegare qualche millisecondo in più a valorizzarsi
+          const checkInterval = setInterval(() => {
+            if (currentMuseumId) {
+              clearInterval(checkInterval); // Trovato l'ID, fermiamo il loop
+              
+              // Controlla se l'ID del museo in cui ci troviamo è nella lista dei suoi musei
+              const isManaged = managedMuseums.some(m => (m._id || m).toString() === currentMuseumId.toString());
+              
+              if (isManaged) {
+                // Bingo! È roba sua, sblocchiamo prezzo e pubblicazione
+                document.getElementById("curator-options-area").classList.remove("d-none");
+              } else {
+                // Non è roba sua: il div resta invisibile (classe d-none)
+                // e la visita verrà salvata forzatamente come privata e a prezzo 0.
+                console.log("Creazione visita come visitatore standard (museo non gestito).");
+              }
+            }
+          }, 100);
+        }
       }
     }
   } catch (error) {
@@ -771,5 +803,55 @@ async function autoSelectLength() {
     console.error("Errore durante il calcolo del ritmo:", error);
   } finally {
     btn.innerText = originalText;
+  }
+}
+
+// Mostra/nasconde i dettagli curatore (es. prezzo) in base alla spunta
+function toggleCuratorDetails() {
+  const isPublic = document.getElementById("visit-public").checked;
+  const detailsArea = document.getElementById("curator-details-area");
+  
+  if (detailsArea) {
+    if (isPublic) {
+      detailsArea.classList.remove("d-none");
+    } else {
+      detailsArea.classList.add("d-none");
+    }
+  }
+}
+
+// Logica interruttore per il "Pubblico Consigliato"
+function handleTargetSelection(clickedCheckbox) {
+  const targetAll = document.getElementById("targ-all");
+  // Recuperiamo tutte le checkbox TRANNE quella "Per Tutti"
+  const specificCheckboxes = Array.from(document.querySelectorAll('.target-checkbox')).filter(cb => cb.id !== 'targ-all');
+
+  // Caso 1: L'utente ha cliccato proprio su "Per Tutti"
+  if (clickedCheckbox.id === "targ-all") {
+    if (clickedCheckbox.checked) {
+      // Se lo spunta, togliamo la spunta a tutti gli altri
+      specificCheckboxes.forEach(cb => cb.checked = false);
+    } else {
+      // Se prova a togliere la spunta a "Per tutti" ma gli altri sono vuoti, 
+      // la rimettiamo per forza per impedire di avere zero target
+      const anySpecificChecked = specificCheckboxes.some(cb => cb.checked);
+      if (!anySpecificChecked) {
+        clickedCheckbox.checked = true;
+      }
+    }
+  } 
+  // Caso 2: L'utente ha cliccato su una categoria specifica (Bambini, Famiglie, ecc.)
+  else {
+    if (clickedCheckbox.checked) {
+      // Se spunta una categoria, "Per Tutti" si spegne
+      targetAll.checked = false;
+    } else {
+      // Se toglie la spunta, controlliamo se ne sono rimaste altre accese
+      const anySpecificChecked = specificCheckboxes.some(cb => cb.checked);
+      // Se ha spento tutto, si riaccende automaticamente "Per Tutti"
+      if (!anySpecificChecked) {
+        targetAll.checked = true;
+      }
+    }
   }
 }
