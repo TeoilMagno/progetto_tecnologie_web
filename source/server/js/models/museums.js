@@ -91,7 +91,6 @@ const museumSchema = new Schema({
       type: String, 
       enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] 
     },
-    isOpen: { type: Boolean, default: false },
     hours: { type: String, trim: true, default: "" } // Es. "09:00 - 18:00"
   }],
 });

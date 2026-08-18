@@ -29,6 +29,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  buildScheduleForm();
+
   await loadMuseumDetails();
 });
 
@@ -47,7 +49,39 @@ async function loadMuseumDetails() {
     document.getElementById("museum-image").value = currentMuseumData.image || "";
     document.getElementById("museum-tags").value = (currentMuseumData.tags || []).join(", ");
     document.getElementById("editor-title").innerText = `Modifica: ${currentMuseumData.name}`;
+    document.getElementById("museum-price").value = currentMuseumData.ticketPrice || "";
 
+    // Spunta le checkbox dei servizi
+    if (currentMuseumData.services) {
+      currentMuseumData.services.forEach(s => {
+        const cb = document.querySelector(`.srv-cb[value="${s}"]`);
+        if (cb) cb.checked = true;
+      });
+    }
+
+    // Spunta le checkbox di accessibilità
+    if (currentMuseumData.accessibility) {
+      currentMuseumData.accessibility.forEach(a => {
+        const cb = document.querySelector(`.acc-cb[value="${a}"]`);
+        if (cb) cb.checked = true;
+      });
+    }
+
+    // Ricostruisci il calendario orari
+    if (currentMuseumData.schedule) {
+      currentMuseumData.schedule.forEach(s => {
+        // Se il giorno è presente in questo array, significa che è aperto!
+        const row = document.querySelector(`.schedule-row[data-day="${s.day}"]`);
+        if (row) {
+          const toggle = row.querySelector('.sch-toggle');
+          const input = row.querySelector('.sch-hours');
+          
+          toggle.checked = true;
+          input.value = s.hours || "";
+          input.disabled = false;
+        }
+      });
+    }
     await loadSectionsAndWorks();
   } catch (error) {
     console.error("Errore caricamento:", error);
@@ -534,14 +568,7 @@ async function deleteWork(sectionId, workId) {
 
 async function saveAllMuseumChanges() {
   const tagsString = document.getElementById("museum-tags").value;
-  const updatedMuseum = {
-    name: document.getElementById("museum-name").value.trim(),
-    address: document.getElementById("museum-address").value.trim(),
-    contact_email: document.getElementById("museum-email").value.trim(),
-    contact_phone: document.getElementById("museum-phone").value.trim(),
-    image: document.getElementById("museum-image").value.trim(),
-    tags: tagsString ? tagsString.split(",").map(t => t.trim()) : []
-  };
+  const updatedMuseum = getMuseumFormData();
 
   try {
     const res = await fetch(`${API_BASE_URL}/museums/${currentMuseumId}`, {
@@ -552,7 +579,6 @@ async function saveAllMuseumChanges() {
 
     if (res.ok) {
       alert("Museo aggiornato con successo!");
-      // REDIRECT POST SALVATAGGIO
       window.location.href = "/my-museums"; 
     } else {
       alert("Errore nel salvataggio delle modifiche.");
@@ -1426,4 +1452,83 @@ async function generateStyleDescWithAI() {
       descTextarea.value = JSON.parse(cleanText).description || "";
     } else { descTextarea.value = "Errore API."; }
   } catch (e) { descTextarea.value = "Errore di parsing dati. Riprova."; }
+}
+
+// ==========================================
+// FUNZIONI DI SUPPORTO FORM MUSEO
+// ==========================================
+
+// Genera le righe degli orari dinamicamente (con checkbox classica)
+function buildScheduleForm() {
+  const container = document.getElementById("schedule-container");
+  if (!container) return;
+
+  const days = [
+    { id: 'monday', label: 'Lunedì' },
+    { id: 'tuesday', label: 'Martedì' },
+    { id: 'wednesday', label: 'Mercoledì' },
+    { id: 'thursday', label: 'Giovedì' },
+    { id: 'friday', label: 'Venerdì' },
+    { id: 'saturday', label: 'Sabato' },
+    { id: 'sunday', label: 'Domenica' }
+  ];
+
+  container.innerHTML = days.map(day => `
+    <div class="col-12 col-lg-6 d-flex align-items-center schedule-row mb-2" data-day="${day.id}">
+      <div class="form-check m-0 d-flex align-items-center me-3" style="width: 110px;">
+        <input class="form-check-input sch-toggle me-2 mt-0 cursor-pointer" type="checkbox" id="sch-${day.id}" onchange="toggleScheduleInput(this)">
+        <label class="form-check-label text-secondary small fw-bold cursor-pointer mb-0" for="sch-${day.id}">
+          ${day.label}
+        </label>
+      </div>
+      <input type="text" class="form-control form-control-sm glass-input text-white sch-hours flex-grow-1" placeholder="Es. 09-12, 15-18" disabled>
+    </div>
+  `).join('');
+}
+
+// Sblocca l'input quando la checkbox viene spuntata
+function toggleScheduleInput(checkbox) {
+  const row = checkbox.closest('.schedule-row');
+  const input = row.querySelector('.sch-hours');
+  
+  if (input) {
+    input.disabled = !checkbox.checked;
+    if (!checkbox.checked) {
+      input.value = ""; 
+    } else {
+      input.focus(); 
+    }
+  }
+}
+
+// Raccoglie tutti i dati dal form in un unico payload formattato per Mongoose
+function getMuseumFormData() {
+  const payload = {
+    name: document.getElementById("museum-name").value.trim(),
+    address: document.getElementById("museum-address").value.trim(),
+    contact_email: document.getElementById("museum-email").value.trim(),
+    contact_phone: document.getElementById("museum-phone").value.trim(),
+    image: document.getElementById("museum-image").value.trim(),
+    ticketPrice: parseFloat(document.getElementById("museum-price").value) || 0,
+    tags: document.getElementById("museum-tags").value ? document.getElementById("museum-tags").value.split(",").map(t => t.trim()) : [],
+    services: Array.from(document.querySelectorAll('.srv-cb:checked')).map(cb => cb.value),
+    accessibility: Array.from(document.querySelectorAll('.acc-cb:checked')).map(cb => cb.value)
+  };
+
+  if (payload.accessibility.length === 0) payload.accessibility = ['none'];
+
+  // Raccoglie SOLO i giorni in cui c'è la spunta!
+  const schedule = [];
+  document.querySelectorAll('.schedule-row').forEach(row => {
+    const day = row.dataset.day;
+    const isOpen = row.querySelector('.sch-toggle').checked;
+    const hours = row.querySelector('.sch-hours').value.trim();
+    
+    if (isOpen) {
+      schedule.push({ day, hours });
+    }
+  });
+  
+  payload.schedule = schedule;
+  return payload;
 }

@@ -448,3 +448,19 @@ body.artaround-theme {
 .toast-close:hover {
     color: #fff;
 }
+
+/* Menu Orari: Specificità mirata per sovrascrivere Bootstrap in modo pulito */
+/* FORZATURA COLORI MENU ORARI TRAMITE ID */
+#menu-orari-museo .giorno-label {
+    color: #a1a1aa; /* Grigio chiaro per i giorni della settimana */
+}
+
+#menu-orari-museo .orario-aperto {
+    color: #ffffff; /* Bianco puro e brillante per gli orari aperti */
+    font-weight: 800;
+}
+
+#menu-orari-museo .orario-chiuso {
+    color: #ef4444; /* Rosso chiaro per i giorni di chiusura */
+    font-weight: 800;
+}

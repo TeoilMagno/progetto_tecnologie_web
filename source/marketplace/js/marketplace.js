@@ -174,24 +174,26 @@ function renderMuseumDashboard(museumInfo) {
   if (museumInfo) {
     const priceText = museumInfo.ticketPrice > 0 ? `€ ${museumInfo.ticketPrice.toFixed(2)}` : `<span class="text-success">Gratis</span>`;
     
-    // --- QUI INIZIA LA LOGICA DELLA TENDINA (Sostituisce daysText e hoursText) ---
+    // --- MAGIA DEL MENU A TENDINA PER GLI ORARI ---
     let hoursDropdownHtml = `<span><i class="bi bi-clock me-1 text-info"></i> Orari non configurati</span>`;
     
-    // Controlliamo se esiste il nuovo array "schedule" e se ha elementi
-    if (museumInfo.schedule && museumInfo.schedule.length > 0) {
-      const daysMap = { monday: 'Lunedì', tuesday: 'Martedì', wednesday: 'Mercoledì', thursday: 'Giovedì', friday: 'Venerdì', saturday: 'Sabato', sunday: 'Domenica' };
+    if (museumInfo.schedule) {
+      const allDays = [
+        { id: 'monday', label: 'Lunedì' }, { id: 'tuesday', label: 'Martedì' }, { id: 'wednesday', label: 'Mercoledì' },
+        { id: 'thursday', label: 'Giovedì' }, { id: 'friday', label: 'Venerdì' }, { id: 'saturday', label: 'Sabato' }, { id: 'sunday', label: 'Domenica' }
+      ];
       
-      const listItems = museumInfo.schedule.map(s => {
-        const dayName = daysMap[s.day] || s.day;
-        const timeText = s.isOpen ? (s.hours || 'Aperto') : 'Chiuso';
-        const colorClass = s.isOpen ? 'text-light' : 'text-danger';
+      const listItems = allDays.map(d => {
+        const savedDay = museumInfo.schedule.find(s => s.day === d.id);
+        const isOpen = !!savedDay; 
+        
+        const timeText = isOpen ? (savedDay.hours || 'Aperto') : 'Chiuso';
+        const textColorClass = isOpen ? 'text-white' : 'text-danger'; 
         
         return `
-          <li>
-            <span class="dropdown-item-text py-1 px-3 small d-flex justify-content-between" style="min-width: 180px;">
-              <span class="fw-bold me-3">${dayName}</span> 
-              <span class="${colorClass}">${timeText}</span>
-            </span>
+          <li class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-secondary border-opacity-25" style="min-width: 220px;">
+            <span class="text-white-50 small">${d.label}</span> 
+            <strong class="${textColorClass} small">${timeText}</strong>
           </li>`;
       }).join('');
       
@@ -200,7 +202,7 @@ function renderMuseumDashboard(museumInfo) {
           <span class="cursor-pointer text-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 0.9rem;">
             <i class="bi bi-clock me-1 text-info"></i> Orari di Apertura
           </span>
-          <ul class="dropdown-menu dropdown-menu-dark shadow border-secondary mt-2">
+          <ul class="dropdown-menu dropdown-menu-dark shadow mt-2 p-0 border-secondary">
             ${listItems}
           </ul>
         </div>
@@ -208,12 +210,12 @@ function renderMuseumDashboard(museumInfo) {
     }
     // --- FINE LOGICA TENDINA ---
     
-    // Assembliamo la stringa finale inserendo il dropdown appena calcolato
+   // Assembliamo la stringa finale 
     museumExtraInfo = `
-      <div class="d-flex flex-wrap gap-4 mt-2 small text-secondary align-items-center" style="font-size: 0.9rem;">
-        ${hoursDropdownHtml}
-        <span><i class="bi bi-ticket-perforated me-1 text-info"></i> Ingresso: ${priceText}</span>
-        ${museumInfo.contact_phone ? `<span><i class="bi bi-telephone me-1 text-info"></i> ${museumInfo.contact_phone}</span>` : ''}
+      <div class="d-flex flex-wrap gap-4 mt-2 small align-items-center" style="font-size: 0.9rem; -webkit-text-fill-color: initial; text-transform: none; font-weight: normal; letter-spacing: normal;">
+        <div style="-webkit-text-fill-color: currentColor;">${hoursDropdownHtml}</div>
+        <span class="text-white-50"><i class="bi bi-ticket-perforated me-1 text-info"></i> Ingresso: <span class="text-white fw-bold">${priceText}</span></span>
+        ${museumInfo.contact_phone ? `<span class="text-white-50"><i class="bi bi-telephone me-1 text-info"></i> <span class="text-white fw-bold">${museumInfo.contact_phone}</span></span>` : ''}
       </div>
     `;
   }
