@@ -29,15 +29,18 @@ function renderUserArea() {
       .slice(0, 2)
       .toUpperCase();
 
-    // Definiamo le voci del menu in base al ruolo
+    const currentPath = window.location.pathname;
+    const isCurrent = (path) => currentPath === path;
+
+    // Definiamo le voci del menu in base al ruolo, evidenziando solo la sezione corrente in grassetto (fw-bold) e color ciano (text-info)
     let menuOptions = `
-        ${(currentUser.role === "admin") ? `<li><a class="dropdown-item text-warning fw-bold" href="/admin-dashboard"><i class="bi bi-shield-lock me-2"></i>Pannello Admin</a></li>` : ''}
-        ${(currentUser.role === 'curator' || currentUser.role === "admin") ? `<li><a class="dropdown-item text-white" href="/my-museums"><i class="bi bi-bank me-2"></i>I miei musei</a></li>` : ''}
-        <li><a class="dropdown-item" href="/my-visits"><i class="bi bi-map me-2"></i>Le mie visite</a></li>
-        ${(currentUser.role === 'curator' || currentUser.role === "admin") ? `<li><a class="dropdown-item text-white" href="/my-adoptions"><i class="bi bi-arrow-left-right me-2"></i>Le mie adozioni</a></li>` : ''}
-        ${(currentUser.role === 'curator' || currentUser.role === "admin") ? `<li><a class="dropdown-item" href="/add-museum"><i class="bi bi-plus-square me-2"></i>Aggiungi museo</a></li>` : ''}
-        <li><a class="dropdown-item" href="/create-visit"><i class="bi bi-plus-lg me-2"></i>Crea visita</a></li>
-        <li><a class="dropdown-item text-white" href="/my-orders"><i class="bi bi-receipt me-2"></i>I miei ordini</a></li>
+        ${(currentUser.role === "admin") ? `<li><a class="dropdown-item ${isCurrent('/admin-dashboard') ? 'text-info fw-bold' : 'text-warning'}" href="/admin-dashboard"><i class="bi bi-shield-lock me-2"></i>Pannello Admin</a></li>` : ''}
+        ${(currentUser.role === 'curator' || currentUser.role === "admin") ? `<li><a class="dropdown-item ${isCurrent('/my-museums') ? 'text-info fw-bold' : 'text-white'}" href="/my-museums"><i class="bi bi-bank me-2"></i>I miei musei</a></li>` : ''}
+        <li><a class="dropdown-item ${isCurrent('/my-visits') ? 'text-info fw-bold' : 'text-white'}" href="/my-visits"><i class="bi bi-map me-2"></i>Le mie visite</a></li>
+        ${(currentUser.role === 'curator' || currentUser.role === "admin") ? `<li><a class="dropdown-item ${isCurrent('/my-adoptions') ? 'text-info fw-bold' : 'text-white'}" href="/my-adoptions"><i class="bi bi-arrow-left-right me-2"></i>Le mie adozioni</a></li>` : ''}
+        ${(currentUser.role === 'curator' || currentUser.role === "admin") ? `<li><a class="dropdown-item ${isCurrent('/add-museum') ? 'text-info fw-bold' : 'text-white'}" href="/add-museum"><i class="bi bi-plus-square me-2"></i>Aggiungi museo</a></li>` : ''}
+        <li><a class="dropdown-item ${isCurrent('/create-visit') ? 'text-info fw-bold' : 'text-white'}" href="/create-visit"><i class="bi bi-plus-lg me-2"></i>Crea visita</a></li>
+        <li><a class="dropdown-item ${isCurrent('/my-orders') ? 'text-info fw-bold' : 'text-white'}" href="/my-orders"><i class="bi bi-receipt me-2"></i>I miei ordini</a></li>
       `;
 
     area.innerHTML = `

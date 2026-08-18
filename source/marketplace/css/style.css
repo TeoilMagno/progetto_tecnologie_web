@@ -464,3 +464,32 @@ body.artaround-theme {
     color: #ef4444; /* Rosso chiaro per i giorni di chiusura */
     font-weight: 800;
 }
+/* TAB PERSONALIZZATI (SEZIONE ADOZIONI E PROGETTO) */
+.custom-tabs {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.custom-tabs .nav-link {
+  color: var(--text-secondary) !important;
+  border: none !important;
+  background: transparent !important;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-bottom: 3px solid transparent !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.8;
+}
+
+.custom-tabs .nav-link:hover {
+  color: #ffffff !important;
+  opacity: 1;
+}
+
+.custom-tabs .nav-link.active {
+  color: #00ccff !important; /* Ciano brillante per staccare nettamente */
+  background: rgba(0, 204, 255, 0.06) !important; /* Leggerissimo sfondo ciano trasparente */
+  border-bottom: 3px solid #00ccff !important; /* Sottolineatura ciano brillante */
+  border-radius: 8px 8px 0 0 !important;
+  opacity: 1;
+  box-shadow: 0 4px 12px rgba(0, 204, 255, 0.1);
+}

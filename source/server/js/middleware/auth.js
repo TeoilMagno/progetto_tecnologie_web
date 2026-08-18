@@ -28,12 +28,12 @@ passport.use(
   new LocalStrategy(async (username, password, cb) => {
     try {
       const user = await User.findOne({ username });
-      if (!user) return cb(null, false);
+      if (!user) return cb(null, false, { message: "username_not_found" });
 
       crypto.pbkdf2(password, user.salt, 310000, 32, "sha256", (err, hash) => {
         if (err) return cb(err);
         if (!crypto.timingSafeEqual(hash, user.password))
-          return cb(null, false);
+          return cb(null, false, { message: "incorrect_password" });
         return cb(null, user);
       });
     } catch (err) {
