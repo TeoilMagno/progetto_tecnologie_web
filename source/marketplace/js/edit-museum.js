@@ -1172,8 +1172,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Apre la modale ricevendo l'intero oggetto dell'opera
-// Apre la modale ricevendo l'ID dell'opera
 // Apre la modale ricevendo l'ID dell'opera
 function openTextManager(workId) {
   // Peschiamo l'opera direttamente dalla cache usando l'ID come chiave!
@@ -1190,31 +1188,56 @@ function openTextManager(workId) {
   document.getElementById("tm-audience").value = "medium";
   document.getElementById("tm-length").value = "medium";
 
+  handleTextTypeChange();
+
   loadSpecificText();
   textManagerModalInstance.show();
 }
 
-// 1. Cerca nell'oggetto nidificato la combinazione esatta e la stampa
+// Gestisce il blocco e lo stile della tendina "Lunghezza" per Curiosità e Parafrasi
+function handleTextTypeChange() {
+  const aud = document.getElementById("tm-audience").value;
+  const lenSelect = document.getElementById("tm-length");
+  
+  if (aud === 'funFact' || aud === 'paraphrase') {
+    lenSelect.disabled = true;
+    // Aggiungiamo le classi Bootstrap per farlo diventare grigino e semi-trasparente
+    lenSelect.classList.add("opacity-50", "text-muted");
+    lenSelect.classList.remove("text-light");
+  } else {
+    lenSelect.disabled = false;
+    // Ripristiniamo l'aspetto originale
+    lenSelect.classList.remove("opacity-50", "text-muted");
+    lenSelect.classList.add("text-light");
+  }
+  
+  loadSpecificText();
+}
+
+// 1. Cerca la stringa corretta nel database e la stampa
 function loadSpecificText() {
-  const aud = document.getElementById("tm-audience").value; // simple, medium, professional, expert
+  const aud = document.getElementById("tm-audience").value; // simple, medium, professional, expert, funFact, paraphrase
   const len = document.getElementById("tm-length").value;   // short, medium, long, exhaustive
   const textarea = document.getElementById("tm-textarea");
 
-  textarea.value = ""; // Svuotiamo prima di cercare
+  textarea.value = "";
 
-  if (tmCurrentWork && tmCurrentWork.description) {
-    // Navighiamo nell'oggetto: description -> simple -> medium
-    if (tmCurrentWork.description[aud] && tmCurrentWork.description[aud][len]) {
-      textarea.value = tmCurrentWork.description[aud][len];
-    } 
-    // Fallback in caso la descrizione sia la vecchia stringa di test
-    else if (typeof tmCurrentWork.description === 'string' && aud === 'medium' && len === 'medium') {
-      textarea.value = tmCurrentWork.description;
+  if (tmCurrentWork) {
+    if (aud === 'funFact' || aud === 'paraphrase') {
+      // Se stiamo cercando Curiosità o Parafrasi, peschiamo dal primo livello dell'oggetto!
+      if (tmCurrentWork[aud]) textarea.value = tmCurrentWork[aud];
+    } else {
+      // Altrimenti peschiamo dal registro nidificato (description.simple.short)
+      if (tmCurrentWork.description && tmCurrentWork.description[aud] && tmCurrentWork.description[aud][len]) {
+        textarea.value = tmCurrentWork.description[aud][len];
+      } else if (typeof tmCurrentWork.description === 'string' && aud === 'medium' && len === 'medium') {
+        textarea.value = tmCurrentWork.description;
+      }
     }
   }
 }
 
-// 2. Salva la modifica manuale nel database e aggiorna la cache
+// 2. Salva la modifica manuale nel database (accetta tutte le opzioni)
 async function saveSpecificText() {
   const aud = document.getElementById("tm-audience").value;
   const len = document.getElementById("tm-length").value;
@@ -1222,33 +1245,34 @@ async function saveSpecificText() {
 
   if (!tmCurrentWork) return;
 
-  // Se l'oggetto description non esiste o è una vecchia stringa, lo formattiamo correttamente
-  if (!tmCurrentWork.description || typeof tmCurrentWork.description === 'string') {
-    tmCurrentWork.description = { simple: {}, medium: {}, professional: {}, expert: {} };
-  }
-  if (!tmCurrentWork.description[aud]) {
-    tmCurrentWork.description[aud] = {};
-  }
+  // Costruiamo il payload dinamico da spedire al server
+  let updatePayload = { museumId: currentMuseumId };
 
-  // Aggiorniamo il testo nella nostra cache locale
-  tmCurrentWork.description[aud][len] = newText;
+  if (aud === 'funFact' || aud === 'paraphrase') {
+    // Aggiorna la cache e prepara il payload per i campi di primo livello
+    tmCurrentWork[aud] = newText;
+    updatePayload[aud] = newText; 
+  } else {
+    // Assicurati che l'oggetto descrizione esista e sia formattato bene
+    if (!tmCurrentWork.description || typeof tmCurrentWork.description === 'string') {
+      tmCurrentWork.description = { simple: {}, medium: {}, professional: {}, expert: {} };
+    }
+    if (!tmCurrentWork.description[aud]) tmCurrentWork.description[aud] = {};
+    
+    // Aggiorna la cache e prepara il payload per la descrizione nidificata
+    tmCurrentWork.description[aud][len] = newText;
+    updatePayload.description = tmCurrentWork.description;
+  }
 
   try {
-    // Usiamo l'endpoint di aggiornamento dell'opera per sovrascrivere l'oggetto description
     const res = await fetch(`${API_BASE_URL}/works/${tmCurrentWork._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        description: tmCurrentWork.description, 
-        museumId: currentMuseumId 
-      })
+      body: JSON.stringify(updatePayload)
     });
 
-    if (res.ok) {
-      alert("Testo personalizzato salvato con successo!");
-    } else {
-      alert("Errore durante il salvataggio.");
-    }
+    if (res.ok) alert("Testo salvato con successo!");
+    else alert("Errore durante il salvataggio.");
   } catch (error) {
     console.error(error);
   }
@@ -1264,8 +1288,14 @@ async function generateSpecificTextWithAI() {
 
   // Peschiamo il contesto inserito nel form principale (se presente)
   const baseContext = document.getElementById("work-description")?.value || "Basati sulle tue conoscenze storiche.";
+  let prompt = "";
 
-  const prompt = `
+  if (aud === 'funFact') {
+    prompt = `Scrivi una curiosità divertente o un aneddoto poco noto (max 3 frasi) sull'opera d'arte "${tmCurrentWork.name}". Contesto del curatore: ${baseContext}. Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza markdown e senza virgolette.`;
+  } else if (aud === 'paraphrase') {
+    prompt = `Scrivi una parafrasi (spiegazione molto semplificata, 2-3 frasi) del significato dell'opera d'arte "${tmCurrentWork.name}". Contesto del curatore: ${baseContext}. Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza markdown e senza virgolette.`;
+  } else {
+    prompt = `
     Sei un esperto curatore d'arte e storico. Il tuo compito è generare una descrizoine per l'opera d'arte "${tmCurrentWork.name}".
 
     Considera che esistono questi 4 registri linguistici:
@@ -1286,8 +1316,9 @@ async function generateSpecificTextWithAI() {
 
     Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza virgolette iniziali/finali o formattazione markdown.
   `;
+  }
 
-  textarea.value = "Pensiero in corso (1-3 secondi)...";
+  textarea.value = "Generazione in corso (attendi qualche secondo)...";
   
   try {
     const res = await fetch(`${API_BASE_URL}/ai/generate`, {

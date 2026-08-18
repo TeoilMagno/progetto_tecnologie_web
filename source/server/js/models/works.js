@@ -61,7 +61,7 @@ const workSchema = new Schema({
     }
   },
 
-  funFact: { type: String}, // Curiosità 
+  funFact: { type: String }, // Curiosità 
   paraphrase: { type: String }, // Parafrasi o spiegazione semplificata dell'opera
   
   museumId: {

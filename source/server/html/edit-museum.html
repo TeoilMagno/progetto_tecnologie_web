@@ -361,16 +361,19 @@
             <!-- Filtri per selezionare QUALE testo stiamo guardando -->
             <div class="row g-2 mb-3 bg-secondary bg-opacity-10 p-2 rounded">
               <div class="col-md-6">
-                <label class="form-label small text-secondary mb-1">Registro Linguistico (Audience)</label>
-                <select class="form-select form-select-sm bg-dark text-light border-secondary" id="tm-audience" onchange="loadSpecificText()">
-                  <option value="simple">Base / Bambini (Simple)</option>
-                  <option value="medium" selected>Visitatore Medio (Medium)</option>
-                  <option value="professional">Appassionati (Professional)</option>
-                  <option value="expert">Storici / Esperti (Expert)</option>
+                <label class="form-label small text-secondary mb-1">Registro</label>
+                <select class="form-select form-select-sm bg-dark text-light border-secondary" id="tm-audience" onchange="handleTextTypeChange()">
+                  <option value="simple">Semplice (bambini)</option>
+                  <option value="medium" selected>Media (divulgativa)</option>
+                  <option value="professional">Tecnica (appassionati)</option>
+                  <option value="expert">Accademica (esperti)</option>
+                  <option disabled>──────────</option>
+                  <option value="funFact">💡 Curiosità </option>
+                  <option value="paraphrase">📖 Parafrasi / Spiegazione Semplice</option>
                 </select>
               </div>
               <div class="col-md-6">
-                <label class="form-label small text-secondary mb-1">Lunghezza (Length)</label>
+                <label class="form-label small text-secondary mb-1">Lunghezza</label>
                 <select class="form-select form-select-sm bg-dark text-light border-secondary" id="tm-length" onchange="loadSpecificText()">
                   <option value="short">Breve (3 secondi)</option>
                   <option value="medium" selected>Media (15 secondi)</option>

@@ -106,6 +106,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         isCurrentVisitDraft = draft.isDraft !== false;
 
+        // Ripristino checkbox Target
+        if (draft.targetAudience && draft.targetAudience.length > 0) {
+          // Spegniamo prima il 'checked' di default su 'all'
+          document.getElementById("targ-all").checked = false;
+          draft.targetAudience.forEach(val => {
+            const cb = document.querySelector(`.target-checkbox[value="${val}"]`);
+            if (cb) cb.checked = true;
+          });
+        }
+        
+        // Ripristino checkbox Accessibilità
+        if (draft.accessibility && draft.accessibility.length > 0) {
+          draft.accessibility.forEach(val => {
+            const cb = document.querySelector(`.acc-checkbox[value="${val}"]`);
+            if (cb) cb.checked = true;
+          });
+        }
+
         const saveVisitBtn = document.getElementById("save-visit-btn");
         const saveDraftBtn = document.getElementById("save-draft-btn");
 
@@ -453,6 +471,16 @@ async function submitVisit(isSavingAsDraft = false) {
 
   const workIds = currentVisitCart.map((work) => work.id);
 
+  // Raccogli Array di Target Audience
+  const targetCheckboxes = document.querySelectorAll('.target-checkbox:checked');
+  let targets = Array.from(targetCheckboxes).map(cb => cb.value);
+  if (targets.length === 0) targets = ['all']; // Default fallback
+
+  // Raccogli Array di Accessibilità
+  const accCheckboxes = document.querySelectorAll('.acc-checkbox:checked');
+  let accessibilities = Array.from(accCheckboxes).map(cb => cb.value);
+  if (accessibilities.length === 0) accessibilities = ['none']; // Default fallback
+
   const payload = {
     title: titleInput.value.trim(),
     description: description,
@@ -462,7 +490,9 @@ async function submitVisit(isSavingAsDraft = false) {
     isPublic: isPublic,
     isDraft: isDraft,
     duration: durationNum,
-    preferredLength: prefLength
+    preferredLength: prefLength,
+    targetAudience: targets,        
+    accessibility: accessibilities  
   };
 
   const submitBtn = document.getElementById("confirm-save-visit-btn");
