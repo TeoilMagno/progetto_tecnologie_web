@@ -2,6 +2,7 @@
 let cachedMuseums = [];
 let currentItems = [];
 let currentWorks = [];
+let currentVisits = [];
 let currentMuseumId = null;
 let editModalInstance = null;
 let currentView = 'works';
@@ -325,7 +326,9 @@ async function loadMuseumSubView(view, museumId) {
       
       // Filtriamo per questo museo
       const museumVisits = allVisits.filter(v => v.isPublic !== false && (v.museumId?._id === museumId || v.museumId === museumId));
-      renderVisitsListForMuseum(museumVisits);
+      
+      currentVisits = museumVisits;
+      renderVisitsListForMuseum(currentVisits);
     } else {
       // Scegliamo l'endpoint corretto (opere o articoli di vendita)
       const endpoint = view === 'works' 
