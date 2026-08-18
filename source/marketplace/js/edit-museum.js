@@ -135,7 +135,10 @@ function renderSectionAccordionItem(section, works, index) {
   const rooms = section.rooms || [];
   
   if (rooms.length === 0) {
-    roomsHtml = `<div class="alert alert-warning bg-transparent border-warning text-warning small p-2 mb-0">Nessuna stanza creata. Devi creare almeno una stanza per poter inserire le opere.</div>`;
+    roomsHtml = `
+      <div class="alert bg-dark border border-warning border-opacity-50 text-warning small p-3 mb-0 rounded-3">
+        <i class="bi bi-exclamation-triangle me-2"></i>Nessuna stanza creata. Crea una stanza per poter inserire le opere.
+      </div>`;
   } else {
     rooms.forEach(room => {
       // Filtriamo le opere che appartengono a questa specifica stanza
@@ -143,40 +146,38 @@ function renderSectionAccordionItem(section, works, index) {
       const safeRoomName = (room.name || "").replace(/'/g, "\\'");
 
       // HTML delle opere dentro la stanza
-      // HTML delle opere dentro la stanza
-      let worksHtml = roomWorks.length === 0 ? `<p class="small text-secondary mb-0">Stanza vuota.</p>` : `
-        <div class="row row-cols-1 row-cols-md-2 g-2 mt-2">
+      let worksHtml = roomWorks.length === 0 ? `<p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa stanza.</p>` : `
+        <div class="row row-cols-1 row-cols-md-2 g-3 mt-1">
           ${roomWorks.map(w => `
             <div class="col">
-              <div class="card bg-dark bg-opacity-50 border-secondary border-opacity-50 h-100 p-2 d-flex flex-row align-items-center">
-                <img src="${w.image || '/img/fallback-work.jpg'}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+              <div class="card bg-transparent border border-secondary border-opacity-25 h-100 p-2 d-flex flex-row align-items-center rounded-3" style="transition: all 0.2s ease;">
+                <img src="${w.image || '/img/fallback-work.jpg'}" class="rounded me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
                 <div class="flex-grow-1 text-truncate">
-                  <h6 class="mb-0 text-white text-truncate small">${w.name}</h6>
+                  <h6 class="mb-0 text-white text-truncate small fw-bold">${w.name}</h6>
+                  <small class="text-white-50" style="font-size: 0.7rem;">${w.author?.name || w.author || 'Autore Sconosciuto'}</small>
                 </div>
-                <div>
-                  <!-- NUOVO BOTTONE: GESTISCI TESTI -->
-                  <button class="btn btn-sm text-info p-1 border-0" title="Gestisci Testi" onclick="openTextManager('${w._id}')"><i class="bi bi-card-text"></i></button>
-                  
-                  <button class="btn btn-sm text-warning p-1 border-0" title="Modifica Opera" onclick="openWorkModal('${section._id}', '${room._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm text-danger p-1 border-0" title="Elimina Opera" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
+                <div class="d-flex gap-1 ms-2">
+                  <button class="btn btn-sm btn-glass text-info p-1 px-2 border-0" title="Gestisci Testi" onclick="openTextManager('${w._id}')"><i class="bi bi-card-text"></i></button>
+                  <button class="btn btn-sm btn-glass text-white p-1 px-2 border-0" title="Modifica Opera" onclick="openWorkModal('${section._id}', '${room._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-glass text-danger p-1 px-2 border-0" title="Elimina Opera" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
                 </div>
               </div>
             </div>
           `).join('')}
         </div>`;
 
-      // HTML della singola Stanza
+      // HTML della singola Stanza (in stile card scura)
       roomsHtml += `
-        <div class="card bg-transparent border border-secondary border-opacity-25 mb-3">
-          <div class="card-header bg-dark bg-opacity-75 d-flex justify-content-between align-items-center py-2 border-bottom border-secondary border-opacity-25">
-            <h6 class="mb-0 text-white"><i class="bi bi-door-open me-2 text-warning"></i>${room.name}</h6>
-            <div>
-              <button class="btn btn-sm btn-link text-info p-0 me-2" onclick="openWorkModal('${section._id}', '${room._id}')"><i class="bi bi-plus-circle me-1"></i>Aggiungi Opera</button>
-              <button class="btn btn-sm btn-link text-secondary p-0 me-2" onclick="openRoomModal('${section._id}', '${room._id}', '${safeRoomName}')"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteRoom('${section._id}', '${room._id}')"><i class="bi bi-trash"></i></button>
+        <div class="card custom-card mb-4 border-secondary border-opacity-25 bg-dark bg-opacity-25">
+          <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-10">
+            <h6 class="mb-0 text-info fw-bold"><i class="bi bi-door-open me-2"></i>${room.name}</h6>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-info rounded-pill px-3 py-1" onclick="openWorkModal('${section._id}', '${room._id}')"><i class="bi bi-plus-lg me-1"></i>Opera</button>
+              <button class="btn btn-sm btn-glass text-white px-2 py-1" title="Modifica Stanza" onclick="openRoomModal('${section._id}', '${room._id}', '${safeRoomName}')"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-sm btn-glass text-danger px-2 py-1" title="Elimina Stanza" onclick="deleteRoom('${section._id}', '${room._id}')"><i class="bi bi-trash"></i></button>
             </div>
           </div>
-          <div class="card-body py-2">
+          <div class="card-body">
             ${worksHtml}
           </div>
         </div>`;
@@ -184,29 +185,36 @@ function renderSectionAccordionItem(section, works, index) {
   }
 
   return `
-    <div class="accordion-item custom-accordion-item mb-3 rounded border border-secondary border-opacity-25 overflow-hidden">
+    <div class="accordion-item bg-transparent mb-3 border-0">
       <h2 class="accordion-header" id="${headingId}">
-        <button class="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}">
-          <i class="bi bi-folder2-open me-2 text-info"></i> ${section.name}
-          <span class="badge badge-tag ms-auto me-3">${rooms.length} stanze</span>
+        <button class="accordion-button collapsed custom-card text-white py-3 px-4 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: none;">
+          <i class="bi bi-grid-1x2-fill me-3 text-info fs-5"></i> 
+          <span class="fw-bold fs-6">${section.name}</span>
+          <span class="badge bg-info bg-opacity-25 text-info border border-info ms-auto me-3 rounded-pill px-3 py-2">${rooms.length} Stanze</span>
         </button>
       </h2>
-      <div id="${collapseId}" class="accordion-collapse collapse" data-bs-parent="#sectionsAccordion">
-        <div class="accordion-body border-top border-secondary border-opacity-25 bg-dark bg-opacity-50">
-          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-25">
-            <div>
-              <button class="btn btn-sm btn-outline-warning me-2" onclick="openSectionModal('${section._id}', '${safeSectionName}', '${safeSectionImage}')">
-                <i class="bi bi-pencil"></i> Modifica Sezione
+      
+      <div id="${collapseId}" class="accordion-collapse collapse mt-2" data-bs-parent="#sectionsAccordion">
+        <div class="accordion-body p-4 custom-card border-secondary border-opacity-25 bg-dark bg-opacity-50" style="border-radius: 12px;">
+          
+          <!-- Header Azioni Sezione -->
+          <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-glass text-white px-3" onclick="openSectionModal('${section._id}', '${safeSectionName}', '${safeSectionImage}')">
+                <i class="bi bi-pencil me-1"></i> Modifica Sezione
               </button>
-              <button class="btn btn-sm btn-outline-danger" onclick="deleteSection('${section._id}')">
-                <i class="bi bi-trash"></i> Elimina Sezione
+              <button class="btn btn-sm btn-glass text-danger px-3" onclick="deleteSection('${section._id}')">
+                <i class="bi bi-trash me-1"></i> Elimina
               </button>
             </div>
-            <button class="btn btn-sm btn-info" onclick="openRoomModal('${section._id}')">
-              <i class="bi bi-plus-lg me-1"></i> Aggiungi Stanza
+            <button class="btn btn-sm btn-gradient px-4 rounded-pill shadow-sm" onclick="openRoomModal('${section._id}')">
+              <i class="bi bi-plus-lg me-1"></i> Nuova Stanza
             </button>
           </div>
+          
+          <!-- Contenuto Stanze -->
           ${roomsHtml}
+          
         </div>
       </div>
     </div>`;
