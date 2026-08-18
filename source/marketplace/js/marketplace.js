@@ -14,13 +14,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Gestione del tasto indietro del browser
+  // Gestione del tasto indietro del browser
   window.addEventListener('popstate', (event) => {
-    if (event.state && event.state.view === 'items') {
-      // Se lo stato indica che eravamo in un museo, carichiamo gli items
-      getMuseumItems(event.state.id, true); // Passiamo un flag per evitare pushState duplicati
-    } else {
-      // Altrimenti torniamo alla lista generale
+    // Se torniamo alla home (stato nullo o senza view definita)
+    if (!event.state || !event.state.view || event.state.view === 'home') {
       getMuseums(true);
+      return;
+    }
+
+    // Se stiamo tornando dentro a un museo specifico
+    if (event.state.view === 'museum') {
+      getMuseumItems(event.state.id, true);
     }
   });
 
@@ -43,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // 3. LOGICA API (FETCH)
 
-async function getMuseums() {
+async function getMuseums(isHistoryPop = false) {
   const container = document.getElementById("content-area");
 
   // 1. SE IL CONTAINER NON ESISTE (es. siamo nella pagina I Miei Musei), FERMATI.
@@ -82,13 +86,17 @@ async function getMuseums() {
 
     // Renderizza passandogli esplicitamente l'id (per evitare conflitti)
     renderMuseumsList(cachedMuseums, "content-area");
+
+    if (!isHistoryPop) {
+      history.pushState({ view: 'home' }, "", "/");
+    }
   } catch (error) {
     console.error(error);
     container.innerHTML = `<div class="alert alert-danger bg-transparent text-danger border-danger">Errore caricamento dati. Il server è attivo?</div>`;
   }
 }
 
-async function getMuseumItems(museumId) {
+async function getMuseumItems(museumId, isHistoryPop = false) {
   const container = document.getElementById("content-area");
   currentMuseumId = museumId;
 
@@ -101,7 +109,9 @@ async function getMuseumItems(museumId) {
   try {
     const museum = cachedMuseums.find((m) => m._id === museumId);
     currentView = 'works';
-    history.pushState({ view: 'museum', id: museumId }, "", `#museum/${museumId}`);
+    if (!isHistoryPop) {
+      history.pushState({ view: 'museum', id: museumId }, "", `/?museumId=${museumId}`);
+    }
     renderMuseumDashboard(museum);
   } catch (error) {
     console.error("Errore in getMuseumItems: ", error);
