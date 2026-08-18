@@ -27,7 +27,6 @@ async function initializeFiltersData(museums) {
   renderStyleFilters(Array.from(tagsSet).sort());
 }
 
-// 2. Disegna le opzioni per gli stili nel tag <select>
 // 2. Disegna le opzioni per gli stili come Checkbox
 function renderStyleFilters(tags) {
   const list = document.getElementById("filter-style-list");
@@ -118,9 +117,14 @@ async function applyMuseumFilters() {
       }
     }
 
+    // Filtro Giorno di apertura (Aggiornato per il nuovo modello schedule)
     if (selectedDay && selectedDay !== "") {
-      if (!museum.openingDays || !museum.openingDays.includes(selectedDay)) {
-        return false;
+      // Se il museo non ha lo schedule, o se per quel giorno specifico "isOpen" è falso, lo nascondiamo
+      if (!museum.schedule || museum.schedule.length === 0) return false;
+      
+      const dayConfig = museum.schedule.find(s => s.day === selectedDay);
+      if (!dayConfig || !dayConfig.isOpen) {
+        return false; 
       }
     }
 

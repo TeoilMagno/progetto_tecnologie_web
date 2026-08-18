@@ -169,29 +169,84 @@ function renderMuseumDashboard(museumInfo) {
 
   if (!container) return;
 
-  // Configura il titolo e il bottone per creare la visita
+  // Costruiamo la barra delle info extra per il museo
+  let museumExtraInfo = "";
+  if (museumInfo) {
+    const priceText = museumInfo.ticketPrice > 0 ? `€ ${museumInfo.ticketPrice.toFixed(2)}` : `<span class="text-success">Gratis</span>`;
+    
+    // --- QUI INIZIA LA LOGICA DELLA TENDINA (Sostituisce daysText e hoursText) ---
+    let hoursDropdownHtml = `<span><i class="bi bi-clock me-1 text-info"></i> Orari non configurati</span>`;
+    
+    // Controlliamo se esiste il nuovo array "schedule" e se ha elementi
+    if (museumInfo.schedule && museumInfo.schedule.length > 0) {
+      const daysMap = { monday: 'Lunedì', tuesday: 'Martedì', wednesday: 'Mercoledì', thursday: 'Giovedì', friday: 'Venerdì', saturday: 'Sabato', sunday: 'Domenica' };
+      
+      const listItems = museumInfo.schedule.map(s => {
+        const dayName = daysMap[s.day] || s.day;
+        const timeText = s.isOpen ? (s.hours || 'Aperto') : 'Chiuso';
+        const colorClass = s.isOpen ? 'text-light' : 'text-danger';
+        
+        return `
+          <li>
+            <span class="dropdown-item-text py-1 px-3 small d-flex justify-content-between" style="min-width: 180px;">
+              <span class="fw-bold me-3">${dayName}</span> 
+              <span class="${colorClass}">${timeText}</span>
+            </span>
+          </li>`;
+      }).join('');
+      
+      hoursDropdownHtml = `
+        <div class="dropdown d-inline-block">
+          <span class="cursor-pointer text-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 0.9rem;">
+            <i class="bi bi-clock me-1 text-info"></i> Orari di Apertura
+          </span>
+          <ul class="dropdown-menu dropdown-menu-dark shadow border-secondary mt-2">
+            ${listItems}
+          </ul>
+        </div>
+      `;
+    }
+    // --- FINE LOGICA TENDINA ---
+    
+    // Assembliamo la stringa finale inserendo il dropdown appena calcolato
+    museumExtraInfo = `
+      <div class="d-flex flex-wrap gap-4 mt-2 small text-secondary align-items-center" style="font-size: 0.9rem;">
+        ${hoursDropdownHtml}
+        <span><i class="bi bi-ticket-perforated me-1 text-info"></i> Ingresso: ${priceText}</span>
+        ${museumInfo.contact_phone ? `<span><i class="bi bi-telephone me-1 text-info"></i> ${museumInfo.contact_phone}</span>` : ''}
+      </div>
+    `;
+  }
+
+  // Configura il titolo, la barra extra e i bottoni
   if (museumInfo) {
     title.innerHTML = `
-      ${museumInfo.name} 
-      <a href="/create-visit?museumId=${museumInfo._id}" class="btn-create-visit ms-3">
-        <i class="bi bi-map me-1"></i> Crea visita qui
-      </a>
-      <a href="/edit-museum?id=${museumInfo._id}" id="edit-museum-btn" class="btn-create-visit ms-2 d-none">
-        <i class="bi bi-sliders me-1"></i> Modifica
-      </a>
-      <button id="edit-stock-btn" class="btn-create-visit ms-2 d-none" onclick="openBookshopManager('${museumInfo._id}')">        
-        <i class="bi bi-shop me-1"></i> Gestisci Bookshop
-      </button>
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <div>
+          ${museumInfo.name}
+          ${museumExtraInfo}
+        </div>
+        <div class="d-flex flex-shrink-0 align-items-start">
+          <a href="/create-visit?museumId=${museumInfo._id}" class="btn-create-visit ms-3">
+            <i class="bi bi-map me-1"></i> Crea visita
+          </a>
+          <a href="/edit-museum?id=${museumInfo._id}" id="edit-museum-btn" class="btn-create-visit ms-2 d-none">
+            <i class="bi bi-sliders me-1"></i> Modifica
+          </a>
+          <button id="edit-stock-btn" class="btn-create-visit ms-2 d-none" onclick="openBookshopManager('${museumInfo._id}')">        
+            <i class="bi bi-shop me-1"></i> Bookshop
+          </button>
+        </div>
+      </div>
     `;
     
-    // controlliamo se l'utente puo' mostrare
     checkIfMuseumIsManaged(museumInfo._id);
   }
   if (backBtn) backBtn.classList.remove("d-none");
 
-  // 2. Renderizziamo la barra di navigazione simmetrica, sottile e con stile tab personalizzato
+  // Renderizziamo le tab
   container.innerHTML = `
-    <div class="w-100 mb-4 px-0">
+    <div class="w-100 mb-4 px-0 mt-3">
       <div class="row g-0 border-bottom border-secondary border-opacity-25 p-0 w-100 mx-0" style="background: transparent;">
         <div class="col-4 p-0">
           <button id="tab-works" 
@@ -220,7 +275,6 @@ function renderMuseumDashboard(museumInfo) {
     </div>
   `;
 
-  // 3. Carica la vista iniziale
   loadMuseumSubView(currentView, museumInfo._id);
 }
 
@@ -364,39 +418,65 @@ function renderVisitsListForMuseum(visits) {
     return;
   }
 
-  visits.forEach((visit) => {
-    const coverImg =
-      visit.coverImage ||
-      (visit.works && visit.works.length > 0 && visit.works[0].image
-        ? visit.works[0].image
-        : "/img/fallback-visit.jpg");
+  // Dizionari per tradurre i valori del DB in etichette leggibili
+  const targetMap = { kids: 'Bambini', families: 'Famiglie', adults: 'Adulti', schools: 'Scuole' };
+  const accMap = { wheelchair_accessible: '♿ Sedia a rotelle', blind_friendly: '👁️ Ipovedenti', deaf_friendly: '👂 Sordi', dsa_friendly: '🧠 DSA', sensory_friendly: '🧘 Sensory' };
 
+  visits.forEach((visit) => {
+    const coverImg = visit.coverImage || (visit.works && visit.works.length > 0 && visit.works[0].image ? visit.works[0].image : "/img/fallback-visit.jpg");
     const safeTitle = visit.title.replace(/'/g, "\\'");
+
+    // Generazione dinamica dei tag
+    let extraTagsHtml = "";
+    
+    if (visit.targetAudience && visit.targetAudience.length > 0) {
+      visit.targetAudience.forEach(t => {
+        if (t !== 'all' && targetMap[t]) {
+          extraTagsHtml += `<span class="badge bg-info bg-opacity-25 text-info border border-info me-1 mb-1">${targetMap[t]}</span>`;
+        }
+      });
+    }
+
+    if (visit.accessibility && visit.accessibility.length > 0) {
+      visit.accessibility.forEach(a => {
+        if (a !== 'none' && accMap[a]) {
+          extraTagsHtml += `<span class="badge bg-warning bg-opacity-25 text-warning border border-warning me-1 mb-1">${accMap[a]}</span>`;
+        }
+      });
+    }
 
     container.innerHTML += `
       <div class="col-12 col-md-6 col-lg-4">
         <div class="card h-100 custom-card cursor-pointer overflow-hidden" onclick="window.location.href='/visit-details?id=${visit._id}'">
+          
           <div style="height: 160px; overflow: hidden; position: relative;">
             <img src="${coverImg}" class="card-img-top h-100 w-100" style="object-fit: cover;" alt="${visit.title}">
+            <div class="position-absolute top-0 end-0 m-2">
+              ${visit.price > 0 ? `<span class="badge bg-dark border border-secondary fs-6">€ ${visit.price.toFixed(2)}</span>` : `<span class="badge bg-success fs-6">GRATIS</span>`}
+            </div>
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to top, rgba(18,18,28,0.9), transparent);"></div>
           </div>
 
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title text-info mb-2">${visit.title}</h5>
-            <p class="card-text small text-secondary flex-grow-1">${visit.description || "Nessuna descrizione disponibile."}</p>
+            <h5 class="card-title text-info mb-1">${visit.title}</h5>
+            
+            <div class="mb-2">
+              ${extraTagsHtml}
+            </div>
+
+            <p class="card-text small text-secondary flex-grow-1">${visit.description || "Nessuna descrizione."}</p>
             
             <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-25">
               <span class="badge badge-tag"><i class="bi bi-collection me-1"></i>${visit.works ? visit.works.length : 0} Opere</span>
-              ${visit.price > 0 ? `<span class="fw-bold text-white">€ ${visit.price.toFixed(2)}</span>` : `<span class="fw-bold text-success">GRATIS</span>`}
+              <span class="small text-secondary"><i class="bi bi-stopwatch me-1"></i>${visit.duration || 0} min</span>
             </div>
 
             <div class="mt-3">
               <button class="btn btn-sm btn-gradient w-100 py-2 rounded-pill" 
                 onclick="event.stopPropagation(); addToCart({ id: '${visit._id}', type: 'visit', name: '${safeTitle}', price: ${visit.price}, image: '${coverImg}' })">
-                <i class="bi bi-cart-plus me-1"></i> Acquista Visita
+                <i class="bi bi-cart-plus me-1"></i> Acquista
               </button>
             </div>
-
           </div>
         </div>
       </div>`;
