@@ -9,7 +9,8 @@
     --aura-glow: radial-gradient(circle at 50% -20%, rgba(58, 168, 237, 0.4), transparent 70%);
 }
 
-/* BASE: Agganciato alla classe artaround-theme per priorità su Bootstrap */
+/* BASE: Agganciato alla classe artaround-theme per priorità su Bootstrap e HTML */
+html,
 body.artaround-theme {
     background-color: var(--bg-dark);
     color: var(--text-primary);
@@ -18,6 +19,13 @@ body.artaround-theme {
     background-attachment: fixed;
     background-repeat: no-repeat;
     min-height: 100vh;
+    -ms-overflow-style: none !important;  /* IE e Edge */
+    scrollbar-width: none !important;     /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body.artaround-theme::-webkit-scrollbar {
+    display: none !important;             /* Chrome, Safari, Edge, Opera */
 }
 
 /* HEADER */
@@ -477,4 +485,200 @@ body.artaround-theme {
   border-radius: 8px 8px 0 0 !important;
   opacity: 1;
   box-shadow: 0 4px 12px rgba(0, 204, 255, 0.1);
+}
+
+/* SIDEBAR FILTRI AVANZATI: RANGE SLIDER PERSONALIZZATO */
+.custom-range {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 100%;
+  height: 6px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.12) !important;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.custom-range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  background: transparent;
+  border-radius: 5px;
+}
+
+.custom-range::-webkit-slider-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #00ccff; /* Ciano brillante */
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px; /* Centra il pallino sulla linea */
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.6);
+  transition: transform 0.15s ease, background-color 0.2s, box-shadow 0.2s;
+  border: none;
+}
+
+.custom-range::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  background: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 204, 255, 0.9);
+}
+
+.custom-range::-moz-range-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+}
+
+.custom-range::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #00ccff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.6);
+  transition: transform 0.15s ease, background-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-range::-moz-range-thumb:hover {
+  transform: scale(1.25);
+  background: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 204, 255, 0.9);
+}
+
+/* INPUT CHECKBOX IN STILE TECH GLASS */
+.form-check-input {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-check-input:checked {
+  background-color: #00ccff !important;
+  border-color: #00ccff !important;
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.4) !important;
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 2px rgba(0, 204, 255, 0.25) !important;
+  border-color: rgba(0, 204, 255, 0.5) !important;
+}
+
+/* SCROLLBAR PERSONALIZZATA (LISTE INTERNE DEI FILTRI) */
+#filter-style-list::-webkit-scrollbar,
+#filter-author-list::-webkit-scrollbar,
+#filter-technique-list::-webkit-scrollbar,
+#filter-workstyle-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+#filter-style-list::-webkit-scrollbar-track,
+#filter-author-list::-webkit-scrollbar-track,
+#filter-technique-list::-webkit-scrollbar-track,
+#filter-workstyle-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+}
+
+#filter-style-list::-webkit-scrollbar-thumb,
+#filter-author-list::-webkit-scrollbar-thumb,
+#filter-technique-list::-webkit-scrollbar-thumb,
+#filter-workstyle-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+#filter-style-list::-webkit-scrollbar-thumb:hover,
+#filter-author-list::-webkit-scrollbar-thumb:hover,
+#filter-technique-list::-webkit-scrollbar-thumb:hover,
+#filter-workstyle-list::-webkit-scrollbar-thumb:hover {
+  background: #00ccff;
+}
+
+/* MIGLIORAMENTO OUTLINE INFOBTN E RESET LINKS */
+.btn-outline-info {
+  color: #00ccff !important;
+  border-color: rgba(0, 204, 255, 0.4) !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-outline-info:hover {
+  background-color: #00ccff !important;
+  border-color: #00ccff !important;
+  color: #000000 !important;
+  box-shadow: 0 0 15px rgba(0, 204, 255, 0.4) !important;
+}
+
+.btn-link.text-secondary {
+  transition: color 0.2s ease;
+}
+
+.btn-link.text-secondary:hover {
+  color: #ffffff !important;
+}
+
+/* INPUT CASSELLE DI SCRITTURA SIDEBAR (MIGLIORAMENTO VISIBILITA') */
+.offcanvas .glass-input {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  transition: all 0.3s ease !important;
+}
+
+.offcanvas .glass-input:hover {
+  border-color: rgba(0, 204, 255, 0.5) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.offcanvas .glass-input:focus {
+  border-color: #00ccff !important;
+  background-color: rgba(20, 20, 30, 0.95) !important;
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.3) !important;
+}
+
+/* Barre di ricerca interne per i tag e liste dei filtri */
+#filter-style-search,
+#filter-author-search,
+#filter-technique-search,
+#filter-workstyle-search {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.25) !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  transition: all 0.3s ease !important;
+  margin-top: 2px !important;
+}
+
+#filter-style-search:hover,
+#filter-author-search:hover,
+#filter-technique-search:hover,
+#filter-workstyle-search:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-bottom-color: rgba(0, 204, 255, 0.6) !important;
+}
+
+#filter-style-search:focus,
+#filter-author-search:focus,
+#filter-technique-search:focus,
+#filter-workstyle-search:focus {
+  background-color: rgba(20, 20, 30, 0.95) !important;
+  border-color: rgba(0, 204, 255, 0.3) !important;
+  border-bottom: 2px solid #00ccff !important; /* Bordo ciano luminoso */
+  box-shadow: 0 0 8px rgba(0, 204, 255, 0.25) !important;
+}
+
+/* NASCONDE LA SCROLLBAR NEGLI OFFCANVAS (FILTRI AVANZATI E CARRELLO) */
+#filterSidebar .offcanvas-body,
+#cartOffcanvas .offcanvas-body {
+  -ms-overflow-style: none !important;  /* IE e Edge */
+  scrollbar-width: none !important;     /* Firefox */
+}
+
+#filterSidebar .offcanvas-body::-webkit-scrollbar,
+#cartOffcanvas .offcanvas-body::-webkit-scrollbar {
+  display: none !important;             /* Chrome, Safari, Edge, Opera */
 }
