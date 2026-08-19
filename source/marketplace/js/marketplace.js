@@ -500,8 +500,9 @@ function renderWorksList(works) {
 
   works.forEach((work) => {
     // Estraiamo la prima descrizione disponibile nell'array, se presente
-    const primaryDesc = work.description ? work.description.medium.short
-      : "Descrizione culturale in corso di generazione...";
+    // TODO: da cambiare quando i works saranno uniformati
+    const primaryDesc = work.description.medium ? work.description.medium.short
+      : work.description[0].description
 
     subContainer.innerHTML += `
       <div class="col-12 col-lg-6">

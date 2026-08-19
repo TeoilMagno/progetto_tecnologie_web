@@ -101,16 +101,28 @@ function updateCartUI() {
       totalPrice += item.price * item.quantity;
       const typeLabel = item.type === 'visit' ? '<span class="badge bg-info text-dark">Visita</span>' : '<span class="badge bg-secondary">Bookshop</span>';
       
+      // I controlli "+" e "-" appaiono solo per il bookshop. Le visite restano fisse a 1.
+      const quantityControls = item.type === 'item' 
+        ? `<div class="d-flex align-items-center mt-1">
+             <button class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-circle" onclick="updateQuantity('${item.id}', '${item.type}', -1)">-</button>
+             <span class="mx-2 small fw-bold">${item.quantity}</span>
+             <button class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-circle" onclick="updateQuantity('${item.id}', '${item.type}', 1)">+</button>
+           </div>`
+        : `<span class="small text-secondary d-block mt-1"><i class="bi bi-person-fill"></i> Singolo accesso</span>`;
+      
       cartList.innerHTML += `
         <div class="d-flex align-items-center mb-3 border-bottom border-secondary border-opacity-25 pb-2">
-          <img src="${item.image || '/img/fallback.jpg'}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded me-3">
+          <img src="${item.image || '/img/fallback-work.jpg'}" style="width: 55px; height: 55px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" class="rounded me-3 shadow-sm">
           <div class="flex-grow-1">
             <h6 class="mb-0 text-white small text-truncate" style="max-width: 150px;">${item.name}</h6>
-            ${typeLabel} <span class="small text-secondary">x${item.quantity}</span>
+            ${typeLabel} 
+            ${quantityControls}
           </div>
-          <div class="text-end">
-            <div class="text-white small fw-bold">€${(item.price * item.quantity).toFixed(2)}</div>
-            <button class="btn btn-link text-danger p-0 small" onclick="removeFromCart('${item.id}', '${item.type}')">Rimuovi</button>
+          <div class="text-end ms-2">
+            <div class="text-info small fw-bold">€${(item.price * item.quantity).toFixed(2)}</div>
+            <button class="btn btn-link text-danger p-0 mt-1" style="font-size: 0.75rem; text-decoration: none;" onclick="removeFromCart('${item.id}', '${item.type}')">
+              <i class="bi bi-trash"></i> Rimuovi
+            </button>
           </div>
         </div>
       `;
@@ -172,7 +184,7 @@ async function goToCheckout() {
       alert("Acquisto completato con successo! Grazie.");
       
       // Svuotiamo il carrello nel localStorage dopo il successo
-      localStorage.removeItem(CART_KEY);
+      localStorage.removeItem(getCartKey()); 
       updateCartUI();
 
       // Chiudiamo il pannello laterale del carrello
@@ -193,6 +205,22 @@ async function goToCheckout() {
   } catch (error) {
     console.error("Errore di rete durante il checkout:", error);
     alert("Errore di connessione con il server.");
+  }
+}
+
+// 4b. Aggiorna la quantità di un elemento al volo con i tasti + e -
+function updateQuantity(id, type, delta) {
+  let cart = getCart();
+  const item = cart.find(i => i.id === id && i.type === type);
+  
+  if (item) {
+    item.quantity += delta;
+    // Se la quantità scende a 0, lo rimuoviamo dal carrello
+    if (item.quantity <= 0) {
+      removeFromCart(id, type);
+      return; 
+    }
+    saveCart(cart);
   }
 }
 
