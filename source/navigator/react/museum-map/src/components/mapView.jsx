@@ -41,13 +41,13 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   useEffect(() => {
     const fetchVisitData = async () => {
       try {
-        const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}/museum`);
+        const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}/museum`, { credentials: 'include' });
         const visitData = await visitResponse.json();
 
         setVisitedWorks(visitData.works);
         const museumId = visitData.museumId?._id || visitData.museumId;
 
-        const sectionsResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`);
+        const sectionsResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`, { credentials: 'include' });
         const sectionsData = await sectionsResponse.json();
         setSections(sectionsData);
 
@@ -66,7 +66,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         }));
         setVisitedWorks(enrichedVisitedWorks);
 
-        const worksResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/works`);
+        const worksResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/works`, { credentials: 'include' });
         const worksData = await worksResponse.json();
 
         const enrichedAllWorks = worksData.map(work => ({

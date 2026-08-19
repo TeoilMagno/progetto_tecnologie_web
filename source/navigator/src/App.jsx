@@ -9,6 +9,7 @@ import Visits from './pages/Visits';
 import JoinSession from './pages/JoinSession';
 import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
 import MapView from '../react/museum-map/src/components/mapView';
+import StudentWaitingRoom from './pages/studentWaitingRoom';
 
 // Placeholder per le pagine future
 const Placeholder = ({ title }) => (
@@ -74,6 +75,7 @@ export default function App() {
               <Route path="/free" element={<Placeholder title="Free Mode" />} />
               <Route path="/map" element={<MapRouteWrapper />} />
               <Route path="/menu" element={<Placeholder title="Menu" />} />
+              <Route path="/waiting-room" element={<StudentWaitingRoom />} />
             </Routes>
           </main>
 

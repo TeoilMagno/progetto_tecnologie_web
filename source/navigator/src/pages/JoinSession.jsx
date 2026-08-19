@@ -27,6 +27,32 @@ export default function JoinSession() {
   const [selectedVisitId, setSelectedVisitId] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false);
   
+  useEffect(() => {
+    // Quando uno studente si unisce alla stanza, aggiorniamo la lista del professore
+    socket.on('student_joined', (student) => {
+      setConnectedStudents((prev) => [...prev, student]);
+    });
+
+    socket.on('room_joined', (data) => {
+      if (data.success) {
+        // Reindirizziamo alla sala d'attesa dello studente anziché direttamente alla mappa
+        navigate(`/waiting-room?roomCode=${data.roomCode}&studentName=${encodeURIComponent(studentName)}`);
+      }
+    });
+
+    socket.on('error', (msg) => {
+      setErrorMsg(msg);
+      setTimeout(() => setErrorMsg(''), 3000);
+    });
+
+    // Pulizia dei listener quando il componente si smonta
+    return () => {
+      socket.off('student_joined');
+      socket.off('room_joined');
+      socket.off('error');
+    };
+  }, []);
+
   // 1. Fetch utente unico all'avvio
   useEffect(() => {
     let isMounted = true;
@@ -108,6 +134,7 @@ export default function JoinSession() {
       fetch(`${API_BASE_URL}/current-user/type`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ type }),
       }).catch((err) => console.error('Error saving user type:', err));
     }
@@ -143,6 +170,11 @@ export default function JoinSession() {
 
   const handleStartSharedSession = () => {
     if (!selectedVisitId || !teacherRoomCode) return;
+    
+    // Avvisiamo tutti i socket della stanza che la sessione è partita
+    socket.emit('start_shared_session', { roomCode: teacherRoomCode, visitId: selectedVisitId });
+
+    // Spostiamo anche il docente sulla mappa
     navigate(`/map?visitId=${selectedVisitId}&roomCode=${teacherRoomCode}&role=teacher`);
   };
 

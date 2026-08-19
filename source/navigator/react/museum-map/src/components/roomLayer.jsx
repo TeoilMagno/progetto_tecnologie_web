@@ -6,7 +6,7 @@ export default function RoomLayer({ onBack, section, visitedWorks, activeWorkId,
   //const API_BASE_URL = window.location.origin + "/api";
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/sections/${section._id}/works`)
+    fetch(`${API_BASE_URL}/sections/${section._id}/works`, { credentials: 'include' })
       .then((response) => response.json())
       .then((data) => {
         setWorks(data); // Salviamo tutte le opere della sezione (per sicurezza/cache)
