@@ -18,9 +18,9 @@
       Registrati con Google
     </a>
 
-    <a href="/login/federated/facebook" class="btn w-100 mb-3" style="background:#1877F2; color:#fff; font-weight:500;">
-      <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" width="20" style="margin-right:8px; vertical-align:middle;">
-      Registrati con Facebook
+    <a href="/login/federated/github" class="btn w-100 mb-3" style="background:#24292e; color:#fff; font-weight:500;">
+      <img src="https://www.svgrepo.com/show/512317/github-142.svg" width="20" style="margin-right:8px; vertical-align:middle; filter: invert(1);">
+      Registrati con GitHub
     </a>
 
     <div class="d-flex align-items-center mb-3">
@@ -47,6 +47,13 @@
       <div class="mb-4">
         <label class="form-label-aura" for="confirm-password">Conferma password</label>
         <input type="password" id="confirm-password" name="confirm_password" class="form-control input-aura" placeholder="Ripeti la password" autocomplete="new-password" required />
+        
+        <div class="form-check mt-2">
+          <input class="form-check-input bg-secondary border-secondary shadow-none" type="checkbox" id="show-password-signup" style="cursor: pointer;" onclick="toggleSignupPasswords()">
+          <label class="form-check-label text-secondary small" for="show-password-signup" style="cursor: pointer;">
+            Mostra password
+          </label>
+        </div>
       </div>
       <button type="submit" class="btn btn-gradient w-100">Registrati ad ArtAround</button>
     </form>
@@ -97,6 +104,20 @@
         alert('Le password non coincidono.');
       }
     });
+
+    // Funzione per mostrare/nascondere entrambe le password in fase di registrazione
+    function toggleSignupPasswords() {
+      const pw1 = document.getElementById('new-password');
+      const pw2 = document.getElementById('confirm-password');
+      
+      if (pw1.type === "password") {
+        pw1.type = "text";
+        pw2.type = "text";
+      } else {
+        pw1.type = "password";
+        pw2.type = "password";
+      }
+    }
   </script>
 </body>
 </html>
