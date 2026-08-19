@@ -26,7 +26,7 @@ export default function JoinSession() {
   const [availableVisits, setAvailableVisits] = useState([]);
   const [selectedVisitId, setSelectedVisitId] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false);
-
+  
   // 1. Fetch utente unico all'avvio
   useEffect(() => {
     let isMounted = true;
@@ -63,20 +63,35 @@ export default function JoinSession() {
   // 3. Fetch visite insegnante protetto (usa l'ID utente come dipendenza fissa)
   useEffect(() => {
     if (userType === 'teacher' && currentUser?._id) {
-      fetch(`${API_BASE_URL}/visits`)
-        .then((res) => res.json())
+      // Usiamo /my-visits per recuperare le visite personali/private del docente loggato
+      fetch(`${API_BASE_URL}/my-visits`, { credentials: 'include' })
+        .then((res) => {
+          if (!res.ok) throw new Error("Errore nel recupero delle visite personali");
+          return res.json();
+        })
         .then((data) => {
-          const teacherVisits = data.filter(visit => 
-            visit.creator && (visit.creator._id === currentUser._id || visit.creator === currentUser._id)
-          );
-          setAvailableVisits(teacherVisits);
-          if (teacherVisits.length > 0 && !selectedVisitId) {
-            setSelectedVisitId(teacherVisits[0]._id);
+          const currentMuseumId = localStorage.getItem('selected_museum_id');
+
+          // Se vuoi filtrare escludendo le bozze (supponendo che ci sia un campo isDraft o simile)
+          // altrimenti puoi usare direttamente 'data'
+          const activeVisits = data.filter(visit => {
+            if (visit.isDraft) return false;
+
+            // Gestione sicura del confronto del museo (può essere stringa o oggetto)
+            if (!currentMuseumId) return true; // Se per qualche motivo non c'è il museo salvato, le mostra tutte
+            
+            const visitMuseumId = visit.museumId?._id ? visit.museumId._id.toString() : visit.museumId?.toString();
+            return visitMuseumId === currentMuseumId;
+          });
+
+          setAvailableVisits(activeVisits);
+          if (activeVisits.length > 0 && !selectedVisitId) {
+            setSelectedVisitId(activeVisits[0]._id);
           }
         })
         .catch((err) => console.error("Errore caricamento visite insegnante:", err));
     }
-  }, [userType, currentUser?._id]); // <-- Dipendenza mirata solo all'ID, evita loop!
+  }, [userType, currentUser?._id]);
 
   const handleSelectType = (type) => {
     if (type === 'teacher') {
@@ -333,7 +348,17 @@ export default function JoinSession() {
           onClose={() => setShowLoginModal(false)}
           onLoginSuccess={() => {
             setShowLoginModal(false);
-            window.location.reload(); // Ricarica per aggiornare i dati dell'utente loggato
+            
+            // Ricarichiamo i dati dell'utente in tempo reale senza perdere la pagina
+            fetch(`${API_BASE_URL}/current-user`, { credentials: 'include' })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data) {
+                  setCurrentUser(data);
+                  setUserType('teacher'); // Imposta direttamente il ruolo insegnante!
+                }
+              })
+              .catch((err) => console.error("Errore aggiornamento utente post-login:", err));
           }}
         />
       </div>

@@ -25,9 +25,8 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
       });
 
       if (response.redirected || response.ok) {
-        // Login riuscito, ricarichiamo o aggiorniamo lo stato utente
-        onLoginSuccess();
-        onClose();
+        // INVECE DI UN RELOAD GENERICO, CHIUDIAMO E AVVISIAMO IL PADRE
+        onLoginSuccess(); 
       } else {
         setError('Credenziali non valide. Riprova.');
       }
