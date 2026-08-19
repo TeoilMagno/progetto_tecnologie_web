@@ -388,4 +388,4 @@ export default function MapView({ visitId }) {
       />
     </div>
   );
-}
+
