@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Home, Compass, User, MapPin, Map as MapIcon, Menu, Settings, Users } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 // Importiamo la pagina Home e le nuove pagine/componenti
 import HomePage from './pages/Home';
 import Visits from './pages/Visits';
 import JoinSession from './pages/JoinSession';
 import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
+import MapView from '../react/museum-map/src/components/mapView';
 
 // Placeholder per le pagine future
 const Placeholder = ({ title }) => (
@@ -18,6 +20,15 @@ const Placeholder = ({ title }) => (
     <p className="max-w-md text-sm text-slate-400">Questa sezione verrà sviluppata nei primi step del progetto.</p>
   </div>
 );
+
+function MapRouteWrapper() {
+  const [searchParams] = useSearchParams();
+  const visitId = searchParams.get('visitId');
+  const roomCode = searchParams.get('roomCode');
+  const role = searchParams.get('role'); // 'teacher' o 'student'
+
+  return <MapView visitId={visitId} roomCode={roomCode} isTeacher={role === 'teacher'} />;
+}
 
 export default function App() {
   const [selectedMuseum, setSelectedMuseum] = useState(null);
@@ -61,7 +72,7 @@ export default function App() {
               <Route path="/join" element={<JoinSession />} />
               <Route path="/my-visits" element={<Placeholder title="My Visits" />} />
               <Route path="/free" element={<Placeholder title="Free Mode" />} />
-              <Route path="/map" element={<Placeholder title="Interactive Map" />} />
+              <Route path="/map" element={<MapRouteWrapper />} />
               <Route path="/menu" element={<Placeholder title="Menu" />} />
             </Routes>
           </main>

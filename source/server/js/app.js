@@ -42,7 +42,10 @@ app.use((req, res, next) => {
 });
 
 // ─── Middleware base ───────────────────────────────────────────────────────
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // TODO: da sostituire con qualunque sia l'url in produzione
+  credentials: true                
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -57,7 +60,8 @@ app.use(session({
   saveUninitialized: false,
   cookie: { 
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    secure: false
+    secure: false,
+    sameSite: 'lax'
   }
 }));
 app.use(passport.initialize());

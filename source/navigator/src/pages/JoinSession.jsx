@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { QrCode, GraduationCap, Presentation, Users, Loader2, AlertCircle, RefreshCw, Sparkles, ArrowLeft, Send } from 'lucide-react';
 import { io } from 'socket.io-client';
 import { API_BASE_URL, SOCKET_URL } from '../config';
+import LoginModal from '../../react/museum-map/src/components/loginModal';
 
 // Inizializziamo il socket fuori dal componente così la connessione è unica
 const socket = io(SOCKET_URL);
@@ -22,76 +23,88 @@ export default function JoinSession() {
   const [connectedStudents, setConnectedStudents] = useState([]);
   const [isRoomCreated, setIsRoomCreated] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [availableVisits, setAvailableVisits] = useState([]);
+  const [selectedVisitId, setSelectedVisitId] = useState('');
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
+  // 1. Fetch utente unico all'avvio
   useEffect(() => {
-    fetch(`${API_BASE_URL}/current-user`)
-      .then((res) => res.json())
+    let isMounted = true;
+    fetch(`${API_BASE_URL}/current-user`, { credentials: 'include' })
+      .then((res) => {
+        if (!res.ok) throw new Error("Non autenticato");
+        return res.json();
+      })
       .then((data) => {
-        if (data) {
+        if (isMounted && data) {
           setCurrentUser(data);
-          setUserType(data.type || 'none');
-        } else {
-          setCurrentUser({ name: 'Ospite' });
+          // Non forziamo userType a 'none' se l'utente ha già scelto, 
+          // lasciamo che sia lui a scegliere o usiamo il suo default
         }
-        setLoading(false);
+        if (isMounted) setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching user:', err);
-        setLoading(false);
+        if (isMounted) {
+          setCurrentUser({ name: 'Ospite' });
+          setLoading(false);
+        }
       });
 
-    // Ascolto eventi Socket.io
-    socket.on('student_joined', (student) => {
-      // Aggiungiamo lo studente alla lista del prof
-      setConnectedStudents(prev => [...prev, student]);
-    });
-
-    socket.on('room_joined', (data) => {
-      if (data.success) {
-        // Lo studente è entrato con successo!
-        alert("Connesso alla stanza: " + data.roomCode);
-        // TODO: Prossimo step -> navigate(`/live-session/${data.roomCode}`);
-      }
-    });
-
-    socket.on('error', (msg) => {
-      setErrorMsg(msg);
-      setTimeout(() => setErrorMsg(''), 3000); // Pulisce l'errore dopo 3s
-    });
-
-    // Pulizia listeners quando si smonta il componente
-    return () => {
-      socket.off('student_joined');
-      socket.off('room_joined');
-      socket.off('error');
-    };
+    return () => { isMounted = false; };
   }, []);
 
+  // 2. Salvataggio nome locale sicuro
   useEffect(() => {
     if (studentName) {
       localStorage.setItem('student_name', studentName);
     }
   }, [studentName]);
 
+  // 3. Fetch visite insegnante protetto (usa l'ID utente come dipendenza fissa)
+  useEffect(() => {
+    if (userType === 'teacher' && currentUser?._id) {
+      fetch(`${API_BASE_URL}/visits`)
+        .then((res) => res.json())
+        .then((data) => {
+          const teacherVisits = data.filter(visit => 
+            visit.creator && (visit.creator._id === currentUser._id || visit.creator === currentUser._id)
+          );
+          setAvailableVisits(teacherVisits);
+          if (teacherVisits.length > 0 && !selectedVisitId) {
+            setSelectedVisitId(teacherVisits[0]._id);
+          }
+        })
+        .catch((err) => console.error("Errore caricamento visite insegnante:", err));
+    }
+  }, [userType, currentUser?._id]); // <-- Dipendenza mirata solo all'ID, evita loop!
+
   const handleSelectType = (type) => {
+    if (type === 'teacher') {
+      // Controlliamo se l'utente è loggato
+      if (!currentUser || !currentUser._id || currentUser.name === 'Ospite') {
+        // Invece di reindirizzare, apriamo il modale in stile Navigator!
+        setShowLoginModal(true);
+        return;
+      }
+    }
+
     setUserType(type);
-    if (currentUser) {
-      // Se l'utente è loggato, salviamo la scelta anche nel database
+    if (currentUser && currentUser._id) {
       fetch(`${API_BASE_URL}/current-user/type`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log('User type updated in DB:', data);
-        })
-        .catch((err) => console.error('Error saving user type:', err));
+      }).catch((err) => console.error('Error saving user type:', err));
     }
   };
 
+  // 3. Quando crea la stanza, passiamo al server o salviamo anche la visita scelta
   const handleCreateRoom = () => {
-    // Genera un codice alfanumerico casuale di 6 caratteri
+    if (!selectedVisitId) {
+      alert("Seleziona una visita da sincronizzare prima di avviare la stanza.");
+      return;
+    }
+
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code = '';
     for (let i = 0; i < 6; i++) {
@@ -101,8 +114,8 @@ export default function JoinSession() {
     setIsRoomCreated(true);
     setConnectedStudents([]);
 
-    // emettiamo l'evento socket al server
-    socket.emit('create_room', { roomCode: code });
+    // Inviamo al server il codice e l'ID della visita associata
+    socket.emit('create_room', { roomCode: code, visitId: selectedVisitId });
   };
 
   const handleJoinRoom = () => {
@@ -114,9 +127,8 @@ export default function JoinSession() {
   };
 
   const handleStartSharedSession = () => {
-    // TODO: Il prof avvia la sessione, porta tutti alla vista live
-    alert("Avvio spiegazione per " + connectedStudents.length + " studenti!");
-    // navigate(`/live-session/${teacherRoomCode}`);
+    if (!selectedVisitId || !teacherRoomCode) return;
+    navigate(`/map?visitId=${selectedVisitId}&roomCode=${teacherRoomCode}&role=teacher`);
   };
 
   const handleResetType = () => {
@@ -251,8 +263,29 @@ export default function JoinSession() {
             </div>
 
             {!isRoomCreated ? (
-              <div className="w-full bg-[#1e293b]/40 backdrop-blur-md border border-slate-800 rounded-3xl p-6 text-center flex flex-col items-center">
-                <button onClick={handleCreateRoom} className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 px-6 rounded-xl transition-all">
+              <div className="w-full bg-[#1e293b]/40 backdrop-blur-md border border-slate-800 rounded-3xl p-6 flex flex-col items-center">
+                <div className="w-full mb-4 text-left">
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-1">
+                    Seleziona Percorso da Sincronizzare
+                  </label>
+                  <select
+                    value={selectedVisitId}
+                    onChange={(e) => setSelectedVisitId(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500"
+                  >
+                    {availableVisits.map((visit) => (
+                      <option key={visit._id} value={visit._id} className="bg-slate-900 text-white">
+                        {visit.title} ({visit.works?.length || 0} opere)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <button
+                  onClick={handleCreateRoom}
+                  disabled={!selectedVisitId}
+                  className="w-full bg-purple-600 hover:bg-purple-500 disabled:bg-slate-800 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-lg shadow-purple-500/10"
+                >
                   Crea Nuova Stanza
                 </button>
               </div>
@@ -294,6 +327,15 @@ export default function JoinSession() {
           </div>
         )}
 
+        {/* MODALE DI LOGIN INTEGRATO */}
+        <LoginModal 
+          isOpen={showLoginModal} 
+          onClose={() => setShowLoginModal(false)}
+          onLoginSuccess={() => {
+            setShowLoginModal(false);
+            window.location.reload(); // Ricarica per aggiornare i dati dell'utente loggato
+          }}
+        />
       </div>
     </div>
   );
