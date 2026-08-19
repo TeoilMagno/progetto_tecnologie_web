@@ -616,16 +616,16 @@ body.artaround-theme::-webkit-scrollbar {
 
 /* MIGLIORAMENTO OUTLINE INFOBTN E RESET LINKS */
 .btn-outline-info {
-  color: #00ccff !important;
-  border-color: rgba(0, 204, 255, 0.4) !important;
-  transition: all 0.3s ease !important;
+  color: #00ccff ;
+  border-color: rgba(0, 204, 255, 0.4) ;
+  transition: all 0.3s ease ;
 }
 
 .btn-outline-info:hover {
-  background-color: #00ccff !important;
-  border-color: #00ccff !important;
-  color: #000000 !important;
-  box-shadow: 0 0 15px rgba(0, 204, 255, 0.4) !important;
+  background-color: #00ccff ;
+  border-color: #00ccff ;
+  color: #000000 ;
+  box-shadow: 0 0 15px rgba(0, 204, 255, 0.4) ;
 }
 
 .btn-link.text-secondary {
@@ -633,25 +633,25 @@ body.artaround-theme::-webkit-scrollbar {
 }
 
 .btn-link.text-secondary:hover {
-  color: #ffffff !important;
+  color: #ffffff ;
 }
 
 /* INPUT CASSELLE DI SCRITTURA SIDEBAR (MIGLIORAMENTO VISIBILITA') */
 .offcanvas .glass-input {
-  background-color: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  transition: all 0.3s ease !important;
+  background-color: rgba(255, 255, 255, 0.06) ;
+  border: 1px solid rgba(255, 255, 255, 0.18) ;
+  transition: all 0.3s ease ;
 }
 
 .offcanvas .glass-input:hover {
-  border-color: rgba(0, 204, 255, 0.5) !important;
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(0, 204, 255, 0.5) ;
+  background-color: rgba(255, 255, 255, 0.1) ;
 }
 
 .offcanvas .glass-input:focus {
-  border-color: #00ccff !important;
-  background-color: rgba(20, 20, 30, 0.95) !important;
-  box-shadow: 0 0 10px rgba(0, 204, 255, 0.3) !important;
+  border-color: #00ccff ;
+  background-color: rgba(20, 20, 30, 0.95) ;
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.3) ;
 }
 
 /* Barre di ricerca interne per i tag e liste dei filtri */
@@ -659,41 +659,48 @@ body.artaround-theme::-webkit-scrollbar {
 #filter-author-search,
 #filter-technique-search,
 #filter-workstyle-search {
-  background-color: rgba(255, 255, 255, 0.04) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.25) !important;
-  border-radius: 6px !important;
-  padding: 6px 12px !important;
-  transition: all 0.3s ease !important;
-  margin-top: 2px !important;
+  background-color: rgba(255, 255, 255, 0.04) ;
+  border: 1px solid rgba(255, 255, 255, 0.1) ;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.25) ;
+  border-radius: 6px ;
+  padding: 6px 12px ;
+  transition: all 0.3s ease ;
+  margin-top: 2px ;
 }
 
 #filter-style-search:hover,
 #filter-author-search:hover,
 #filter-technique-search:hover,
 #filter-workstyle-search:hover {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  border-bottom-color: rgba(0, 204, 255, 0.6) !important;
+  background-color: rgba(255, 255, 255, 0.08) ;
+  border-bottom-color: rgba(0, 204, 255, 0.6) ;
 }
 
 #filter-style-search:focus,
 #filter-author-search:focus,
 #filter-technique-search:focus,
 #filter-workstyle-search:focus {
-  background-color: rgba(20, 20, 30, 0.95) !important;
-  border-color: rgba(0, 204, 255, 0.3) !important;
-  border-bottom: 2px solid #00ccff !important; /* Bordo ciano luminoso */
-  box-shadow: 0 0 8px rgba(0, 204, 255, 0.25) !important;
+  background-color: rgba(20, 20, 30, 0.95) ;
+  border-color: rgba(0, 204, 255, 0.3) ;
+  border-bottom: 2px solid #00ccff ; /* Bordo ciano luminoso */
+  box-shadow: 0 0 8px rgba(0, 204, 255, 0.25) ;
 }
 
 /* NASCONDE LA SCROLLBAR NEGLI OFFCANVAS (FILTRI AVANZATI E CARRELLO) */
 #filterSidebar .offcanvas-body,
 #cartOffcanvas .offcanvas-body {
-  -ms-overflow-style: none !important;  /* IE e Edge */
-  scrollbar-width: none !important;     /* Firefox */
+  -ms-overflow-style: none ;  /* IE e Edge */
+  scrollbar-width: none ;     /* Firefox */
 }
 
 #filterSidebar .offcanvas-body::-webkit-scrollbar,
 #cartOffcanvas .offcanvas-body::-webkit-scrollbar {
-  display: none !important;             /* Chrome, Safari, Edge, Opera */
+  display: none ;             /* Chrome, Safari, Edge, Opera */
+}
+
+/* Rende i placeholder più visibili nei campi scuri */
+.glass-input::placeholder,
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6) ; /* Bianco al 60% di opacità */
+    opacity: 1; /* Obbligatorio per Firefox che li sbiadisce di default */
 }

@@ -277,7 +277,9 @@ function renderMuseumDashboard(museumInfo) {
     </div>
   `;
 
-  loadMuseumSubView(currentView, museumInfo._id);
+  // Chiamiamo switchMuseumView invece di loadMuseumSubView per innescare 
+  // anche il cambio dei filtri nella barra laterale fin dal primo caricamento!
+  switchMuseumView(currentView || 'works', museumInfo._id);
 }
 
 // controlla se l'utente gestisce un determinato museo (o se è admin)
@@ -397,11 +399,11 @@ async function loadMuseumSubView(view, museumId) {
 
       if (view === 'works') {
         currentWorks = data;
-        initializeWorkFiltersData(data);
-        renderWorksList(data); // Rendering per le Opere
+        initializeWorkFiltersData(currentWorks);
+        renderWorksList(currentWorks); // Rendering per le Opere
       } else {
         currentItems = data; // Conserviamo gli articoli per l'editor
-        renderItemsList(data); // Il tuo vecchio rendering per gli Articoli (in vendita)
+        renderItemsList(currentItems); // Il tuo vecchio rendering per gli Articoli (in vendita)
       }
     }
   } catch (error) {
@@ -498,8 +500,7 @@ function renderWorksList(works) {
 
   works.forEach((work) => {
     // Estraiamo la prima descrizione disponibile nell'array, se presente
-    const primaryDesc = work.description && work.description.length > 0 
-      ? work.description[0].description 
+    const primaryDesc = work.description ? work.description.medium.short
       : "Descrizione culturale in corso di generazione...";
 
     subContainer.innerHTML += `
@@ -515,8 +516,8 @@ function renderWorksList(works) {
                 <h5 class="card-title mb-1 text-truncate text-info">${work.name}</h5>
                 
                 <p class="small text-secondary mb-2">
-                  <i class="bi bi-person-fill me-1"></i> ${work.author} <br>
-                  <i class="bi bi-calendar3 me-1"></i> ${work.year} &bull; ${work.style}
+                  <i class="bi bi-person-fill me-1"></i> ${work.authorName} <br>
+                  <i class="bi bi-calendar3 me-1"></i> ${work.year} &bull; ${work.styleName}
                 </p>
                 
                 <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8">

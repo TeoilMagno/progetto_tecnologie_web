@@ -466,13 +466,15 @@ async function saveWorkFromModal() {
   const workData = {
     name: document.getElementById("work-name").value.trim(),
     author: document.getElementById("work-author-id").value.trim(),
+    authorName: document.getElementById("work-author-search").value.trim(), // NUOVO!
     technique: document.getElementById("work-technique").value.trim(),
     year: document.getElementById("work-year").value.trim(),
     style: document.getElementById("work-style-id").value.trim() || undefined,
+    styleName: document.getElementById("work-style-search").value.trim() || undefined, // NUOVO!
     image: document.getElementById("work-image").value.trim(),
     roomId: roomId
   };
-
+  
   if (!workData.name || !workData.author || !workData.technique) { 
     alert("Titolo, Autore (da selezionare dalla tendina) e Tecnica sono campi obbligatori!"); 
     return; 

@@ -119,11 +119,13 @@ async function applyMuseumFilters() {
 
     // Filtro Giorno di apertura (Aggiornato per il nuovo modello schedule)
     if (selectedDay && selectedDay !== "") {
-      // Se il museo non ha lo schedule, o se per quel giorno specifico "isOpen" è falso, lo nascondiamo
+      // Se il museo non ha lo schedule, è sicuramente chiuso
       if (!museum.schedule || museum.schedule.length === 0) return false;
       
+      // Cerchiamo se il giorno richiesto è presente nell'array.
+      // Dato che salviamo solo i giorni aperti, se NON lo trova, il museo è chiuso!
       const dayConfig = museum.schedule.find(s => s.day === selectedDay);
-      if (!dayConfig || !dayConfig.isOpen) {
+      if (!dayConfig) {
         return false; 
       }
     }
@@ -347,8 +349,6 @@ function attachItemFilterEvents() {
   }
 }
 
-// TODO: i filtri sono ancora da testare dato che nel db gli elementi non hanno il modello appropriato
-// TODO: come prime osservazioni author e style quasi sicuramente non andranno dato che nel modello ci sono solo riferimenti a modelli author
 // ==========================================
 // MODULO FILTRI OPERE (Works)
 // ==========================================
@@ -360,9 +360,9 @@ function initializeWorkFiltersData(works) {
   const stylesSet = new Set();
 
   works.forEach(work => {
-    // Gestione sicura nel caso in cui author e style siano popolati (oggetti) o semplici stringhe
-    const authorName = typeof work.author === 'string' ? work.author : work.author?.name;
-    const styleName = typeof work.style === 'string' ? work.style : work.style?.name;
+    // ESTRAZIONE BLINDATA: Cerca il nome in tutti i campi possibili, scartando gli ID di Mongoose (24 caratteri)
+    const authorName = work.authorName || work.author?.name || (typeof work.author === 'string' && work.author.length !== 24 ? work.author : null);
+    const styleName = work.styleName || work.style?.name || (typeof work.style === 'string' && work.style.length !== 24 ? work.style : null);
     const techniqueName = work.technique;
 
     if (authorName) authorsSet.add(authorName);
@@ -389,7 +389,7 @@ function renderDynamicCheckboxes(containerId, items, prefix) {
     const safeId = `${prefix}-${item.replace(/[^a-zA-Z0-9]/g, '-')}`;
     return `
       <div class="form-check ${prefix}-item">
-        <input class="form-check-input ${prefix}-cb cursor-pointer" type="checkbox" value="${item}" id="${safeId}">
+        <input class="form-check-input ${prefix}-cb cursor-pointer" type="checkbox" value="${item}" id="${safeId}" onchange="applyWorkFilters()">
         <label class="form-check-label text-white small w-100 cursor-pointer text-truncate" for="${safeId}" title="${item}">
           ${item}
         </label>
@@ -405,9 +405,10 @@ function applyWorkFilters() {
   const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
 
   let filtered = currentWorks.filter(work => {
-    const authorName = typeof work.author === 'string' ? work.author : work.author?.name || "";
+    // USIAMO LA STESSA IDENTICA ESTRAZIONE!
+    const authorName = work.authorName || work.author?.name || (typeof work.author === 'string' && work.author.length !== 24 ? work.author : "");
+    const styleName = work.styleName || work.style?.name || (typeof work.style === 'string' && work.style.length !== 24 ? work.style : "");
     const techniqueName = work.technique || "";
-    const styleName = typeof work.style === 'string' ? work.style : work.style?.name || "";
 
     if (authorCbs.length > 0 && !authorCbs.includes(authorName)) return false;
     if (techniqueCbs.length > 0 && !techniqueCbs.includes(techniqueName)) return false;
