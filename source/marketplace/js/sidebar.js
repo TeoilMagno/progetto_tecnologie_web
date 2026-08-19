@@ -207,7 +207,72 @@ window.populateFilters = function(context) {
         <button class="btn btn-gradient w-100 mt-3" onclick="applyWorkFilters()" data-bs-dismiss="offcanvas">Applica Filtri</button>
         <button class="btn btn-link text-secondary w-100 mt-2 text-decoration-none small" onclick="resetWorkFilters()">Resetta</button>
       `;
-  }
+  } else if(context === 'visits') {
+    html = `
+      <div class="filter-section mb-4">
+        <h6 class="text-uppercase text-secondary small fw-bold mb-3">Prezzo</h6>
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" id="filter-visit-free" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="filter-visit-free">Solo gratuite</label>
+        </div>
+        <label class="form-label text-white small mb-1">Prezzo massimo: <span id="visit-price-value" class="text-info fw-bold">100+ €</span></label>
+        <input type="range" class="form-range custom-range" id="visit-price-slider" min="0" max="100" step="5" value="100" onchange="applyVisitFilters()">
+      </div>
+
+      <div class="filter-section mb-4">
+        <h6 class="text-uppercase text-secondary small fw-bold mb-3">Durata del Tour</h6>
+        <label class="form-label text-white small mb-1"><span id="visit-duration-value" class="text-info fw-bold">Qualsiasi</span></label>
+        <input type="range" class="form-range custom-range" id="visit-duration-slider" min="15" max="180" step="15" value="180" onchange="applyVisitFilters()">
+      </div>
+
+      <div class="filter-section mb-4">
+        <h6 class="text-uppercase text-secondary small fw-bold mb-3">Accessibilità</h6>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-acc-cb" type="checkbox" id="v-acc-wheel" value="wheelchair_accessible" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-acc-wheel">Sedia a Rotelle</label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-acc-cb" type="checkbox" id="v-acc-blind" value="blind_friendly" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-acc-blind">Ipovedenti (Audio)</label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-acc-cb" type="checkbox" id="v-acc-deaf" value="deaf_friendly" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-acc-deaf">Sordi (Testo/LIS)</label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-acc-cb" type="checkbox" id="v-acc-dsa" value="dsa_friendly" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-acc-dsa">DSA Friendly (Testi Semplificati)</label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-acc-cb" type="checkbox" id="v-acc-sensory" value="sensory_friendly" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-acc-sensory">Sensory Friendly (Ambiente Calmo)</label>
+        </div>
+      </div>
+
+      <div class="filter-section mb-4">
+        <h6 class="text-uppercase text-secondary small fw-bold mb-3">Pubblico Consigliato</h6>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-target-cb" type="checkbox" id="v-targ-kids" value="kids" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-targ-kids">Bambini</label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-target-cb" type="checkbox" id="v-targ-fam" value="families" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-targ-fam">Famiglie</label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-target-cb" type="checkbox" id="v-targ-adults" value="adults" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-targ-adults">Adulti</label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input visit-target-cb" type="checkbox" id="v-targ-schools" value="schools" onchange="applyVisitFilters()">
+          <label class="form-check-label text-white small" for="v-targ-schools">Scuole</label>
+        </div>
+      </div>
+
+      <button class="btn btn-outline-secondary w-100 mt-2" onclick="resetVisitFilters()">
+        <i class="bi bi-arrow-counterclockwise me-1"></i> Resetta Filtri
+      </button>
+  `}
 
   container.innerHTML = html;
 

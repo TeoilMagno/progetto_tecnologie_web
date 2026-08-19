@@ -1,22 +1,20 @@
 function goBackToVisits() {
-  // Controlliamo da dove proviene l'utente
-  const referrer = document.referrer;
-
-  // Se proviene da "Le mie visite" o da "Esplora visite", torna alla pagina precedente reale
-  if (referrer && (referrer.includes('/my-visits') || referrer.includes('/explore-visits'))) {
-    window.location.href = referrer;
+  // Se c'è una cronologia nel browser, torna semplicemente alla pagina precedente
+  if (window.history.length > 1) {
+    window.history.back();
   } else {
-    // Fallback sicuro se è arrivato tramite un link diretto, segnalibro o dopo un login:
-    // Rimanda alla pagina delle visite pubbliche
-    window.location.href = '/public-visits';
+    // Fallback sicuro se l'utente ha aperto il link in una nuova scheda
+    window.location.href = '/'; 
   }
 }
 
-function startVisit()
-{
+function startVisit() {
   const urlParams = new URLSearchParams(window.location.search);
   const visitId = urlParams.get("id");
-  window.location.replace(`/navigator/visits/${visitId}`);
+  
+  // Usiamo .href invece di .replace() per NON cancellare la cronologia!
+  // Così il tasto "Indietro" del browser riporterà correttamente ai dettagli della visita.
+  window.location.href = `/navigator/visits/${visitId}`;
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -32,9 +30,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const response = await fetch(`${API_BASE_URL}/visits/${visitId}`);
-    if (!response.ok)
-      throw new Error("Impossibile caricare i dettagli della visita.");
+    if (!response.ok) {
+      if (response.status === 403) {
+        alert("Questa visita è privata o richiede il login per essere visualizzata.");
+        window.location.href = '/403'; // O lo rimandi alla home
+        return;
+      }
 
+      if (response.status === 404) {
+        alert("Visita non trovata.");
+        window.location.href = '/404'; 
+        return;
+      }
+
+      throw new Error("Impossibile caricare i dettagli della visita.");
+    }
+
+    // mostra la pagina solo se l'utente e' autorizzato
+    const contentWrapper = document.getElementById("visit-content-wrapper");
+    if (contentWrapper) contentWrapper.style.display = "block";
     const visit = await response.json();
 
     // recuperiamo l'utente corrente

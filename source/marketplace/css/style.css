@@ -9,7 +9,8 @@
     --aura-glow: radial-gradient(circle at 50% -20%, rgba(58, 168, 237, 0.4), transparent 70%);
 }
 
-/* BASE: Agganciato alla classe artaround-theme per priorità su Bootstrap */
+/* BASE: Agganciato alla classe artaround-theme per priorità su Bootstrap e HTML */
+html,
 body.artaround-theme {
     background-color: var(--bg-dark);
     color: var(--text-primary);
@@ -18,6 +19,13 @@ body.artaround-theme {
     background-attachment: fixed;
     background-repeat: no-repeat;
     min-height: 100vh;
+    -ms-overflow-style: none !important;  /* IE e Edge */
+    scrollbar-width: none !important;     /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body.artaround-theme::-webkit-scrollbar {
+    display: none !important;             /* Chrome, Safari, Edge, Opera */
 }
 
 /* HEADER */
@@ -447,4 +455,252 @@ body.artaround-theme {
 
 .toast-close:hover {
     color: #fff;
+}
+
+/* Menu Orari: Specificità mirata per sovrascrivere Bootstrap in modo pulito */
+/* FORZATURA COLORI MENU ORARI TRAMITE ID */
+#menu-orari-museo .giorno-label {
+    color: #a1a1aa; /* Grigio chiaro per i giorni della settimana */
+}
+
+#menu-orari-museo .orario-aperto {
+    color: #ffffff; /* Bianco puro e brillante per gli orari aperti */
+    font-weight: 800;
+}
+
+#menu-orari-museo .orario-chiuso {
+    color: #ef4444; /* Rosso chiaro per i giorni di chiusura */
+    font-weight: 800;
+}
+/* TAB PERSONALIZZATI (SEZIONE ADOZIONI E PROGETTO) */
+.custom-tabs {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.custom-tabs .nav-link {
+  color: var(--text-secondary) !important;
+  border: none !important;
+  background: transparent !important;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-bottom: 3px solid transparent !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.8;
+}
+
+.custom-tabs .nav-link:hover {
+  color: #ffffff !important;
+  opacity: 1;
+}
+
+.custom-tabs .nav-link.active {
+  color: #00ccff !important; /* Ciano brillante per staccare nettamente */
+  background: rgba(0, 204, 255, 0.06) !important; /* Leggerissimo sfondo ciano trasparente */
+  border-bottom: 3px solid #00ccff !important; /* Sottolineatura ciano brillante */
+  border-radius: 8px 8px 0 0 !important;
+  opacity: 1;
+  box-shadow: 0 4px 12px rgba(0, 204, 255, 0.1);
+}
+
+/* SIDEBAR FILTRI AVANZATI: RANGE SLIDER PERSONALIZZATO */
+.custom-range {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 100%;
+  height: 6px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.12) !important;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.custom-range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  background: transparent;
+  border-radius: 5px;
+}
+
+.custom-range::-webkit-slider-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #00ccff; /* Ciano brillante */
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px; /* Centra il pallino sulla linea */
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.6);
+  transition: transform 0.15s ease, background-color 0.2s, box-shadow 0.2s;
+  border: none;
+}
+
+.custom-range::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  background: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 204, 255, 0.9);
+}
+
+.custom-range::-moz-range-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+}
+
+.custom-range::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #00ccff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.6);
+  transition: transform 0.15s ease, background-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-range::-moz-range-thumb:hover {
+  transform: scale(1.25);
+  background: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 204, 255, 0.9);
+}
+
+/* INPUT CHECKBOX IN STILE TECH GLASS */
+.form-check-input {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-check-input:checked {
+  background-color: #00ccff !important;
+  border-color: #00ccff !important;
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.4) !important;
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 2px rgba(0, 204, 255, 0.25) !important;
+  border-color: rgba(0, 204, 255, 0.5) !important;
+}
+
+/* SCROLLBAR PERSONALIZZATA (LISTE INTERNE DEI FILTRI) */
+#filter-style-list::-webkit-scrollbar,
+#filter-author-list::-webkit-scrollbar,
+#filter-technique-list::-webkit-scrollbar,
+#filter-workstyle-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+#filter-style-list::-webkit-scrollbar-track,
+#filter-author-list::-webkit-scrollbar-track,
+#filter-technique-list::-webkit-scrollbar-track,
+#filter-workstyle-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+}
+
+#filter-style-list::-webkit-scrollbar-thumb,
+#filter-author-list::-webkit-scrollbar-thumb,
+#filter-technique-list::-webkit-scrollbar-thumb,
+#filter-workstyle-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+#filter-style-list::-webkit-scrollbar-thumb:hover,
+#filter-author-list::-webkit-scrollbar-thumb:hover,
+#filter-technique-list::-webkit-scrollbar-thumb:hover,
+#filter-workstyle-list::-webkit-scrollbar-thumb:hover {
+  background: #00ccff;
+}
+
+/* MIGLIORAMENTO OUTLINE INFOBTN E RESET LINKS */
+.btn-outline-info {
+  color: #00ccff ;
+  border-color: rgba(0, 204, 255, 0.4) ;
+  transition: all 0.3s ease ;
+}
+
+.btn-outline-info:hover {
+  background-color: #00ccff ;
+  border-color: #00ccff ;
+  color: #000000 ;
+  box-shadow: 0 0 15px rgba(0, 204, 255, 0.4) ;
+}
+
+.btn-link.text-secondary {
+  transition: color 0.2s ease;
+}
+
+.btn-link.text-secondary:hover {
+  color: #ffffff ;
+}
+
+/* INPUT CASSELLE DI SCRITTURA SIDEBAR (MIGLIORAMENTO VISIBILITA') */
+.offcanvas .glass-input {
+  background-color: rgba(255, 255, 255, 0.06) ;
+  border: 1px solid rgba(255, 255, 255, 0.18) ;
+  transition: all 0.3s ease ;
+}
+
+.offcanvas .glass-input:hover {
+  border-color: rgba(0, 204, 255, 0.5) ;
+  background-color: rgba(255, 255, 255, 0.1) ;
+}
+
+.offcanvas .glass-input:focus {
+  border-color: #00ccff ;
+  background-color: rgba(20, 20, 30, 0.95) ;
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.3) ;
+}
+
+/* Barre di ricerca interne per i tag e liste dei filtri */
+#filter-style-search,
+#filter-author-search,
+#filter-technique-search,
+#filter-workstyle-search {
+  background-color: rgba(255, 255, 255, 0.04) ;
+  border: 1px solid rgba(255, 255, 255, 0.1) ;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.25) ;
+  border-radius: 6px ;
+  padding: 6px 12px ;
+  transition: all 0.3s ease ;
+  margin-top: 2px ;
+}
+
+#filter-style-search:hover,
+#filter-author-search:hover,
+#filter-technique-search:hover,
+#filter-workstyle-search:hover {
+  background-color: rgba(255, 255, 255, 0.08) ;
+  border-bottom-color: rgba(0, 204, 255, 0.6) ;
+}
+
+#filter-style-search:focus,
+#filter-author-search:focus,
+#filter-technique-search:focus,
+#filter-workstyle-search:focus {
+  background-color: rgba(20, 20, 30, 0.95) ;
+  border-color: rgba(0, 204, 255, 0.3) ;
+  border-bottom: 2px solid #00ccff ; /* Bordo ciano luminoso */
+  box-shadow: 0 0 8px rgba(0, 204, 255, 0.25) ;
+}
+
+/* NASCONDE LA SCROLLBAR NEGLI OFFCANVAS (FILTRI AVANZATI E CARRELLO) */
+#filterSidebar .offcanvas-body,
+#cartOffcanvas .offcanvas-body {
+  -ms-overflow-style: none ;  /* IE e Edge */
+  scrollbar-width: none ;     /* Firefox */
+}
+
+#filterSidebar .offcanvas-body::-webkit-scrollbar,
+#cartOffcanvas .offcanvas-body::-webkit-scrollbar {
+  display: none ;             /* Chrome, Safari, Edge, Opera */
+}
+
+/* Rende i placeholder più visibili nei campi scuri */
+.glass-input::placeholder,
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6) ; /* Bianco al 60% di opacità */
+    opacity: 1; /* Obbligatorio per Firefox che li sbiadisce di default */
 }

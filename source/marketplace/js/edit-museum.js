@@ -2,9 +2,11 @@ let currentMuseumId = null;
 let currentMuseumData = null;
 let museumSections = [];
 let workModalInstance = null;
-let sectionModalInstance = null;
 let roomModalInstance = null;
+let sectionModalInstance = null;
 let deleteMuseumModalInstance = null;
+let currentFetchedAuthor = null;
+let currentFetchedStyle = null;
 
 // Cache globale per tenere in memoria i dati
 let worksCache = {};
@@ -27,6 +29,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  buildScheduleForm();
+
   await loadMuseumDetails();
 });
 
@@ -45,7 +49,39 @@ async function loadMuseumDetails() {
     document.getElementById("museum-image").value = currentMuseumData.image || "";
     document.getElementById("museum-tags").value = (currentMuseumData.tags || []).join(", ");
     document.getElementById("editor-title").innerText = `Modifica: ${currentMuseumData.name}`;
+    document.getElementById("museum-price").value = currentMuseumData.ticketPrice || "";
 
+    // Spunta le checkbox dei servizi
+    if (currentMuseumData.services) {
+      currentMuseumData.services.forEach(s => {
+        const cb = document.querySelector(`.srv-cb[value="${s}"]`);
+        if (cb) cb.checked = true;
+      });
+    }
+
+    // Spunta le checkbox di accessibilità
+    if (currentMuseumData.accessibility) {
+      currentMuseumData.accessibility.forEach(a => {
+        const cb = document.querySelector(`.acc-cb[value="${a}"]`);
+        if (cb) cb.checked = true;
+      });
+    }
+
+    // Ricostruisci il calendario orari
+    if (currentMuseumData.schedule) {
+      currentMuseumData.schedule.forEach(s => {
+        // Se il giorno è presente in questo array, significa che è aperto!
+        const row = document.querySelector(`.schedule-row[data-day="${s.day}"]`);
+        if (row) {
+          const toggle = row.querySelector('.sch-toggle');
+          const input = row.querySelector('.sch-hours');
+          
+          toggle.checked = true;
+          input.value = s.hours || "";
+          input.disabled = false;
+        }
+      });
+    }
     await loadSectionsAndWorks();
   } catch (error) {
     console.error("Errore caricamento:", error);
@@ -99,7 +135,10 @@ function renderSectionAccordionItem(section, works, index) {
   const rooms = section.rooms || [];
   
   if (rooms.length === 0) {
-    roomsHtml = `<div class="alert alert-warning bg-transparent border-warning text-warning small p-2 mb-0">Nessuna stanza creata. Devi creare almeno una stanza per poter inserire le opere.</div>`;
+    roomsHtml = `
+      <div class="alert bg-dark border border-warning border-opacity-50 text-warning small p-3 mb-0 rounded-3">
+        <i class="bi bi-exclamation-triangle me-2"></i>Nessuna stanza creata. Crea una stanza per poter inserire le opere.
+      </div>`;
   } else {
     rooms.forEach(room => {
       // Filtriamo le opere che appartengono a questa specifica stanza
@@ -107,36 +146,38 @@ function renderSectionAccordionItem(section, works, index) {
       const safeRoomName = (room.name || "").replace(/'/g, "\\'");
 
       // HTML delle opere dentro la stanza
-      let worksHtml = roomWorks.length === 0 ? `<p class="small text-secondary mb-0">Stanza vuota.</p>` : `
-        <div class="row row-cols-1 row-cols-md-2 g-2 mt-2">
+      let worksHtml = roomWorks.length === 0 ? `<p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa stanza.</p>` : `
+        <div class="row row-cols-1 row-cols-md-2 g-3 mt-1">
           ${roomWorks.map(w => `
             <div class="col">
-              <div class="card bg-dark bg-opacity-50 border-secondary border-opacity-50 h-100 p-2 d-flex flex-row align-items-center">
-                <img src="${w.image || '/img/fallback-work.jpg'}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+              <div class="card bg-transparent border border-secondary border-opacity-25 h-100 p-2 d-flex flex-row align-items-center rounded-3" style="transition: all 0.2s ease;">
+                <img src="${w.image || '/img/fallback-work.jpg'}" class="rounded me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
                 <div class="flex-grow-1 text-truncate">
-                  <h6 class="mb-0 text-white text-truncate small">${w.name}</h6>
+                  <h6 class="mb-0 text-white text-truncate small fw-bold">${w.name}</h6>
+                  <small class="text-white-50" style="font-size: 0.7rem;">${w.author?.name || w.author || 'Autore Sconosciuto'}</small>
                 </div>
-                <div>
-                  <button class="btn btn-sm text-warning p-1 border-0" onclick="openWorkModal('${section._id}', '${room._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm text-danger p-1 border-0" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
+                <div class="d-flex gap-1 ms-2">
+                  <button class="btn btn-sm btn-glass text-info p-1 px-2 border-0" title="Gestisci Testi" onclick="openTextManager('${w._id}')"><i class="bi bi-card-text"></i></button>
+                  <button class="btn btn-sm btn-glass text-white p-1 px-2 border-0" title="Modifica Opera" onclick="openWorkModal('${section._id}', '${room._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-glass text-danger p-1 px-2 border-0" title="Elimina Opera" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
                 </div>
               </div>
             </div>
           `).join('')}
         </div>`;
 
-      // HTML della singola Stanza
+      // HTML della singola Stanza (in stile card scura)
       roomsHtml += `
-        <div class="card bg-transparent border border-secondary border-opacity-25 mb-3">
-          <div class="card-header bg-dark bg-opacity-75 d-flex justify-content-between align-items-center py-2 border-bottom border-secondary border-opacity-25">
-            <h6 class="mb-0 text-white"><i class="bi bi-door-open me-2 text-warning"></i>${room.name}</h6>
-            <div>
-              <button class="btn btn-sm btn-link text-info p-0 me-2" onclick="openWorkModal('${section._id}', '${room._id}')"><i class="bi bi-plus-circle me-1"></i>Aggiungi Opera</button>
-              <button class="btn btn-sm btn-link text-secondary p-0 me-2" onclick="openRoomModal('${section._id}', '${room._id}', '${safeRoomName}')"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteRoom('${section._id}', '${room._id}')"><i class="bi bi-trash"></i></button>
+        <div class="card custom-card mb-4 border-secondary border-opacity-25 bg-dark bg-opacity-25">
+          <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-10">
+            <h6 class="mb-0 text-info fw-bold"><i class="bi bi-door-open me-2"></i>${room.name}</h6>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-info rounded-pill px-3 py-1" onclick="openWorkModal('${section._id}', '${room._id}')"><i class="bi bi-plus-lg me-1"></i>Opera</button>
+              <button class="btn btn-sm btn-glass text-white px-2 py-1" title="Modifica Stanza" onclick="openRoomModal('${section._id}', '${room._id}', '${safeRoomName}')"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-sm btn-glass text-danger px-2 py-1" title="Elimina Stanza" onclick="deleteRoom('${section._id}', '${room._id}')"><i class="bi bi-trash"></i></button>
             </div>
           </div>
-          <div class="card-body py-2">
+          <div class="card-body">
             ${worksHtml}
           </div>
         </div>`;
@@ -144,29 +185,36 @@ function renderSectionAccordionItem(section, works, index) {
   }
 
   return `
-    <div class="accordion-item custom-accordion-item mb-3 rounded border border-secondary border-opacity-25 overflow-hidden">
+    <div class="accordion-item bg-transparent mb-3 border-0">
       <h2 class="accordion-header" id="${headingId}">
-        <button class="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}">
-          <i class="bi bi-folder2-open me-2 text-info"></i> ${section.name}
-          <span class="badge badge-tag ms-auto me-3">${rooms.length} stanze</span>
+        <button class="accordion-button collapsed custom-card text-white py-3 px-4 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: none;">
+          <i class="bi bi-grid-1x2-fill me-3 text-info fs-5"></i> 
+          <span class="fw-bold fs-6">${section.name}</span>
+          <span class="badge bg-info bg-opacity-25 text-info border border-info ms-auto me-3 rounded-pill px-3 py-2">${rooms.length} Stanze</span>
         </button>
       </h2>
-      <div id="${collapseId}" class="accordion-collapse collapse" data-bs-parent="#sectionsAccordion">
-        <div class="accordion-body border-top border-secondary border-opacity-25 bg-dark bg-opacity-50">
-          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-25">
-            <div>
-              <button class="btn btn-sm btn-outline-warning me-2" onclick="openSectionModal('${section._id}', '${safeSectionName}', '${safeSectionImage}')">
-                <i class="bi bi-pencil"></i> Modifica Sezione
+      
+      <div id="${collapseId}" class="accordion-collapse collapse mt-2" data-bs-parent="#sectionsAccordion">
+        <div class="accordion-body p-4 custom-card border-secondary border-opacity-25 bg-dark bg-opacity-50" style="border-radius: 12px;">
+          
+          <!-- Header Azioni Sezione -->
+          <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-glass text-white px-3" onclick="openSectionModal('${section._id}', '${safeSectionName}', '${safeSectionImage}')">
+                <i class="bi bi-pencil me-1"></i> Modifica Sezione
               </button>
-              <button class="btn btn-sm btn-outline-danger" onclick="deleteSection('${section._id}')">
-                <i class="bi bi-trash"></i> Elimina Sezione
+              <button class="btn btn-sm btn-glass text-danger px-3" onclick="deleteSection('${section._id}')">
+                <i class="bi bi-trash me-1"></i> Elimina
               </button>
             </div>
-            <button class="btn btn-sm btn-info" onclick="openRoomModal('${section._id}')">
-              <i class="bi bi-plus-lg me-1"></i> Aggiungi Stanza
+            <button class="btn btn-sm btn-gradient px-4 rounded-pill shadow-sm" onclick="openRoomModal('${section._id}')">
+              <i class="bi bi-plus-lg me-1"></i> Nuova Stanza
             </button>
           </div>
+          
+          <!-- Contenuto Stanze -->
           ${roomsHtml}
+          
         </div>
       </div>
     </div>`;
@@ -418,13 +466,15 @@ async function saveWorkFromModal() {
   const workData = {
     name: document.getElementById("work-name").value.trim(),
     author: document.getElementById("work-author-id").value.trim(),
+    authorName: document.getElementById("work-author-search").value.trim(), // NUOVO!
     technique: document.getElementById("work-technique").value.trim(),
     year: document.getElementById("work-year").value.trim(),
     style: document.getElementById("work-style-id").value.trim() || undefined,
+    styleName: document.getElementById("work-style-search").value.trim() || undefined, // NUOVO!
     image: document.getElementById("work-image").value.trim(),
     roomId: roomId
   };
-
+  
   if (!workData.name || !workData.author || !workData.technique) { 
     alert("Titolo, Autore (da selezionare dalla tendina) e Tecnica sono campi obbligatori!"); 
     return; 
@@ -476,16 +526,18 @@ async function saveWorkFromModal() {
       const finalWorkId = workId || responseData.work?._id;
 
       // 3. ORA lanciamo l'IA in background usando l'ID corretto e sicuro
-      console.log(`Opera salvata con ID: ${finalWorkId}. Inizio generazione IA in background...`);
-      fetch(`${API_BASE_URL}/ai/generate-work-desc`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          workId: finalWorkId, 
-          workName: workData.name,
-          userDescription: workDesc
-        })
-      });
+      if (!workId) {
+        console.log(`Nuova opera salvata con ID: ${finalWorkId}. Inizio generazione IA in background...`);
+        fetch(`${API_BASE_URL}/ai/generate-work-desc`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            workId: finalWorkId, 
+            workName: workData.name,
+            userDescription: workDesc
+          })
+        });
+      }
 
       workModalInstance.hide();
       
@@ -526,14 +578,7 @@ async function deleteWork(sectionId, workId) {
 
 async function saveAllMuseumChanges() {
   const tagsString = document.getElementById("museum-tags").value;
-  const updatedMuseum = {
-    name: document.getElementById("museum-name").value.trim(),
-    address: document.getElementById("museum-address").value.trim(),
-    contact_email: document.getElementById("museum-email").value.trim(),
-    contact_phone: document.getElementById("museum-phone").value.trim(),
-    image: document.getElementById("museum-image").value.trim(),
-    tags: tagsString ? tagsString.split(",").map(t => t.trim()) : []
-  };
+  const updatedMuseum = getMuseumFormData();
 
   try {
     const res = await fetch(`${API_BASE_URL}/museums/${currentMuseumId}`, {
@@ -544,7 +589,6 @@ async function saveAllMuseumChanges() {
 
     if (res.ok) {
       alert("Museo aggiornato con successo!");
-      // REDIRECT POST SALVATAGGIO
       window.location.href = "/my-museums"; 
     } else {
       alert("Errore nel salvataggio delle modifiche.");
@@ -736,9 +780,9 @@ async function selectAuthor(authorId, authorName) {
     const res = await fetch(`/api/authors/${authorId}`);
     if (!res.ok) throw new Error("Errore recupero dati autore");
     const author = await res.json();
+    currentFetchedAuthor = author;
 
     document.getElementById("work-author-search").value = author.name;
-    
     slider.innerHTML = "";
     
     // Cerchiamo se il nostro museo ha già una descrizione pre-selezionata
@@ -776,6 +820,9 @@ async function selectAuthor(authorId, authorName) {
               <p class="small text-white mb-0" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
                 ${d.bio || 'Nessuna biografia inserita.'}
               </p>
+              <div class="mt-auto pt-3 text-end">
+                <button class="btn btn-sm btn-outline-warning py-0 px-2" onclick="event.stopPropagation(); editAuthorData('${d._id}')"><i class="bi bi-pencil"></i> Modifica</button>
+              </div>
             </div>
           </div>
         `;
@@ -839,20 +886,26 @@ function createNewAuthor(authorName) {
   hideAuthorDropdown();
   document.getElementById("work-author-search").value = authorName;
   document.getElementById("work-author-id").value = ""; // ID vuoto = nuovo autore
+  document.getElementById("old-author-data-id").value = "";
   
   // Impostiamo il campo hidden per ricordarci il nome
   document.getElementById("new-author-name-input").value = authorName;
   
   document.getElementById("authorDataModalLabel").innerText = `Crea Autore: ${authorName}`;
   document.getElementById("author-data-form").reset();
+
+  document.getElementById("btn-ai-author").classList.add("d-none");
+
   authorDataModalInstance.show();
 }
 
 // Innescata dal bottone "Scrivi la tua" sopra lo slider
 function openNewAuthorDataModal() {
   document.getElementById("new-author-name-input").value = ""; // Nome vuoto = autore esistente
+  document.getElementById("old-author-data-id").value = "";
   document.getElementById("authorDataModalLabel").innerText = "Aggiungi la tua Biografia";
   document.getElementById("author-data-form").reset();
+  document.getElementById("btn-ai-author").classList.add("d-none");
   authorDataModalInstance.show();
 }
 
@@ -863,6 +916,7 @@ async function saveAuthorData() {
   
   const payloadData = {
     museumId: currentMuseumId,
+    oldDataId: document.getElementById("old-author-data-id").value,
     bd: document.getElementById("author-bd").value.trim(),
     studies: document.getElementById("author-studies").value.trim(),
     bio: document.getElementById("author-bio").value.trim()
@@ -895,17 +949,19 @@ async function saveAuthorData() {
 
     // Se tutto e' andato bene generiamo le descrizioni con l'ia
     if (finalAuthor) {
-      console.log("Inizio generazione IA per l'autore in background...");
-      fetch(`${API_BASE_URL}/ai/generate-author-desc`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          authorId: finalAuthor._id, 
-          museumId: currentMuseumId,
-          authorName: finalAuthor.name || newName,
-          userDescription: payloadData.bio // Usiamo il testo del form come contesto!
-        })
-      });
+      if(!existingAuthorId) {
+        console.log("Inizio generazione IA per l'autore in background...");
+        fetch(`${API_BASE_URL}/ai/generate-author-desc`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            authorId: finalAuthor._id, 
+            museumId: currentMuseumId,
+            authorName: finalAuthor.name || newName,
+            userDescription: payloadData.bio // Usiamo il testo del form come contesto!
+          })
+        });
+      }
 
       // Selezioniamo automaticamente il nuovo autore e ricarichiamo le card
       selectAuthor(finalAuthor._id, finalAuthor.name || newName);
@@ -986,9 +1042,9 @@ async function selectStyle(styleId, styleName) {
     const res = await fetch(`/api/styles/${styleId}`);
     if (!res.ok) throw new Error("Errore recupero dati");
     const style = await res.json();
+    currentFetchedStyle = style;
 
     document.getElementById("work-style-search").value = style.name;
-    
     slider.innerHTML = "";
 
     // Troviamo se c'è una definizione già selezionata dal nostro museo
@@ -1023,6 +1079,9 @@ async function selectStyle(styleId, styleName) {
               <p class="small text-white mb-0" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
                 ${d.description || 'Nessuna descrizione.'}
               </p>
+              <div class="mt-auto pt-3 text-end">
+                <button class="btn btn-sm btn-outline-warning py-0 px-2" onclick="event.stopPropagation(); editStyleData('${d._id}')"><i class="bi bi-pencil"></i> Modifica</button>
+              </div>
             </div>
           </div>
         `;
@@ -1058,16 +1117,20 @@ function createNewStyle(styleName) {
   hideStyleDropdown();
   document.getElementById("work-style-search").value = styleName;
   document.getElementById("work-style-id").value = ""; 
+  document.getElementById("old-style-data-id").value = "";
   document.getElementById("new-style-name-input").value = styleName;
   document.getElementById("styleDataModalLabel").innerText = `Crea Stile: ${styleName}`;
   document.getElementById("style-data-form").reset();
+  document.getElementById("btn-ai-style").classList.add("d-none");
   styleDataModalInstance.show();
 }
 
 function openNewStyleDataModal() {
   document.getElementById("new-style-name-input").value = ""; 
+  document.getElementById("old-style-data-id").value = "";
   document.getElementById("styleDataModalLabel").innerText = "Aggiungi la tua Definizione";
   document.getElementById("style-data-form").reset();
+  document.getElementById("btn-ai-style").classList.add("d-none");
   styleDataModalInstance.show();
 }
 
@@ -1077,6 +1140,7 @@ async function saveStyleData() {
   
   const payloadData = {
     museumId: currentMuseumId,
+    oldDataId: document.getElementById("old-style-data-id").value,
     description: document.getElementById("style-description").value.trim() 
   };
 
@@ -1105,19 +1169,21 @@ async function saveStyleData() {
       finalStyle = await res.json();
     }
 
-    // Generazione testo con ia
+    // Generazione testo con ia (solo se lo stile e' nuovo)
     if (finalStyle) {
-      console.log("Inizio generazione IA per lo stile in background...");
-      fetch(`${API_BASE_URL}/ai/generate-style-desc`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          styleId: finalStyle._id, 
-          museumId: currentMuseumId,
-          styleName: finalStyle.name || newName,
-          userDescription: payloadData.description
-        })
-      });
+      if(!existingStyleId) {
+        console.log("Inizio generazione IA per lo stile in background...");
+        fetch(`${API_BASE_URL}/ai/generate-style-desc`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            styleId: finalStyle._id, 
+            museumId: currentMuseumId,
+            styleName: finalStyle.name || newName,
+            userDescription: payloadData.description
+          })
+        });
+      }
 
       selectStyle(finalStyle._id, finalStyle.name || newName);
       
@@ -1130,4 +1196,349 @@ async function saveStyleData() {
     alert(error.message);
     console.error(error);
   }
+}
+
+let textManagerModalInstance = null;
+
+// Inizializza la modale quando la pagina si carica
+document.addEventListener("DOMContentLoaded", () => {
+  const tmModalEl = document.getElementById("textManagerModal");
+  if (tmModalEl) {
+    textManagerModalInstance = new bootstrap.Modal(tmModalEl);
+  }
+});
+
+// Apre la modale ricevendo l'ID dell'opera
+function openTextManager(workId) {
+  // Peschiamo l'opera direttamente dalla cache usando l'ID come chiave!
+  tmCurrentWork = worksCache[workId];
+  
+  if (!tmCurrentWork) {
+    alert("Errore: Opera non trovata.");
+    return;
+  }
+
+  document.getElementById("tm-work-name").innerText = tmCurrentWork.name;
+  
+  // Impostiamo i valori di default coerenti con il nuovo HTML
+  document.getElementById("tm-audience").value = "medium";
+  document.getElementById("tm-length").value = "medium";
+
+  handleTextTypeChange();
+
+  loadSpecificText();
+  textManagerModalInstance.show();
+}
+
+// Gestisce il blocco e lo stile della tendina "Lunghezza" per Curiosità e Parafrasi
+function handleTextTypeChange() {
+  const aud = document.getElementById("tm-audience").value;
+  const lenSelect = document.getElementById("tm-length");
+  
+  if (aud === 'funFact' || aud === 'paraphrase') {
+    lenSelect.disabled = true;
+    // Aggiungiamo le classi Bootstrap per farlo diventare grigino e semi-trasparente
+    lenSelect.classList.add("opacity-50", "text-muted");
+    lenSelect.classList.remove("text-light");
+  } else {
+    lenSelect.disabled = false;
+    // Ripristiniamo l'aspetto originale
+    lenSelect.classList.remove("opacity-50", "text-muted");
+    lenSelect.classList.add("text-light");
+  }
+  
+  loadSpecificText();
+}
+
+// 1. Cerca la stringa corretta nel database e la stampa
+function loadSpecificText() {
+  const aud = document.getElementById("tm-audience").value; // simple, medium, professional, expert, funFact, paraphrase
+  const len = document.getElementById("tm-length").value;   // short, medium, long, exhaustive
+  const textarea = document.getElementById("tm-textarea");
+
+  textarea.value = "";
+
+  if (tmCurrentWork) {
+    if (aud === 'funFact' || aud === 'paraphrase') {
+      // Se stiamo cercando Curiosità o Parafrasi, peschiamo dal primo livello dell'oggetto!
+      if (tmCurrentWork[aud]) textarea.value = tmCurrentWork[aud];
+    } else {
+      // Altrimenti peschiamo dal registro nidificato (description.simple.short)
+      if (tmCurrentWork.description && tmCurrentWork.description[aud] && tmCurrentWork.description[aud][len]) {
+        textarea.value = tmCurrentWork.description[aud][len];
+      } else if (typeof tmCurrentWork.description === 'string' && aud === 'medium' && len === 'medium') {
+        textarea.value = tmCurrentWork.description;
+      }
+    }
+  }
+}
+
+// 2. Salva la modifica manuale nel database (accetta tutte le opzioni)
+async function saveSpecificText() {
+  const aud = document.getElementById("tm-audience").value;
+  const len = document.getElementById("tm-length").value;
+  const newText = document.getElementById("tm-textarea").value.trim();
+
+  if (!tmCurrentWork) return;
+
+  // Costruiamo il payload dinamico da spedire al server
+  let updatePayload = { museumId: currentMuseumId };
+
+  if (aud === 'funFact' || aud === 'paraphrase') {
+    // Aggiorna la cache e prepara il payload per i campi di primo livello
+    tmCurrentWork[aud] = newText;
+    updatePayload[aud] = newText; 
+  } else {
+    // Assicurati che l'oggetto descrizione esista e sia formattato bene
+    if (!tmCurrentWork.description || typeof tmCurrentWork.description === 'string') {
+      tmCurrentWork.description = { simple: {}, medium: {}, professional: {}, expert: {} };
+    }
+    if (!tmCurrentWork.description[aud]) tmCurrentWork.description[aud] = {};
+    
+    // Aggiorna la cache e prepara il payload per la descrizione nidificata
+    tmCurrentWork.description[aud][len] = newText;
+    updatePayload.description = tmCurrentWork.description;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/works/${tmCurrentWork._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatePayload)
+    });
+
+    if (res.ok) alert("Testo salvato con successo!");
+    else alert("Errore durante il salvataggio.");
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// 3. Genera il testo per UNA SINGOLA Cella (Risparmio Token!)
+async function generateSpecificTextWithAI() {
+  const aud = document.getElementById("tm-audience").value;
+  const len = document.getElementById("tm-length").value;
+  const textarea = document.getElementById("tm-textarea");
+
+  if (!tmCurrentWork) return;
+
+  // Peschiamo il contesto inserito nel form principale (se presente)
+  const baseContext = document.getElementById("work-description")?.value || "Basati sulle tue conoscenze storiche.";
+  let prompt = "";
+
+  if (aud === 'funFact') {
+    prompt = `Scrivi una curiosità divertente o un aneddoto poco noto (max 3 frasi) sull'opera d'arte "${tmCurrentWork.name}". Contesto del curatore: ${baseContext}. Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza markdown e senza virgolette.`;
+  } else if (aud === 'paraphrase') {
+    prompt = `Scrivi una parafrasi (spiegazione molto semplificata, 2-3 frasi) del significato dell'opera d'arte "${tmCurrentWork.name}". Contesto del curatore: ${baseContext}. Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza markdown e senza virgolette.`;
+  } else {
+    prompt = `
+    Sei un esperto curatore d'arte e storico. Il tuo compito è generare una descrizoine per l'opera d'arte "${tmCurrentWork.name}".
+
+    Considera che esistono questi 4 registri linguistici:
+      - simple: per bambini o principianti assoluti (linguaggio molto semplice, concetti base).
+      - medium: per il visitatore medio (divulgativo, coinvolgente).
+      - professional: per appassionati o studenti d'arte (terminologia tecnica, cenni al movimento artistico).
+      - expert: per storici dell'arte (analisi critica profonda, contesto socio-culturale, tecnica).
+    E queste 4 lunghezze di descrizione:
+      - short: 3 secondi (1 frase sintetica). NOTA BENE: Puoi usare la stessa identica frase "short" per tutti e 4 i registri per risparmiare tempo.
+      - medium: 15 secondi (2-3 frasi).
+      - long: 1 minuto (circa 2-3 paragrafi).
+      - exhaustive: 4 minuti (analisi completa e lunghissima).
+
+    Devi scrivere la descrizione basandoti sulle seguenti istruzioni:
+      1. Tieni conto della contesto fornito dal curatore: ${baseContext}
+      2. Usa il registro linguistico richiesto: ${aud} 
+      3. Lunghezza richiesta: ${len} 
+
+    Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza virgolette iniziali/finali o formattazione markdown.
+  `;
+  }
+
+  textarea.value = "Generazione in corso (attendi qualche secondo)...";
+  
+  try {
+    const res = await fetch(`${API_BASE_URL}/ai/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      textarea.value = data.text;
+      // Nota: Il testo è stato inserito nella textarea, ma NON salvato nel DB. 
+      // L'utente deve cliccare su "Salva Modifica Manuale" per confermare la scelta dell'IA.
+    } else {
+      textarea.value = "Errore durante la generazione. L'IA potrebbe essere offline.";
+    }
+  } catch (e) {
+    textarea.value = "Errore di connessione al server.";
+  }
+}
+
+function editAuthorData(dataId) {
+  if (!currentFetchedAuthor) return;
+  const data = currentFetchedAuthor.data.find(d => d._id === dataId);
+  if (!data) return;
+
+  document.getElementById("new-author-name-input").value = ""; // Lasciamo vuoto, autore esistente
+  document.getElementById("old-author-data-id").value = dataId; // Salviamo il vecchio ID!
+  document.getElementById("author-bd").value = data.bd || "";
+  document.getElementById("author-studies").value = data.studies || "";
+  document.getElementById("author-bio").value = data.bio || "";
+  document.getElementById("btn-ai-author").classList.remove("d-none");
+  document.getElementById("authorDataModalLabel").innerText = "Modifica Biografia";
+  authorDataModalInstance.show();
+}
+
+function editStyleData(dataId) {
+  if (!currentFetchedStyle) return;
+  const data = currentFetchedStyle.data.find(d => d._id === dataId);
+  if (!data) return;
+
+  document.getElementById("new-style-name-input").value = ""; 
+  document.getElementById("old-style-data-id").value = dataId;
+  document.getElementById("style-description").value = data.description || "";
+  document.getElementById("btn-ai-style").classList.remove("d-none");
+  document.getElementById("styleDataModalLabel").innerText = "Modifica Definizione";
+  styleDataModalInstance.show();
+}
+
+// 1. Genera testo specifico Opera (una singola cella)
+async function generateSpecificTextWithAI() {
+  const aud = document.getElementById("tm-audience").value, len = document.getElementById("tm-length").value;
+  const textarea = document.getElementById("tm-textarea");
+  if (!tmCurrentWork) return;
+
+  const baseContext = document.getElementById("work-description")?.value || "Basati sulle tue conoscenze storiche.";
+  const prompt = `Scrivi la descrizione per l'opera "${tmCurrentWork.name}". Contesto: ${baseContext}. Registro linguistico: ${aud}. Lunghezza: ${len}. Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza markdown.`;
+
+  textarea.value = "Generazione in corso...";
+  try {
+    const res = await fetch(`${API_BASE_URL}/ai/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+    if (res.ok) textarea.value = (await res.json()).text;
+    else textarea.value = "Errore API.";
+  } catch (e) { textarea.value = "Errore di connessione."; }
+}
+
+// 2. Genera e riempie tutti i campi dell'Autore
+async function generateAuthorBioWithAI() {
+  const bioTextarea = document.getElementById("author-bio");
+  const authorName = currentFetchedAuthor ? currentFetchedAuthor.name : document.getElementById("new-author-name-input").value;
+  const userContext = bioTextarea.value.trim();
+  
+  const prompt = `Crea scheda biografica per: "${authorName}". Appunti: "${userContext}". Istruzioni: 1. "bio": 2-3 paragrafi. 2. "bd": Date in formato "AAAA - AAAA". 3. "studies": Formazione. 4. "mainWorks": 2-3 frasi sulle opere principali. Restituisci SOLO un JSON valido: {"bio": "...", "bd": "...", "studies": "...", "mainWorks": "..."}. Non usare markdown.`;
+
+  bioTextarea.value = "Compilazione scheda in corso...";
+  try {
+    const res = await fetch(`${API_BASE_URL}/ai/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+    if (res.ok) {
+      // Puliamo eventuale markdown di formattazione di Gemini
+      const cleanText = (await res.json()).text.replace(/```json/g, '').replace(/```/g, '').trim();
+      const data = JSON.parse(cleanText);
+      
+      // Riempiamo i vari input del form
+      if(data.bd) document.getElementById("author-bd").value = data.bd;
+      if(data.studies) document.getElementById("author-studies").value = data.studies;
+      // Uniamo la bio alle opere principali
+      bioTextarea.value = (data.bio || "") + (data.mainWorks ? "\n\nOpere principali: " + data.mainWorks : "");
+    } else { bioTextarea.value = "Errore API."; }
+  } catch (e) { bioTextarea.value = "Errore di parsing dati. Riprova."; console.error(e); }
+}
+
+// 3. Genera e riempie la descrizione dello Stile
+async function generateStyleDescWithAI() {
+  const descTextarea = document.getElementById("style-description");
+  const styleName = currentFetchedStyle ? currentFetchedStyle.name : document.getElementById("new-style-name-input").value;
+  const userContext = descTextarea.value.trim();
+  
+  const prompt = `Spiega lo stile artistico: "${styleName}". Appunti: "${userContext}". Spiega periodo storico e caratteristiche in 2-3 paragrafi. Restituisci SOLO un JSON con struttura {"description": "testo..."}. Niente markdown, usa solo apici singoli nel testo.`;
+
+  descTextarea.value = "Generazione in corso...";
+  try {
+    const res = await fetch(`${API_BASE_URL}/ai/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+    if (res.ok) {
+      const cleanText = (await res.json()).text.replace(/```json/g, '').replace(/```/g, '').trim();
+      descTextarea.value = JSON.parse(cleanText).description || "";
+    } else { descTextarea.value = "Errore API."; }
+  } catch (e) { descTextarea.value = "Errore di parsing dati. Riprova."; }
+}
+
+// ==========================================
+// FUNZIONI DI SUPPORTO FORM MUSEO
+// ==========================================
+
+// Genera le righe degli orari dinamicamente (con checkbox classica)
+function buildScheduleForm() {
+  const container = document.getElementById("schedule-container");
+  if (!container) return;
+
+  const days = [
+    { id: 'monday', label: 'Lunedì' },
+    { id: 'tuesday', label: 'Martedì' },
+    { id: 'wednesday', label: 'Mercoledì' },
+    { id: 'thursday', label: 'Giovedì' },
+    { id: 'friday', label: 'Venerdì' },
+    { id: 'saturday', label: 'Sabato' },
+    { id: 'sunday', label: 'Domenica' }
+  ];
+
+  container.innerHTML = days.map(day => `
+    <div class="col-12 col-lg-6 d-flex align-items-center schedule-row mb-2" data-day="${day.id}">
+      <div class="form-check m-0 d-flex align-items-center me-3" style="width: 110px;">
+        <input class="form-check-input sch-toggle me-2 mt-0 cursor-pointer" type="checkbox" id="sch-${day.id}" onchange="toggleScheduleInput(this)">
+        <label class="form-check-label text-secondary small fw-bold cursor-pointer mb-0" for="sch-${day.id}">
+          ${day.label}
+        </label>
+      </div>
+      <input type="text" class="form-control form-control-sm glass-input text-white sch-hours flex-grow-1" placeholder="Es. 09-12, 15-18" disabled>
+    </div>
+  `).join('');
+}
+
+// Sblocca l'input quando la checkbox viene spuntata
+function toggleScheduleInput(checkbox) {
+  const row = checkbox.closest('.schedule-row');
+  const input = row.querySelector('.sch-hours');
+  
+  if (input) {
+    input.disabled = !checkbox.checked;
+    if (!checkbox.checked) {
+      input.value = ""; 
+    } else {
+      input.focus(); 
+    }
+  }
+}
+
+// Raccoglie tutti i dati dal form in un unico payload formattato per Mongoose
+function getMuseumFormData() {
+  const payload = {
+    name: document.getElementById("museum-name").value.trim(),
+    address: document.getElementById("museum-address").value.trim(),
+    contact_email: document.getElementById("museum-email").value.trim(),
+    contact_phone: document.getElementById("museum-phone").value.trim(),
+    image: document.getElementById("museum-image").value.trim(),
+    ticketPrice: parseFloat(document.getElementById("museum-price").value) || 0,
+    tags: document.getElementById("museum-tags").value ? document.getElementById("museum-tags").value.split(",").map(t => t.trim()) : [],
+    services: Array.from(document.querySelectorAll('.srv-cb:checked')).map(cb => cb.value),
+    accessibility: Array.from(document.querySelectorAll('.acc-cb:checked')).map(cb => cb.value)
+  };
+
+  if (payload.accessibility.length === 0) payload.accessibility = ['none'];
+
+  // Raccoglie SOLO i giorni in cui c'è la spunta!
+  const schedule = [];
+  document.querySelectorAll('.schedule-row').forEach(row => {
+    const day = row.dataset.day;
+    const isOpen = row.querySelector('.sch-toggle').checked;
+    const hours = row.querySelector('.sch-hours').value.trim();
+    
+    if (isOpen) {
+      schedule.push({ day, hours });
+    }
+  });
+  
+  payload.schedule = schedule;
+  return payload;
 }

@@ -47,7 +47,7 @@ exports.createAuthor = async (authorData) => {
 
 // Aggiungi una nuova card descrittiva a un autore esistente
 exports.addAuthorData = async (authorId, newData) => {
-  const { museumId, bio, bd, studies } = newData;
+  const { museumId, oldDataId, bio, bd, studies } = newData;
   
   const author = await Author.findById(authorId);
   if (!author) {
@@ -56,6 +56,15 @@ exports.addAuthorData = async (authorId, newData) => {
     throw error;
   }
 
+  if(oldDataId) {
+    const oldData = author.data.id(oldDataId);
+    if(oldData && oldData.museumId) {
+      // Rimuoviamo il museo dalla vecchia descrizione
+      oldData.museumId = oldData.museumId.filter(mId => mId.toString() !== museumId.toString());
+    
+      // * non viene rimossa la descrizione se rimane senza museumId perche' presumibilmente puo' sceglierla un altro curatore; si potrebbe pensare ad operazioni settimanali/mensili di pulizia del db
+    }
+  }
   // rimuoviamo le altre selezioni -> una descrizione per autore consentita
   author.data.forEach(item => {
     item.museumId = item.museumId.filter(id => id.toString() !== museumId.toString());

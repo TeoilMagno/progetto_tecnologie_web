@@ -6,6 +6,33 @@ const Visit = require("../models/visits");
 const Author = require("../models/author");
 const Style = require("../models/style");
 
+// va riscritta anche se c'e' gia' in config.js
+// Funzione helper per tradurre l'indirizzo in coordinate
+async function geocodeAddress(address) {
+  try {
+    // Usiamo encodeURIComponent per gestire spazi e virgole nell'indirizzo
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'ArtAround/1.0 (progetto universitario)' 
+      }
+    });
+
+    const data = await response.json();
+    
+    if (data && data.length > 0) {
+      return {
+        lat: parseFloat(data[0].lat),
+        lon: parseFloat(data[0].lon) 
+      };
+    }
+  } catch (error) {
+    console.error("Errore durante il geocoding dell'indirizzo:", error);
+  }
+  return { lat: null, lon: null };
+}
+
 // utilizzato da admin
 exports.getAllMuseums = async () => {
   try {
@@ -16,7 +43,7 @@ exports.getAllMuseums = async () => {
 };
 
 exports.saveMuseum = async (museumData, userId) => {
-  const { name, address, contact_email, contact_phone, image, tags, ticketPrice, sections, openingHours, openingDays, services, accessibility } = museumData;
+  const { name, address, contact_email, contact_phone, image, tags, ticketPrice, sections, schedule, services, accessibility } = museumData;
 
   // validazione modello
   const museumToValidate = new Museum({
@@ -27,8 +54,7 @@ exports.saveMuseum = async (museumData, userId) => {
     image,
     tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags,
     ticketPrice: typeof ticketPrice === 'number' ? ticketPrice : 0,
-    openingDays,
-    openingHours,
+    schedule,
     services,
     accessibility
   });
@@ -37,8 +63,8 @@ exports.saveMuseum = async (museumData, userId) => {
 
   // conversione indirizzo a coordinate tramite OpenStreetMap
   const coords = await geocodeAddress(museumData.address);
-  museumData.latitude = coords.lat;
-  museumData.longitude = coords.lon;
+  museumToValidate.latitude = coords.lat;
+  museumToValidate.longitude = coords.lon;
 
   // Validazione di tutte le sezioni e opere
   if (sections && sections.length > 0) {

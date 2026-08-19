@@ -46,12 +46,13 @@
         <div class="card-body">
           <form id="museum-info-form">
             <div class="row g-3">
+              <!-- Dati Base -->
               <div class="col-md-6">
-                <label class="form-label small text-secondary">Nome Museo</label>
+                <label class="form-label small text-secondary">Nome Museo *</label>
                 <input type="text" class="form-control glass-input text-white" id="museum-name" required />
               </div>
               <div class="col-md-6">
-                <label class="form-label small text-secondary">Indirizzo</label>
+                <label class="form-label small text-secondary">Indirizzo *</label>
                 <input type="text" class="form-control glass-input text-white" id="museum-address" required />
               </div>
               <div class="col-md-6">
@@ -66,9 +67,43 @@
                 <label class="form-label small text-secondary">URL Immagine di Copertina</label>
                 <input type="url" class="form-control glass-input text-white" id="museum-image" />
               </div>
-              <div class="col-12">
+              
+              <div class="col-md-8">
                 <label class="form-label small text-secondary">Tag (separati da virgola)</label>
-                <input type="text" class="form-control glass-input text-white" id="museum-tags" />
+                <input type="text" class="form-control glass-input text-white" id="museum-tags" placeholder="Arte, Rinascimento..." />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small text-secondary">Prezzo Biglietto (€)</label>
+                <input type="number" step="0.01" min="0" class="form-control glass-input text-white" id="museum-price" placeholder="0.00 (Gratis)" />
+              </div>
+
+              <!-- Servizi (Enum) -->
+              <div class="col-12 mt-4 pt-3 border-top border-secondary border-opacity-25">
+                <h6 class="text-white mb-3"><i class="bi bi-star me-2 text-info"></i>Servizi e Inclusione</h6>
+                
+                <label class="form-label small text-secondary mb-2">Servizi Offerti</label>
+                <div class="d-flex flex-wrap gap-3 mb-3">
+                  <div class="form-check m-0"><input class="form-check-input srv-cb" type="checkbox" value="bathrooms" id="srv-bath"><label class="form-check-label small text-white" for="srv-bath">Bagni</label></div>
+                  <div class="form-check m-0"><input class="form-check-input srv-cb" type="checkbox" value="cafe" id="srv-cafe"><label class="form-check-label small text-white" for="srv-cafe">Caffetteria</label></div>
+                  <div class="form-check m-0"><input class="form-check-input srv-cb" type="checkbox" value="cloakroom" id="srv-cloak"><label class="form-check-label small text-white" for="srv-cloak">Guardaroba</label></div>
+                  <div class="form-check m-0"><input class="form-check-input srv-cb" type="checkbox" value="accessibility_ramp" id="srv-ramp"><label class="form-check-label small text-white" for="srv-ramp">Rampe Accessibilità</label></div>
+                  <div class="form-check m-0"><input class="form-check-input srv-cb" type="checkbox" value="wifi" id="srv-wifi"><label class="form-check-label small text-white" for="srv-wifi">Wi-Fi</label></div>
+                </div>
+
+                <label class="form-label small text-secondary mb-2">Accessibilità</label>
+                <div class="d-flex flex-wrap gap-3">
+                  <div class="form-check m-0"><input class="form-check-input acc-cb" type="checkbox" value="wheelchair_accessible" id="acc-wheel"><label class="form-check-label small text-white" for="acc-wheel">Sedia a Rotelle</label></div>
+                  <div class="form-check m-0"><input class="form-check-input acc-cb" type="checkbox" value="blind_friendly" id="acc-blind"><label class="form-check-label small text-white" for="acc-blind">Ipovedenti (Audio)</label></div>
+                  <div class="form-check m-0"><input class="form-check-input acc-cb" type="checkbox" value="deaf_friendly" id="acc-deaf"><label class="form-check-label small text-white" for="acc-deaf">Sordi (LIS)</label></div>
+                  <div class="form-check m-0"><input class="form-check-input acc-cb" type="checkbox" value="dsa_friendly" id="acc-dsa"><label class="form-check-label small text-white" for="acc-dsa">DSA Friendly</label></div>
+                  <div class="form-check m-0"><input class="form-check-input acc-cb" type="checkbox" value="sensory_friendly" id="acc-sensory"><label class="form-check-label small text-white" for="acc-sensory">Sensory Friendly</label></div>
+                </div>
+              </div>
+
+              <!-- Orari di Apertura (Generati dinamicamente via JS) -->
+              <div class="col-12 mt-4 pt-3 border-top border-secondary border-opacity-25">
+                <h6 class="text-white mb-3"><i class="bi bi-clock me-2 text-info"></i>Orari di Apertura</h6>
+                <div class="row g-3" id="schedule-container"></div>
               </div>
             </div>
           </form>
@@ -285,6 +320,8 @@
             <form id="author-data-form">
               <!-- Se questo è valorizzato, stiamo creando un NUOVO autore, altrimenti stiamo aggiungendo dati a uno esistente -->
               <input type="hidden" id="new-author-name-input" />
+
+              <input type="hidden" id="old-author-data-id" />
               
               <div class="mb-3">
                 <label class="form-label small text-secondary">Date (Nascita - Morte)</label>
@@ -300,10 +337,16 @@
               </div>
             </form>
           </div>
-          <div class="modal-footer border-top-custom">
+          <div class="modal-footer border-top-custom d-flex justify-content-between">
+          <!-- Bottone IA nascosto di default -->
+          <button type="button" class="btn btn-outline-info d-none" id="btn-ai-author" onclick="generateAuthorBioWithAI()">
+            <i class="bi bi-magic me-1"></i> Genera con IA
+          </button>
+          <div>
             <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
             <button type="button" class="btn btn-gradient px-3" onclick="saveAuthorData()">Salva Biografia</button>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -319,15 +362,81 @@
           <div class="modal-body">
             <form id="style-data-form">
               <input type="hidden" id="new-style-name-input" />
+              <input type="hidden" id="old-style-data-id" />
               <div class="mb-3">
                 <label class="form-label small text-secondary">Descrizione dello Stile</label>
                 <textarea class="form-control glass-input" id="style-description" rows="4" placeholder="Cosa rappresenta questo stile per il tuo museo?"></textarea>
               </div>
             </form>
           </div>
-          <div class="modal-footer border-top-custom">
+          <div class="modal-footer border-top-custom d-flex justify-content-between">
+          <!-- Bottone IA nascosto di default -->
+          <button type="button" class="btn btn-outline-info d-none" id="btn-ai-style" onclick="generateStyleDescWithAI()">
+            <i class="bi bi-magic me-1"></i> Genera con IA
+          </button>
+          <div>
             <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
             <button type="button" class="btn btn-gradient px-3" onclick="saveStyleData()">Salva Definizione</button>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Gestione Testi Opera -->
+    <div class="modal fade" id="textManagerModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content glass-modal text-white">
+          <div class="modal-header border-secondary border-opacity-25">
+            <h5 class="modal-title"><i class="bi bi-card-text me-2"></i>Gestione Testi: <span id="tm-work-name" class="text-info"></span></h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            
+            <!-- Filtri per selezionare QUALE testo stiamo guardando -->
+            <div class="row g-2 mb-3 bg-secondary bg-opacity-10 p-2 rounded">
+              <div class="col-md-6">
+                <label class="form-label small text-secondary mb-1">Registro</label>
+                <select class="form-select form-select-sm bg-dark text-light border-secondary" id="tm-audience" onchange="handleTextTypeChange()">
+                  <option value="simple">Semplice (bambini)</option>
+                  <option value="medium" selected>Media (divulgativa)</option>
+                  <option value="professional">Tecnica (appassionati)</option>
+                  <option value="expert">Accademica (esperti)</option>
+                  <option disabled>──────────</option>
+                  <option value="funFact">💡 Curiosità </option>
+                  <option value="paraphrase">📖 Parafrasi / Spiegazione Semplice</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small text-secondary mb-1">Lunghezza</label>
+                <select class="form-select form-select-sm bg-dark text-light border-secondary" id="tm-length" onchange="loadSpecificText()">
+                  <option value="short">Breve (3 secondi)</option>
+                  <option value="medium" selected>Media (15 secondi)</option>
+                  <option value="long">Lunga (1 minuto)</option>
+                  <option value="exhaustive">Esaustiva (4 minuti)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Area di Testo -->
+            <div class="mb-3">
+              <label class="form-label small text-info">Testo per questa combinazione:</label>
+              <textarea class="form-control bg-dark text-light border-secondary" id="tm-textarea" rows="8" placeholder="Nessun testo generato o inserito per questa combinazione..."></textarea>
+            </div>
+
+          </div>
+          <div class="modal-footer border-secondary border-opacity-25 d-flex justify-content-between">
+            <!-- Bottone per chiamare l'IA SOLO per questa specifica combinazione -->
+            <button type="button" class="btn btn-outline-info" onclick="generateSpecificTextWithAI()">
+              <i class="bi bi-magic me-1"></i> Genera con IA
+            </button>
+            
+            <div>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+              <button type="button" class="btn btn-primary" onclick="saveSpecificText()">
+                <i class="bi bi-save me-1"></i> Salva Modifica Manuale
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -85,9 +85,14 @@ const museumSchema = new Schema({
     default: ['none']
   }],
 
-  // Es. "Lunedì: Chiuso", "Mar-Dom: 09:00 - 18:00"
-  openingHours: { type: String }, 
-  openingDays: { type: [String], default: [] } // Array per filtri facili (es. ['monday', 'tuesday'])
+  // Orari di apertura strutturati giorno per giorno
+  schedule: [{
+    day: { 
+      type: String, 
+      enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] 
+    },
+    hours: { type: String, trim: true, default: "" } // Es. "09:00 - 18:00"
+  }],
 });
 
 const Museum = mongoose.model('Museum', museumSchema);

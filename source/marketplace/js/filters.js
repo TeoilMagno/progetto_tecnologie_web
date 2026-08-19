@@ -27,7 +27,6 @@ async function initializeFiltersData(museums) {
   renderStyleFilters(Array.from(tagsSet).sort());
 }
 
-// 2. Disegna le opzioni per gli stili nel tag <select>
 // 2. Disegna le opzioni per gli stili come Checkbox
 function renderStyleFilters(tags) {
   const list = document.getElementById("filter-style-list");
@@ -118,9 +117,16 @@ async function applyMuseumFilters() {
       }
     }
 
+    // Filtro Giorno di apertura (Aggiornato per il nuovo modello schedule)
     if (selectedDay && selectedDay !== "") {
-      if (!museum.openingDays || !museum.openingDays.includes(selectedDay)) {
-        return false;
+      // Se il museo non ha lo schedule, è sicuramente chiuso
+      if (!museum.schedule || museum.schedule.length === 0) return false;
+      
+      // Cerchiamo se il giorno richiesto è presente nell'array.
+      // Dato che salviamo solo i giorni aperti, se NON lo trova, il museo è chiuso!
+      const dayConfig = museum.schedule.find(s => s.day === selectedDay);
+      if (!dayConfig) {
+        return false; 
       }
     }
 
@@ -343,8 +349,6 @@ function attachItemFilterEvents() {
   }
 }
 
-// TODO: i filtri sono ancora da testare dato che nel db gli elementi non hanno il modello appropriato
-// TODO: come prime osservazioni author e style quasi sicuramente non andranno dato che nel modello ci sono solo riferimenti a modelli author
 // ==========================================
 // MODULO FILTRI OPERE (Works)
 // ==========================================
@@ -356,9 +360,9 @@ function initializeWorkFiltersData(works) {
   const stylesSet = new Set();
 
   works.forEach(work => {
-    // Gestione sicura nel caso in cui author e style siano popolati (oggetti) o semplici stringhe
-    const authorName = typeof work.author === 'string' ? work.author : work.author?.name;
-    const styleName = typeof work.style === 'string' ? work.style : work.style?.name;
+    // ESTRAZIONE BLINDATA: Cerca il nome in tutti i campi possibili, scartando gli ID di Mongoose (24 caratteri)
+    const authorName = work.authorName || work.author?.name || (typeof work.author === 'string' && work.author.length !== 24 ? work.author : null);
+    const styleName = work.styleName || work.style?.name || (typeof work.style === 'string' && work.style.length !== 24 ? work.style : null);
     const techniqueName = work.technique;
 
     if (authorName) authorsSet.add(authorName);
@@ -385,7 +389,7 @@ function renderDynamicCheckboxes(containerId, items, prefix) {
     const safeId = `${prefix}-${item.replace(/[^a-zA-Z0-9]/g, '-')}`;
     return `
       <div class="form-check ${prefix}-item">
-        <input class="form-check-input ${prefix}-cb cursor-pointer" type="checkbox" value="${item}" id="${safeId}">
+        <input class="form-check-input ${prefix}-cb cursor-pointer" type="checkbox" value="${item}" id="${safeId}" onchange="applyWorkFilters()">
         <label class="form-check-label text-white small w-100 cursor-pointer text-truncate" for="${safeId}" title="${item}">
           ${item}
         </label>
@@ -401,9 +405,10 @@ function applyWorkFilters() {
   const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
 
   let filtered = currentWorks.filter(work => {
-    const authorName = typeof work.author === 'string' ? work.author : work.author?.name || "";
+    // USIAMO LA STESSA IDENTICA ESTRAZIONE!
+    const authorName = work.authorName || work.author?.name || (typeof work.author === 'string' && work.author.length !== 24 ? work.author : "");
+    const styleName = work.styleName || work.style?.name || (typeof work.style === 'string' && work.style.length !== 24 ? work.style : "");
     const techniqueName = work.technique || "";
-    const styleName = typeof work.style === 'string' ? work.style : work.style?.name || "";
 
     if (authorCbs.length > 0 && !authorCbs.includes(authorName)) return false;
     if (techniqueCbs.length > 0 && !techniqueCbs.includes(techniqueName)) return false;
@@ -453,4 +458,108 @@ function attachWorkFilterEvents() {
       });
     }
   });
+}
+
+// ==========================================
+// MODULO FILTRI VISITE GUIDATE (Visits)
+// ==========================================
+
+function applyVisitFilters() {
+  if (!currentVisits || currentVisits.length === 0) return;
+
+  // 1. Raccogliamo i valori
+  const freeEntryOnly = document.getElementById("filter-visit-free")?.checked;
+  const maxPrice = parseInt(document.getElementById("visit-price-slider")?.value || 100);
+  const maxDuration = parseInt(document.getElementById("visit-duration-slider")?.value || 180);
+
+  const accCbs = Array.from(document.querySelectorAll('.visit-acc-cb:checked')).map(cb => cb.value);
+  const targetCbs = Array.from(document.querySelectorAll('.visit-target-cb:checked')).map(cb => cb.value);
+
+  // 2. Filtriamo l'array corrente delle visite
+  let filtered = currentVisits.filter(visit => {
+    const price = visit.price || 0;
+    const duration = visit.duration || 0;
+
+    // A. Filtro Costo
+    if (freeEntryOnly && price > 0) return false;
+    if (!freeEntryOnly && maxPrice < 100 && price > maxPrice) return false;
+
+    // B. Filtro Durata
+    if (maxDuration < 180 && duration > maxDuration) return false;
+
+    // C. Filtro Accessibilità (L'utente spunta di cosa ha bisogno, la visita deve averlo)
+    if (accCbs.length > 0) {
+      if (!visit.accessibility || !accCbs.some(acc => visit.accessibility.includes(acc))) {
+        return false;
+      }
+    }
+
+    // D. Filtro Pubblico Consigliato
+    if (targetCbs.length > 0) {
+      // Se la visita è adatta "a tutti" (all), passa il filtro a prescindere
+      const isForAll = visit.targetAudience && visit.targetAudience.includes('all');
+      const hasSpecificTarget = visit.targetAudience && targetCbs.some(targ => visit.targetAudience.includes(targ));
+      
+      if (!isForAll && !hasSpecificTarget) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  // 3. Renderizziamo i risultati usando la funzione di marketplace.js
+  renderVisitsListForMuseum(filtered);
+}
+
+function resetVisitFilters() {
+  // Reset Costo
+  const freeEntry = document.getElementById("filter-visit-free");
+  if (freeEntry) freeEntry.checked = false;
+  
+  const priceSlider = document.getElementById("visit-price-slider");
+  if (priceSlider) priceSlider.value = 100;
+  
+  const priceVal = document.getElementById("visit-price-value");
+  if (priceVal) priceVal.innerText = "100+ €";
+
+  // Reset Durata
+  const durationSlider = document.getElementById("visit-duration-slider");
+  if (durationSlider) durationSlider.value = 180;
+
+  const durationVal = document.getElementById("visit-duration-value");
+  if (durationVal) durationVal.innerText = "Qualsiasi";
+
+  // Reset Checkbox Accessibilità e Target
+  document.querySelectorAll('.visit-acc-cb').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.visit-target-cb').forEach(cb => cb.checked = false);
+
+  // Ricarica la lista completa
+  renderVisitsListForMuseum(currentVisits);
+}
+
+function attachVisitFilterEvents() {
+  // Aggiorna l'etichetta del prezzo mentre si muove lo slider
+  const priceSlider = document.getElementById("visit-price-slider");
+  if (priceSlider) {
+    priceSlider.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value);
+      const priceLabel = document.getElementById("visit-price-value");
+      if (priceLabel) {
+        priceLabel.innerText = val >= 100 ? "100+ €" : `${val} €`;
+      }
+    });
+  }
+
+  // Aggiorna l'etichetta della durata mentre si muove lo slider
+  const durationSlider = document.getElementById("visit-duration-slider");
+  if (durationSlider) {
+    durationSlider.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value);
+      const durationLabel = document.getElementById("visit-duration-value");
+      if (durationLabel) {
+        durationLabel.innerText = val >= 180 ? "Qualsiasi" : `Fino a ${val} min`;
+      }
+    });
+  }
 }

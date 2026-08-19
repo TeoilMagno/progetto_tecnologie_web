@@ -34,9 +34,18 @@ exports.createStyle = async (styleData) => {
 
 // Aggiungi una nuova definizione personalizzata (e toglie le altre)
 exports.addStyleData = async (styleId, newData) => {
-  const { museumId, description } = newData;
+  const { museumId, oldDataId, description } = newData;
   const style = await Style.findById(styleId);
   if (!style) throw Object.assign(new Error('Stile non trovato'), { statusCode: 404 });
+
+  if (oldDataId) {
+    const oldData = style.data.id(oldDataId);
+    if (oldData && oldData.museumId) {
+      oldData.museumId = oldData.museumId.filter(mId => mId.toString() !== museumId.toString());
+    
+      // * vedi autore addAuthorData
+    }
+  }
 
   // Rimuoviamo il museo dalle altre definizioni (singola scelta)
   style.data.forEach(item => {

@@ -53,14 +53,8 @@ router.get('/my-visits', auth.isLoggedInPage, (req, res) => {
 });
 
 // pagina di dettaglio delle visite
-router.get('/visit-details', auth.isLoggedInPage, (req, res) => {
+router.get('/visit-details', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'visit-details.html'));
-});
-
-// pagina esplora visite (Pubbliche)
-router.get('/public-visits', (req, res) => {
-  const filePath = path.join(__dirname, '..', '..', 'html', 'public-visit.html');
-  res.sendFile(filePath);
 });
 
 // Pagina di gestione/modifica del museo
@@ -91,6 +85,16 @@ router.get('/my-adoptions', auth.isCuratorPage, (req, res) => {
 // pagina delle adozioni in corso e completate di un curatore
 router.get('/admin-dashboard', auth.isAdminPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'admin-dashboard.html'));
+});
+
+// pagina 403 personalizzata
+router.get('/403', auth.isAdminPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', '403.html'));
+});
+
+// pagina 404 personalizzata
+router.get('/404', auth.isAdminPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', '404.html'));
 });
 
 router.get('/prova-navigator', (req, res) => {

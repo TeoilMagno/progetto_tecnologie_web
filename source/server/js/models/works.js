@@ -13,6 +13,7 @@ const workSchema = new Schema({
     ref: 'Author',
     required: true
   },
+  authorName: { type: String },
 
   technique: { // tecnica es. dipinto a olio, scultura, ecc
     type: String,
@@ -23,6 +24,7 @@ const workSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Style'
   },
+  styleName: { type: String },
 
   year: {
     type: String,
@@ -61,7 +63,7 @@ const workSchema = new Schema({
     }
   },
 
-  funFact: { type: String}, // Curiosità 
+  funFact: { type: String }, // Curiosità 
   paraphrase: { type: String }, // Parafrasi o spiegazione semplificata dell'opera
   
   museumId: {

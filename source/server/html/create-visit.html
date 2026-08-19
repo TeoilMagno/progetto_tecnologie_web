@@ -142,13 +142,63 @@
             
             <div id="curator-options-area" class="border-top-custom pt-3 mt-3 d-none">
                 <p class="small text-info mb-2"><i class="bi bi-star me-1"></i>Opzioni Curatore</p>
-                <div class="mb-3">
-                  <label for="visit-price" class="form-label">Prezzo del tour (€)</label>
-                  <input type="number" step="0.01" min="0" class="form-control glass-input" id="visit-price" placeholder="0.00">
-                </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="visit-public">
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" id="visit-public" onchange="toggleCuratorDetails()">
                   <label class="form-check-label" for="visit-public">Pubblica sul Marketplace</label>
+                </div>
+                <div id="curator-details-area" class="d-none">
+                  <div class="mb-3">
+                    <label for="visit-price" class="form-label">Prezzo del tour (€)</label>
+                    <input type="number" step="0.01" min="0" class="form-control glass-input" id="visit-price" placeholder="0.00">
+                  </div>
+          
+                  <!-- Dettagli Accessibilità e Pubblico -->
+                  <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                    
+                    <p class="small text-white mb-2"><i class="bi bi-people me-1"></i>Pubblico Consigliato</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                      <div class="form-check form-check-inline m-0">
+                        <input class="form-check-input target-checkbox" type="checkbox" id="targ-kids" value="kids" onchange="handleTargetSelection(this)">
+                        <label class="form-check-label small" for="targ-kids">Bambini</label>
+                      </div>
+                      <div class="form-check form-check-inline m-0">
+                        <input class="form-check-input target-checkbox" type="checkbox" id="targ-families" value="families" onchange="handleTargetSelection(this)">
+                        <label class="form-check-label small" for="targ-families">Famiglie</label>
+                      </div>
+                      <div class="form-check form-check-inline m-0">
+                        <input class="form-check-input target-checkbox" type="checkbox" id="targ-adults" value="adults" onchange="handleTargetSelection(this)">
+                        <label class="form-check-label small" for="targ-adults">Adulti</label>
+                      </div>
+                      <div class="form-check form-check-inline m-0">
+                        <input class="form-check-input target-checkbox" type="checkbox" id="targ-schools" value="schools" onchange="handleTargetSelection(this)">
+                        <label class="form-check-label small" for="targ-schools">Scuole</label>
+                      </div>
+                      <div class="form-check form-check-inline m-0">
+                        <input class="form-check-input target-checkbox" type="checkbox" id="targ-all" value="all" checked onchange="handleTargetSelection(this)">
+                        <label class="form-check-label small" for="targ-all">Per Tutti</label>
+                      </div>
+                    </div>
+
+                    <p class="small text-white mb-2"><i class="bi bi-person-wheelchair me-1"></i>Accessibilità del Percorso</p>
+                    <div class="d-flex flex-wrap gap-2">
+                      <div class="form-check form-check-inline m-0">
+                        <input class="form-check-input acc-checkbox" type="checkbox" id="acc-wheelchair" value="wheelchair_accessible">
+                        <label class="form-check-label small" for="acc-wheelchair">Sedia a Rotelle</label>
+                      </div>
+                      <div class="form-check form-check-inline m-0">
+                        <input class="form-check-input acc-checkbox" type="checkbox" id="acc-blind" value="blind_friendly">
+                        <label class="form-check-label small" for="acc-blind">Ipovedenti (Audio)</label>
+                      </div>
+                      <div class="form-check form-check-inline m-0">
+                        <input class="form-check-input acc-checkbox" type="checkbox" id="acc-deaf" value="deaf_friendly">
+                        <label class="form-check-label small" for="acc-deaf">Sordi (Testo/LIS)</label>
+                      </div>
+                      <div class="form-check form-check-inline m-0">
+                        <input class="form-check-input acc-checkbox" type="checkbox" id="acc-sensory" value="sensory_friendly">
+                        <label class="form-check-label small" for="acc-sensory">Sensory Friendly</label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
             </div>
 
