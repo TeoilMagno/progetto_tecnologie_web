@@ -201,7 +201,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }
                   onClick={handleLessDesc}
                   className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 text-white hover:bg-white/10 py-2.5 transition-colors text-sm"
                 >
-                  <VolumeX size={16} /> Di meno
+                  <VolumeX size={16} /> Dimmi di meno
                 </button>
                 <button 
                   onClick={() => onSpeak(work.description?.[currentDescIndex]?.description)}
@@ -213,7 +213,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }
                   onClick={handleMoreDesc}
                   className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 text-white hover:bg-white/10 py-2.5 transition-colors text-sm"
                 >
-                  <Volume size={16} /> Di più
+                  <Volume size={16} /> Dimmi di più
                 </button>
                 <button
                   onClick={startListening}
