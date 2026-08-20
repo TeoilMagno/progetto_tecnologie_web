@@ -124,9 +124,20 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     const section = sections.find(s => s.rooms && s.rooms.some(r => r._id === work.roomId));
     if (section) {
       setSelectedSection(section);
-      return section;
+      const room = section.rooms.find(r => r._id === work.roomId);
+      return { section, room };
     }
     return null;
+  };
+
+  // Mostra l'alert "la prossima opera è nella sala X" solo quando si cambia
+  // effettivamente stanza rispetto a quella corrente (altrimenti spuntrebbe
+  // anche restando nella stessa sala, tra un'opera e l'altra).
+  // NB: solo lato insegnante/locale — non va mandato agli studenti tramite socket.
+  const announceRoomChange = (previousWork, nextWork, result) => {
+    if (!result?.room) return;
+    if (previousWork?.roomId === nextWork?.roomId) return; // stessa sala, non serve avvisare
+    alert(`La prossima opera si trova nella ${result.room.name}`);
   };
 
   useEffect(() => {
@@ -135,7 +146,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         const index = visitedWorks.findIndex(w => w._id === data.artworkId);
         if (index != -1) {
           setCurrentWorkIndex(index);
-          selectSectionForWork(visitedWorks[index]);
+          if (hasMap) selectSectionForWork(visitedWorks[index]);
         }
       });
       return () => socket.off("change_artwork");
@@ -145,11 +156,13 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const handleNext = () => {
     if (currentWorkIndex < visitedWorks.length - 1) {
       const nextIndex = currentWorkIndex + 1;
+      const previousWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
       setCurrentWorkIndex(nextIndex);
       const activeWork = visitedWorks[nextIndex];
       
       if (hasMap) {
-        selectSectionForWork(activeWork);
+        const result = selectSectionForWork(activeWork);
+        announceRoomChange(previousWork, activeWork, result);
       }
 
       if (isSharedSession && isTeacher && socket) {
@@ -166,10 +179,12 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const handlePrev = () => {
     if (currentWorkIndex > 0) {
       const prevIndex = currentWorkIndex - 1;
+      const previousWork = visitedWorks[currentWorkIndex];
       setCurrentWorkIndex(prevIndex);
       
       if (hasMap) {
-        selectSectionForWork(visitedWorks[prevIndex]);
+        const result = selectSectionForWork(visitedWorks[prevIndex]);
+        announceRoomChange(previousWork, visitedWorks[prevIndex], result);
       }
 
       if (isSharedSession && isTeacher && socket) {
@@ -290,7 +305,12 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         onStartVisit={() => {
           if (visitedWorks.length > 0) {
             setCurrentWorkIndex(0);
-            if (hasMap) selectSectionForWork(visitedWorks[0]);
+            if (hasMap) {
+              const result = selectSectionForWork(visitedWorks[0]);
+              if (result?.room) {
+                alert(`Si parte dalla ${result.room.name}`);
+              }
+            }
             if (isSharedSession && isTeacher && socket) {
               socket.emit("change_artwork", { roomCode, artworkId: visitedWorks[0]._id });
             }
