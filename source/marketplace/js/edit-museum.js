@@ -291,7 +291,7 @@ async function saveSectionFromModal() {
 }
 
 async function deleteSection(sectionId) {
-  const isConfirmed = await showCustomConfirm(
+  const isConfirmed = await window.showCustomConfirm(
     "Conferma eliminazione",
     "Attenzione: Eliminerai la sezione, tutte le stanze e le opere! Sei sicuro?"
   );
@@ -388,7 +388,7 @@ async function saveRoomFromModal() {
 }
 
 async function deleteRoom(sectionId, roomId) {
-  const isConfirmed = await showCustomConfirm(
+  const isConfirmed = await window.showCustomConfirm(
     "Eliminazione stanza",
     "Attenzione: Eliminando la stanza verranno eliminate (o perse) le opere contenute in essa. Sei sicuro?"
   );
@@ -573,7 +573,7 @@ async function saveWorkFromModal() {
 }
 
 async function deleteWork(sectionId, workId) {
-  const isConfirmed = await showCustomConfirm(
+  const isConfirmed = await window.showCustomConfirm(
     "Eliminazione opera",
     "Sei sicuro di voler eliminare questa opera?"
   );
@@ -669,7 +669,7 @@ async function confirmDeleteMuseum() {
       );
 
       if (activeImports.length > 0) {
-        const isConfirmed = await showCustomConfirm(
+        const isConfirmed = await window.showCustomConfirm(
           "Eliminazione museo",
           "Attenzione! Hai ${activeImports.length} opere in prestito da altri musei.\n\nVuoi restituirle tutte automaticamente prima di eliminare il museo? (Se annulli, l'eliminazione verrà interrotta)."
         );

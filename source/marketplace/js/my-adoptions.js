@@ -185,7 +185,7 @@ function renderAdoptionsList(list, container, isIncoming) {
 
 // Azione: Accetta / Rifiuta richiesta
 async function respondAdoption(adoptionId, status) {
-  const isConfirmed = await showCustomConfirm("Conferma Operazione", `Sei sicuro di voler impostare lo stato a: ${status}?`, false);
+  const isConfirmed = await window.showCustomConfirm("Conferma Operazione", `Sei sicuro di voler impostare lo stato a: ${status}?`, false);
   if (!isConfirmed) return;
 
   try {
@@ -206,7 +206,7 @@ async function respondAdoption(adoptionId, status) {
 
 // Azione: Completa adozione (restituzione opera)
 async function completeAdoption(adoptionId) {
-  const isConfirmed = await showCustomConfirm("Restituzione Opera", "Confermi che l'opera è stata restituita e l'adozione è conclusa?", false);
+  const isConfirmed = await window.showCustomConfirm("Restituzione Opera", "Confermi che l'opera è stata restituita e l'adozione è conclusa?", false);
   if (!isConfirmed) return;
 
   try {
@@ -381,7 +381,7 @@ async function submitAdoptionRequest() {
 
 // Azione: Il richiedente conferma che l'opera è arrivata (Attiva l'adozione)
 async function confirmArrival(adoptionId) {
-  const isConfirmed = await showCustomConfirm("Conferma Arrivo", "Confermi di aver ricevuto fisicamente l'opera nel tuo museo? Questo aggiornerà i cataloghi.", false);
+  const isConfirmed = await window.showCustomConfirm("Conferma Arrivo", "Confermi di aver ricevuto fisicamente l'opera nel tuo museo? Questo aggiornerà i cataloghi.", false);
   if (!isConfirmed) return;
   
   try {
