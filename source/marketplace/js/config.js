@@ -28,6 +28,61 @@ async function geocodeAddress(address) {
   return { lat: null, lon: null };
 }
 
+// Popup di conferma universale (Promise-based)
+  window.showCustomConfirm = function(title, message, isDanger = true) {
+    return new Promise((resolve) => {
+      const existingModal = document.getElementById("custom-confirm-modal");
+      if (existingModal) existingModal.remove();
+
+      const btnClass = isDanger ? "btn-danger" : "btn-info text-dark";
+      const iconClass = isDanger ? "bi-exclamation-triangle-fill text-danger" : "bi-question-circle-fill text-info";
+      const confirmText = isDanger ? "Elimina" : "Conferma";
+      const shadowColor = isDanger ? "220, 53, 69" : "13, 202, 240";
+
+      const modalHTML = `
+        <div class="modal fade" id="custom-confirm-modal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-modal text-white" style="border: 1px solid rgba(255, 255, 255, 0.1); background-color: #18181b; box-shadow: 0 0 35px rgba(0, 0, 0, 0.7); border-radius: 16px;">
+              <div class="modal-header border-bottom border-secondary border-opacity-25 p-3">
+                <h5 class="modal-title d-flex align-items-center" style="font-weight: 700;">
+                  <i class="bi ${iconClass} me-2 fs-5"></i>
+                  <span>${title}</span>
+                </h5>
+                <button type="button" class="btn-close custom-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+              </div>
+              <div class="modal-body py-4 px-3">
+                <p class="mb-0 text-secondary" style="font-size: 1rem; line-height: 1.5;">${message}</p>
+              </div>
+              <div class="modal-footer border-top border-secondary border-opacity-25 p-2 d-flex gap-2 justify-content-end">
+                <button type="button" class="btn btn-sm btn-glass px-4 py-2" data-bs-dismiss="modal" style="font-weight: 600;">Annulla</button>
+                <button type="button" id="custom-confirm-yes-btn" class="btn btn-sm ${btnClass} px-4 py-2" style="border-radius: 50px; font-weight: 600; border: none; box-shadow: 0 4px 15px rgba(${shadowColor}, 0.3);">${confirmText}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+      const modalElement = document.getElementById("custom-confirm-modal");
+      const bsModal = new bootstrap.Modal(modalElement);
+      let isConfirmed = false;
+
+      document.getElementById("custom-confirm-yes-btn").addEventListener("click", () => {
+        isConfirmed = true;
+        bsModal.hide();
+      });
+
+      // Si risolve con true o false a seconda del tasto cliccato (o se l'utente clicca fuori)
+      modalElement.addEventListener("hidden.bs.modal", () => {
+        modalElement.remove();
+        resolve(isConfirmed);
+      });
+
+      bsModal.show();
+    });
+  };
+
 // Intercept all alerts and show a beautiful custom toast!
 (function() {
   function initToastContainer() {

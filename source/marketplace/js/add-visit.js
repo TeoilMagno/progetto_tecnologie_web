@@ -691,7 +691,8 @@ async function deleteVisit() {
     ? "Sei sicuro di voler eliminare questa bozza?" 
     : "Attenzione: sei sicuro di voler eliminare definitivamente questa visita? Verrà rimossa dal marketplace.";
     
-  if (!confirm(confirmMsg)) return;
+  const isConfirmed = await showCustomConfirm("Conferma Eliminazione", confirmMsg);
+  if (!isConfirmed) return;
 
   try {
     const response = await fetch(`${API_BASE_URL}/visits/${editingVisitId}`, {

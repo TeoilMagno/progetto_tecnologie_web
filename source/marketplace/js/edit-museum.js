@@ -291,7 +291,12 @@ async function saveSectionFromModal() {
 }
 
 async function deleteSection(sectionId) {
-  if (!confirm("Attenzione: Eliminerai la sezione, tutte le stanze e le opere! Sei sicuro?")) return;
+  const isConfirmed = await showCustomConfirm(
+    "Conferma eliminazione",
+    "Attenzione: Eliminerai la sezione, tutte le stanze e le opere! Sei sicuro?"
+  );
+  if(!isConfirmed) return;
+
   try {
     const res = await fetch(`${API_BASE_URL}/sections/${sectionId}`, {
       method: "DELETE", headers: { "Content-Type": "application/json" },
@@ -383,7 +388,12 @@ async function saveRoomFromModal() {
 }
 
 async function deleteRoom(sectionId, roomId) {
-  if (!confirm("Attenzione: Eliminando la stanza verranno eliminate (o perse) le opere contenute in essa. Procedere?")) return;
+  const isConfirmed = await showCustomConfirm(
+    "Eliminazione stanza",
+    "Attenzione: Eliminando la stanza verranno eliminate (o perse) le opere contenute in essa. Sei sicuro?"
+  );
+  if(!isConfirmed) return;
+
   try {
     const res = await fetch(`${API_BASE_URL}/sections/${sectionId}/rooms/${roomId}`, {
       method: "DELETE",
@@ -563,7 +573,12 @@ async function saveWorkFromModal() {
 }
 
 async function deleteWork(sectionId, workId) {
-  if (!confirm("Sei sicuro di voler eliminare questa opera?")) return;
+  const isConfirmed = await showCustomConfirm(
+    "Eliminazione opera",
+    "Sei sicuro di voler eliminare questa opera?"
+  );
+  if(!isConfirmed) return;
+
   try {
     const res = await fetch(`${API_BASE_URL}/works/${workId}`, {
       method: "DELETE", headers: { "Content-Type": "application/json" },
@@ -654,8 +669,12 @@ async function confirmDeleteMuseum() {
       );
 
       if (activeImports.length > 0) {
-        const wantsToReturn = confirm(`⚠️ Attenzione! Hai ${activeImports.length} opere in prestito da altri musei.\n\nVuoi restituirle tutte automaticamente prima di eliminare il museo? (Se annulli, l'eliminazione verrà interrotta).`);
-        
+        const isConfirmed = await showCustomConfirm(
+          "Eliminazione museo",
+          "Attenzione! Hai ${activeImports.length} opere in prestito da altri musei.\n\nVuoi restituirle tutte automaticamente prima di eliminare il museo? (Se annulli, l'eliminazione verrà interrotta)."
+        );
+        if(!isConfirmed) return;
+
         if (!wantsToReturn) {
           deleteMuseumModalInstance.hide();
           return; // Interrompiamo tutto

@@ -185,7 +185,8 @@ function renderAdoptionsList(list, container, isIncoming) {
 
 // Azione: Accetta / Rifiuta richiesta
 async function respondAdoption(adoptionId, status) {
-  if (!confirm(`Sei sicuro di voler impostare lo stato a: ${status}?`)) return;
+  const isConfirmed = await showCustomConfirm("Conferma Operazione", `Sei sicuro di voler impostare lo stato a: ${status}?`, false);
+  if (!isConfirmed) return;
 
   try {
     const res = await fetch(`${API_BASE_URL}/adoptions/${adoptionId}/respond`, {
@@ -205,7 +206,8 @@ async function respondAdoption(adoptionId, status) {
 
 // Azione: Completa adozione (restituzione opera)
 async function completeAdoption(adoptionId) {
-  if (!confirm("Confermi che l'opera è stata restituita e l'adozione è conclusa?")) return;
+  const isConfirmed = await showCustomConfirm("Restituzione Opera", "Confermi che l'opera è stata restituita e l'adozione è conclusa?", false);
+  if (!isConfirmed) return;
 
   try {
     const res = await fetch(`${API_BASE_URL}/adoptions/${adoptionId}/complete`, {
@@ -379,8 +381,9 @@ async function submitAdoptionRequest() {
 
 // Azione: Il richiedente conferma che l'opera è arrivata (Attiva l'adozione)
 async function confirmArrival(adoptionId) {
-  if (!confirm("Confermi di aver ricevuto fisicamente l'opera nel tuo museo? Questo aggiornerà i cataloghi.")) return;
-
+  const isConfirmed = await showCustomConfirm("Conferma Arrivo", "Confermi di aver ricevuto fisicamente l'opera nel tuo museo? Questo aggiornerà i cataloghi.", false);
+  if (!isConfirmed) return;
+  
   try {
     const res = await fetch(`${API_BASE_URL}/adoptions/${adoptionId}/arrive`, {
       method: "PUT",

@@ -140,31 +140,30 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
 
 // Funzione asincrona per eliminare una visita o bozza
 function deleteVisit(visitId) {
-  showCustomConfirm(
+  const isConfirmed = await showCustomConfirm(
     "Conferma Eliminazione",
-    "Sei sicuro di voler eliminare definitivamente questa visita o bozza? Questa azione non può essere annullata.",
-    async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/visits/${visitId}`, {
-          method: "DELETE"
-        });
-
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || "Errore durante l'eliminazione");
-        }
-
-        // Mostra feedback di successo (verrà intercettato come toast!)
-        alert("Visita o bozza eliminata con successo!");
-
-        // Ricarica la lista aggiornata
-        getMyVisits();
-      } catch (error) {
-        console.error("Errore eliminazione visita:", error);
-        alert("Impossibile eliminare la visita: " + error.message);
-      }
-    }
+    "Sei sicuro di voler eliminare definitivamente questa visita o bozza? Questa azione non può essere annullata."
   );
+  if (!isConfirmed) return;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/visits/${visitId}`, {
+      method: "DELETE"
+    });
+
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.error || "Errore durante l'eliminazione");
+    }
+
+    alert("Visita o bozza eliminata con successo!");
+
+    // Ricarica la lista aggiornata
+    getMyVisits();
+  } catch (error) {
+    console.error("Errore eliminazione visita:", error);
+    alert("Impossibile eliminare la visita: " + error.message);
+  }
 }
 
 // Mostra un popup di conferma personalizzato in linea con lo stile dark glassmorphism
