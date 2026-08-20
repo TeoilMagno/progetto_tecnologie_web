@@ -138,6 +138,15 @@ io.on('connection', (socket) => {
     socket.to(roomCode).emit('session_started', { visitId });
   });
 
+  // Studente che si ri-unisce dalla sala d'attesa 
+  socket.on('rejoin_room', ({ roomCode }) => {
+    roomCode = roomCode.toUpperCase();
+    if (activeSessions[roomCode]) {
+      socket.join(roomCode);
+      console.log(`Studente rientrato nella stanza: ${roomCode}`);
+    }
+  });
+
   socket.on('disconnect', () => {
     console.log(`Client disconnesso: ${socket.id}`);
     // OPZIONALE: Qui potremmo cercare se il socket.id era uno studente o un prof e pulire activeSessions

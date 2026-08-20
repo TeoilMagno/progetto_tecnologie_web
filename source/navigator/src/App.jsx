@@ -6,7 +6,7 @@ import { Home, Compass, MapPin, Map as MapIcon, Menu, Settings, Users } from 'lu
 import HomePage from './pages/Home';
 import Visits from './pages/Visits';
 import JoinSession from './pages/JoinSession';
-import StudentWaitingRoom from './pages/studentWaitingRoom';
+import StudentWaitingRoom from './pages/StudentWaitingRoom';
 import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
 import MapView from './components/mapView';
 
