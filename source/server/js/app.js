@@ -140,12 +140,17 @@ io.on('connection', (socket) => {
     socket.to(roomCode).emit('session_started', { visitId });
   });
 
-  // Studente che si ri-unisce dalla sala d'attesa 
-  socket.on('rejoin_room', ({ roomCode }) => {
+  // Client (Studente o Insegnante) che si ri-unisce caricando la Mappa
+  socket.on('rejoin_room', ({ roomCode, role }) => {
     roomCode = roomCode.toUpperCase();
     if (activeSessions[roomCode]) {
       socket.join(roomCode);
-      console.log(`Studente rientrato nella stanza: ${roomCode}`);
+      
+      // Se è l'insegnante ad aver cambiato socket, aggiorniamo il suo riferimento
+      if (role === 'teacher') {
+        activeSessions[roomCode].teacherSocketId = socket.id;
+      }
+      console.log(`Un client (${role}) è entrato nella mappa della stanza: ${roomCode}`);
     }
   });
 

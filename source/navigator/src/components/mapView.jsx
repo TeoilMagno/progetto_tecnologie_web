@@ -33,8 +33,17 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   useEffect(() => {
     const newSocket = io(SOCKET_URL, { transports: ['websocket', 'polling'] });
     setSocket(newSocket);
+
+    // FONDAMENTALE: Il nuovo socket deve registrarsi nella stanza!
+    if (roomCode) {
+      newSocket.emit('rejoin_room', { 
+        roomCode: roomCode.toUpperCase(),
+        role: isTeacher ? 'teacher' : 'student'
+      });
+    }
+
     return () => newSocket.disconnect();
-  }, []);
+  }, [roomCode, isTeacher]);
 
   useEffect(() => {
     const fetchVisitData = async () => {
