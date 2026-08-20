@@ -195,3 +195,52 @@ exports.generateAndSaveItemTargetAge = async (itemId, itemName, itemDescription)
     console.error("Errore IA targetAge:", error);
   }
 };
+
+exports.mapRequest = async (prompt) => {
+  try {
+    // includiamo il dizionario su cui mappare
+    const dictionary = require('../../../navigator/react/museum-map/src/data/dictionary.json');
+    const validActions = [...new Set(Object.values(dictionary))];
+    
+    // Usiamo il modello "flash" che è velocissimo e gratuito per i test
+    const model = genAI.getGenerativeModel({
+      model: "gemini-3.5-flash-lite",
+      systemInstruction: `
+        Sei un assistente per un'audioguida museale.
+        Il tuo unico compito è capire l'intento dell'utente e mapparlo a UNA ed una soltanto di queste azioni esatte: ${validActions.join(", ")}.
+        Se la richiesta dell'utente non c'entra niente o è incomprensibile, restituisci "UNKNOWN".
+        
+        Esempi:
+        Utente: "Puoi leggermi il testo?" -> PLAY
+        Utente: "Voglio sapere altro" -> NEXT_DESC
+        Utente: "Togli questa schermata" -> CLOSE
+        Utente: "Che ore sono?" -> UNKNOWN
+      `,
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "object",
+          properties: {
+            mappedAction: {
+              type: "string",
+              description: "L'azione mappata in base all'intento dell'utente"
+            }
+          },
+          required: ["mappedAction"]
+        }
+      }
+    });
+    //
+    // Invia il prompt a Google e aspetta la magia
+    const result = await model.generateContent(prompt);
+
+    // parso la risposta in JSON
+    const aiResponse = JSON.parse(result.response.text());
+    
+    // Estrae solo il testo pulito dalla risposta complessa di Google
+    return aiResponse;
+  } catch (error) {
+    console.error("Errore fatale con Gemini API:", error);
+    throw error;
+  }
+};

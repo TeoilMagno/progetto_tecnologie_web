@@ -21,12 +21,20 @@ export default function MapView({ visitId }) {
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
 
+  //Domande per assistente vocale
+  const [commandsMap, setCommandsMap] = useState(null);
+
   useEffect(() => {
     const fetchVisitData = async () => {
       try {
         // 1. Scarichiamo i dati della visita
         const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}/museum`);
-        const visitData = await visitResponse.json();
+        const apiData = await visitResponse.json();
+        const visitData = apiData.visit;
+        const dictionary = apiData.commands_map;
+
+        //salviamo i comandi vocali disponibili
+        setCommandsMap(dictionary);
 
         // Salviamo le opere della visita nello stato
         setVisitedWorks(visitData.works);
@@ -134,7 +142,7 @@ export default function MapView({ visitId }) {
       const currentSection = selectedSection;
       const nextSection = selectSectionForWork(activeWork);
       if(nextSection._id === currentSection._id) {
-        alert(`la prossima opera si trova nella ${activeWork.roomName}`)
+        alert(`la prossima opera si trova nella ${activeWork.roomName} ` || "Attenzione: Nome della stanza mancante!")
       } else {
         alert(`la prossima opera si trova nella sezione ${nextSection.name}, sala ${activeWork.roomName}`);
       }
@@ -256,7 +264,9 @@ export default function MapView({ visitId }) {
                 setCurrentWorkIndex(0);
                 const nextSection = selectSectionForWork(visitedWorks[0]);
                 if (nextSection) {
-                  alert(`la prossima opera si trova nella sezione ${nextSection.name}, ${visitedWorks[0].roomName}`);
+                  alert(`la prossima opera si trova nella sezione ${nextSection.name}, ${visitedWorks[0].roomName}` || "Attenzione: Nome della stanza mancante!");
+                } else {
+                  alert(`mambo!`);
                 }
               }}
               className="btn btn-sm text-white rounded-pill px-4"
@@ -377,6 +387,7 @@ export default function MapView({ visitId }) {
         work={detailsWork}
         onClose={() => setDetailsWork(null)} 
         onSpeak={speakText}
+        commandsMap={commandsMap}
       />
     </div>
   );

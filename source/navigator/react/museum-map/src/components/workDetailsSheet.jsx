@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
+export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }) {
   // --- LOGICA TRASCINAMENTO BOTTOM SHEET ---
   const [dragStartY, setDragStartY] = useState(null);
   const [dragCurrentY, setDragCurrentY] = useState(0);
@@ -67,7 +67,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
     };
 
     // Quando ha capito cosa hai detto
-    recognition.onresult = (event) => {
+    recognition.onresult = async (event) => {
       // Estraiamo il testo, lo mettiamo in minuscolo e togliamo gli spazi ai lati
       const transcript = event.results[0][0].transcript.toLowerCase().trim();
       console.log("Hai detto:", transcript); // debug
@@ -76,22 +76,47 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
       // rimozione eventuale punto finale che a volte l'API aggiunge
       const cleanTranscript = transcript.replace(/\.$/, ''); 
 
-      if (cleanTranscript === "ascolta" || cleanTranscript === "leggi") {
-        onSpeak(work.description?.[currentDescIndex]?.description);
-      } 
-      else if (cleanTranscript === "dimmi di più" || cleanTranscript === "vai avanti") {
-        handleMoreDesc();
-      } 
-      else if (cleanTranscript === "dimmi di meno" || cleanTranscript === "torna indietro") {
-        handleLessDesc();
-      } 
-      else if (cleanTranscript === "chiudi" || cleanTranscript === "esci") {
-        onClose();
-      } 
-      else {
+      let action = commandsMap[cleanTranscript];
+
+      if(!action) {
         // --- FUTURA FASE 2: INTEGRAZIONE AI ---
         // Qui in futuro metterai: const aiResponse = await fetch('/api/ai-mapper', { body: cleanTranscript })
-        alert(`Comando non riconosciuto: "${cleanTranscript}". Riprova con "ascolta", "dimmi di più" o "chiudi".`);
+
+        setIsListening(true); // Tieni acceso un feedback visivo di "Sto pensando..."
+        try {
+          // mando la promp alla rotta ai per farla intepretare a Gemini
+          const aiResponse = await fetch(`${API_BASE_URL}/ai/map-request`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: transcript })
+          });
+          const aiData = await aiResponse.json();
+          action = aiData.mappedAction; // L'IA restituisce "PLAY", "NEXT_DESC", "CLOSE" o "UNKNOWN"
+        } catch (error) {
+          action = "UNKNOWN";
+        }
+      }
+
+      console.log(action);
+
+      switch (action) {
+        case "PLAY":
+          onSpeak(work.description?.[currentDescIndex]?.description);
+          break;
+        case "NEXT_DESC":
+          handleMoreDesc();
+          break;
+        case "PREV_DESC":
+          handleLessDesc();
+          break;
+        case "CLOSE":
+          onClose();
+          break;
+        case "UNKNOWN":
+          console.log(`Comando non riconosciuto: "${cleanTranscript}". Riprova con "ascolta", "dimmi di più" o "chiudi".`);
+          break;
+        default:
+          console.log(`Non ho capito. Puoi dire cose come "ascolta" o "chiudi".`);
       }
     };
 
@@ -175,7 +200,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
               </button>
 
               <h3 style={{ fontWeight: 800, marginBottom: "4px" }}>{work.name}</h3>
-              <p className="text-info mb-0" style={{ fontWeight: 600 }}>{work.author} • {work.year}</p>
+              <p className="text-info mb-0" style={{ fontWeight: 600 }}>{work.authorName} • {work.year}</p>
             </div>
 
             {/* ─── ZONA DI LETTURA (Scorrevole, NON trascinabile per chiudere) ─── */}

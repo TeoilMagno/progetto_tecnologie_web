@@ -134,7 +134,7 @@ export default function RoomLayer({ onBack, section, visitedWorks, activeWorkId,
                   {work.name}
                 </strong>
                 <span style={{ fontSize: "10px", color: isActive ? "#ccc" : "#666", marginTop: "2px", textAlign: "center" }}>
-                  {work.author}
+                  {work.authorName}
                 </span>
               </div>
             </div>
