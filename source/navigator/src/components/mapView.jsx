@@ -130,16 +130,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     return null;
   };
 
-  // Mostra l'alert "la prossima opera è nella sala X" solo quando si cambia
-  // effettivamente stanza rispetto a quella corrente (altrimenti spuntrebbe
-  // anche restando nella stessa sala, tra un'opera e l'altra).
-  // NB: solo lato insegnante/locale — non va mandato agli studenti tramite socket.
-  const announceRoomChange = (previousWork, nextWork, result) => {
-    if (!result?.room) return;
-    if (previousWork?.roomId === nextWork?.roomId) return; // stessa sala, non serve avvisare
-    alert(`La prossima opera si trova nella ${result.room.name}`);
-  };
-
   useEffect(() => {
     if (isSharedSession && !isTeacher && socket) {
       socket.on("change_artwork", (data) => {
@@ -161,8 +151,18 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       const activeWork = visitedWorks[nextIndex];
       
       if (hasMap) {
-        const result = selectSectionForWork(activeWork);
-        announceRoomChange(previousWork, activeWork, result);
+        const currentSection = selectedSection;
+        const { section: nextSection, room: nextRoom } = selectSectionForWork(activeWork) || {};
+        
+        if (nextSection && nextRoom) {
+          if (currentSection && nextSection._id === currentSection._id) {
+            alert(`La prossima opera si trova in ${nextRoom.name}`);
+          } else {
+            alert(`La prossima opera si trova nella sezione ${nextSection.name}, sala ${nextRoom.name}`);
+          }
+        } else {
+          alert("Attenzione: Impossibile determinare la posizione della prossima opera.");
+        }
       }
 
       if (isSharedSession && isTeacher && socket) {
@@ -183,8 +183,18 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       setCurrentWorkIndex(prevIndex);
       
       if (hasMap) {
-        const result = selectSectionForWork(visitedWorks[prevIndex]);
-        announceRoomChange(previousWork, visitedWorks[prevIndex], result);
+        const currentSection = selectedSection;
+        const activeWork = visitedWorks[prevIndex];
+        const { section: prevSection, room: prevRoom } = selectSectionForWork(activeWork);
+        if (prevSection && prevRoom) {
+          if (currentSection && prevSection._id === currentSection._id) {
+            alert(`La prossima opera si trova in ${prevRoom.name}`);
+          } else {
+            alert(`La prossima opera si trova nella sezione ${prevSection.name}, sala ${prevRoom.name}`);
+          }
+        } else {
+          alert("Attenzione: Impossibile determinare la posizione della prossima opera.");
+        }
       }
 
       if (isSharedSession && isTeacher && socket) {
