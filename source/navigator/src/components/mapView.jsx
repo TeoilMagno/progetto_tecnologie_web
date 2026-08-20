@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { io } from "socket.io-client";
 import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2, Compass, Image as ImageIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { SOCKET_URL, API_BASE_URL } from "../config";
 import SectionLayer from "./sectionLayer";
 import RoomLayer from "./roomLayer";
 import WorkDetailsSheet from "./workDetailsSheet";
 import NavigationControlBar from "./navigationControlBar";
-import { SOCKET_URL, API_BASE_URL } from "../config";
 
 export default function MapView({ visitId, roomCode, isTeacher }) {
+  const navigate = useNavigate();
   const [socket, setSocket] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
 
@@ -198,7 +200,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         </div>
         <h2 className="text-2xl font-bold mb-2">Errore di Caricamento</h2>
         <p className="text-slate-400 max-w-sm mb-6">Impossibile recuperare i dati di questa visita. Potrebbe essere stata cancellata o il server non risponde.</p>
-        <button onClick={() => window.location.href = "/my-visits"} className="px-6 py-2.5 bg-slate-800 rounded-full font-semibold cursor-pointer">Torna Indietro</button>
       </div>
     );
   }
@@ -208,10 +209,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   return (
     // 1. fixed inset-0 blocca lo schermo ed evita lo scorrimento dell'intera pagina
     <div className="fixed inset-0 flex flex-col bg-[#09090b] text-white overflow-hidden">
-      
+      {/* TODO: magari deve rimandare al my-visit del navigator? */}
       {/* Tasto Esci Fluttuante */}
       <button 
-        onClick={() => window.location.href = "/my-visits"} 
+        onClick={() => navigate("/my-visits")} 
         className="absolute top-4 right-4 z-[9999] flex items-center justify-center gap-2 px-4 py-2 bg-slate-900/80 backdrop-blur-md border border-slate-700 rounded-full text-slate-300 hover:bg-slate-800 hover:text-white text-sm transition-colors shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
       >
         <LogOut size={16} /> Esci

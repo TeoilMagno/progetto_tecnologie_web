@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, useSearchParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { Home, Compass, MapPin, Map as MapIcon, Menu, Settings, Users } from 'lucide-react';
 
 // Importazione pagine e componenti centralizzati
@@ -34,6 +34,7 @@ function MapRouteWrapper() {
 // Questo componente vive DENTRO il Router, quindi può usare useLocation!
 function AppLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   
   // Definiamo un flag: se siamo su /map, nascondiamo le barre globali!
   const hideGlobalUI = location.pathname === '/map';
@@ -45,6 +46,11 @@ function AppLayout() {
     }
     return null; 
   });
+
+  const handleChangeMuseum = () => {
+    setSelectedMuseum(null); // Fa ricomparire l'overlay
+    navigate('/');           // Ti riporta alla home per un reset pulito
+  };
 
   return (
     <div className="flex h-[100dvh] w-full bg-slate-950 text-white font-sans overflow-hidden flex-col">
@@ -58,7 +64,11 @@ function AppLayout() {
       {!hideGlobalUI && (
         <header className="bg-slate-900/95 backdrop-blur-lg border-b border-slate-800 px-4 py-4 shrink-0 z-50 w-full">
           <div className="flex items-center justify-center max-w-lg mx-auto">
-            <div className="flex items-center gap-3 justify-center">
+            <div 
+              onClick={handleChangeMuseum}
+              className="flex items-center gap-3 justify-center cursor-pointer hover:opacity-80 transition-opacity"
+              title="Cambia Museo"
+            >
               <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0 overflow-hidden">
                 <img src="/img/logob.svg" alt="Logo Museo" className="w-full h-full object-cover" />
               </div>
