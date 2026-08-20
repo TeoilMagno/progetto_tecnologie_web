@@ -77,18 +77,20 @@ app.use('/vendor/sortablejs', express.static(sortablePath));
 
 // --- 4. LOGICA DI SOCKET.IO PER LA JOINT SESSION ---
 const activeSessions = {};
+app.locals.activeSessions = activeSessions;
 
 io.on('connection', (socket) => {
   console.log(`Nuovo client connesso al Navigator: ${socket.id}`);
 
   // Insegnante crea la stanza
-  socket.on('create_room', ({ roomCode }) => {
+  socket.on('create_room', ({ roomCode, visitId }) => {
     socket.join(roomCode);
     activeSessions[roomCode] = { 
         teacherSocketId: socket.id, 
-        students: [] 
+        students: [],
+        visitId: visitId
     };
-    console.log(`L'insegnante ha creato la stanza: ${roomCode}`);
+    console.log(`L'insegnante ha creato la stanza: ${roomCode} per la visita ${visitId}`);
   });
 
   // Studente si unisce

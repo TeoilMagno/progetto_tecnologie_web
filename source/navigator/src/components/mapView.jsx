@@ -39,7 +39,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   useEffect(() => {
     const fetchVisitData = async () => {
       try {
-        const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}`, { credentials: 'include' });
+        const queryParam = isSharedSession ? `?roomCode=${roomCode}` : ''
+        
+        const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}${queryParam}`, { credentials: 'include' });
         if (!visitResponse.ok) throw new Error("Visita non trovata");
         
         const visitData = await visitResponse.json();

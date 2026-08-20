@@ -555,14 +555,19 @@ apiRouter.get("/visits", async (req, res) => {
 // per l'apertura dei dettagli di una visita
 apiRouter.get("/visits/:id", async (req, res) => {
   try {
-    const visit = await visitController.getVisitById(req.params.id, req.user);
+    const { id } = req.params;
+    const { roomCode } = req.query;
+    
+    // Controlliamo se esiste una stanza attiva per questa visita
+    const sessions = req.app.locals.activeSessions;
+    const isSharedValid = roomCode && sessions[roomCode] && sessions[roomCode].visitId === id;
+    
+    // Passiamo isSharedValid (true o false) al controller
+    const visit = await visitController.getVisitById(id, req.user, isSharedValid);
     res.status(200).json(visit);
   } catch (error) {
-    console.error("Errore nel recupero della visita:", error);
     const status = error.statusCode || 500;
-    res
-      .status(status)
-      .json({ error: error.message || "Impossibile recuperare la visita" });
+    res.status(status).json({ error: error.message });
   }
 });
 
