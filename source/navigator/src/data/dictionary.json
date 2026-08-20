@@ -1,10 +1,10 @@
 {
-  "commands_map": {
-    "ascolta": "PLAY",
-    "leggi": "PLAY",
-    "dimmi di più": "NEXT_DESC",
-    "avanti": "NEXT_DESC",
-    "chiudi": "CLOSE",
-    "esci": "CLOSE"
-  }
+  "ascolta": "PLAY",
+  "leggi": "PLAY",
+  "dimmi di più": "NEXT_DESC",
+  "avanti": "NEXT_DESC",
+  "dimmi di meno": "PREV_DESC",
+  "indietro": "PREV_DESC",
+  "chiudi": "CLOSE",
+  "esci": "CLOSE"
 }

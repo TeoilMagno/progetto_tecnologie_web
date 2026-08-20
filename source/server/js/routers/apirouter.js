@@ -5,6 +5,7 @@
 */
 
 const express = require("express");
+const fs = require('fs').promises;
 const path = require("path");
 const mongoose = require("mongoose");
 
@@ -185,19 +186,6 @@ apiRouter.get("/sections/:id/works", async (req, res) => {
     if(!works) return res.status(404).json({ error: "Opere non trovate" });
 
     res.json(works);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-apiRouter.get("/visits/:visitId/museum", async (req, res) => {
-  try {
-    const userId = req.user ? req.user._id : null;
-    const visit = await visitController.getVisitById(req.params.visitId, userId);
-
-    if(!visit) return res.status(404).json({ error: "visita non trovata" });
-
-    res.json(visit);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -564,7 +552,21 @@ apiRouter.get("/visits/:id", async (req, res) => {
     
     // Passiamo isSharedValid (true o false) al controller
     const visit = await visitController.getVisitById(id, req.user, isSharedValid);
-    res.status(200).json(visit);
+
+    if(!visit) return res.status(404).json({ error: "visita non trovata" });
+
+    const dictPath = path.join(__dirname, '..', '..', '..', 'navigator', 'src', 'data', 'dictionary.json');
+    const dictRaw = await fs.readFile(dictPath, 'utf8');
+    const dictionary = JSON.parse(dictRaw);
+    //conversione in oggetto standard
+    //Se "visit" è un documento Mongoose, bisogna convertirlo prima di poterci aggiungere roba, 
+    //altrimenti la fusione con lo spread operator (...) fallirà
+    const visitObj = visit.toObject ? visit.toObject() : visit;
+
+    res.status(200).json({
+      visit: visitObj,                // dati della visita richiesta
+      commands_map: dictionary        // aggiunge il tuo nuovo dizionario alla risposta
+    });
   } catch (error) {
     const status = error.statusCode || 500;
     res.status(status).json({ error: error.message });
@@ -625,6 +627,33 @@ apiRouter.post("/visits/recommend-length", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+//TODO: DA CANCELLARE
+//manda tutti i dati per la visualizzazione del museo
+// apiRouter.get("/visits/:id/museum", async (req, res) => {
+//   try {
+//     const userId = req.user ? req.user._id : null;
+//     const visit = await visitController.getVisitById(req.params.id, userId);
+//
+//     if(!visit) return res.status(404).json({ error: "visita non trovata" });
+//
+//     const dictPath = path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'src', 'data', 'dictionary.json');
+//     const dictRaw = await fs.readFile(dictPath, 'utf8');
+//     const dictionary = JSON.parse(dictRaw);
+//     //conversione in oggetto standard
+//     //Se "visit" è un documento Mongoose, bisogna convertirlo prima di poterci aggiungere roba, 
+//     //altrimenti la fusione con lo spread operator (...) fallirà
+//     const visitObj = visit.toObject ? visit.toObject() : visit;
+//
+//     res.json({
+//       visit: visitObj,                  // dati della visita richiesta
+//       commands_map: dictionary      // aggiunge il tuo nuovo dizionario alla risposta
+//     });
+//
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 // ----------------------- ordini & checkout ----------------------------
 
@@ -918,6 +947,19 @@ apiRouter.post("/ai/generate-item-targetage", async (req,res) => {
 
   res.status(202).json({ message: "Associazione targetAge avviata in background..." });
   aiController.generateAndSaveItemTargetAge(itemId, itemName, itemDescription);
-})
+});
+
+apiRouter.post("/ai/map-request", async (req,res) => {
+  try {
+      const { prompt } = req.body;
+
+    if(!prompt) return res.status(400).json({ error: "la richiesta è vuota"});
+
+    const mapped_request = await aiController.mapRequest(prompt);
+    res.status(200).json(mapped_request);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = apiRouter;

@@ -25,6 +25,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
 
+  //Domande per assistente vocale
+  const [commandsMap, setCommandsMap] = useState(null);
+
   const isSharedSession = Boolean(roomCode);
   
   // Se non ci sono sezioni valide, attiviamo la modalità Fallback (Audioguida List Mode)
@@ -52,8 +55,13 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         
         const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}${queryParam}`, { credentials: 'include' });
         if (!visitResponse.ok) throw new Error("Visita non trovata");
+        const apiData = await visitResponse.json();
+        const visitData = apiData.visit;
+        const dictionary = apiData.commands_map;
+
+        //salviamo i comandi vocali disponibili
+        setCommandsMap(dictionary);
         
-        const visitData = await visitResponse.json();
         // Controllo di sicurezza: ci assicuriamo che works sia un array
         const worksArray = Array.isArray(visitData.works) ? visitData.works : [];
         setVisitedWorks(worksArray);
@@ -328,6 +336,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           work={detailsWork}
           onClose={() => setDetailsWork(null)} 
           onSpeak={speakText}
+          commandsMap={commandsMap}
         />
       )}
     </div>

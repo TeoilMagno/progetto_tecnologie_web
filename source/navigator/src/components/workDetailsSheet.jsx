@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { X, Volume2, Volume1, VolumeX, Mic } from "lucide-react";
 
-export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
+export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }) {
+  // --- LOGICA TRASCINAMENTO BOTTOM SHEET ---
   const [dragStartY, setDragStartY] = useState(null);
   const [dragCurrentY, setDragCurrentY] = useState(0);
   const [currentDescIndex, setCurrentDescIndex] = useState(0);
@@ -20,6 +20,8 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
   
   const handlePointerUp = (e) => {
     if (!dragStartY) return;
+
+    // Se ha trascinato in basso per più di 100px, chiudiamo
     if (dragCurrentY > 100) {
       onClose();
     }
@@ -45,6 +47,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
   }
 
   const startListening = () => {
+    // 1. Controllo compatibilità browser
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Il tuo browser non supporta i comandi vocali.");
@@ -52,45 +55,86 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = 'it-IT';
-    recognition.interimResults = false;
+    recognition.lang = 'it-IT'; // riconosciamo l'italiano l'italiano
+    recognition.interimResults = false; // Aspetta che l'utente finisca di parlare
     recognition.maxAlternatives = 1;
 
+    // Inizia ascolto
     recognition.onstart = () => {
       setIsListening(true);
+      // Opzionale: Zittiamo la voce se stava parlando, per non accavallarsi!
       window.speechSynthesis.cancel(); 
     };
 
-    recognition.onresult = (event) => {
+    // Quando ha capito cosa hai detto
+    recognition.onresult = async (event) => {
+      // Estraiamo il testo, lo mettiamo in minuscolo e togliamo gli spazi ai lati
       const transcript = event.results[0][0].transcript.toLowerCase().trim();
+      console.log("Hai detto:", transcript); // debug
+
+      // --- MAPPATURA ESATTA DEI COMANDI (Fase 1) ---
+      // rimozione eventuale punto finale che a volte l'API aggiunge
       const cleanTranscript = transcript.replace(/\.$/, ''); 
 
-      if (cleanTranscript === "ascolta" || cleanTranscript === "leggi") {
-        onSpeak(work.description?.[currentDescIndex]?.description);
-      } 
-      else if (cleanTranscript === "dimmi di più" || cleanTranscript === "vai avanti") {
-        handleMoreDesc();
-      } 
-      else if (cleanTranscript === "chiudi" || cleanTranscript === "esci") {
-        onClose();
-      } 
-      else {
-        alert(`Comando non riconosciuto: "${cleanTranscript}". Riprova con "ascolta", "dimmi di più" o "chiudi".`);
+      let action = commandsMap[cleanTranscript];
+
+      if(!action) {
+        // --- FUTURA FASE 2: INTEGRAZIONE AI ---
+        // Qui in futuro metterai: const aiResponse = await fetch('/api/ai-mapper', { body: cleanTranscript })
+
+        setIsListening(true); // Tieni acceso un feedback visivo di "Sto pensando..."
+        try {
+          // mando la promp alla rotta ai per farla intepretare a Gemini
+          const aiResponse = await fetch(`${API_BASE_URL}/ai/map-request`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: transcript })
+          });
+          const aiData = await aiResponse.json();
+          action = aiData.mappedAction; // L'IA restituisce "PLAY", "NEXT_DESC", "CLOSE" o "UNKNOWN"
+        } catch (error) {
+          action = "UNKNOWN";
+        }
+      }
+
+      console.log(action);
+
+      switch (action) {
+        case "PLAY":
+          onSpeak(work.description?.[currentDescIndex]?.description);
+          break;
+        case "NEXT_DESC":
+          handleMoreDesc();
+          break;
+        case "PREV_DESC":
+          handleLessDesc();
+          break;
+        case "CLOSE":
+          onClose();
+          break;
+        case "UNKNOWN":
+          console.log(`Comando non riconosciuto: "${cleanTranscript}". Riprova con "ascolta", "dimmi di più" o "chiudi".`);
+          break;
+        default:
+          console.log(`Non ho capito. Puoi dire cose come "ascolta" o "chiudi".`);
       }
     };
 
+    // 4. Gestione fine o errori
     recognition.onerror = (event) => {
       console.error("Errore riconoscimento vocale:", event.error);
       setIsListening(false);
     };
 
     recognition.onend = () => {
-      setIsListening(false);
+      setIsListening(false); // Spegne il microfono visivamente
     };
 
+    // Facciamo partire l'ascolto!
     recognition.start();
   };
 
+  // Resettiamo la posizione del menu se l'utente lo chiude con la X
   useEffect(() => {
     if (!work) {
       setDragCurrentY(0);
@@ -100,84 +144,116 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak }) {
 
   return (
     <>
+      {/* Sfondo scuro semitrasparente che appare dietro al menu */}
       {work && (
         <div 
-          onClick={onClose}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[10001] transition-opacity duration-300"
+          onClick={onClose} // Cliccando fuori si chiude
+          style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 10001, backdropFilter: "blur(4px)", transition: "opacity 0.3s ease" }}
         />
       )}
 
       <div 
-        className="fixed bottom-0 left-0 right-0 bg-[#121218] rounded-t-3xl p-0 z-[10002] shadow-[0_-4px_20px_rgba(0,0,0,0.5)] text-white flex flex-col max-h-[85vh]"
         style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: "#121218",
+          borderTopLeftRadius: "24px",
+          borderTopRightRadius: "24px",
+          padding: "0", // Togliamo il padding globale per gestire meglio le sezioni interne
+          zIndex: 10002,
+          boxShadow: "0 -4px 20px rgba(0,0,0,0.5)",
+          color: "#fff",
           transform: work ? `translateY(${dragCurrentY}px)` : "translateY(100%)",
           transition: dragStartY ? "none" : "transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+          maxHeight: "85vh",
+          display: "flex",
+          flexDirection: "column" // Utile per far scorrere solo il testo
         }}
       >
         {work && (
           <>
+            {/* ─── ZONA DI TRASCINAMENTO (Solo la parte alta) ─── */}
             <div 
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
-              onPointerCancel={handlePointerUp}
-              className="pt-6 pb-2 px-6 cursor-grab touch-none relative"
+              onPointerCancel={handlePointerUp} // Se il trascinamento viene interrotto (es. notifica)
+              style={{
+                padding: "24px 24px 10px 24px",
+                cursor: "grab", // Fa apparire la manina aperta su PC
+                touchAction: "none", // LA MAGIA CSS: Disabilita il "Pull to refresh" del telefono in quest'area!
+                position: "relative"
+              }}
             >
-              <div className="w-10 h-1.5 bg-white/20 rounded-full mx-auto mb-5" />
+              {/* Maniglia grigia */}
+              <div style={{ width: "40px", height: "5px", backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "10px", margin: "0 auto 20px auto" }} />
               
+              {/* Pulsante X in alto a destra */}
               <button 
                 onClick={onClose}
-                className="absolute top-4 right-5 w-8 h-8 flex items-center justify-center rounded-full border border-slate-600 text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"
+                className="btn btn-sm btn-outline-secondary rounded-circle"
+                style={{ position: "absolute", top: "16px", right: "20px", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center" }}
               >
-                <X size={16} />
+                <i className="bi bi-x-lg"></i>
               </button>
 
-              <h3 className="font-extrabold text-xl mb-1">{work.name}</h3>
-              <p className="text-cyan-400 font-semibold m-0">{work.author} • {work.year}</p>
+              <h3 style={{ fontWeight: 800, marginBottom: "4px" }}>{work.name}</h3>
+              <p className="text-info mb-0" style={{ fontWeight: 600 }}>{work.authorName} • {work.year}</p>
             </div>
 
-            <div className="px-6 pb-6 overflow-y-auto">
+            {/* ─── ZONA DI LETTURA (Scorrevole, NON trascinabile per chiudere) ─── */}
+            <div style={{ padding: "0 24px 24px 24px", overflowY: "auto" }}>
               <img 
                 src={work.image} 
                 alt={work.name} 
-                className="w-full max-h-[250px] object-cover rounded-xl mb-5 mt-2" 
+                style={{ width: "100%", maxHeight: "250px", objectFit: "cover", borderRadius: "12px", marginBottom: "20px", marginTop: "10px" }} 
               />
 
-              <h6 className="text-white/50 uppercase tracking-wider mb-2 text-xs font-bold">Descrizione</h6>
-              <p className="leading-relaxed text-slate-300 text-sm mb-7">
+              <h6 className="text-white-50 uppercase tracking-wider mb-2" style={{ fontSize: "0.8rem", fontWeight: 700 }}>Descrizione</h6>
+              <p style={{ lineHeight: "1.6", color: "#ccc", fontSize: "0.95rem", marginBottom: "30px" }}>
                 {work.description?.[0]?.description || "Nessuna descrizione disponibile per quest'opera."}
               </p>
 
-              <div className="flex gap-2">
+              {/* Tasti */}
+              <div className="d-flex gap-2">
                 <button
                   onClick={handleLessDesc}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 text-white hover:bg-white/10 py-2.5 transition-colors text-sm"
+                  className="btn btn-outline-light flex-grow-1 rounded-pill" style={{ borderColor: "rgba(255,255,255,0.2)" }}
                 >
-                  <Volume1 size={16} /> Di meno
+                  <i className="bi bi-volume-up me-2"></i> Dimmi di meno
                 </button>
                 <button 
                   onClick={() => onSpeak(work.description?.[currentDescIndex]?.description)}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full bg-cyan-400 text-slate-900 font-semibold py-2.5 hover:bg-cyan-300 transition-colors text-sm" 
+                  className="btn btn-info flex-grow-1 rounded-pill" 
+                  style={{ fontWeight: 600 }}
                 >
-                  <Volume2 size={16} /> Ascolta
+                  <i className="bi bi-volume-up me-2"></i> Ascolta
                 </button>
                 <button
                   onClick={handleMoreDesc}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 text-white hover:bg-white/10 py-2.5 transition-colors text-sm"
+                  className="btn btn-outline-light flex-grow-1 rounded-pill" style={{ borderColor: "rgba(255,255,255,0.2)" }}
                 >
-                  <Volume2 size={16} /> Di più
+                  <i className="bi bi-volume-up me-2"></i> Dimmi di più
                 </button>
                 <button
                   onClick={startListening}
-                  className="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-300 shrink-0"
+                  className={`btn rounded-circle d-flex align-items-center justify-content-center`}
                   style={{ 
+                    width: "45px", 
+                    height: "45px",
+                    // Se sta ascoltando diventa rosso acceso, altrimenti grigio scuro
                     backgroundColor: isListening ? "#ff4444" : "rgba(255,255,255,0.1)",
                     color: isListening ? "white" : "#ccc",
+                    border: "none",
+                    transition: "all 0.3s ease",
+                    // Un bell'effetto glow rosso quando è in ascolto
                     boxShadow: isListening ? "0 0 15px rgba(255, 68, 68, 0.6)" : "none"
                   }}
                   title="Comandi vocali"
                 >
-                  <Mic size={20} />
+                  <i className={`bi ${isListening ? 'bi-mic-fill' : 'bi-mic'}`}></i>
                 </button>
               </div>
             </div>
