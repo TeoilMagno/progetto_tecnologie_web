@@ -5,7 +5,7 @@ import SectionLayer from "./sectionLayer";
 import RoomLayer from "./roomLayer";
 import WorkDetailsSheet from "./workDetailsSheet";
 import NavigationControlBar from "./navigationControlBar";
-import { SOCKET_URL, API_BASE_URL } from "../../../../src/config";
+import { SOCKET_URL, API_BASE_URL } from "../config";
 
 export default function MapView({ visitId, roomCode, isTeacher }) {
   const [socket, setSocket] = useState(null);

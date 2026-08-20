@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Home, Compass, User, MapPin, Map as MapIcon, Menu, Settings, Users } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Home, Compass, MapPin, Map as MapIcon, Menu, Settings, Users } from 'lucide-react';
 
-// Importiamo la pagina Home e le nuove pagine/componenti
+// Importazione pagine e componenti centralizzati
 import HomePage from './pages/Home';
 import Visits from './pages/Visits';
 import JoinSession from './pages/JoinSession';
-import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
-import MapView from '../react/museum-map/src/components/mapView';
 import StudentWaitingRoom from './pages/studentWaitingRoom';
+import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
+import MapView from './components/mapView';
 
 // Placeholder per le pagine future
 const Placeholder = ({ title }) => (
@@ -18,7 +17,7 @@ const Placeholder = ({ title }) => (
       <Settings size={48} className="text-slate-700" />
     </div>
     <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
-    <p className="max-w-md text-sm text-slate-400">Questa sezione verrà sviluppata nei primi step del progetto.</p>
+    <p className="max-w-md text-sm text-slate-400">Questa sezione verrà sviluppata nei prossimi step del progetto.</p>
   </div>
 );
 
@@ -35,11 +34,7 @@ export default function App() {
   const [selectedMuseum, setSelectedMuseum] = useState(null);
 
   return (
-    <Router>
-      {/* Layout Principale:
-        - h-[100dvh] assicura che l'app occupi esattamente l'altezza visibile del telefono,
-          evitando che la barra in basso venga coperta dall'interfaccia del browser.
-      */}
+    <Router basename="/navigator">
       <div className="flex h-[100dvh] w-full bg-slate-950 text-white font-sans overflow-hidden flex-col">
         
         {/* --- OVERLAY SELEZIONE MUSEO --- */}
@@ -58,14 +53,12 @@ export default function App() {
                 {selectedMuseum ? selectedMuseum.name : 'Seleziona un museo'}
               </h1>
             </div>
-            
           </div>
         </header>
 
         {/* --- MAIN CONTENT WRAPPER --- */}
         <div className="flex-1 flex flex-col relative w-full h-full overflow-hidden">
           
-          {/* Area Scorrevole (Contenuto Pagina) */}
           <main className="flex-1 overflow-y-auto scroll-smooth w-full relative">
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -80,8 +73,7 @@ export default function App() {
           </main>
 
           {/* --- MOBILE BOTTOM BAR --- */}
-          {/* Fissata in basso nel flusso flex, con z-index alto per stare sopra il contenuto */}
-          <nav className=" bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 pb-safe pt-2 shrink-0 z-50 w-full">
+          <nav className="bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 pb-safe pt-2 shrink-0 z-50 w-full">
             <div className="flex justify-center max-w-lg mx-auto">
               <ul className="flex justify-around items-center h-16 w-full">
                 <MobileNavItem to="/" icon={<Home size={24} />} label="Home" />
@@ -100,14 +92,12 @@ export default function App() {
   );
 }
 
-// Componente Link Bottom Bar (Mobile)
 function MobileNavItem({ to, icon, label }) {
   const location = useLocation();
   const isActive = location.pathname === to;
   return (
     <li className="flex-1 flex justify-center">
       <Link to={to} className={`flex flex-col items-center gap-1 w-full py-1 transition-colors relative ${isActive ? 'text-amber-500' : 'text-slate-500 hover:text-slate-300'}`}>
-        {/* Indicatore attivo (puntino sopra icona) */}
         {icon}
         <span className="text-[10px] font-medium leading-none mt-0.5">{label}</span>
       </Link>

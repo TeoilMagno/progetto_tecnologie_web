@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Lock, User, ArrowLeft, AlertCircle } from 'lucide-react';
-import { API_BASE_URL } from '../../../../src/config';
+import { API_BASE_URL } from '../config';
 
 export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const [username, setUsername] = useState('');

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { QrCode, GraduationCap, Presentation, Users, Loader2, AlertCircle, RefreshCw, Sparkles, ArrowLeft, Send } from 'lucide-react';
 import { io } from 'socket.io-client';
 import { API_BASE_URL, SOCKET_URL } from '../config';
-import LoginModal from '../../react/museum-map/src/components/loginModal';
+import LoginModal from '../components/loginModal';
 
 // Inizializziamo il socket fuori dal componente così la connessione è unica
 const socket = io(SOCKET_URL);

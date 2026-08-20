@@ -1,0 +1,128 @@
+.
+├── 25 Progetto 2526.pdf
+├── appunti_progetto.txt
+├── package.json
+├── package-lock.json
+├── README.md
+├── source
+│   ├── marketplace
+│   │   ├── css
+│   │   │   ├── 403.css
+│   │   │   ├── forms-style.css
+│   │   │   ├── search-bar.css
+│   │   │   ├── style.css
+│   │   │   ├── visit-details.css
+│   │   │   └── visits.css
+│   │   ├── favicon.svg
+│   │   └── js
+│   │       ├── add-museum.js
+│   │       ├── add-visit.js
+│   │       ├── admin-dashboard.js
+│   │       ├── cart.js
+│   │       ├── config.js
+│   │       ├── edit-museum.js
+│   │       ├── filters.js
+│   │       ├── marketplace.js
+│   │       ├── my-adoptions.js
+│   │       ├── my-orders.js
+│   │       ├── notifications.js
+│   │       ├── personal-area.js
+│   │       ├── search-bar.js
+│   │       ├── sidebar.js
+│   │       ├── upload-map.js
+│   │       ├── visit-details.js
+│   │       └── visits-ui.js
+│   ├── navigator
+│   │   ├── eslint.config.js
+│   │   ├── index.html
+│   │   ├── node_modules
+│   │   │   [...]
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── postcss.config.js
+│   │   ├── README.md
+│   │   ├── src
+│   │   │   ├── App.css
+│   │   │   ├── App.jsx
+│   │   │   ├── assets
+│   │   │   │   └── react.svg
+│   │   │   ├── components
+│   │   │   │   ├── loginModal.jsx
+│   │   │   │   ├── mapView.jsx
+│   │   │   │   ├── MuseumSelectorOverlay.jsx
+│   │   │   │   ├── navigationControlBar.jsx
+│   │   │   │   ├── roomLayer.jsx
+│   │   │   │   ├── sectionLayer.jsx
+│   │   │   │   └── workDetailsSheet.jsx
+│   │   │   ├── config.js
+│   │   │   ├── data
+│   │   │   │   ├── dictionary.json
+│   │   │   │   ├── mapData.js
+│   │   │   │   └── MappaMuseo-Piano_0.png
+│   │   │   ├── index.css
+│   │   │   ├── main.jsx
+│   │   │   ├── pages
+│   │   │   │   ├── Home.jsx
+│   │   │   │   ├── JoinSession.jsx
+│   │   │   │   ├── studentWaitingRoom.jsx
+│   │   │   │   └── Visits.jsx
+│   │   │   └── public
+│   │   │       ├── favicon.svg
+│   │   │       └── icons.svg
+│   │   ├── tailwind.config.js
+│   │   └── vite.config.js
+│   └── server
+│       ├── html
+│       │   ├── 403.html
+│       │   ├── 404.html
+│       │   ├── add-museum.html
+│       │   ├── admin-dashboard.html
+│       │   ├── create-visit.html
+│       │   ├── edit-museum.html
+│       │   ├── index.html
+│       │   ├── login.html
+│       │   ├── my-adoptions.html
+│       │   ├── my-museums.html
+│       │   ├── my-orders.html
+│       │   ├── my-visits.html
+│       │   ├── signup.html
+│       │   ├── upload-map.html
+│       │   └── visit-details.html
+│       └── js
+│           ├── app.js
+│           ├── controllers
+│           │   ├── adoptions.js
+│           │   ├── ai.js
+│           │   ├── authors.js
+│           │   ├── items.js
+│           │   ├── museums.js
+│           │   ├── orders.js
+│           │   ├── sections.js
+│           │   ├── styles.js
+│           │   ├── visits.js
+│           │   └── works.js
+│           ├── db.js
+│           ├── middleware
+│           │   ├── auth.js
+│           │   └── roles.js
+│           ├── models
+│           │   ├── adoptions.js
+│           │   ├── author.js
+│           │   ├── items.js
+│           │   ├── museums.js
+│           │   ├── orders.js
+│           │   ├── sections.js
+│           │   ├── style.js
+│           │   ├── users.js
+│           │   ├── visits.js
+│           │   └── works.js
+│           ├── routers
+│           │   ├── apirouter.js
+│           │   ├── auth.js
+│           │   └── router.js
+│           └── utils
+│               └── visitCalculator.js
+├── sync_db.sh
+├── TODO_list.txt
+
+631 directories, 9121 files
