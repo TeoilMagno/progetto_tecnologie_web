@@ -1,0 +1,275 @@
+/* CARD GLASSMORPHISM */
+.custom-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+    overflow: hidden;
+}
+
+.custom-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px -10px rgba(168, 85, 247, 0.4);
+    border-color: rgba(168, 85, 247, 0.6);
+}
+
+.custom-card .card-title { color: #fff; font-weight: 700; }
+.custom-card .card-text { color: var(--text-secondary); }
+
+.custom-card .explore {
+    margin-top: 5px;
+    padding-top: 3px;
+    border-top: 1px solid rgb(94, 99, 96);
+    border-radius: 0.5;
+    color: var(--text-secondary);
+    background-color: transparent;
+}
+
+/* PULSANTI */
+.btn-gradient {
+    background: var(--accent-gradient);
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 10px 24px;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-gradient:hover {
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+    transform: scale(1.02);
+    color: white;
+}
+
+.btn-glass {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 50px;
+    transition: background 0.2s, color 0.2s;
+}
+
+body.artaround-theme .btn-glass:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid transparent;
+    color: #fff;
+}
+
+body.artaround-theme .btn-outline-hover-white { transition: color 0.2s, background-color 0.2s; }
+body.artaround-theme .btn-outline-hover-white:hover { color: #ffffff; }
+
+.btn-create-visit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: #00ccff;                 
+    border: 1px solid rgba(0, 204, 255, 0.5);
+    border-radius: 50px;            
+    text-transform: uppercase;       
+    font-size: 0.75rem;             
+    font-weight: 600;               
+    padding: 4px 14px;              
+    text-decoration: none;          
+    transition: all 0.2s ease-in-out; 
+    cursor: pointer;
+    -webkit-text-fill-color: currentColor;
+}
+
+.btn-create-visit:hover {
+    background-color: #0d6efd;      
+    border-color: #0d6efd;          
+    color: #ffffff;                 
+    text-decoration: none;          
+}
+
+.btn-create-visit:hover i { color: #ffffff; }
+
+.btn-outline-info {
+    color: #00ccff;
+    border-color: rgba(0, 204, 255, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-info:hover {
+    background-color: #00ccff;
+    border-color: #00ccff;
+    color: #000000;
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.4);
+}
+
+.btn-link.text-secondary { transition: color 0.2s ease; }
+.btn-link.text-secondary:hover { color: #ffffff; }
+
+/* MODALI E TOAST */
+.glass-modal {
+    background-color: #18181b;
+    border: 1px solid var(--border-color);
+    color: #fff;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+}
+
+body.artaround-theme .glass-modal .border-bottom-custom,
+body.artaround-theme .glass-modal .border-top-custom {
+    border-color: var(--border-color);
+}
+
+.glass-modal .metadata-title {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
+#toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    width: calc(100vw - 40px);
+}
+
+.toast-box {
+    background: rgba(18, 18, 24, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    backdrop-filter: blur(10px);
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    opacity: 0;
+}
+
+.toast-box.show { transform: translateX(0); opacity: 1; }
+.toast-box.toast-success { border-left: 4px solid #10b981; }
+.toast-box.toast-error { border-left: 4px solid #ef4444; }
+.toast-box.toast-warning { border-left: 4px solid #f59e0b; }
+.toast-box.toast-info { border-left: 4px solid #3b82f6; }
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-left: auto;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.toast-close:hover { color: #fff; }
+
+/* BADGES, DROPDOWNS E MENU ORARI */
+.badge-tag {
+    background: rgba(99, 102, 241, 0.15);
+    color: #c7d2fe;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    margin-right: 5px;
+}
+
+.custom-dropdown-menu {
+    background: rgba(18, 18, 20, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.custom-dropdown-menu .dropdown-item {
+    color: var(--text-secondary);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.custom-dropdown-menu .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    transform: translateX(5px);
+}
+
+.dropdown-toggle::after { display: none; }
+
+.custom-arrow {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dropdown-toggle.show .custom-arrow {
+    transform: rotate(180deg);
+    color: #fff;
+}
+
+.dropdown-toggle {
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.dropdown-toggle:hover { background: rgba(255, 255, 255, 0.05); }
+
+#menu-orari-museo .giorno-label { color: #a1a1aa; }
+#menu-orari-museo .orario-aperto { color: #ffffff; font-weight: 800; }
+#menu-orari-museo .orario-chiuso { color: #ef4444; font-weight: 800; }
+
+/* TABS E CUSTOM TABS */
+body.artaround-theme button.tab-custom-active {
+    background-color: transparent;
+    color: var(--bs-primary, #0d6efd);
+    border: 1px solid rgba(13, 110, 253, 0.4);
+    border-bottom: 1px solid transparent;
+    font-weight: 800;
+}
+
+body.artaround-theme button.tab-custom-active:hover {
+    border-color: rgba(13, 110, 253, 0.8);
+}
+
+body.artaround-theme .custom-tabs { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+
+body.artaround-theme .custom-tabs .nav-link {
+    color: var(--text-secondary);
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.8;
+}
+
+body.artaround-theme .custom-tabs .nav-link:hover {
+    color: #ffffff;
+    opacity: 1;
+}
+
+body.artaround-theme .custom-tabs .nav-link.active {
+    color: #00ccff; 
+    background: rgba(0, 204, 255, 0.06); 
+    border-bottom: 3px solid #00ccff; 
+    border-radius: 8px 8px 0 0;
+    opacity: 1;
+    box-shadow: 0 4px 12px rgba(0, 204, 255, 0.1);
+}

@@ -276,16 +276,16 @@ body.artaround-theme::-webkit-scrollbar {
 }
 
 .glass-input {
-    background-color: #27272a;
-    border: 1px solid var(--border-color);
-    color: #fff;
+    background-color: #27272a !important;
+    border: 1px solid var(--border-color) !important;
+    color: #fff !important;
 }
 
 .glass-input:focus {
-    background-color: #27272a;
-    color: #fff;
-    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.5);
-    border-color: transparent;
+    background-color: #27272a !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.5) !important;
+    border-color: transparent !important;
 }
 
 .custom-close {
@@ -368,25 +368,25 @@ body.artaround-theme::-webkit-scrollbar {
 
 /* Stile del Tab Attivo: illumina solo i tre lati superiori e il testo */
 .tab-custom-active {
-  background-color: transparent !important;
-  color: var(--bs-primary, #0d6efd) !important; /* Colore azzurro */
-  border: 1px solid rgba(13, 110, 253, 0.4) !important; /* Contorno azzurro delicato */
-  border-bottom: 1px solid transparent !important; /* Rimuove il bordo inferiore per fonderlo con la linea */
+  background-color: transparent;
+  color: var(--bs-primary, #0d6efd) !important; 
+  border: 1px solid rgba(13, 110, 253, 0.4) !important; 
+  border-bottom: 1px solid transparent !important; 
   font-weight: 800 !important;
 }
 
 /* Rende l'hover pulito: intensifica solo il bordo, lo sfondo resta trasparente */
 .tab-custom-active:hover {
-  background-color: transparent !important;
-  border-color: rgba(13, 110, 253, 0.8) !important;
-  color: var(--bs-primary, #0d6efd) !important;
+  background-color: transparent ;
+  border-color: rgba(13, 110, 253, 0.8) ;
+  color: var(--bs-primary, #0d6efd) ;
 }
 
 /* Stile del Tab Spento al passaggio del mouse: accenna solo un contorno leggero */
 .btn-glass:hover {
-  background-color: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  border-bottom: 1px solid transparent !important;
+  background-color: transparent ;
+  border: 1px solid rgba(255, 255, 255, 0.15) ;
+  border-bottom: 1px solid transparent ;
 }
 
 /* TOAST NOTIFICATIONS */
@@ -459,57 +459,65 @@ body.artaround-theme::-webkit-scrollbar {
 
 /* Menu Orari: Specificità mirata per sovrascrivere Bootstrap in modo pulito */
 /* FORZATURA COLORI MENU ORARI TRAMITE ID */
+#menu-orari-museo {
+    background: rgba(18, 18, 20, 0.98) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px;
+}
+
 #menu-orari-museo .giorno-label {
-    color: #a1a1aa; /* Grigio chiaro per i giorni della settimana */
+    color: #a1a1aa !important; /* Grigio chiaro per i giorni della settimana */
 }
 
 #menu-orari-museo .orario-aperto {
-    color: #ffffff; /* Bianco puro e brillante per gli orari aperti */
+    color: #ffffff !important; /* Bianco puro e brillante per gli orari aperti */
     font-weight: 800;
 }
 
 #menu-orari-museo .orario-chiuso {
-    color: #ef4444; /* Rosso chiaro per i giorni di chiusura */
+    color: #ef4444 !important; /* Rosso chiaro per i giorni di chiusura */
     font-weight: 800;
 }
+
 /* TAB PERSONALIZZATI (SEZIONE ADOZIONI E PROGETTO) */
 .custom-tabs {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) ;
 }
 
 .custom-tabs .nav-link {
-  color: var(--text-secondary) !important;
-  border: none !important;
-  background: transparent !important;
+  color: var(--text-secondary) ;
+  border: none ;
+  background: transparent ;
   font-weight: 600;
   padding: 12px 24px;
-  border-bottom: 3px solid transparent !important;
+  border-bottom: 3px solid transparent ;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0.8;
 }
 
 .custom-tabs .nav-link:hover {
-  color: #ffffff !important;
+  color: #ffffff ;
   opacity: 1;
 }
 
 .custom-tabs .nav-link.active {
-  color: #00ccff !important; /* Ciano brillante per staccare nettamente */
-  background: rgba(0, 204, 255, 0.06) !important; /* Leggerissimo sfondo ciano trasparente */
-  border-bottom: 3px solid #00ccff !important; /* Sottolineatura ciano brillante */
-  border-radius: 8px 8px 0 0 !important;
+  color: #00ccff ; /* Ciano brillante per staccare nettamente */
+  background: rgba(0, 204, 255, 0.06) ; /* Leggerissimo sfondo ciano trasparente */
+  border-bottom: 3px solid #00ccff ; /* Sottolineatura ciano brillante */
+  border-radius: 8px 8px 0 0 ;
   opacity: 1;
   box-shadow: 0 4px 12px rgba(0, 204, 255, 0.1);
 }
 
 /* SIDEBAR FILTRI AVANZATI: RANGE SLIDER PERSONALIZZATO */
 .custom-range {
-  -webkit-appearance: none !important;
-  appearance: none !important;
+  -webkit-appearance: none ;
+  appearance: none ;
   width: 100%;
   height: 6px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.12) ;
   outline: none;
   transition: all 0.3s ease;
 }
@@ -566,52 +574,21 @@ body.artaround-theme::-webkit-scrollbar {
 
 /* INPUT CHECKBOX IN STILE TECH GLASS */
 .form-check-input {
-  background-color: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  background-color: rgba(255, 255, 255, 0.05) ;
+  border: 1px solid rgba(255, 255, 255, 0.18) ;
   cursor: pointer;
   transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-check-input:checked {
-  background-color: #00ccff !important;
-  border-color: #00ccff !important;
-  box-shadow: 0 0 10px rgba(0, 204, 255, 0.4) !important;
+  background-color: #00ccff ;
+  border-color: #00ccff ;
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.4) ;
 }
 
 .form-check-input:focus {
-  box-shadow: 0 0 0 2px rgba(0, 204, 255, 0.25) !important;
-  border-color: rgba(0, 204, 255, 0.5) !important;
-}
-
-/* SCROLLBAR PERSONALIZZATA (LISTE INTERNE DEI FILTRI) */
-#filter-style-list::-webkit-scrollbar,
-#filter-author-list::-webkit-scrollbar,
-#filter-technique-list::-webkit-scrollbar,
-#filter-workstyle-list::-webkit-scrollbar {
-  width: 5px;
-}
-
-#filter-style-list::-webkit-scrollbar-track,
-#filter-author-list::-webkit-scrollbar-track,
-#filter-technique-list::-webkit-scrollbar-track,
-#filter-workstyle-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 10px;
-}
-
-#filter-style-list::-webkit-scrollbar-thumb,
-#filter-author-list::-webkit-scrollbar-thumb,
-#filter-technique-list::-webkit-scrollbar-thumb,
-#filter-workstyle-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-}
-
-#filter-style-list::-webkit-scrollbar-thumb:hover,
-#filter-author-list::-webkit-scrollbar-thumb:hover,
-#filter-technique-list::-webkit-scrollbar-thumb:hover,
-#filter-workstyle-list::-webkit-scrollbar-thumb:hover {
-  background: #00ccff;
+  box-shadow: 0 0 0 2px rgba(0, 204, 255, 0.25) ;
+  border-color: rgba(0, 204, 255, 0.5) ;
 }
 
 /* MIGLIORAMENTO OUTLINE INFOBTN E RESET LINKS */
@@ -654,7 +631,39 @@ body.artaround-theme::-webkit-scrollbar {
   box-shadow: 0 0 10px rgba(0, 204, 255, 0.3) ;
 }
 
+/* Filtri */
 /* Barre di ricerca interne per i tag e liste dei filtri */
+/* SCROLLBAR PERSONALIZZATA */
+#filter-style-list::-webkit-scrollbar,
+#filter-author-list::-webkit-scrollbar,
+#filter-technique-list::-webkit-scrollbar,
+#filter-workstyle-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+#filter-style-list::-webkit-scrollbar-track,
+#filter-author-list::-webkit-scrollbar-track,
+#filter-technique-list::-webkit-scrollbar-track,
+#filter-workstyle-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+}
+
+#filter-style-list::-webkit-scrollbar-thumb,
+#filter-author-list::-webkit-scrollbar-thumb,
+#filter-technique-list::-webkit-scrollbar-thumb,
+#filter-workstyle-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+#filter-style-list::-webkit-scrollbar-thumb:hover,
+#filter-author-list::-webkit-scrollbar-thumb:hover,
+#filter-technique-list::-webkit-scrollbar-thumb:hover,
+#filter-workstyle-list::-webkit-scrollbar-thumb:hover {
+  background: #00ccff;
+}
+
 #filter-style-search,
 #filter-author-search,
 #filter-technique-search,
