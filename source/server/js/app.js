@@ -50,7 +50,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/marketplace", express.static(path.join(__dirname, '..', '..', 'marketplace')));
-app.use("/navigator",   express.static(path.join(__dirname, '..', '..', 'navigator', 'react', 'museum-map', 'dist')));
 app.use("/navigator",   express.static(path.join(__dirname, '..', '..', 'navigator', 'dist')));
 
 // ─── Sessione e Passport ───────────────────────────────────────────────────
@@ -143,6 +142,11 @@ io.on('connection', (socket) => {
     console.log(`Client disconnesso: ${socket.id}`);
     // OPZIONALE: Qui potremmo cercare se il socket.id era uno studente o un prof e pulire activeSessions
   });
+});
+
+// Navigator
+app.use("/navigator", (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'navigator', 'dist', 'index.html'));
 });
 
 // ─── 404 Handler ───────────────────────────────────────────────────────────

@@ -14,7 +14,7 @@ function startVisit() {
   
   // Usiamo .href invece di .replace() per NON cancellare la cronologia!
   // Così il tasto "Indietro" del browser riporterà correttamente ai dettagli della visita.
-  window.location.href = `/navigator/visits/${visitId}`;
+  window.location.href = `/navigator/map?visitId=${visitId}`;
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

@@ -97,9 +97,4 @@ router.get('/404', auth.isAdminPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', '404.html'));
 });
 
-router.get('/prova-navigator', (req, res) => {
-  console.log("ucciditi")
-  res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'dist', 'index.html'));
-});
-
 module.exports = router;
