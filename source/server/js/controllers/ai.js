@@ -204,7 +204,7 @@ exports.generateAndSaveItemTargetAge = async (itemId, itemName, itemDescription)
 exports.mapRequest = async (prompt) => {
   try {
     // includiamo il dizionario su cui mappare
-    const dictionary = require('../../../navigator/react/museum-map/src/data/dictionary.json');
+    const dictionary = require('../../../navigator/src/data/dictionary.json');
     const validActions = [...new Set(Object.values(dictionary))];
     
     // Usiamo il modello "flash" che è velocissimo e gratuito per i test
