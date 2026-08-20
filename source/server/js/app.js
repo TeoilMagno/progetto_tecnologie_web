@@ -109,9 +109,46 @@ io.on('connection', (socket) => {
   });
 
   // Master (Insegnante) cambia opera
-  socket.on('change_artwork', ({ roomCode, artworkId }) => {
-    socket.to(roomCode).emit('artwork_changed', { artworkId });
+  socket.on('change_artwork', (data) => {
+    // Sicurezza: controlliamo che ci sia il roomCode
+    if (!data || !data.roomCode) return;
+    const room = data.roomCode.toUpperCase();
+    
+    if (activeSessions[room]) {
+      // 1. Salva l'ID per chi entra dopo
+      activeSessions[room].currentArtworkId = data.artworkId;
+      
+      // 2. Inoltra L'INTERO pacchetto (roomCode compreso!) agli studenti
+      socket.to(room).emit('change_artwork', data);
+    }
   });
+
+  // Client (Studente o Insegnante) che si ri-unisce
+  socket.on('rejoin_room', ({ roomCode, role }) => {
+    if (!roomCode) return;
+    roomCode = roomCode.toUpperCase();
+    
+    if (activeSessions[roomCode]) {
+      socket.join(roomCode);
+      
+      if (role === 'teacher') {
+        activeSessions[roomCode].teacherSocketId = socket.id;
+      }
+      
+      // Se la lezione è già iniziata, allineiamo il ritardatario
+      if (activeSessions[roomCode].currentArtworkId) {
+        // LA MAGIA: Aspettiamo 800 millisecondi. 
+        // Diamo tempo al MapView dello studente di fare il fetch delle opere dal DB!
+        setTimeout(() => {
+          socket.emit('change_artwork', { 
+            roomCode: roomCode,
+            artworkId: activeSessions[roomCode].currentArtworkId 
+          });
+        }, 800);
+      }
+    }
+  });
+
 
   // Slave (Studente) interagisce (es. chiede un livello più basso)
   socket.on('student_interaction', ({ roomCode, type, details }) => {
@@ -138,20 +175,6 @@ io.on('connection', (socket) => {
 
   socket.on('start_shared_session', ({ roomCode, visitId }) => {
     socket.to(roomCode).emit('session_started', { visitId });
-  });
-
-  // Client (Studente o Insegnante) che si ri-unisce caricando la Mappa
-  socket.on('rejoin_room', ({ roomCode, role }) => {
-    roomCode = roomCode.toUpperCase();
-    if (activeSessions[roomCode]) {
-      socket.join(roomCode);
-      
-      // Se è l'insegnante ad aver cambiato socket, aggiorniamo il suo riferimento
-      if (role === 'teacher') {
-        activeSessions[roomCode].teacherSocketId = socket.id;
-      }
-      console.log(`Un client (${role}) è entrato nella mappa della stanza: ${roomCode}`);
-    }
   });
 
   socket.on('disconnect', () => {

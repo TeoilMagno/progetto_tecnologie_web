@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { QrCode, GraduationCap, Presentation, Users, Loader2, AlertCircle, RefreshCw, Sparkles, ArrowLeft, Send } from 'lucide-react';
-import { io } from 'socket.io-client';
-import { API_BASE_URL, SOCKET_URL } from '../config';
+import { QrCode, GraduationCap, Presentation, Users, Loader2, AlertCircle, RefreshCw, Sparkles, ArrowLeft, ArrowRight, Play, Send } from 'lucide-react';
+import { API_BASE_URL } from '../config';
+import { useSocket } from '../context/SocketContext';
 import LoginModal from '../components/loginModal';
 
-// Inizializziamo il socket fuori dal componente così la connessione è unica
-const socket = io(SOCKET_URL);
-
 export default function JoinSession() {
+  const { socket } = useSocket();
   const navigate = useNavigate();
 
   const [currentUser, setCurrentUser] = useState(null);
@@ -26,7 +24,20 @@ export default function JoinSession() {
   const [availableVisits, setAvailableVisits] = useState([]);
   const [selectedVisitId, setSelectedVisitId] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [savedSession, setSavedSession] = useState(null);
   
+  // All'avvio, controlliamo se c'è una sessione "in sospeso"
+  useEffect(() => {
+    const sessionStr = localStorage.getItem('savedSession');
+    if (sessionStr) {
+      try {
+        setSavedSession(JSON.parse(sessionStr));
+      } catch (e) {
+        console.error("Errore nel leggere la sessione salvata");
+      }
+    }
+  }, []);
+
   useEffect(() => {
     // Quando uno studente si unisce alla stanza, aggiorniamo la lista del professore
     socket.on('student_joined', (student) => {
@@ -51,7 +62,7 @@ export default function JoinSession() {
       socket.off('room_joined');
       socket.off('error');
     };
-  }, []);
+  }, [socket]);
 
   // 1. Fetch utente unico all'avvio
   useEffect(() => {
@@ -160,8 +171,17 @@ export default function JoinSession() {
     socket.emit('create_room', { roomCode: code, visitId: selectedVisitId });
   };
 
+  const handleRejoin = () => {
+    if (savedSession) {
+      navigate(`/map?visitId=${savedSession.visitId}&roomCode=${savedSession.roomCode}&role=${savedSession.role}`);
+    }
+  };
+
   const handleJoinRoom = () => {
-    if(roomCode.length === 6) {
+    if (savedSession) {
+      // Naviga direttamente usando i dati salvati!
+      navigate(`/map?visitId=${savedSession.visitId}&roomCode=${savedSession.roomCode}&role=${savedSession.role}`);
+    } else if (roomCode.length === 6) {
       const nameToUse = studentName.trim() || 'Ospite';
       // Socket emit corretto
       socket.emit('join_room', { roomCode, studentName: nameToUse });
@@ -195,14 +215,48 @@ export default function JoinSession() {
   }
 
   return (
-    <div className="min-h-screen w-full relative bg-slate-950 text-white pb-24">
+    <div className="flex flex-col items-center justify-center min-h-full p-6 animate-fadeIn">
+      
+      {/* SFONDO (Z-0) - Va messo per primo così sta dietro a tutto */}
       <div className="absolute inset-0 z-0 h-96">
          <img src="/img1.jpg" alt="Background" className="w-full h-full object-cover opacity-15" />
          <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to bottom, transparent 0%, rgba(14, 22, 42, 1) 90%, rgba(14, 22, 42, 1) 100%)'}}></div>
       </div>
 
+      {/* CONTENITORE PRINCIPALE (Z-10) - Tutto ciò che è cliccabile va qui dentro! */}
       <div className="relative z-10 flex flex-col items-center pt-8 px-4 md:px-6 w-full max-w-lg mx-auto">
         
+        {/* --- BANNER SESSIONE SOSPESA (Spostato qui dentro!) --- */}
+        {savedSession && (
+          <div className="w-full max-w-sm mb-8 bg-slate-800/80 backdrop-blur-md border border-cyan-500/30 rounded-2xl p-5 shadow-[0_0_25px_rgba(0,204,255,0.15)] relative z-20">
+            <div className="flex items-center gap-3 mb-3 text-cyan-400">
+              <Play size={20} className="fill-cyan-400" />
+              <h3 className="font-bold text-sm uppercase tracking-wider">Sessione in corso</h3>
+            </div>
+            <p className="text-slate-300 text-sm mb-4">
+              Risulti già connesso alla stanza <strong className="text-white bg-slate-900 px-2 py-1 rounded">{savedSession.roomCode}</strong>.
+            </p>
+            <div className="flex gap-2">
+              <button 
+                onClick={handleRejoin}
+                className="flex-1 flex justify-center items-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-xl transition-colors text-sm cursor-pointer"
+              >
+                Rientra subito <ArrowRight size={16} />
+              </button>
+              <button 
+                onClick={() => {
+                  localStorage.removeItem('savedSession');
+                  setSavedSession(null);
+                }}
+                className="px-4 py-2.5 border border-slate-600 text-slate-400 hover:bg-slate-700 hover:text-white rounded-xl transition-colors text-sm cursor-pointer"
+              >
+                Ignora
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {/* Intestazione "Join a Session" */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
             <Users size={14} /> Sessione Di Gruppo

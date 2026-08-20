@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { io } from "socket.io-client";
 import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2, Compass, Image as ImageIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { SOCKET_URL, API_BASE_URL } from "../config";
+import { API_BASE_URL } from "../config";
+import { useSocket } from "../context/SocketContext";
 import SectionLayer from "./sectionLayer";
 import RoomLayer from "./roomLayer";
 import WorkDetailsSheet from "./workDetailsSheet";
@@ -11,7 +11,7 @@ import NavigationControlBar from "./navigationControlBar";
 
 export default function MapView({ visitId, roomCode, isTeacher }) {
   const navigate = useNavigate();
-  const [socket, setSocket] = useState(null);
+  const { socket } = useSocket();
   const [selectedSection, setSelectedSection] = useState(null);
 
   const [sections, setSections] = useState([]);
@@ -36,19 +36,17 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const hasMap = sections && sections.length > 0;
 
   useEffect(() => {
-    const newSocket = io(SOCKET_URL, { transports: ['websocket', 'polling'] });
-    setSocket(newSocket);
+    if (!roomCode || !socket) return;
 
-    // FONDAMENTALE: Il nuovo socket deve registrarsi nella stanza!
-    if (roomCode) {
-      newSocket.emit('rejoin_room', { 
-        roomCode: roomCode.toUpperCase(),
-        role: isTeacher ? 'teacher' : 'student'
-      });
-    }
-
-    return () => newSocket.disconnect();
-  }, [roomCode, isTeacher]);
+    // La socket è condivisa e già connessa (creata una sola volta nel
+    // SocketProvider): qui ci limitiamo a (ri)registrarci nella stanza,
+    // così il server aggiorna anche il teacherSocketId se siamo l'insegnante
+    // e ci allinea con l'opera corrente se stiamo rientrando in corsa.
+    socket.emit('rejoin_room', {
+      roomCode: roomCode.toUpperCase(),
+      role: isTeacher ? 'teacher' : 'student'
+    });
+  }, [roomCode, isTeacher, socket]);
 
   useEffect(() => {
     const fetchVisitData = async () => {
@@ -133,14 +131,14 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
   useEffect(() => {
     if (isSharedSession && !isTeacher && socket) {
-      socket.on("artwork_changed", ({ artworkId }) => {
-        const index = visitedWorks.findIndex(w => w._id === artworkId);
-        if (index !== -1) {
+      socket.on("change_artwork", (data) => {
+        const index = visitedWorks.findIndex(w => w._id === data.artworkId);
+        if (index != -1) {
           setCurrentWorkIndex(index);
           selectSectionForWork(visitedWorks[index]);
         }
       });
-      return () => socket.off("artwork_changed");
+      return () => socket.off("change_artwork");
     }
   }, [isSharedSession, isTeacher, visitedWorks, socket]);
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { Home, Compass, MapPin, Map as MapIcon, Menu, Settings, Users } from 'lucide-react';
+import { SocketProvider } from './context/SocketContext';
 
 // Importazione pagine e componenti centralizzati
 import HomePage from './pages/Home';
@@ -120,9 +121,11 @@ function AppLayout() {
 // --- COMPONENTE APP PRINCIPALE ---
 export default function App() {
   return (
-    <Router basename="/navigator">
-      <AppLayout />
-    </Router>
+    <SocketProvider>
+      <Router basename="/navigator">
+        <AppLayout />
+      </Router>
+    </SocketProvider>
   );
 }
 
