@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { io } from "socket.io-client";
-import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2 } from "lucide-react";
+import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2, Compass, Image as ImageIcon } from "lucide-react";
 import SectionLayer from "./sectionLayer";
 import RoomLayer from "./roomLayer";
 import WorkDetailsSheet from "./workDetailsSheet";
@@ -16,6 +16,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [visitedWorks, setVisitedWorks] = useState([]);
   const [allMuseumWorks, setAllMuseumWorks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState(false);
 
   const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);
   const [detailsWork, setDetailsWork] = useState(null);
@@ -25,11 +26,12 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [suggestedWorks, setSuggestedWorks] = useState([]);
 
   const isSharedSession = Boolean(roomCode);
+  
+  // Se non ci sono sezioni valide, attiviamo la modalità Fallback (Audioguida List Mode)
+  const hasMap = sections && sections.length > 0;
 
   useEffect(() => {
-    const newSocket = io(SOCKET_URL, {
-      transports: ['websocket', 'polling'] 
-    });
+    const newSocket = io(SOCKET_URL, { transports: ['websocket', 'polling'] });
     setSocket(newSocket);
     return () => newSocket.disconnect();
   }, []);
@@ -37,41 +39,41 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   useEffect(() => {
     const fetchVisitData = async () => {
       try {
-        const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}/museum`, { credentials: 'include' });
+        const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}`, { credentials: 'include' });
+        if (!visitResponse.ok) throw new Error("Visita non trovata");
+        
         const visitData = await visitResponse.json();
-        setVisitedWorks(visitData.works);
+        // Controllo di sicurezza: ci assicuriamo che works sia un array
+        const worksArray = Array.isArray(visitData.works) ? visitData.works : [];
+        setVisitedWorks(worksArray);
         
         const museumId = visitData.museumId?._id || visitData.museumId;
-        const sectionsResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`, { credentials: 'include' });
-        const sectionsData = await sectionsResponse.json();
-        setSections(sectionsData);
+        
+        if (museumId) {
+          // Gestiamo il potenziale fallimento dell'API delle sezioni senza far crashare tutto
+          try {
+            const sectionsResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`, { credentials: 'include' });
+            if (sectionsResponse.ok) {
+              const sectionsData = await sectionsResponse.json();
+              setSections(Array.isArray(sectionsData) ? sectionsData : []);
+            } else {
+              setSections([]); // Attiverà il fallback
+            }
 
-        const getRoomName = (roomId) => {
-          if (!roomId) return "Stanza sconosciuta";
-          for (const section of sectionsData) {
-            const room = section.rooms?.find(r => r._id === roomId);
-            if (room) return room.name;
+            const worksResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/works`, { credentials: 'include' });
+            if (worksResponse.ok) {
+              const worksData = await worksResponse.json();
+              setAllMuseumWorks(Array.isArray(worksData) ? worksData : []);
+            }
+          } catch (e) {
+            console.warn("Errore nel caricamento dei dati mappa/opere del museo. Fallback attivato.", e);
+            setSections([]);
           }
-          return "Stanza sconosciuta";
-        };
-
-        const enrichedVisitedWorks = visitData.works.map(work => ({
-          ...work,
-          roomName: getRoomName(work.roomId)
-        }));
-        setVisitedWorks(enrichedVisitedWorks);
-
-        const worksResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/works`, { credentials: 'include' });
-        const worksData = await worksResponse.json();
-        const enrichedAllWorks = worksData.map(work => ({
-          ...work,
-          roomName: getRoomName(work.roomId)
-        }));
-        setAllMuseumWorks(enrichedAllWorks);
-
+        }
         setLoading(false);
       } catch (error) {
-        console.error("Errore nel caricamento:", error);
+        console.error("Errore critico:", error);
+        setApiError(true);
         setLoading(false);
       }
     };
@@ -99,7 +101,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   };
 
   const selectSectionForWork = (work) => {
-    if (!work || !work.roomId) return null;
+    if (!work || !work.roomId || !hasMap) return null;
     const section = sections.find(s => s.rooms && s.rooms.some(r => r._id === work.roomId));
     if (section) {
       setSelectedSection(section);
@@ -126,13 +128,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       const nextIndex = currentWorkIndex + 1;
       setCurrentWorkIndex(nextIndex);
       const activeWork = visitedWorks[nextIndex];
-      const currentSection = selectedSection;
-      const nextSection = selectSectionForWork(activeWork);
-
-      if (nextSection && currentSection && nextSection._id === currentSection._id) {
-        alert(`La prossima opera si trova nella ${activeWork.roomName}`);
-      } else if (nextSection) {
-        alert(`La prossima opera si trova nella sezione ${nextSection.name}, sala ${activeWork.roomName}`);
+      
+      if (hasMap) {
+        selectSectionForWork(activeWork);
       }
 
       if (isSharedSession && isTeacher && socket) {
@@ -150,11 +148,13 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     if (currentWorkIndex > 0) {
       const prevIndex = currentWorkIndex - 1;
       setCurrentWorkIndex(prevIndex);
-      const activeWork = visitedWorks[prevIndex];
-      selectSectionForWork(activeWork);
+      
+      if (hasMap) {
+        selectSectionForWork(visitedWorks[prevIndex]);
+      }
 
       if (isSharedSession && isTeacher && socket) {
-        socket.emit("change_artwork", { roomCode, artworkId: activeWork._id });
+        socket.emit("change_artwork", { roomCode, artworkId: visitedWorks[prevIndex]._id });
       }
     } else if (currentWorkIndex === 0) {
       setCurrentWorkIndex(-1);
@@ -166,18 +166,33 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     return (
       <div className="flex flex-col items-center justify-center w-screen h-screen bg-[#09090b] text-white">
         <Loader2 className="animate-spin text-cyan-400 mb-4" size={40} />
-        <p className="text-slate-400">Caricamento mappa e visita...</p>
+        <p className="text-slate-400">Caricamento visita in corso...</p>
       </div>
     );
   }
 
+  if (apiError) {
+    return (
+      <div className="flex flex-col items-center justify-center w-screen h-screen bg-[#09090b] text-white p-6 text-center">
+        <div className="w-16 h-16 bg-red-500/10 text-red-500 flex items-center justify-center rounded-2xl mb-4">
+          <CheckCircle2 size={32} />
+        </div>
+        <h2 className="text-2xl font-bold mb-2">Errore di Caricamento</h2>
+        <p className="text-slate-400 max-w-sm mb-6">Impossibile recuperare i dati di questa visita. Potrebbe essere stata cancellata o il server non risponde.</p>
+        <button onClick={() => window.location.href = "/my-visits"} className="px-6 py-2.5 bg-slate-800 rounded-full font-semibold">Torna Indietro</button>
+      </div>
+    );
+  }
+
+  const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
+
   return (
     <div className="relative w-screen h-screen bg-[#09090b] text-white overflow-hidden">
-      <header className="flex justify-between items-center px-6 h-[65px] border-b border-white/10 bg-[#09090b]/85 backdrop-blur-md">
+      <header className="flex justify-between items-center px-6 h-[65px] border-b border-white/10 bg-[#09090b]/85 backdrop-blur-md z-50 relative">
         <div className="flex items-center gap-3">
           <Landmark className="text-cyan-400" size={24} />
           <span className="font-extrabold text-xl bg-clip-text text-transparent bg-gradient-to-r from-[#00ccff] via-[#7a1dd0] to-[#ec4899]">
-            ArtAround Navigator
+            Navigator {hasMap ? '' : '(Audio)'}
           </span>
         </div>
         <button 
@@ -188,25 +203,67 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         </button>
       </header>
 
-      <div className="h-[calc(100vh-185px)] overflow-hidden">
-        <TransformWrapper initialScale={0.8} minScale={0.4} maxScale={2.5} centerOnInit={true} panning={{ velocityDisabled: true }}>
-          <TransformComponent wrapperStyle={{ width: "100vw", height: "100%" }}>
-            <svg viewBox="0 0 2000 2000" style={{ width: "2000px", height: "2000px" }}>
-              {!selectedSection && <g><SectionLayer sections={sections} onSelect={setSelectedSection} /></g>}
-              {selectedSection && (
-                <g>
-                  <RoomLayer 
-                    onBack={() => setSelectedSection(null)} 
-                    section={selectedSection} 
-                    visitedWorks={visitedWorks}
-                    activeWorkId={currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex]?._id : null}
-                    onWorkClick={(work) => setDetailsWork(work)}
-                  />
-                </g>
-              )}
-            </svg>
-          </TransformComponent>
-        </TransformWrapper>
+      <div className="h-[calc(100vh-185px)] overflow-hidden relative">
+        {hasMap ? (
+          /* --- VISUALIZZAZIONE MAPPA NORMALE --- */
+          <TransformWrapper initialScale={0.8} minScale={0.4} maxScale={2.5} centerOnInit={true} panning={{ velocityDisabled: true }}>
+            <TransformComponent wrapperStyle={{ width: "100vw", height: "100%" }}>
+              <svg viewBox="0 0 2000 2000" style={{ width: "2000px", height: "2000px" }}>
+                {!selectedSection && <g><SectionLayer sections={sections} onSelect={setSelectedSection} /></g>}
+                {selectedSection && (
+                  <g>
+                    <RoomLayer 
+                      onBack={() => setSelectedSection(null)} 
+                      section={selectedSection} 
+                      visitedWorks={visitedWorks}
+                      activeWorkId={currentWork?._id}
+                      onWorkClick={(work) => setDetailsWork(work)}
+                    />
+                  </g>
+                )}
+              </svg>
+            </TransformComponent>
+          </TransformWrapper>
+        ) : (
+          /* --- VISUALIZZAZIONE FALLBACK (AUDIOGUIDA) --- */
+          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-slate-950">
+            {currentWorkIndex < 0 ? (
+              <div className="text-center animate-fadeIn">
+                <div className="w-24 h-24 mx-auto bg-slate-900 rounded-full flex items-center justify-center border border-white/5 shadow-2xl mb-6">
+                  <Compass size={40} className="text-cyan-400" />
+                </div>
+                <h2 className="text-2xl font-bold mb-2">Visita Guidata</h2>
+                <p className="text-slate-400 max-w-sm mx-auto text-sm leading-relaxed">
+                  Non sono presenti planimetrie per questo museo. Nessun problema, ti guideremo attraverso le opere con la nostra modalità audioguida!
+                </p>
+                <div className="mt-8 flex justify-center animate-bounce">
+                  <ArrowRight className="text-cyan-400 rotate-90" size={24} />
+                </div>
+              </div>
+            ) : (
+              <div className="w-full max-w-lg bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden flex flex-col max-h-full shadow-2xl animate-fadeIn">
+                <div className="relative w-full h-56 shrink-0 bg-slate-800 flex items-center justify-center">
+                  {currentWork?.image ? (
+                    <img src={currentWork.image} alt={currentWork.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <ImageIcon className="text-slate-600" size={48} />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+                </div>
+                
+                <div className="p-6 overflow-y-auto flex-1">
+                  <h3 className="font-extrabold text-2xl mb-1">{currentWork?.name}</h3>
+                  <p className="text-cyan-400 font-semibold mb-6">{currentWork?.author} • {currentWork?.year}</p>
+                  
+                  <h6 className="text-white/50 uppercase tracking-wider mb-2 text-xs font-bold">Descrizione</h6>
+                  <p className="leading-relaxed text-slate-300 text-sm pb-8">
+                    {currentWork?.description?.[0]?.description || "Nessuna descrizione disponibile per quest'opera."}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <NavigationControlBar
@@ -217,7 +274,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         onStartVisit={() => {
           if (visitedWorks.length > 0) {
             setCurrentWorkIndex(0);
-            selectSectionForWork(visitedWorks[0]);
+            if (hasMap) selectSectionForWork(visitedWorks[0]);
             if (isSharedSession && isTeacher && socket) {
               socket.emit("change_artwork", { roomCode, artworkId: visitedWorks[0]._id });
             }
@@ -242,27 +299,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
               Hai visitato tutte le opere d'arte presenti in questa visita. Cosa desideri fare ora?
             </p>
             
-            {suggestedWorks.length > 0 ? (
-              <div className="mb-6">
-                <h6 className="flex items-center gap-2 text-white/50 text-xs font-bold uppercase tracking-wider mb-3">
-                  <Sparkles className="text-amber-400" size={14} /> Consigliate per te in questo museo:
-                </h6>
-                <div className="grid grid-cols-3 gap-3">
-                  {suggestedWorks.map(work => (
-                    <div key={work._id} className="flex flex-col h-full p-1.5 border border-white/5 bg-white/5 rounded-lg">
-                      <img src={work.image} className="h-[70px] w-full object-cover rounded shadow-sm mb-2" alt={work.name} />
-                      <div className="text-center px-1">
-                        <div className="text-xs font-bold truncate text-white mb-0.5">{work.name}</div>
-                        <span className="text-[10px] text-slate-400 truncate block">{work.author}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <p className="text-slate-400 text-center text-sm mb-6">Hai già visitato tutte le opere d'arte di questo museo!</p>
-            )}
-
             <div className="flex gap-3 justify-center">
               <button 
                 onClick={() => window.location.href = "/my-visits"} 
@@ -270,30 +306,19 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
               >
                 Termina Visita
               </button>
-              {suggestedWorks.length > 0 && (
-                <button 
-                  onClick={() => {
-                    setVisitedWorks([...visitedWorks, ...suggestedWorks]);
-                    setShowEndModal(false);
-                    setCurrentWorkIndex(visitedWorks.length);
-                    selectSectionForWork(suggestedWorks[0]);
-                  }} 
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-full text-white text-sm font-semibold border-none"
-                  style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}
-                >
-                  Continua la visita <ArrowRight size={16} />
-                </button>
-              )}
             </div>
           </div>
         </div>
       )}
 
-      <WorkDetailsSheet
-        work={detailsWork}
-        onClose={() => setDetailsWork(null)} 
-        onSpeak={speakText}
-      />
+      {/* La Bottom Sheet originale appare SOLO se c'è la mappa e si clicca su un pin */}
+      {hasMap && (
+        <WorkDetailsSheet
+          work={detailsWork}
+          onClose={() => setDetailsWork(null)} 
+          onSpeak={speakText}
+        />
+      )}
     </div>
   );
 }
