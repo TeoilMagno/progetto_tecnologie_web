@@ -34,8 +34,7 @@ const visitSchema = new mongoose.Schema({
 
     targetAudience: { 
       type: [String], 
-      enum: ['kids', 'families', 'adults', 'schools', 'all'],
-      default: ['all'] 
+      enum: ['kids', 'families', 'adults', 'schools', 'all']
     },
 
     accessibility: [{ 
@@ -47,8 +46,7 @@ const visitSchema = new mongoose.Schema({
             'dsa_friendly', 
             'sensory_friendly', 
             'none'
-        ],
-        default: ['none']
+        ]
     }],
 }, { timestamps: true });
 

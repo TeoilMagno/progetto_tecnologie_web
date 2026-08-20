@@ -13,7 +13,10 @@ exports.createVisit = async (visitPayload, user) => {
     isPublic,
     duration,
     language,
-    preferredLength
+    preferredLength,
+    targetAudience, 
+    accessibility,  
+    coverImage      
   } = visitPayload;
 
   // dati di base della visita
@@ -28,18 +31,24 @@ exports.createVisit = async (visitPayload, user) => {
     language: language || "it",
   };
 
+  if(coverImage) visitData.coverImage = coverImage;
+
   // logica differenziata in base al ruolo
   if (user.role === "curator" || user.role === "admin") {
     // Il curatore può decidere liberamente prezzo e visibilità
-    visitData.price = price || 0;
     visitData.isDraft = isDraft !== undefined ? isDraft : true;
     visitData.isPublic = isPublic !== undefined ? isPublic : false;
+    if(visitData.isPublic) {
+      visitData.price = price || 0;
+      if (targetAudience?.length > 0) visitData.targetAudience = targetAudience;
+      if (accessibility?.length > 0) visitData.accessibility = accessibility;
+    }
   } else {
-    visitData.price = 0;
     visitData.isDraft = false;
     visitData.isPublic = false; // Sempre privata, non va sul marketplace
   }
 
+  console.log("PAYLOAD PULITO PRIMA DEL SALVATAGGIO:", visitData);
   const newVisit = new Visit(visitData);
   return await newVisit.save();
 };
@@ -101,12 +110,31 @@ exports.editVisitById = async (visitId, payload, user) => {
   if (user.role !== 'admin') {
     query.creator = user._id;
   }
+
+  // --- SICUREZZA: Puliamo il payload se è un utente base ---
+  if ((user.role !== "curator" && user.role !== "admin" )|| !payload.isPublic) {
+    // Cancelliamo forzatamente i campi che non gli competono, 
+    // così Mongoose non li salverà mai, anche se l'utente ha provato a inviarli!
+    delete payload.price;
+    delete payload.isPublic;
+    delete payload.isDraft;
+    delete payload.targetAudience;
+    delete payload.accessibility;
+    delete payload.coverImage;
+
+    payload.$unset = {
+      price: 1,
+      targetAudience: 1,
+      accessibility: 1,
+      coverImage: 1
+    };
+  }
   
   // Troviamo e aggiorniamo SOLO se l'ID corrisponde e il creatore è l'utente corrente
   const updatedVisit = await Visit.findOneAndUpdate(      
     query,
     payload,
-    { new: true } // Opzione per farci restituire il documento aggiornato
+    { new: true }
   );
 
   if (!updatedVisit) {

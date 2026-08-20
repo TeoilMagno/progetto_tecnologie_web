@@ -28,9 +28,6 @@ const userSchema = new mongoose.Schema({
   // Musei gestiti (per curatori)
   managed_museums: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Museum' }],
 
-  // Visite create (per curatori)
-  created_visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visit' }],
-
   // Visite acquistate (per visitatori)
   purchased_visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visit' }],
   preferences: {

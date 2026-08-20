@@ -518,14 +518,18 @@ async function submitVisit(isSavingAsDraft = false) {
     description: description,
     museumId: currentMuseumId,
     works: workIds,
-    price: price,
-    isPublic: isPublic,
-    isDraft: isDraft,
     duration: durationNum,
     preferredLength: prefLength,
-    targetAudience: targets,        
-    accessibility: accessibilities  
+    isDraft: isDraft,
+    isPublic: isPublic
   };
+
+  // Aggiungiamo i campi del marketplace SOLO se la visita è pubblica (o se l'utente li vuole abilitare)
+  if (isPublic) {
+    payload.price = price;
+    payload.targetAudience = targets;
+    payload.accessibility = accessibilities;
+  }
 
   const submitBtn = document.getElementById("confirm-save-visit-btn");
   const draftBtn = document.getElementById("save-draft-btn");
