@@ -31,7 +31,15 @@ function MapRouteWrapper() {
 }
 
 export default function App() {
-  const [selectedMuseum, setSelectedMuseum] = useState(null);
+  // Inizializziamo lo stato leggendo subito l'URL del browser
+  const [selectedMuseum, setSelectedMuseum] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('visitId') || params.has('roomCode')) {
+      // Se c'è un ID visita, bypassiamo l'overlay dando un valore di default
+      return { name: "Visita in corso..." }; 
+    }
+    return null; // Altrimenti (es. se va sulla root /) parte da null e mostra l'overlay
+  });
 
   return (
     <Router basename="/navigator">

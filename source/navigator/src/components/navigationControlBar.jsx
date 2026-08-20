@@ -1,4 +1,5 @@
 import React from 'react';
+import { Lock, ChevronLeft, Play, ChevronRight, BookOpen, Volume2, Keyboard, Mic } from 'lucide-react';
 
 export default function NavigationControlBar({
   currentWorkIndex,
@@ -11,68 +12,68 @@ export default function NavigationControlBar({
   inputMode,
   setInputMode,
   onSpeak,
-  isSharedSession, // true se siamo in una sessione di gruppo
-  isTeacher        // true se l'utente corrente è l'insegnante
+  isSharedSession,
+  isTeacher
 }) {
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
 
   return (
-    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "120px", background: "rgba(18, 18, 24, 0.95)", borderTop: "1px solid rgba(255, 255, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 30px", zIndex: 999, backdropFilter: "blur(15px)" }}>
+    <div className="absolute bottom-0 left-0 right-0 h-[120px] bg-[#121218]/95 border-t border-white/10 flex items-center justify-between px-8 z-[999] backdrop-blur-md">
       
       {/* Sinistra: Dettagli Opera Corrente */}
-      <div style={{ width: "320px" }}>
+      <div className="w-[320px]">
         {currentWorkIndex >= 0 ? (
           <div>
-            <span className="badge bg-info mb-1" style={{ fontSize: "0.65rem", letterSpacing: "0.5px" }}>
+            <span className="inline-block px-2 py-0.5 bg-cyan-500 text-white text-[10px] font-bold rounded mb-1 tracking-wider">
               OPERA {currentWorkIndex + 1} DI {visitedWorks.length}
-              {isSharedSession && !isTeacher && " (Sincronizzato con il docente)"}
+              {isSharedSession && !isTeacher && " (Sincro)"}
             </span>
-            <h5 className="mb-0 text-truncate text-white" style={{ fontSize: "0.95rem", fontWeight: 700 }}>{currentWork?.name}</h5>
-            <p className="mb-0 small text-secondary text-truncate" style={{ fontSize: "0.8rem" }}>{currentWork?.author}</p>
+            <h5 className="mb-0 truncate text-white text-[0.95rem] font-bold">{currentWork?.name}</h5>
+            <p className="mb-0 text-sm text-slate-400 truncate">{currentWork?.author}</p>
           </div>
         ) : (
           <div>
-            <span className="badge bg-secondary mb-1" style={{ fontSize: "0.65rem", letterSpacing: "0.5px" }}>PANORAMICA</span>
-            <h5 className="mb-0 text-white" style={{ fontSize: "0.95rem", fontWeight: 700 }}>Navigazione Libera</h5>
-            <p className="mb-0 small text-secondary" style={{ fontSize: "0.8rem" }}>Seleziona un'opera per iniziare</p>
+            <span className="inline-block px-2 py-0.5 bg-slate-600 text-white text-[10px] font-bold rounded mb-1 tracking-wider">
+              PANORAMICA
+            </span>
+            <h5 className="mb-0 text-white text-[0.95rem] font-bold">Navigazione Libera</h5>
+            <p className="mb-0 text-sm text-slate-400">Seleziona un'opera per iniziare</p>
           </div>
         )}
       </div>
 
       {/* Centro: Pulsanti Avanti/Indietro o Blocchi per studenti */}
-      <div className="d-flex align-items-center gap-2">
-        {/* Se è una sessione condivisa e NON sei il docente, i tasti di movimento manuale sono disabilitati come da specifiche */}
+      <div className="flex items-center gap-3">
         {isSharedSession && !isTeacher ? (
-          <div className="text-center px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-pill text-xs text-amber-400 font-semibold">
-            <i className="bi bi-lock-fill me-1"></i> Navigazione controllata dal docente
+          <div className="flex items-center gap-2 px-5 py-2.5 bg-slate-800/80 border border-slate-700 rounded-full text-xs text-amber-400 font-semibold">
+            <Lock size={14} /> Navigazione controllata dal docente
           </div>
         ) : (
           <>
             <button 
               onClick={onPrev} 
-              className="btn btn-sm btn-outline-light rounded-pill px-3"
-              style={{ minWidth: "110px", borderColor: "rgba(255,255,255,0.2)" }}
+              className="flex items-center justify-center gap-1 min-w-[120px] px-4 py-2 border border-white/20 rounded-full text-white hover:bg-white/10 text-sm transition-colors disabled:opacity-50"
               disabled={currentWorkIndex < 0}
             >
-              <i className="bi bi-chevron-left me-1"></i> Precedente
+              <ChevronLeft size={16} /> Precedente
             </button>
             
             {currentWorkIndex === -1 ? (
               <button 
                 onClick={onStartVisit}
-                className="btn btn-sm text-white rounded-pill px-4"
-                style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)", border: "none", minWidth: "140px", fontWeight: 600, padding: "8px 20px" }}
+                className="flex items-center justify-center gap-1 min-w-[140px] px-5 py-2 rounded-full text-white text-sm font-semibold border-none"
+                style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}
                 disabled={visitedWorks.length === 0}
               >
-                Inizia Visita <i className="bi bi-play-fill ms-1"></i>
+                Inizia Visita <Play size={16} className="fill-white" />
               </button>
             ) : (
               <button 
                 onClick={onNext} 
-                className="btn btn-sm text-white rounded-pill px-4"
-                style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)", border: "none", minWidth: "140px", fontWeight: 600, padding: "8px 20px" }}
+                className="flex items-center justify-center gap-1 min-w-[140px] px-5 py-2 rounded-full text-white text-sm font-semibold border-none"
+                style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}
               >
-                {currentWorkIndex === visitedWorks.length - 1 ? "Fine Visita" : "Prossima"} <i className="bi bi-chevron-right ms-1"></i>
+                {currentWorkIndex === visitedWorks.length - 1 ? "Fine Visita" : "Prossima"} <ChevronRight size={16} />
               </button>
             )}
           </>
@@ -80,44 +81,38 @@ export default function NavigationControlBar({
       </div>
 
       {/* Destra: Toggles Audio/Testo, Scrittura/Parla */}
-      <div className="d-flex align-items-center gap-3">
-        {/* Read vs Listen */}
-        <div className="btn-group" role="group" style={{ border: "1px solid rgba(255,255,255,0.15)", borderRadius: "20px", overflow: "hidden" }}>
+      <div className="flex items-center gap-4">
+        <div className="flex overflow-hidden rounded-full border border-white/15">
           <button 
             type="button" 
-            className={`btn btn-sm py-2 px-3 border-0 rounded-0 ${playMode === 'read' ? 'btn-info text-dark' : 'text-secondary'}`}
-            style={{ background: playMode === 'read' ? '#00ccff' : 'transparent', fontSize: "0.75rem", fontWeight: 600 }}
+            className={`flex items-center gap-1.5 px-4 py-2 text-xs font-semibold outline-none transition-colors ${playMode === 'read' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
             onClick={() => setPlayMode('read')}
           >
-            <i className="bi bi-book me-1"></i> Leggi
+            <BookOpen size={14} /> Leggi
           </button>
           <button 
             type="button" 
-            className={`btn btn-sm py-2 px-3 border-0 rounded-0 ${playMode === 'listen' ? 'btn-info text-dark' : 'text-secondary'}`}
-            style={{ background: playMode === 'listen' ? '#00ccff' : 'transparent', fontSize: "0.75rem", fontWeight: 600 }}
+            className={`flex items-center gap-1.5 px-4 py-2 text-xs font-semibold outline-none transition-colors ${playMode === 'listen' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
             onClick={() => onSpeak(`Descrizione opera: ${currentWork?.description?.[0]?.description}`)}
           >
-            <i className="bi bi-volume-up me-1"></i> Ascolta
+            <Volume2 size={14} /> Ascolta
           </button>
         </div>
 
-        {/* Write vs Speak */}
-        <div className="btn-group" role="group" style={{ border: "1px solid rgba(255,255,255,0.15)", borderRadius: "20px", overflow: "hidden" }}>
+        <div className="flex overflow-hidden rounded-full border border-white/15">
           <button 
             type="button" 
-            className={`btn btn-sm py-2 px-3 border-0 rounded-0 ${inputMode === 'write' ? 'btn-info text-dark' : 'text-secondary'}`}
-            style={{ background: inputMode === 'write' ? '#00ccff' : 'transparent', fontSize: "0.75rem", fontWeight: 600 }}
+            className={`flex items-center gap-1.5 px-4 py-2 text-xs font-semibold outline-none transition-colors ${inputMode === 'write' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
             onClick={() => setInputMode('write')}
           >
-            <i className="bi bi-keyboard me-1"></i> Scrivi
+            <Keyboard size={14} /> Scrivi
           </button>
           <button 
             type="button" 
-            className={`btn btn-sm py-2 px-3 border-0 rounded-0 ${inputMode === 'speak' ? 'btn-info text-dark' : 'text-secondary'}`}
-            style={{ background: inputMode === 'speak' ? '#00ccff' : 'transparent', fontSize: "0.75rem", fontWeight: 600 }}
+            className={`flex items-center gap-1.5 px-4 py-2 text-xs font-semibold outline-none transition-colors ${inputMode === 'speak' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
             onClick={() => setInputMode('speak')}
           >
-            <i className="bi bi-mic me-1"></i> Parla
+            <Mic size={14} /> Parla
           </button>
         </div>
       </div>

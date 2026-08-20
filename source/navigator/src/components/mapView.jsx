@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { io } from "socket.io-client";
+import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2 } from "lucide-react";
 import SectionLayer from "./sectionLayer";
 import RoomLayer from "./roomLayer";
 import WorkDetailsSheet from "./workDetailsSheet";
@@ -16,7 +17,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [allMuseumWorks, setAllMuseumWorks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Navigator state
   const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);
   const [detailsWork, setDetailsWork] = useState(null);
   const [playMode, setPlayMode] = useState("read"); 
@@ -26,16 +26,12 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
   const isSharedSession = Boolean(roomCode);
 
-  // Connessione Socket pulita
   useEffect(() => {
     const newSocket = io(SOCKET_URL, {
-      transports: ['websocket', 'polling'] // Forza una connessione stabile
+      transports: ['websocket', 'polling'] 
     });
     setSocket(newSocket);
-
-    return () => {
-      newSocket.disconnect();
-    };
+    return () => newSocket.disconnect();
   }, []);
 
   useEffect(() => {
@@ -43,10 +39,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       try {
         const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}/museum`, { credentials: 'include' });
         const visitData = await visitResponse.json();
-
         setVisitedWorks(visitData.works);
+        
         const museumId = visitData.museumId?._id || visitData.museumId;
-
         const sectionsResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`, { credentials: 'include' });
         const sectionsData = await sectionsResponse.json();
         setSections(sectionsData);
@@ -68,7 +63,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
         const worksResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/works`, { credentials: 'include' });
         const worksData = await worksResponse.json();
-
         const enrichedAllWorks = worksData.map(work => ({
           ...work,
           roomName: getRoomName(work.roomId)
@@ -77,7 +71,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
         setLoading(false);
       } catch (error) {
-        console.error("Errore nel caricamento dei dati della visita o delle sezioni:", error);
+        console.error("Errore nel caricamento:", error);
         setLoading(false);
       }
     };
@@ -88,12 +82,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   }, [visitId]);
 
   useEffect(() => {
-    return () => {
-      window.speechSynthesis.cancel();
-    };
+    return () => window.speechSynthesis.cancel();
   }, []);
 
-  // Sintesi vocale
   const speakText = (textToRead) => {
     window.speechSynthesis.cancel();
     if (!textToRead) {
@@ -103,18 +94,13 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     setPlayMode("listen");
     const utterance = new SpeechSynthesisUtterance(textToRead);
     utterance.lang = "it-IT";
-    utterance.onend = () => {
-      setPlayMode("read");
-    };
+    utterance.onend = () => setPlayMode("read");
     window.speechSynthesis.speak(utterance);
   };
 
-  // Seleziona automaticamente la sezione della mappa contenente l'opera d'arte corrente
   const selectSectionForWork = (work) => {
     if (!work || !work.roomId) return null;
-    const section = sections.find(s => 
-      s.rooms && s.rooms.some(r => r._id === work.roomId)
-    );
+    const section = sections.find(s => s.rooms && s.rooms.some(r => r._id === work.roomId));
     if (section) {
       setSelectedSection(section);
       return section;
@@ -122,7 +108,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     return null;
   };
 
-  // Gestione socket per sincronizzazione studenti
   useEffect(() => {
     if (isSharedSession && !isTeacher && socket) {
       socket.on("artwork_changed", ({ artworkId }) => {
@@ -130,13 +115,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         if (index !== -1) {
           setCurrentWorkIndex(index);
           selectSectionForWork(visitedWorks[index]);
-          window.showToast?.("Il docente è passato a una nuova opera", "info");
         }
       });
-
-      return () => {
-        socket.off("artwork_changed");
-      };
+      return () => socket.off("artwork_changed");
     }
   }, [isSharedSession, isTeacher, visitedWorks, socket]);
 
@@ -155,10 +136,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       }
 
       if (isSharedSession && isTeacher && socket) {
-        socket.emit("change_artwork", {
-          roomCode: roomCode,
-          artworkId: activeWork._id
-        });
+        socket.emit("change_artwork", { roomCode, artworkId: activeWork._id });
       }
     } else {
       const remainingWorks = allMuseumWorks.filter(w => !visitedWorks.some(vw => vw._id === w._id));
@@ -176,10 +154,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       selectSectionForWork(activeWork);
 
       if (isSharedSession && isTeacher && socket) {
-        socket.emit("change_artwork", {
-          roomCode: roomCode,
-          artworkId: activeWork._id
-        });
+        socket.emit("change_artwork", { roomCode, artworkId: activeWork._id });
       }
     } else if (currentWorkIndex === 0) {
       setCurrentWorkIndex(-1);
@@ -189,44 +164,35 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
   if (loading) {
     return (
-      <div className="d-flex flex-column align-items-center justify-content-center" style={{ width: "100vw", height: "100vh", backgroundColor: "#09090b", color: "#fff" }}>
-        <div className="spinner-border text-info" role="status"></div>
-        <p className="mt-3 text-secondary">Caricamento mappa e visita...</p>
+      <div className="flex flex-col items-center justify-center w-screen h-screen bg-[#09090b] text-white">
+        <Loader2 className="animate-spin text-cyan-400 mb-4" size={40} />
+        <p className="text-slate-400">Caricamento mappa e visita...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh", backgroundColor: "#09090b", color: "#fff", overflow: "hidden" }}>
-      <header className="d-flex justify-content-between align-items-center px-4" style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.08)", background: "rgba(9, 9, 11, 0.85)", backdropFilter: "blur(10px)", height: "65px" }}>
-        <div className="d-flex align-items-center gap-2">
-          <i className="bi bi-bank me-2 text-info fs-4"></i>
-          <span style={{ fontWeight: 800, fontSize: "1.25rem", background: "linear-gradient(90deg, #00ccff 0%, #7a1dd0 50%, #ec4899 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>ArtAround Navigator</span>
+    <div className="relative w-screen h-screen bg-[#09090b] text-white overflow-hidden">
+      <header className="flex justify-between items-center px-6 h-[65px] border-b border-white/10 bg-[#09090b]/85 backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          <Landmark className="text-cyan-400" size={24} />
+          <span className="font-extrabold text-xl bg-clip-text text-transparent bg-gradient-to-r from-[#00ccff] via-[#7a1dd0] to-[#ec4899]">
+            ArtAround Navigator
+          </span>
         </div>
-        <button onClick={() => window.location.href = "/my-visits"} className="btn btn-sm btn-outline-secondary rounded-pill px-3">
-          <i className="bi bi-box-arrow-left me-1"></i> Esci
+        <button 
+          onClick={() => window.location.href = "/my-visits"} 
+          className="flex items-center gap-2 px-4 py-1.5 border border-slate-700 rounded-full text-slate-300 hover:bg-slate-800 text-sm transition-colors"
+        >
+          <LogOut size={16} /> Esci
         </button>
       </header>
 
-      <div style={{ height: "calc(100vh - 185px)", overflow: "hidden" }}>
-        <TransformWrapper
-          initialScale={0.8}
-          minScale={0.4}
-          maxScale={2.5}
-          centerOnInit={true}
-          panning={{ velocityDisabled: true }}
-        >
+      <div className="h-[calc(100vh-185px)] overflow-hidden">
+        <TransformWrapper initialScale={0.8} minScale={0.4} maxScale={2.5} centerOnInit={true} panning={{ velocityDisabled: true }}>
           <TransformComponent wrapperStyle={{ width: "100vw", height: "100%" }}>
-            <svg 
-              viewBox="0 0 2000 2000" 
-              style={{ width: "2000px", height: "2000px" }}
-            >
-              {!selectedSection && (
-                <g>
-                  <SectionLayer sections={sections} onSelect={setSelectedSection} />
-                </g>
-              )}
-
+            <svg viewBox="0 0 2000 2000" style={{ width: "2000px", height: "2000px" }}>
+              {!selectedSection && <g><SectionLayer sections={sections} onSelect={setSelectedSection} /></g>}
               {selectedSection && (
                 <g>
                   <RoomLayer 
@@ -267,34 +233,41 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       />
 
       {showEndModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div className="p-4" style={{ maxWidth: "560px", width: "90%", background: "#121218", border: "1px solid rgba(255, 255, 255, 0.1)", borderRadius: "16px", boxShadow: "0 10px 40px rgba(0,0,0,0.8)", color: "#fff" }}>
-            <h3 className="text-info mb-3 text-center" style={{ fontWeight: 800 }}><i className="bi bi-check2-circle me-2 text-success"></i>Visita Completata!</h3>
-            <p className="text-secondary text-center mb-4" style={{ fontSize: "0.9rem" }}>Hai visitato tutte le opere d'arte presenti in questa visita. Cosa desideri fare ora?</p>
+        <div className="fixed inset-0 bg-black/85 z-[10000] flex items-center justify-center p-4">
+          <div className="w-full max-w-[560px] bg-[#121218] border border-white/10 rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.8)] text-white">
+            <h3 className="flex items-center justify-center gap-2 text-cyan-400 text-xl font-extrabold mb-3">
+              <CheckCircle2 className="text-green-500" size={24} /> Visita Completata!
+            </h3>
+            <p className="text-slate-400 text-center text-sm mb-6">
+              Hai visitato tutte le opere d'arte presenti in questa visita. Cosa desideri fare ora?
+            </p>
             
             {suggestedWorks.length > 0 ? (
-              <div className="mb-4">
-                <h6 className="text-white-50 small mb-2 uppercase tracking-wider" style={{ fontSize: "0.75rem", fontWeight: 700 }}><i className="bi bi-stars me-1 text-warning"></i>Consigliate per te in questo museo:</h6>
-                <div className="row g-2">
+              <div className="mb-6">
+                <h6 className="flex items-center gap-2 text-white/50 text-xs font-bold uppercase tracking-wider mb-3">
+                  <Sparkles className="text-amber-400" size={14} /> Consigliate per te in questo museo:
+                </h6>
+                <div className="grid grid-cols-3 gap-3">
                   {suggestedWorks.map(work => (
-                    <div className="col-4" key={work._id}>
-                      <div className="card h-100 p-1" style={{ background: "rgba(255,255,255,0.02)", borderColor: "rgba(255,255,255,0.05)" }}>
-                        <img src={work.image} style={{ height: "60px", objectFit: "cover", borderRadius: "4px" }} alt={work.name} />
-                        <div className="p-1 text-center">
-                          <div className="small fw-bold text-truncate text-white" style={{ fontSize: "0.7rem" }}>{work.name}</div>
-                          <span className="text-secondary text-truncate d-block" style={{ fontSize: "0.6rem" }}>{work.author}</span>
-                        </div>
+                    <div key={work._id} className="flex flex-col h-full p-1.5 border border-white/5 bg-white/5 rounded-lg">
+                      <img src={work.image} className="h-[70px] w-full object-cover rounded shadow-sm mb-2" alt={work.name} />
+                      <div className="text-center px-1">
+                        <div className="text-xs font-bold truncate text-white mb-0.5">{work.name}</div>
+                        <span className="text-[10px] text-slate-400 truncate block">{work.author}</span>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
             ) : (
-              <p className="text-secondary text-center small mb-4">Hai già visitato tutte le opere d'arte di questo museo!</p>
+              <p className="text-slate-400 text-center text-sm mb-6">Hai già visitato tutte le opere d'arte di questo museo!</p>
             )}
 
-            <div className="d-flex gap-3 justify-content-center">
-              <button onClick={() => window.location.href = "/my-visits"} className="btn btn-sm btn-outline-light rounded-pill px-4 py-2" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
+            <div className="flex gap-3 justify-center">
+              <button 
+                onClick={() => window.location.href = "/my-visits"} 
+                className="px-6 py-2.5 border border-white/20 rounded-full text-white hover:bg-white/10 transition-colors text-sm font-medium"
+              >
                 Termina Visita
               </button>
               {suggestedWorks.length > 0 && (
@@ -305,10 +278,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                     setCurrentWorkIndex(visitedWorks.length);
                     selectSectionForWork(suggestedWorks[0]);
                   }} 
-                  className="btn btn-sm text-white rounded-pill px-4 py-2"
-                  style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)", border: "none", fontWeight: 600 }}
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-full text-white text-sm font-semibold border-none"
+                  style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}
                 >
-                  Continua la visita <i className="bi bi-arrow-right ms-1"></i>
+                  Continua la visita <ArrowRight size={16} />
                 </button>
               )}
             </div>
