@@ -74,18 +74,34 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
       });
     }
 
+   // -- LOGICA WARNING --
     let missingWarning = "";
+    
+    // 1. Controllo Opere in prestito
     const hasMissingWorks = visit.works && visit.works.some(work => {
+      if (!work) return false; // Se è null (eliminata) la ignoriamo per questo check
       const adoption = work.adoptionId || work.adoption;
       return adoption && (adoption.status === 'accepted' || adoption.status === 'active');
     });
 
     if (hasMissingWorks) {
-      missingWarning = `
+      missingWarning += `
         <div class="mt-2 text-warning small fw-bold">
           <i class="bi bi-exclamation-triangle-fill me-1"></i> Contiene opere in prestito
         </div>`;
     }
+
+    // 2. Controllo Opere eliminate dal DB
+    const hasDeletedWorks = visit.works && visit.works.some(work => work === null);
+    if (hasDeletedWorks) {
+      missingWarning += `
+        <div class="mt-2 text-danger small fw-bold">
+          <i class="bi bi-trash-fill me-1"></i> Alcune opere sono state rimosse dal sistema
+        </div>`;
+    }
+
+    // 3. Controllo Museo eliminato dal DB
+    const museumName = visit.museumId ? visit.museumId.name : "<span class='text-danger fw-bold'><i class='bi bi-exclamation-octagon-fill'></i> Museo Chiuso/Eliminato</span>";
 
     container.innerHTML += `
       <div class="col">
@@ -101,7 +117,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
             
             <h5 class="card-title text-truncate">${visit.title}</h5>
             <h6 class="card-subtitle mb-2 text-muted museum-name-custom text-truncate">
-              <i class="bi bi-bank me-1"></i> ${visit.museumId ? visit.museumId.name : "Senza museo"}
+              <i class="bi bi-bank me-1"></i> ${museumName}
             </h6>
             
             <div class="mb-2 line-clamp-1">${extraTagsHtml}</div>
@@ -109,6 +125,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
             <p class="card-text small text-secondary flex-grow-1 text-truncate-3">${visit.description || ""}</p>
             
             ${missingWarning}
+            
             <div class="d-flex justify-content-between align-items-center mt-3">
               ${actionButton}
               <button class="btn btn-sm btn-outline-danger ms-2" onclick="event.stopPropagation(); deleteVisit('${visit._id}')" title="Elimina visita o bozza">

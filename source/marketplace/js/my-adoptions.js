@@ -144,6 +144,20 @@ function renderAdoptionsList(list, container, isIncoming) {
         </div>`;
     }
 
+    // CONTROLLO ELIMINAZIONI (HARD DELETE)
+    let deletionWarning = "";
+    if (!a.workId || !a.fromMuseumId || !a.toMuseumId) {
+      let missingEntity = !a.workId ? "L'opera" : "Uno dei musei coinvolti";
+      deletionWarning = `
+        <div class="alert alert-danger mt-2 mb-0 py-2 px-2 small border-danger text-light d-flex align-items-center">
+          <i class="bi bi-exclamation-octagon-fill fs-5 me-2 text-danger"></i> 
+          <span><strong>Attenzione:</strong> ${missingEntity} è stata eliminata dal database. Questa adozione è corrotta.</span>
+        </div>
+      `;
+      // Disabilitiamo i bottoni per evitare crash al backend
+      actionButtons = ""; 
+    }
+
     container.innerHTML += `
       <div class="col">
         <div class="card custom-card h-100 border border-secondary border-opacity-25">
@@ -161,6 +175,7 @@ function renderAdoptionsList(list, container, isIncoming) {
                 <small class="text-warning">${isIncoming ? `A: ${toMuseumName}` : `A: Un tuo museo`}</small>
               </div>
             </div>
+            ${deletionWarning}
             ${actionButtons}
           </div>
         </div>
