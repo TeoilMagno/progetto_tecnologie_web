@@ -73,7 +73,7 @@ exports.getVisits = async (userId) => {
   return allVisits;
 };
 
-exports.getVisitById = async (visitId, user) => {
+exports.getVisitById = async (visitId, user, isShared = false) => {
   const visit = await Visit.findById(visitId).populate('museumId')
     .populate('works')
     .populate({ path: 'works', populate: { path: 'adoptionId' } }); 
@@ -85,7 +85,7 @@ exports.getVisitById = async (visitId, user) => {
   }
 
   // Passa se è pubblica, o se l'utente è il creatore/admin
-  if (visit.isPublic || user?.role === "admin" || visit.creator.toString() === user?._id?.toString() ) {
+  if (isShared || visit.isPublic || user?.role === "admin" || visit.creator.toString() === user?._id?.toString() ) {
     return visit;
   } else {
     const error = new Error("Accesso negato: questa visita è privata");

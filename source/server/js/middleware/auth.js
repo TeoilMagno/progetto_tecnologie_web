@@ -1,7 +1,7 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const GoogleStrategy = require("passport-google-oidc");
-const FacebookStrategy = require("passport-facebook");
+const GitHubStrategy = require('passport-github2').Strategy;
 const crypto = require("crypto");
 const { User, FederatedCredential } = require("../models/users");
 
@@ -86,40 +86,44 @@ passport.use(
   )
 );
 
-// ─── Facebook Strategy ─────────────────────────────────────────────────────
-// passport.use(
-//   new FacebookStrategy(
-//     {
-//       clientID: process.env.FACEBOOK_APP_ID,
-//       clientSecret: process.env.FACEBOOK_APP_SECRET,
-//       callbackURL: "/oauth2/redirect/facebook",
-//       profileFields: ["id", "displayName"],
-//     },
-//     // Facebook: firma diversa da Google — accessToken, refreshToken, profile, cb
-//     async (accessToken, refreshToken, profile, cb) => {
-//       try {
-//         const issuer = "https://www.facebook.com";
-//         const cred = await FederatedCredential.findOne({
-//           provider: issuer,
-//           subject: profile.id,
-//         });
-//         if (!cred) {
-//           const user = await User.create({ name: profile.displayName });
-//           await FederatedCredential.create({
-//             user_id: user._id,
-//             provider: issuer,
-//             subject: profile.id,
-//           });
-//           return cb(null, user);
-//         }
-//         const user = await User.findById(cred.user_id);
-//         if (!user) return cb(null, false);
-//         return cb(null, user);
-//       } catch (err) {
-//         cb(err);
-//       }
-//     }
-//   )
-// );
+// ─── GitHub Strategy ─────────────────────────────────────────────────────
+passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: "/oauth2/redirect/github"
+  },
+  async function(accessToken, refreshToken, profile, done) {
+    try {
+      const providerName = "https://github.com"; 
+      
+      // Cerchiamo se esiste già un ponte (credenziale) per questo ID GitHub
+      const cred = await FederatedCredential.findOne({
+        provider: providerName,
+        subject: profile.id,
+      });
+
+      if (!cred) { 
+        // L'utente è nuovo: su GitHub displayName può essere vuoto, quindi cadiamo in piedi con l'username
+        const userName = profile.displayName || profile.username;
+        const user = await User.create({ username: userName, role: 'visitor', curator_status: 'none' }); 
+        
+        await FederatedCredential.create({
+          user_id: user._id,
+          provider: providerName,
+          subject: profile.id,
+        });
+        return done(null, user);
+      } 
+      
+      // L'utente è già registrato, lo cerchiamo nel nostro DB
+      const user = await User.findById(cred.user_id);
+      if (!user) return done(null, false);
+      
+      return done(null, user);
+    } catch (err) {
+      done(err);
+    }
+  }
+));
 
 module.exports = passport;

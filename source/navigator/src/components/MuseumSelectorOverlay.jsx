@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Building2, Landmark, Loader2, AlertCircle } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function MuseumSelectorOverlay({ onSelect }) {
   const [museums, setMuseums] = useState([]);
@@ -8,7 +9,7 @@ export default function MuseumSelectorOverlay({ onSelect }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/museums')
+    fetch(`${API_BASE_URL}/museums`)
       .then((res) => {
         if (!res.ok) {
           throw new Error('Errore nel caricamento dei musei');
@@ -20,6 +21,7 @@ export default function MuseumSelectorOverlay({ onSelect }) {
         if (data.length > 0) {
           // Seleziona il primo per impostazione predefinita
           setSelectedId(data[0]._id);
+          localStorage.setItem('selected_museum_id', selectedId._id);
         }
         setLoading(false);
       })
@@ -33,6 +35,7 @@ export default function MuseumSelectorOverlay({ onSelect }) {
   const handleConfirm = () => {
     const selectedMuseum = museums.find((m) => m._id === selectedId);
     if (selectedMuseum) {
+      localStorage.setItem('selected_museum_id', selectedMuseum._id);
       onSelect(selectedMuseum);
     }
   };

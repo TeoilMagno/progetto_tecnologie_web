@@ -788,6 +788,14 @@ async function selectAuthor(authorId, authorName) {
     // Cerchiamo se il nostro museo ha già una descrizione pre-selezionata
     let preselectedDataId = "";
     if (author.data && author.data.length > 0) {
+      
+      // 1. ORDINAMENTO DECRESCENTE per popolarità (numero di adozioni)
+      author.data.sort((a, b) => {
+        const countA = a.museumId ? a.museumId.length : 0;
+        const countB = b.museumId ? b.museumId.length : 0;
+        return countB - countA;
+      });
+
       author.data.forEach(d => {
         if (d.museumId && d.museumId.some(m => (m._id || m).toString() === currentMuseumId)) {
           preselectedDataId = d._id;
@@ -797,10 +805,16 @@ async function selectAuthor(authorId, authorName) {
       // Impostiamo il campo nascosto con l'ID della descrizione già in uso (se esiste)
       document.getElementById("work-author-data-id").value = preselectedDataId;
 
-      author.data.forEach((d) => {
-        const museumName = d.museumId && d.museumId.length > 0 && d.museumId[0].name ? d.museumId[0].name : "Altro Museo";
+      author.data.forEach((d, index) => {
+        const adoptionCount = d.museumId ? d.museumId.length : 0;
+        const museumName = d.museumId && adoptionCount > 0 && d.museumId[0].name ? d.museumId[0].name : "Altro Museo";
         const isSelected = preselectedDataId === d._id;
         
+        // La prima card in lista si prende il badge "Popolare" se è usata da almeno 2 musei
+        const isPopular = index === 0 && adoptionCount > 1; 
+        const popularBadge = isPopular ? `<span class="badge bg-danger bg-opacity-25 border border-danger text-danger"><i class="bi bi-fire"></i> Più scelto</span>` : "";
+        const extraCountText = adoptionCount > 1 ? ` (+${adoptionCount - 1})` : "";
+
         // Classi dinamiche per l'highlight
         const borderClass = isSelected ? "border-success bg-success bg-opacity-25" : "border-secondary bg-dark bg-opacity-50";
         const checkIcon = isSelected ? `<i class="bi bi-check-circle-fill text-success position-absolute top-0 end-0 m-2 fs-5 author-check-icon"></i>` : "";
@@ -812,9 +826,12 @@ async function selectAuthor(authorId, authorName) {
                onclick="highlightAuthorCard('${d._id}')">
             ${checkIcon}
             <div class="card-body p-3 d-flex flex-column">
-              <span class="badge bg-secondary mb-2 bg-opacity-50 border border-secondary text-light w-auto align-self-start" style="font-size: 0.65rem;">
-                <i class="bi bi-bank me-1"></i> ${museumName}
-              </span>
+              <div class="d-flex gap-1 mb-2 align-items-center flex-wrap" style="font-size: 0.65rem;">
+                <span class="badge bg-secondary bg-opacity-50 border border-secondary text-light w-auto">
+                  <i class="bi bi-bank me-1"></i> ${museumName}${extraCountText}
+                </span>
+                ${popularBadge}
+              </div>
               <p class="small mb-1 text-info fw-bold">${d.bd || 'Date non specificate'}</p>
               <p class="small mb-2 text-white-50 text-truncate" title="${d.studies || ''}"><i class="bi bi-mortarboard me-1"></i>${d.studies || 'Formazione non specificata'}</p>
               <p class="small text-white mb-0" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
@@ -1050,6 +1067,14 @@ async function selectStyle(styleId, styleName) {
     // Troviamo se c'è una definizione già selezionata dal nostro museo
     let preselectedDataId = "";
     if (style.data && style.data.length > 0) {
+      
+      // 1. ORDINAMENTO DECRESCENTE per popolarità
+      style.data.sort((a, b) => {
+        const countA = a.museumId ? a.museumId.length : 0;
+        const countB = b.museumId ? b.museumId.length : 0;
+        return countB - countA;
+      });
+
       style.data.forEach(d => {
         if (d.museumId && d.museumId.some(m => (m._id || m).toString() === currentMuseumId)) {
           preselectedDataId = d._id;
@@ -1059,10 +1084,16 @@ async function selectStyle(styleId, styleName) {
       // Salviamo l'id nel form nascosto (che avevamo inserito nell'html prima)
       document.getElementById("work-style-data-id").value = preselectedDataId;
 
-      style.data.forEach((d) => {
-        const museumName = d.museumId && d.museumId.length > 0 && d.museumId[0].name ? d.museumId[0].name : "Altro Museo";
+      style.data.forEach((d, index) => {
+        const adoptionCount = d.museumId ? d.museumId.length : 0;
+        const museumName = d.museumId && adoptionCount > 0 && d.museumId[0].name ? d.museumId[0].name : "Altro Museo";
         const isSelected = preselectedDataId === d._id;
         
+        // Logica Badge "Popolare"
+        const isPopular = index === 0 && adoptionCount > 1; 
+        const popularBadge = isPopular ? `<span class="badge bg-danger bg-opacity-25 border border-danger text-danger"><i class="bi bi-fire"></i> Più scelto</span>` : "";
+        const extraCountText = adoptionCount > 1 ? ` (+${adoptionCount - 1})` : "";
+
         const borderClass = isSelected ? "border-success bg-success bg-opacity-25" : "border-secondary bg-dark bg-opacity-50";
         const checkIcon = isSelected ? `<i class="bi bi-check-circle-fill text-success position-absolute top-0 end-0 m-2 fs-5 style-check-icon"></i>` : "";
 
@@ -1073,9 +1104,12 @@ async function selectStyle(styleId, styleName) {
                onclick="highlightStyleCard('${d._id}')">
             ${checkIcon}
             <div class="card-body p-3 d-flex flex-column">
-              <span class="badge bg-secondary mb-2 bg-opacity-50 border border-secondary text-light w-auto align-self-start" style="font-size: 0.65rem;">
-                <i class="bi bi-bank me-1"></i> ${museumName}
-              </span>
+              <div class="d-flex gap-1 mb-2 align-items-center flex-wrap" style="font-size: 0.65rem;">
+                <span class="badge bg-secondary bg-opacity-50 border border-secondary text-light w-auto">
+                  <i class="bi bi-bank me-1"></i> ${museumName}${extraCountText}
+                </span>
+                ${popularBadge}
+              </div>
               <p class="small text-white mb-0" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
                 ${d.description || 'Nessuna descrizione.'}
               </p>

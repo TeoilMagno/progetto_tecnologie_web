@@ -71,10 +71,10 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
   failureRedirect: '/login'
 }));
 
-// ─── Facebook ─────────────────────────────────────────────────────────────
-// Standard passport per il login con FaceBook
-router.get('/login/federated/facebook', passport.authenticate('facebook'));
-router.get('/oauth2/redirect/facebook', passport.authenticate('facebook', {
+// ─── GitHub ───────────────────────────────────────────────────────────────
+// Standard passport per il login con GitHub
+router.get('/login/federated/github', passport.authenticate('github'));
+router.get('/oauth2/redirect/github', passport.authenticate('github', {
   successRedirect: '/',
   failureRedirect: '/login'
 }));

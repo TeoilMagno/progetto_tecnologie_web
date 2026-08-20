@@ -14,7 +14,7 @@ function startVisit() {
   
   // Usiamo .href invece di .replace() per NON cancellare la cronologia!
   // Così il tasto "Indietro" del browser riporterà correttamente ai dettagli della visita.
-  window.location.href = `/navigator/visits/${visitId}`;
+  window.location.href = `/navigator/map?visitId=${visitId}`;
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -49,7 +49,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // mostra la pagina solo se l'utente e' autorizzato
     const contentWrapper = document.getElementById("visit-content-wrapper");
     if (contentWrapper) contentWrapper.style.display = "block";
-    const visit = await response.json();
+    const visitData = await response.json();
+    const visit = visitData.visit;
 
     // recuperiamo l'utente corrente
     let currentUser = null;

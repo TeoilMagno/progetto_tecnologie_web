@@ -191,31 +191,6 @@ apiRouter.get("/sections/:id/works", async (req, res) => {
   }
 });
 
-apiRouter.get("/visits/:id/museum", async (req, res) => {
-  try {
-    const userId = req.user ? req.user._id : null;
-    const visit = await visitController.getVisitById(req.params.id, userId);
-
-    if(!visit) return res.status(404).json({ error: "visita non trovata" });
-
-    const dictPath = path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'src', 'data', 'dictionary.json');
-    const dictRaw = await fs.readFile(dictPath, 'utf8');
-    const dictionary = JSON.parse(dictRaw);
-    //conversione in oggetto standard
-    //Se "visit" è un documento Mongoose, bisogna convertirlo prima di poterci aggiungere roba, 
-    //altrimenti la fusione con lo spread operator (...) fallirà
-    const visitObj = visit.toObject ? visit.toObject() : visit;
-
-    res.json({
-      visit: visitObj,                  // dati della visita richiesta
-      commands_map: dictionary      // aggiunge il tuo nuovo dizionario alla risposta
-    });
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // ritorna tutte le sezioni di un museo specifico
 apiRouter.get("/museums/:id/sections", async (req, res) => {
   try {
@@ -568,14 +543,33 @@ apiRouter.get("/visits", async (req, res) => {
 // per l'apertura dei dettagli di una visita
 apiRouter.get("/visits/:id", async (req, res) => {
   try {
-    const visit = await visitController.getVisitById(req.params.id, req.user);
-    res.status(200).json(visit);
+    const { id } = req.params;
+    const { roomCode } = req.query;
+    
+    // Controlliamo se esiste una stanza attiva per questa visita
+    const sessions = req.app.locals.activeSessions;
+    const isSharedValid = roomCode && sessions[roomCode] && sessions[roomCode].visitId === id;
+    
+    // Passiamo isSharedValid (true o false) al controller
+    const visit = await visitController.getVisitById(id, req.user, isSharedValid);
+
+    if(!visit) return res.status(404).json({ error: "visita non trovata" });
+
+    const dictPath = path.join(__dirname, '..', '..', '..', 'navigator', 'src', 'data', 'dictionary.json');
+    const dictRaw = await fs.readFile(dictPath, 'utf8');
+    const dictionary = JSON.parse(dictRaw);
+    //conversione in oggetto standard
+    //Se "visit" è un documento Mongoose, bisogna convertirlo prima di poterci aggiungere roba, 
+    //altrimenti la fusione con lo spread operator (...) fallirà
+    const visitObj = visit.toObject ? visit.toObject() : visit;
+
+    res.status(200).json({
+      visit: visitObj,                // dati della visita richiesta
+      commands_map: dictionary        // aggiunge il tuo nuovo dizionario alla risposta
+    });
   } catch (error) {
-    console.error("Errore nel recupero della visita:", error);
     const status = error.statusCode || 500;
-    res
-      .status(status)
-      .json({ error: error.message || "Impossibile recuperare la visita" });
+    res.status(status).json({ error: error.message });
   }
 });
 
@@ -633,6 +627,33 @@ apiRouter.post("/visits/recommend-length", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+//TODO: DA CANCELLARE
+//manda tutti i dati per la visualizzazione del museo
+// apiRouter.get("/visits/:id/museum", async (req, res) => {
+//   try {
+//     const userId = req.user ? req.user._id : null;
+//     const visit = await visitController.getVisitById(req.params.id, userId);
+//
+//     if(!visit) return res.status(404).json({ error: "visita non trovata" });
+//
+//     const dictPath = path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'src', 'data', 'dictionary.json');
+//     const dictRaw = await fs.readFile(dictPath, 'utf8');
+//     const dictionary = JSON.parse(dictRaw);
+//     //conversione in oggetto standard
+//     //Se "visit" è un documento Mongoose, bisogna convertirlo prima di poterci aggiungere roba, 
+//     //altrimenti la fusione con lo spread operator (...) fallirà
+//     const visitObj = visit.toObject ? visit.toObject() : visit;
+//
+//     res.json({
+//       visit: visitObj,                  // dati della visita richiesta
+//       commands_map: dictionary      // aggiunge il tuo nuovo dizionario alla risposta
+//     });
+//
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 // ----------------------- ordini & checkout ----------------------------
 
