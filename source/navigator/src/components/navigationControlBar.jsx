@@ -30,7 +30,9 @@ export default function NavigationControlBar({
               {isSharedSession && !isTeacher && " (Sincro)"}
             </span>
             <h5 className="mb-0 truncate text-white text-[0.95rem] font-bold w-full">{currentWork?.name}</h5>
-            <p className="mb-0 text-xs md:text-sm text-slate-400 truncate w-full">{currentWork?.author}</p>
+            <p className="mb-0 text-xs md:text-sm text-slate-400 truncate w-full">
+              {currentWork?.authorName || 'Autore Sconosciuto'} {currentWork?.styleName ? `• ${currentWork.year}` : ''}
+            </p>
           </>
         ) : (
           <>

@@ -272,7 +272,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                 
                 <div className="p-6 overflow-y-auto flex-1">
                   <h3 className="font-extrabold text-2xl mb-1">{currentWork?.name}</h3>
-                  <p className="text-cyan-400 font-semibold mb-6">{currentWork?.author} • {currentWork?.year}</p>
+                  <p className="text-cyan-400 font-semibold mb-6">{currentWork?.authorName} • {currentWork?.year}</p>
                   
                   <h6 className="text-white/50 uppercase tracking-wider mb-2 text-xs font-bold">Descrizione</h6>
                   <p className="leading-relaxed text-slate-300 text-sm pb-8">
