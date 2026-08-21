@@ -88,7 +88,8 @@ io.on('connection', (socket) => {
     activeSessions[roomCode] = { 
         teacherSocketId: socket.id, 
         students: [],
-        visitId: visitId
+        visitId: visitId,
+        hasStarted: false
     };
     console.log(`L'insegnante ha creato la stanza: ${roomCode} per la visita ${visitId}`);
   });
@@ -110,20 +111,19 @@ io.on('connection', (socket) => {
 
   // Master (Insegnante) cambia opera
   socket.on('change_artwork', (data) => {
-    // Sicurezza: controlliamo che ci sia il roomCode
     if (!data || !data.roomCode) return;
     const room = data.roomCode.toUpperCase();
     
     if (activeSessions[room]) {
-      // 1. Salva l'ID per chi entra dopo
+      // 1. SALVIAMO LO STATO: Ci ricordiamo l'opera per chi entra in ritardo
       activeSessions[room].currentArtworkId = data.artworkId;
       
-      // 2. Inoltra L'INTERO pacchetto (roomCode compreso!) agli studenti
+      // 2. Inoltriamo L'INTERO pacchetto (incluso il roomCode) usando l'evento corretto!
       socket.to(room).emit('change_artwork', data);
     }
   });
 
-  // Client (Studente o Insegnante) che si ri-unisce
+  // Client (Studente o Insegnante) che si ri-unisce caricando la Mappa
   socket.on('rejoin_room', ({ roomCode, role }) => {
     if (!roomCode) return;
     roomCode = roomCode.toUpperCase();
@@ -134,21 +134,25 @@ io.on('connection', (socket) => {
       if (role === 'teacher') {
         activeSessions[roomCode].teacherSocketId = socket.id;
       }
+      console.log(`Un client (${role}) è entrato nella mappa della stanza: ${roomCode}`);
       
-      // Se la lezione è già iniziata, allineiamo il ritardatario
-      if (activeSessions[roomCode].currentArtworkId) {
-        // LA MAGIA: Aspettiamo 800 millisecondi. 
-        // Diamo tempo al MapView dello studente di fare il fetch delle opere dal DB!
-        setTimeout(() => {
-          socket.emit('change_artwork', { 
-            roomCode: roomCode,
-            artworkId: activeSessions[roomCode].currentArtworkId 
-          });
-        }, 800);
+      if(activeSessions[roomCode].hasStarted) {
+        socket.emit('session_started', { visitId: activeSessions[roomCode].visitId });
+        
+        // 3. Se la lezione è già iniziata, allineiamo il ritardatario/chi rientra
+        if (activeSessions[roomCode].currentArtworkId) {
+          // Aspettiamo 800ms per dare il tempo al MapView di scaricare le opere dal DB
+          setTimeout(() => {
+            socket.emit('change_artwork', { 
+              roomCode: roomCode,
+              artworkId: activeSessions[roomCode].currentArtworkId 
+            });
+          }, 800);
+        }
       }
+      
     }
   });
-
 
   // Slave (Studente) interagisce (es. chiede un livello più basso)
   socket.on('student_interaction', ({ roomCode, type, details }) => {
@@ -174,6 +178,9 @@ io.on('connection', (socket) => {
   });
 
   socket.on('start_shared_session', ({ roomCode, visitId }) => {
+    if(activeSessions[roomCode]) {
+      activeSessions[roomCode].hasStarted = true;
+    }
     socket.to(roomCode).emit('session_started', { visitId });
   });
 

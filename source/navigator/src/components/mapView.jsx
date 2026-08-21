@@ -185,7 +185,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       if (hasMap) {
         const currentSection = selectedSection;
         const activeWork = visitedWorks[prevIndex];
-        const { section: prevSection, room: prevRoom } = selectSectionForWork(activeWork);
+        const { section: prevSection, room: prevRoom } = selectSectionForWork(activeWork) || {};
         if (prevSection && prevRoom) {
           if (currentSection && prevSection._id === currentSection._id) {
             alert(`La prossima opera si trova in ${prevRoom.name}`);
