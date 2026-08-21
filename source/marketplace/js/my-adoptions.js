@@ -144,6 +144,20 @@ function renderAdoptionsList(list, container, isIncoming) {
         </div>`;
     }
 
+    // CONTROLLO ELIMINAZIONI (HARD DELETE)
+    let deletionWarning = "";
+    if (!a.workId || !a.fromMuseumId || !a.toMuseumId) {
+      let missingEntity = !a.workId ? "L'opera" : "Uno dei musei coinvolti";
+      deletionWarning = `
+        <div class="alert alert-danger mt-2 mb-0 py-2 px-2 small border-danger text-light d-flex align-items-center">
+          <i class="bi bi-exclamation-octagon-fill fs-5 me-2 text-danger"></i> 
+          <span><strong>Attenzione:</strong> ${missingEntity} è stata eliminata dal database. Questa adozione è corrotta.</span>
+        </div>
+      `;
+      // Disabilitiamo i bottoni per evitare crash al backend
+      actionButtons = ""; 
+    }
+
     container.innerHTML += `
       <div class="col">
         <div class="card custom-card h-100 border border-secondary border-opacity-25">
@@ -161,6 +175,7 @@ function renderAdoptionsList(list, container, isIncoming) {
                 <small class="text-warning">${isIncoming ? `A: ${toMuseumName}` : `A: Un tuo museo`}</small>
               </div>
             </div>
+            ${deletionWarning}
             ${actionButtons}
           </div>
         </div>
@@ -170,7 +185,8 @@ function renderAdoptionsList(list, container, isIncoming) {
 
 // Azione: Accetta / Rifiuta richiesta
 async function respondAdoption(adoptionId, status) {
-  if (!confirm(`Sei sicuro di voler impostare lo stato a: ${status}?`)) return;
+  const isConfirmed = await window.showCustomConfirm("Conferma Operazione", `Sei sicuro di voler impostare lo stato a: ${status}?`, false);
+  if (!isConfirmed) return;
 
   try {
     const res = await fetch(`${API_BASE_URL}/adoptions/${adoptionId}/respond`, {
@@ -190,7 +206,8 @@ async function respondAdoption(adoptionId, status) {
 
 // Azione: Completa adozione (restituzione opera)
 async function completeAdoption(adoptionId) {
-  if (!confirm("Confermi che l'opera è stata restituita e l'adozione è conclusa?")) return;
+  const isConfirmed = await window.showCustomConfirm("Restituzione Opera", "Confermi che l'opera è stata restituita e l'adozione è conclusa?", false);
+  if (!isConfirmed) return;
 
   try {
     const res = await fetch(`${API_BASE_URL}/adoptions/${adoptionId}/complete`, {
@@ -364,8 +381,9 @@ async function submitAdoptionRequest() {
 
 // Azione: Il richiedente conferma che l'opera è arrivata (Attiva l'adozione)
 async function confirmArrival(adoptionId) {
-  if (!confirm("Confermi di aver ricevuto fisicamente l'opera nel tuo museo? Questo aggiornerà i cataloghi.")) return;
-
+  const isConfirmed = await window.showCustomConfirm("Conferma Arrivo", "Confermi di aver ricevuto fisicamente l'opera nel tuo museo? Questo aggiornerà i cataloghi.", false);
+  if (!isConfirmed) return;
+  
   try {
     const res = await fetch(`${API_BASE_URL}/adoptions/${adoptionId}/arrive`, {
       method: "PUT",

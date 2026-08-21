@@ -24,6 +24,7 @@ exports.uploadAllAuthors = async (data) => {
   } catch (e) {
     console.log(e);
   }
+};
 
 // Ricerca autori con fuzzy search
 exports.searchAuthors = async (query) => {

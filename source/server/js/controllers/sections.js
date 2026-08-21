@@ -27,6 +27,7 @@ exports.uploadAllSections = async (data) => {
   } catch (e) {
     console.log(e);
   }
+};
 
 exports.saveSection = async (sectionData, museumId) => {
   let workObjects = [];

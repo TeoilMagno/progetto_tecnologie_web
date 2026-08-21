@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2, Compass, CheckCircle2 } from 'lucide-react';
-import { io } from 'socket.io-client';
-import { SOCKET_URL } from '../config';
-
-const socket = io(SOCKET_URL);
+import { useSocket } from '../context/SocketContext';
 
 export default function StudentWaitingRoom() {
+  const { socket } = useSocket();
   const [searchParams] = useSearchParams();
   const roomCode = searchParams.get('roomCode');
   const studentName = searchParams.get('studentName') || 'Studente';
@@ -24,11 +22,16 @@ export default function StudentWaitingRoom() {
     // 2. Ascoltiamo il segnale di partenza dell'insegnante
     socket.on('session_started', ({ visitId }) => {
       console.log("Visita condivisa avviata! ID:", visitId);
+      localStorage.setItem('savedSession', JSON.stringify({
+        roomCode: roomCode,
+        visitId: visitId, // Se lo hai a disposizione in quel momento
+        role: 'student' // o 'teacher'
+      }));
       navigate(`/map?visitId=${visitId}&roomCode=${roomCode}&role=student`);
     });
 
     // Fallback: se entra e l'insegnante stava già cambiando opera
-    socket.on('artwork_changed', ({ artworkId, visitId }) => {
+    socket.on('change_artwork', ({ artworkId, visitId }) => {
       // Se abbiamo il visitId, possiamo farlo saltare direttamente dentro
       if (visitId) {
         navigate(`/map?visitId=${visitId}&roomCode=${roomCode}&role=student`);
@@ -37,9 +40,9 @@ export default function StudentWaitingRoom() {
 
     return () => {
       socket.off('session_started');
-      socket.off('artwork_changed');
+      socket.off('change_artwork');
     };
-  }, [roomCode, navigate]);
+  }, [roomCode, navigate, socket]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-white p-6 text-center relative overflow-hidden">

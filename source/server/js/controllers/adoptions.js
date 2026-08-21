@@ -28,7 +28,7 @@ exports.uploadAllAdoptions = async (data) => {
   } catch (e) {
     console.log(e);
   }
-}
+};
 
 exports.getWorkByAdoption = async (adoptionId) => {
   try {
@@ -135,17 +135,18 @@ exports.respondToAdoption = async (adoptionId, status, targetRoomId, user) => {
 
   adoption.status = status; 
   if (targetRoomId) adoption.targetRoomId = targetRoomId;
-  await adoption.save(); 
-
+  
   // SE ACCETTATA: L'opera è in transito. Salviamo la stanza originale ma NON la spostiamo ancora.
   if (status === 'accepted') {
     const work = await Work.findById(adoption.workId);
     if (work) {
-      adoption.originalRoomId = work.roomId;
-      await adoption.save();
+      // Usiamo il roomId attuale dell'opera, oppure se per qualche motivo è null, 
+      // proviamo a vedere se l'adozione aveva già un originalRoomId, altrimenti salviamo null ma lo tracciamo
+      adoption.originalRoomId = work.roomId || adoption.originalRoomId || null;
     }
   }
-
+  
+  await adoption.save(); 
   return adoption;
 };
 
@@ -174,10 +175,22 @@ exports.completeAdoption = async (adoptionId, user) => {
   // RIPRISTINO DELL'OPERA: Torna al museo originario
   const work = await Work.findById(adoption.workId); 
   if (work) { 
-    work.museumId = adoption.fromMuseumId; 
-    work.roomId = adoption.originalRoomId || null;
+    // Se originalRoomId è salvato lo usiamo, altrimenti cerchiamo la prima stanza disponibile nel museo originario
+    if (adoption.originalRoomId) {
+      work.roomId = adoption.originalRoomId;
+    } else {
+      // Fallback di sicurezza: cerca la prima sezione e la prima stanza del museo originario
+      const Section = require('../models/sections');
+      const firstSection = await Section.findOne({ museumId: adoption.fromMuseumId });
+      if (firstSection && firstSection.rooms && firstSection.rooms.length > 0) {
+        work.roomId = firstSection.rooms[0]._id;
+      } else {
+        work.roomId = null;
+      }
+    }
+
     work.adoptionId = null; 
-    await work.save(); 
+    await work.save();
   }
 
   // Operazione inversa: togli dalla Visita Libera ospite e rimetti in quella originaria

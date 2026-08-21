@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { io } from "socket.io-client";
 import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2, Compass, Image as ImageIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
+import { useSocket } from "../context/SocketContext";
 import SectionLayer from "./sectionLayer";
 import RoomLayer from "./roomLayer";
 import WorkDetailsSheet from "./workDetailsSheet";
 import NavigationControlBar from "./navigationControlBar";
-import { SOCKET_URL, API_BASE_URL } from "../config";
 
 export default function MapView({ visitId, roomCode, isTeacher }) {
-  const [socket, setSocket] = useState(null);
+  const navigate = useNavigate();
+  const { socket } = useSocket();
   const [selectedSection, setSelectedSection] = useState(null);
 
   const [sections, setSections] = useState([]);
@@ -34,19 +36,17 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const hasMap = sections && sections.length > 0;
 
   useEffect(() => {
-    const newSocket = io(SOCKET_URL, { transports: ['websocket', 'polling'] });
-    setSocket(newSocket);
+    if (!roomCode || !socket) return;
 
-    // FONDAMENTALE: Il nuovo socket deve registrarsi nella stanza!
-    if (roomCode) {
-      newSocket.emit('rejoin_room', { 
-        roomCode: roomCode.toUpperCase(),
-        role: isTeacher ? 'teacher' : 'student'
-      });
-    }
-
-    return () => newSocket.disconnect();
-  }, [roomCode, isTeacher]);
+    // La socket è condivisa e già connessa (creata una sola volta nel
+    // SocketProvider): qui ci limitiamo a (ri)registrarci nella stanza,
+    // così il server aggiorna anche il teacherSocketId se siamo l'insegnante
+    // e ci allinea con l'opera corrente se stiamo rientrando in corsa.
+    socket.emit('rejoin_room', {
+      roomCode: roomCode.toUpperCase(),
+      role: isTeacher ? 'teacher' : 'student'
+    });
+  }, [roomCode, isTeacher, socket]);
 
   useEffect(() => {
     const fetchVisitData = async () => {
@@ -124,32 +124,45 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     const section = sections.find(s => s.rooms && s.rooms.some(r => r._id === work.roomId));
     if (section) {
       setSelectedSection(section);
-      return section;
+      const room = section.rooms.find(r => r._id === work.roomId);
+      return { section, room };
     }
     return null;
   };
 
+  // Mostra l'alert "la prossima opera è nella sala X" solo quando si cambia
+  // effettivamente stanza rispetto a quella corrente (altrimenti spuntrebbe
+  // anche restando nella stessa sala, tra un'opera e l'altra).
+  // NB: solo lato insegnante/locale — non va mandato agli studenti tramite socket.
+  const announceRoomChange = (previousWork, nextWork, result) => {
+    if (!result?.room) return;
+    if (previousWork?.roomId === nextWork?.roomId) return; // stessa sala, non serve avvisare
+    alert(`La prossima opera si trova nella ${result.room.name}`);
+  };
+
   useEffect(() => {
     if (isSharedSession && !isTeacher && socket) {
-      socket.on("artwork_changed", ({ artworkId }) => {
-        const index = visitedWorks.findIndex(w => w._id === artworkId);
-        if (index !== -1) {
+      socket.on("change_artwork", (data) => {
+        const index = visitedWorks.findIndex(w => w._id === data.artworkId);
+        if (index != -1) {
           setCurrentWorkIndex(index);
-          selectSectionForWork(visitedWorks[index]);
+          if (hasMap) selectSectionForWork(visitedWorks[index]);
         }
       });
-      return () => socket.off("artwork_changed");
+      return () => socket.off("change_artwork");
     }
   }, [isSharedSession, isTeacher, visitedWorks, socket]);
 
   const handleNext = () => {
     if (currentWorkIndex < visitedWorks.length - 1) {
       const nextIndex = currentWorkIndex + 1;
+      const previousWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
       setCurrentWorkIndex(nextIndex);
       const activeWork = visitedWorks[nextIndex];
       
       if (hasMap) {
-        selectSectionForWork(activeWork);
+        const result = selectSectionForWork(activeWork);
+        announceRoomChange(previousWork, activeWork, result);
       }
 
       if (isSharedSession && isTeacher && socket) {
@@ -166,10 +179,12 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const handlePrev = () => {
     if (currentWorkIndex > 0) {
       const prevIndex = currentWorkIndex - 1;
+      const previousWork = visitedWorks[currentWorkIndex];
       setCurrentWorkIndex(prevIndex);
       
       if (hasMap) {
-        selectSectionForWork(visitedWorks[prevIndex]);
+        const result = selectSectionForWork(visitedWorks[prevIndex]);
+        announceRoomChange(previousWork, visitedWorks[prevIndex], result);
       }
 
       if (isSharedSession && isTeacher && socket) {
@@ -198,7 +213,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         </div>
         <h2 className="text-2xl font-bold mb-2">Errore di Caricamento</h2>
         <p className="text-slate-400 max-w-sm mb-6">Impossibile recuperare i dati di questa visita. Potrebbe essere stata cancellata o il server non risponde.</p>
-        <button onClick={() => window.location.href = "/my-visits"} className="px-6 py-2.5 bg-slate-800 rounded-full font-semibold">Torna Indietro</button>
       </div>
     );
   }
@@ -206,27 +220,23 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
 
   return (
-    <div className="relative w-screen h-screen bg-[#09090b] text-white overflow-hidden">
-      <header className="flex justify-between items-center px-6 h-[65px] border-b border-white/10 bg-[#09090b]/85 backdrop-blur-md z-50 relative">
-        <div className="flex items-center gap-3">
-          <Landmark className="text-cyan-400" size={24} />
-          <span className="font-extrabold text-xl bg-clip-text text-transparent bg-gradient-to-r from-[#00ccff] via-[#7a1dd0] to-[#ec4899]">
-            Navigator {hasMap ? '' : '(Audio)'}
-          </span>
-        </div>
-        <button 
-          onClick={() => window.location.href = "/my-visits"} 
-          className="flex items-center gap-2 px-4 py-1.5 border border-slate-700 rounded-full text-slate-300 hover:bg-slate-800 text-sm transition-colors"
-        >
-          <LogOut size={16} /> Esci
-        </button>
-      </header>
+    // 1. fixed inset-0 blocca lo schermo ed evita lo scorrimento dell'intera pagina
+    <div className="fixed inset-0 flex flex-col bg-[#09090b] text-white overflow-hidden">
+      {/* TODO: magari deve rimandare al my-visit del navigator? */}
+      {/* Tasto Esci Fluttuante */}
+      <button 
+        onClick={() => navigate("/my-visits")} 
+        className="absolute top-4 right-4 z-[9999] flex items-center justify-center gap-2 px-4 py-2 bg-slate-900/80 backdrop-blur-md border border-slate-700 rounded-full text-slate-300 hover:bg-slate-800 hover:text-white text-sm transition-colors shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
+      >
+        <LogOut size={16} /> Esci
+      </button>
 
-      <div className="h-[calc(100vh-185px)] overflow-hidden relative">
+      {/* 3. Mappa o Fallback (Prende tutto lo spazio rimanente con flex-1) */}
+      <div className="w-full h-full relative overflow-hidden">
         {hasMap ? (
-          /* --- VISUALIZZAZIONE MAPPA NORMALE --- */
           <TransformWrapper initialScale={0.8} minScale={0.4} maxScale={2.5} centerOnInit={true} panning={{ velocityDisabled: true }}>
-            <TransformComponent wrapperStyle={{ width: "100vw", height: "100%" }}>
+            {/* Sostituito 100vw con 100% per eliminare la barra di scorrimento orizzontale! */}
+            <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
               <svg viewBox="0 0 2000 2000" style={{ width: "2000px", height: "2000px" }}>
                 {!selectedSection && <g><SectionLayer sections={sections} onSelect={setSelectedSection} /></g>}
                 {selectedSection && (
@@ -244,7 +254,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
             </TransformComponent>
           </TransformWrapper>
         ) : (
-          /* --- VISUALIZZAZIONE FALLBACK (AUDIOGUIDA) --- */
           <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-slate-950">
             {currentWorkIndex < 0 ? (
               <div className="text-center animate-fadeIn">
@@ -272,7 +281,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                 
                 <div className="p-6 overflow-y-auto flex-1">
                   <h3 className="font-extrabold text-2xl mb-1">{currentWork?.name}</h3>
-                  <p className="text-cyan-400 font-semibold mb-6">{currentWork?.author} • {currentWork?.year}</p>
+                  <p className="text-cyan-400 font-semibold mb-6">
+                    {currentWork?.authorName || 'Autore Sconosciuto'} • {currentWork?.year} {currentWork?.styleName ? `• ${currentWork.styleName}` : ''}
+                  </p>
                   
                   <h6 className="text-white/50 uppercase tracking-wider mb-2 text-xs font-bold">Descrizione</h6>
                   <p className="leading-relaxed text-slate-300 text-sm pb-8">
@@ -285,6 +296,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         )}
       </div>
 
+      {/* 4. Barra Inferiore di controllo (ora non è più sovrapposta, ma impilata perfettamente) */}
       <NavigationControlBar
         currentWorkIndex={currentWorkIndex}
         visitedWorks={visitedWorks}
@@ -293,7 +305,12 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         onStartVisit={() => {
           if (visitedWorks.length > 0) {
             setCurrentWorkIndex(0);
-            if (hasMap) selectSectionForWork(visitedWorks[0]);
+            if (hasMap) {
+              const result = selectSectionForWork(visitedWorks[0]);
+              if (result?.room) {
+                alert(`Si parte dalla ${result.room.name}`);
+              }
+            }
             if (isSharedSession && isTeacher && socket) {
               socket.emit("change_artwork", { roomCode, artworkId: visitedWorks[0]._id });
             }
@@ -308,6 +325,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         isTeacher={isTeacher}
       />
 
+      {/* Modali e Bottom Sheet */}
       {showEndModal && (
         <div className="fixed inset-0 bg-black/85 z-[10000] flex items-center justify-center p-4">
           <div className="w-full max-w-[560px] bg-[#121218] border border-white/10 rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.8)] text-white">
@@ -321,7 +339,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
             <div className="flex gap-3 justify-center">
               <button 
                 onClick={() => window.location.href = "/my-visits"} 
-                className="px-6 py-2.5 border border-white/20 rounded-full text-white hover:bg-white/10 transition-colors text-sm font-medium"
+                className="px-6 py-2.5 border border-white/20 rounded-full text-white hover:bg-white/10 transition-colors text-sm font-medium cursor-pointer"
               >
                 Termina Visita
               </button>
@@ -330,11 +348,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         </div>
       )}
 
-      {/* La Bottom Sheet originale appare SOLO se c'è la mappa e si clicca su un pin */}
       {hasMap && (
         <WorkDetailsSheet
           work={detailsWork}
-          onClose={() => setDetailsWork(null)} 
+          onClose={() => setDetailsWork(null)}
           onSpeak={speakText}
           commandsMap={commandsMap}
         />

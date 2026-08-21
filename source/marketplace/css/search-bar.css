@@ -44,8 +44,8 @@
 
 /* Evitiamo che l'input tolga l'effetto estetico al focus */
 .search-container .search-input:focus {
-  box-shadow: none !important;
-  background-color: transparent !important;
+  box-shadow: none ;
+  background-color: transparent ;
 }
 
 /* Stile per il pulsante lente di ingrandimento */
@@ -57,5 +57,5 @@
 
 #search-toggle-btn:hover {
   background-color: rgba(255, 255, 255, 0.15);
-  color: #00ccff !important;
+  color: #00ccff ;
 }

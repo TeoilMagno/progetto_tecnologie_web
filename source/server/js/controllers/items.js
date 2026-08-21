@@ -24,6 +24,7 @@ exports.uploadAllItems = async (data) => {
   } catch (e) {
     console.log(e);
   }
+};
 
 exports.getItemByMuseum = async (museumId) => {
   try {

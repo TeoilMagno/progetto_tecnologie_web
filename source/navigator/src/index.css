@@ -36,3 +36,59 @@
 .animate-fadeIn {
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+
+/* --- STILI PER I TOAST GLOBALI (config.js) --- */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none; /* Evita che blocchi i click sotto, se vuoto */
+}
+
+.toast-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: rgba(15, 23, 42, 0.95); /* bg-slate-900 */
+  backdrop-filter: blur(8px);
+  color: #f8fafc; /* text-slate-50 */
+  padding: 14px 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateX(150%);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  min-width: 280px;
+  pointer-events: auto; /* Riabilita il click sul toast stesso */
+}
+
+.toast-box.show {
+  transform: translateX(0);
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.toast-close:hover {
+  color: #fff;
+}
+
+/* Colori del bordo sinistro in base al tipo */
+.toast-success { border-left: 4px solid #22c55e; }
+.toast-error { border-left: 4px solid #ef4444; }
+.toast-warning { border-left: 4px solid #f59e0b; }
+.toast-info { border-left: 4px solid #0ea5e9; }

@@ -1,0 +1,104 @@
+/* HEADER */
+.site-header {
+    background-color: rgba(9, 9, 11, 0.8);
+    border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    height: 63px;
+}
+
+/* SIDEBAR TRASPARENTE E STICKY */
+#sidebar {
+    background-color: transparent;
+    border-right: 1px solid var(--border-color);
+    width: 250px; 
+    min-width: 250px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-x: hidden;
+    white-space: nowrap;
+    will-change: width, opacity;
+    position: sticky;
+    top: 70px; 
+    height: calc(100vh - 70px); 
+    overflow-y: auto; 
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+body.artaround-theme #sidebar {
+    min-height: auto;
+}
+
+#sidebar::-webkit-scrollbar,
+#sidebar .position-sticky::-webkit-scrollbar {
+    display: none; 
+}
+
+#sidebar.collapsed {
+    width: 0;
+    min-width: 0;
+    opacity: 0;
+    visibility: hidden;
+    border-right: 0 solid transparent;
+}
+
+#sidebar .position-sticky {
+    top: 75px; 
+    height: calc(100vh - 75px); 
+    overflow-y: auto; 
+}
+
+.sidebar-title {
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.sidebar-nav .nav-link {
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.sidebar-nav .nav-link:hover, 
+.sidebar-nav .nav-link.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+    border-left: 3px solid #d8b4fe;
+}
+
+/* CONTENUTO PRINCIPALE E ANIMAZIONI */
+#main-content {
+    flex: 1; 
+    min-width: 0; 
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+#sidebarOpenBtn.show-btn {
+    display: inline-block;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    #sidebar {
+        position: fixed;
+        height: 100%;
+        background-color: var(--bg-dark);
+        margin-left: -250px;
+        z-index: 1040;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+}

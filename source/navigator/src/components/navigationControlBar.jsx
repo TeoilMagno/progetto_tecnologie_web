@@ -18,8 +18,8 @@ export default function NavigationControlBar({
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-[#121218]/95 border-t border-white/10 flex flex-col md:flex-row items-center justify-between p-3 md:px-8 md:h-[120px] gap-3 md:gap-0 z-[999] backdrop-blur-md">
-      
+    <div className="w-full shrink-0 bg-[#121218]/95 border-t border-white/10 flex flex-col md:flex-row items-center justify-between p-3 md:px-8 md:h-[120px] gap-3 md:gap-0 z-[999] backdrop-blur-md">
+
       {/* Sinistra: Dettagli Opera Corrente */}
       {/* w-full su mobile (centrato), w-[320px] su desktop (a sinistra) */}
       <div className="w-full md:w-[320px] flex flex-col items-center md:items-start text-center md:text-left">
@@ -30,7 +30,9 @@ export default function NavigationControlBar({
               {isSharedSession && !isTeacher && " (Sincro)"}
             </span>
             <h5 className="mb-0 truncate text-white text-[0.95rem] font-bold w-full">{currentWork?.name}</h5>
-            <p className="mb-0 text-xs md:text-sm text-slate-400 truncate w-full">{currentWork?.author}</p>
+            <p className="mb-0 text-xs md:text-sm text-slate-400 truncate w-full">
+              {currentWork?.authorName || 'Autore Sconosciuto'} {currentWork?.styleName ? `• ${currentWork.year}` : ''}
+            </p>
           </>
         ) : (
           <>
@@ -54,7 +56,7 @@ export default function NavigationControlBar({
           <>
             <button 
               onClick={onPrev} 
-              className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[120px] px-3 md:px-4 py-2 border border-white/20 rounded-full text-white hover:bg-white/10 text-xs md:text-sm transition-colors disabled:opacity-50"
+              className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[120px] px-3 md:px-4 py-2 border border-white/20 rounded-full text-white hover:bg-white/10 text-xs md:text-sm transition-colors disabled:opacity-50 cursor-pointer"
               disabled={currentWorkIndex < 0}
             >
               <ChevronLeft size={16} /> <span className="hidden sm:inline">Precedente</span>
@@ -63,7 +65,7 @@ export default function NavigationControlBar({
             {currentWorkIndex === -1 ? (
               <button 
                 onClick={onStartVisit}
-                className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[140px] px-4 md:px-5 py-2 rounded-full text-white text-xs md:text-sm font-semibold border-none"
+                className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[140px] px-4 md:px-5 py-2 rounded-full text-white text-xs md:text-sm font-semibold border-none cursor-pointer"
                 style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}
                 disabled={visitedWorks.length === 0}
               >
@@ -72,7 +74,7 @@ export default function NavigationControlBar({
             ) : (
               <button 
                 onClick={onNext} 
-                className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[140px] px-4 md:px-5 py-2 rounded-full text-white text-xs md:text-sm font-semibold border-none"
+                className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[140px] px-4 md:px-5 py-2 rounded-full text-white text-xs md:text-sm font-semibold border-none cursor-pointer"
                 style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}
               >
                 {currentWorkIndex === visitedWorks.length - 1 ? "Fine" : "Prossima"} <ChevronRight size={16} />
@@ -88,14 +90,14 @@ export default function NavigationControlBar({
         <div className="flex overflow-hidden rounded-full border border-white/15 w-full md:w-auto">
           <button 
             type="button" 
-            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${playMode === 'read' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
+            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${playMode === 'read' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
             onClick={() => setPlayMode('read')}
           >
             <BookOpen size={14} /> Leggi
           </button>
           <button 
             type="button" 
-            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${playMode === 'listen' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
+            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${playMode === 'listen' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
             onClick={() => onSpeak(`Descrizione opera: ${currentWork?.description?.[0]?.description}`)}
           >
             <Volume2 size={14} /> Ascolta
@@ -105,14 +107,14 @@ export default function NavigationControlBar({
         <div className="flex overflow-hidden rounded-full border border-white/15 w-full md:w-auto">
           <button 
             type="button" 
-            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${inputMode === 'write' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
+            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${inputMode === 'write' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
             onClick={() => setInputMode('write')}
           >
             <Keyboard size={14} /> Scrivi
           </button>
           <button 
             type="button" 
-            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${inputMode === 'speak' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
+            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${inputMode === 'speak' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
             onClick={() => setInputMode('speak')}
           >
             <Mic size={14} /> Parla

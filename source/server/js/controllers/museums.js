@@ -58,6 +58,7 @@ exports.uploadAllMuseums = async (data) => {
   } catch (e) {
     console.log(e);
   }
+};
 
 exports.saveMuseum = async (museumData, userId) => {
   const { name, address, contact_email, contact_phone, image, tags, ticketPrice, sections, schedule, services, accessibility } = museumData;

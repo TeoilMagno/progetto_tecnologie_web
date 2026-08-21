@@ -24,6 +24,7 @@ exports.uploadAllStyles = async (data) => {
   } catch (e) {
     console.log(e);
   }
+};
 
 exports.searchStyles = async (query) => {
   if (!query) return [];

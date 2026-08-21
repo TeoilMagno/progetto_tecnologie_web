@@ -26,6 +26,7 @@ exports.uploadAllOrders = async (data) => {
   } catch (e) {
     console.log(e);
   }
+};
 
 // Processa il carrello e crea l'ordine
 exports.processCheckout = async (userId, cartData) => {

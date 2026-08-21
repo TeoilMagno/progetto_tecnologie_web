@@ -88,9 +88,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const museumSub = document.getElementById("visit-museum-sub");
     if (visit.museumId) {
       museumSub.innerText = `Presso: ${visit.museumId.name || 'Museo'}`;
-      museumSub.dataset.museumId = visit.museumId._id || visit.museumId; // AGGIUNTO: Salva l'ID nel dataset
+      museumSub.dataset.museumId = visit.museumId._id || visit.museumId; 
     } else {
-      museumSub.innerText = "Museo non specificato";
+      museumSub.innerHTML = `<span class="text-danger fw-bold px-2 py-1 bg-danger bg-opacity-25 rounded border border-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> Attenzione: Il museo ospitante è stato chiuso o rimosso dalla piattaforma.</span>`;
     }
 
     if (visit.description) {
@@ -108,6 +108,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     visit.works.forEach((work, index) => {
+            if (!work) {
+              timeline.innerHTML += `
+                  <li class="timeline-work">
+                      <div class="card custom-card p-3 border-danger bg-danger bg-opacity-10">
+                          <div class="row align-works-center g-3">
+                              <div class="col">
+                                  <span class="badge bg-danger border border-danger mb-1"><i class="bi bi-trash-fill me-1"></i> Tappa ${index + 1} - Opera Rimossa</span>
+                                  <h5 class="h6 mb-1 text-danger">Contenuto non disponibile</h5>
+                                  <p class="small text-danger opacity-75 mb-0">Quest'opera è stata eliminata definitivamente dal database e non è più visitabile.</p>
+                              </div>
+                          </div>
+                      </div>
+                  </li>
+              `;
+              return; // Salta il resto del ciclo per questa specifica opera e passa alla successiva
+            }
+            
             const descText = (work.description && work.description.length > 0) 
               ? work.description[0].description 
               : '';

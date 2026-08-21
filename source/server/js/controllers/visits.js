@@ -26,6 +26,7 @@ exports.uploadAllVisits = async (data) => {
   } catch (e) {
     console.log(e);
   }
+};
 
 exports.createVisit = async (visitPayload, user) => {
   const {

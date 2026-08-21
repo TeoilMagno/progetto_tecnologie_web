@@ -25,6 +25,7 @@ exports.uploadAllWorks = async (data) => {
   } catch (e) {
     console.log(e);
   }
+};
 
 exports.getWorksById = async (workIds) => {
   return await Work.find({ _id: { $in: workIds } });
