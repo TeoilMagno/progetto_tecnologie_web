@@ -1,6 +1,31 @@
 const Work = require('../models/works');
 const Visit = require('../models/visits');
 
+exports.getAllWorks = async () => {
+  try {
+    return await Work.find();
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.uploadAllWorks = async (data) => {
+  try {
+    let cleared = await Work.deleteMany({});
+
+    console.log(`... ${cleared.deletedCount || 0} records deleted.`);
+    console.log(`Trying to add ${data.length} new records... `);
+
+ 		let insertedCount = 0;
+		await Work.insertMany(data).then(() => {
+			insertedCount += data.length;
+		});
+
+ 		console.log(`... ${insertedCount || 0} records added.`);
+  } catch (e) {
+    console.log(e);
+  }
+
 exports.getWorksById = async (workIds) => {
   return await Work.find({ _id: { $in: workIds } });
 }

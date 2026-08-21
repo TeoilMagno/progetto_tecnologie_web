@@ -1,5 +1,30 @@
 const Style = require('../models/style');
 
+exports.getAllStyles = async () => {
+  try {
+    return await Style.find();
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.uploadAllStyles = async (data) => {
+  try {
+    let cleared = await Style.deleteMany({});
+
+    console.log(`... ${cleared.deletedCount || 0} records deleted.`);
+    console.log(`Trying to add ${data.length} new records... `);
+
+ 		let insertedCount = 0;
+		await Style.insertMany(data).then(() => {
+			insertedCount += data.length;
+		});
+
+ 		console.log(`... ${insertedCount || 0} records added.`);
+  } catch (e) {
+    console.log(e);
+  }
+
 exports.searchStyles = async (query) => {
   if (!query) return [];
   return await Style.find({ name: { $regex: query, $options: 'i' } })

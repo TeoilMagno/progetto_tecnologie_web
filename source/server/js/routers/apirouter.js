@@ -628,33 +628,6 @@ apiRouter.post("/visits/recommend-length", async (req, res) => {
   }
 });
 
-//TODO: DA CANCELLARE
-//manda tutti i dati per la visualizzazione del museo
-// apiRouter.get("/visits/:id/museum", async (req, res) => {
-//   try {
-//     const userId = req.user ? req.user._id : null;
-//     const visit = await visitController.getVisitById(req.params.id, userId);
-//
-//     if(!visit) return res.status(404).json({ error: "visita non trovata" });
-//
-//     const dictPath = path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'src', 'data', 'dictionary.json');
-//     const dictRaw = await fs.readFile(dictPath, 'utf8');
-//     const dictionary = JSON.parse(dictRaw);
-//     //conversione in oggetto standard
-//     //Se "visit" è un documento Mongoose, bisogna convertirlo prima di poterci aggiungere roba, 
-//     //altrimenti la fusione con lo spread operator (...) fallirà
-//     const visitObj = visit.toObject ? visit.toObject() : visit;
-//
-//     res.json({
-//       visit: visitObj,                  // dati della visita richiesta
-//       commands_map: dictionary      // aggiunge il tuo nuovo dizionario alla risposta
-//     });
-//
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
-
 // ----------------------- ordini & checkout ----------------------------
 
 // Riceve il carrello dal frontend e processa l'acquisto
@@ -961,5 +934,49 @@ apiRouter.post("/ai/map-request", async (req,res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+apiRouter.get("/downloadDB", async (req, res) => {
+  try {
+    console.log("Inizio esportazione di tutto il DB...");
+    
+    // Costruiamo il percorso assoluto alla cartella 'data' in modo sicuro
+    // (Aggiusta i '..' in base a dove si trova questo file router)
+    const dataFolder = path.join(__dirname, '..', '..', 'data');
+
+    // 1. Recupero di tutti i dati dai controller
+    const collections = {
+      'museum.json': await museumController.getAllMuseums(),
+      'item.json': await itemController.getAllItems(),
+      'work.json': await workController.getAllWorks(),
+      'section.json': await sectionController.getAllSections(),
+      'visit.json': await visitController.getAllVisits(),
+      'order.json': await orderController.getAllOrders(),
+      'adoption.json': await adoptionController.getAllAdoptions(),
+      'author.json': await authorController.getAllAuthors(),
+      'style.json': await styleController.getAllStyles()
+    };
+
+    // 2. Scrittura dinamica di tutti i file
+    for (const [filename, data] of Object.entries(collections)) {
+      const filePath = path.join(dataFolder, filename);
+      
+      // Trasformiamo i dati in formato JSON ben formattato (null, 2 serve per l'indentazione)
+      const jsonData = JSON.stringify(data, null, 2);
+      
+      await fs.writeFile(filePath, jsonData, 'utf8');
+      console.log(`${filename} scritto con successo!`);
+    }
+
+    // 3. Comunichiamo al client che abbiamo finito
+    res.status(200).json({ message: "Backup completo del database eseguito con successo!" });
+
+  } catch (e) {
+    console.error("Errore durante l'esportazione:", e);
+    // Rispondiamo anche in caso di errore per non far bloccare il client
+    res.status(500).json({ error: e.message });
+  }
+});
+
+apiRouter.post('/uploadDB')
 
 module.exports = apiRouter;

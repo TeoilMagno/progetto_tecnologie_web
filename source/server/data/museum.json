@@ -1,0 +1,822 @@
+[
+  {
+    "sections": [],
+    "_id": "696a65ca017c648acfc9b55c",
+    "name": "Museo del Prado",
+    "address": "C. de Ruiz de Alarcón, 23, 28014 Madrid, Spagna",
+    "image": "https://content3.cdnprado.net/imagenes/Documentos/imgsem/5b/5bd8/5bd83198-50ef-dd66-164b-2a26fb9e9b61/da30334e-766b-3efb-b748-b92179436d67.jpg",
+    "tags": [
+      "Pittura",
+      "Spagna",
+      "Rinascimento"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair",
+      "elevator"
+    ],
+    "services": [
+      "bookshop",
+      "cafe",
+      "audioguide",
+      "cloakroom"
+    ],
+    "ticketPrice": 15,
+    "latitude": 40.4135675,
+    "longitude": -3.6913514,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582323",
+        "day": "monday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582324",
+        "day": "tuesday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582325",
+        "day": "wednesday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582326",
+        "day": "thursday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582327",
+        "day": "friday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582328",
+        "day": "saturday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582329",
+        "day": "sunday",
+        "hours": "10:00 - 20:00"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "sections": [],
+    "_id": "696a65ca017c648acfc9b55e",
+    "name": "Rijksmuseum",
+    "address": "Museumstraat 1, 1071 XX Amsterdam, Paesi Bassi",
+    "image": "https://cdn-imgix.headout.com/media/images/9477d85a96bc64896d6d19ff25ae809e-18239-GoCityAmsterdamAll-InclusivePass-25-Attractions-003.jpg?auto=format&w=1069.6000000000001&h=687.6&q=90&ar=14%3A9&crop=faces&fit=crop",
+    "tags": [
+      "Olanda",
+      "Rembrandt",
+      "Storia"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair",
+      "elevator",
+      "tactile_path"
+    ],
+    "services": [
+      "bookshop",
+      "cafe",
+      "audioguide",
+      "wifi"
+    ],
+    "ticketPrice": 22,
+    "latitude": 52.3596632,
+    "longitude": 4.8842791,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b62858232a",
+        "day": "monday",
+        "hours": "09:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858232b",
+        "day": "tuesday",
+        "hours": "09:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858232c",
+        "day": "wednesday",
+        "hours": "09:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858232d",
+        "day": "thursday",
+        "hours": "09:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858232e",
+        "day": "friday",
+        "hours": "09:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858232f",
+        "day": "saturday",
+        "hours": "09:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582330",
+        "day": "sunday",
+        "hours": "09:00 - 17:00"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "latitude": null,
+    "longitude": null,
+    "sections": [],
+    "_id": "696a65ca017c648acfc9b560",
+    "name": "Tokyo National Museum",
+    "address": "13-9 Uenokoen, Taito City, Tokyo 110-8712, Giappone",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6d10hb-MRXK1OWotHAgzkcN8sWjW8HiHMqg&s",
+    "tags": [
+      "Asia",
+      "Samurai",
+      "Arte Orientale"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair",
+      "elevator"
+    ],
+    "services": [
+      "bookshop",
+      "cafe",
+      "audioguide",
+      "cloakroom"
+    ],
+    "ticketPrice": 10,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582331",
+        "day": "tuesday",
+        "hours": "09:30 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582332",
+        "day": "wednesday",
+        "hours": "09:30 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582333",
+        "day": "thursday",
+        "hours": "09:30 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582334",
+        "day": "friday",
+        "hours": "09:30 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582335",
+        "day": "saturday",
+        "hours": "09:30 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582336",
+        "day": "sunday",
+        "hours": "09:30 - 17:00"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "sections": [],
+    "_id": "696a65ca017c648acfc9b55d",
+    "name": "Galleria degli Uffizi",
+    "address": "Piazzale degli Uffizi, 6, 50122 Firenze, Italia",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Uffizi_Gallery%2C_Florence.jpg",
+    "tags": [
+      "Rinascimento",
+      "Italia",
+      "Scultura"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair",
+      "elevator"
+    ],
+    "services": [
+      "bookshop",
+      "cafe",
+      "audioguide",
+      "cloakroom",
+      "wifi"
+    ],
+    "ticketPrice": 20,
+    "latitude": 43.7682095,
+    "longitude": 11.2554494,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582337",
+        "day": "tuesday",
+        "hours": "08:15 - 18:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582338",
+        "day": "wednesday",
+        "hours": "08:15 - 18:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582339",
+        "day": "thursday",
+        "hours": "08:15 - 18:30"
+      },
+      {
+        "_id": "6a886a999f07c0b62858233a",
+        "day": "friday",
+        "hours": "08:15 - 18:30"
+      },
+      {
+        "_id": "6a886a999f07c0b62858233b",
+        "day": "saturday",
+        "hours": "08:15 - 18:30"
+      },
+      {
+        "_id": "6a886a999f07c0b62858233c",
+        "day": "sunday",
+        "hours": "08:15 - 18:30"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "sections": [],
+    "_id": "696a65ca017c648acfc9b562",
+    "name": "National Air and Space Museum",
+    "address": "600 Independence Ave SW, Washington, DC 20560, USA",
+    "image": "https://images.contentstack.io/v3/assets/blt06f605a34f1194ff/blt896ced5b897afde0/67f355fe8097d846ba3d6e3a/Smithsonian_National_Air_and_Space_Museum_Washington_DC_(36085958805)-MOBILE_HEADER.jpg?format=webp&auto=avif&quality=60&crop=4%3A3&width=1440",
+    "tags": [
+      "Spazio",
+      "Aerei",
+      "Scienza"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair",
+      "elevator",
+      "sign_language"
+    ],
+    "services": [
+      "bookshop",
+      "cafe",
+      "wifi"
+    ],
+    "ticketPrice": 0,
+    "latitude": 38.8871904,
+    "longitude": -77.0208887,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b62858233d",
+        "day": "monday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b62858233e",
+        "day": "tuesday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b62858233f",
+        "day": "wednesday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582340",
+        "day": "thursday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582341",
+        "day": "friday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582342",
+        "day": "saturday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582343",
+        "day": "sunday",
+        "hours": "10:00 - 17:30"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "sections": [],
+    "_id": "696a65ca017c648acfc9b55a",
+    "name": "The Metropolitan Museum of Art (The Met)",
+    "address": "1000 5th Ave, New York, NY 10028, USA",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg/330px-Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg",
+    "tags": [
+      "Moderno",
+      "Classico",
+      "Enorme"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair",
+      "elevator",
+      "braille"
+    ],
+    "services": [
+      "bookshop",
+      "cafe",
+      "audioguide",
+      "cloakroom",
+      "wifi"
+    ],
+    "ticketPrice": 25,
+    "latitude": 40.7794396,
+    "longitude": -73.9633825,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582344",
+        "day": "monday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582345",
+        "day": "tuesday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582346",
+        "day": "thursday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582347",
+        "day": "friday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582348",
+        "day": "saturday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582349",
+        "day": "sunday",
+        "hours": "10:00 - 17:00"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "sections": [],
+    "_id": "696a65ca017c648acfc9b559",
+    "name": "Louvre Museum",
+    "address": "Rue de Rivoli, 75001 Paris, Francia",
+    "image": "https://www.franciaturismo.net/wp-content/uploads/sites/4/parigi-louvre-piramide-hd.jpg",
+    "tags": [
+      "Arte Classica",
+      "Storia",
+      "Iconico"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair",
+      "elevator"
+    ],
+    "services": [
+      "bookshop",
+      "cafe",
+      "audioguide",
+      "cloakroom",
+      "wifi"
+    ],
+    "ticketPrice": 17,
+    "latitude": 48.8643028,
+    "longitude": 2.3305559,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b62858234a",
+        "day": "monday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858234b",
+        "day": "wednesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858234c",
+        "day": "thursday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858234d",
+        "day": "friday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858234e",
+        "day": "saturday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858234f",
+        "day": "sunday",
+        "hours": "09:00 - 18:00"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "_id": "696a65ca017c648acfc9b561",
+    "name": "Van Gogh Museum",
+    "address": "Museumplein 6, 1071 DJ Amsterdam, Paesi Bassi",
+    "image": "data:image/jpeg;base64,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",
+    "tags": [
+      "Impressionismo",
+      "Van Gogh",
+      "Colori"
+    ],
+    "__v": 0,
+    "sections": [
+      "6a817b7a6102a42968f02b77"
+    ],
+    "contact_email": "asde@sad",
+    "contact_phone": "1234",
+    "accessibility": [
+      "wheelchair",
+      "elevator",
+      "braille"
+    ],
+    "services": [
+      "bookshop",
+      "cafe",
+      "audioguide",
+      "wifi"
+    ],
+    "ticketPrice": 20,
+    "latitude": 52.3579248,
+    "longitude": 4.8813227,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582350",
+        "day": "monday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582351",
+        "day": "tuesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582352",
+        "day": "wednesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582353",
+        "day": "thursday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582354",
+        "day": "friday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582355",
+        "day": "saturday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582356",
+        "day": "sunday",
+        "hours": "09:00 - 18:00"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "sections": [],
+    "_id": "696a65ca017c648acfc9b55f",
+    "name": "Musei Vaticani",
+    "address": "00120 Città del Vaticano",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScoLLfex1G-bgSLSkVyPfjy-4f9J_qyBz6YQ&s",
+    "tags": [
+      "Religione",
+      "Affreschi",
+      "Michelangelo"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair",
+      "elevator"
+    ],
+    "services": [
+      "bookshop",
+      "cafe",
+      "audioguide",
+      "cloakroom"
+    ],
+    "ticketPrice": 17,
+    "latitude": 41.9028577,
+    "longitude": 12.453794,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582357",
+        "day": "monday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582358",
+        "day": "tuesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582359",
+        "day": "wednesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858235a",
+        "day": "thursday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858235b",
+        "day": "friday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858235c",
+        "day": "saturday",
+        "hours": "09:00 - 18:00"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "sections": [],
+    "_id": "696a65ca017c648acfc9b55b",
+    "name": "British Museum",
+    "address": "Great Russell St, London WC1B 3DG, Regno Unito",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/British_Museum_from_NE_2.JPG/330px-British_Museum_from_NE_2.JPG",
+    "tags": [
+      "Archeologia",
+      "Mondiale",
+      "Storia"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair",
+      "elevator"
+    ],
+    "services": [
+      "bookshop",
+      "cafe",
+      "audioguide",
+      "wifi",
+      "cloakroom"
+    ],
+    "ticketPrice": 0,
+    "latitude": 51.5181106,
+    "longitude": -0.1264428,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b62858235d",
+        "day": "monday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858235e",
+        "day": "tuesday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858235f",
+        "day": "wednesday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582360",
+        "day": "thursday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582361",
+        "day": "friday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582362",
+        "day": "saturday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582363",
+        "day": "sunday",
+        "hours": "10:00 - 17:00"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "_id": "6a71f268d43150559b8099b9",
+    "name": "Museo di prova",
+    "address": "Via Trova",
+    "contact_email": "museo@prova.it",
+    "contact_phone": "#31#112",
+    "sections": [
+      "6a71f268d43150559b8099c8",
+      "6a71f268d43150559b8099ce"
+    ],
+    "image": "https://www.piemontego.it/_next/image?url=%2Fwp-content%2Fuploads%2F2025%2F10%2Fospedale-San-Giovanni-vista-aerea.jpg&w=2048&q=85",
+    "tags": [
+      "Scienze naturali",
+      "Storia"
+    ],
+    "__v": 1,
+    "accessibility": [
+      "wheelchair"
+    ],
+    "services": [
+      "bookshop",
+      "wifi"
+    ],
+    "ticketPrice": 10,
+    "latitude": 44.3500985,
+    "longitude": 12.1570982,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582364",
+        "day": "monday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582365",
+        "day": "tuesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582366",
+        "day": "wednesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582367",
+        "day": "thursday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582368",
+        "day": "friday",
+        "hours": "09:00 - 18:00"
+      }
+    ],
+    "facilities": []
+  },
+  {
+    "_id": "6a7622a872031acd0ee0a2d3",
+    "name": "Museo prova 42",
+    "address": "Museo prova",
+    "contact_email": "Museoprova@as",
+    "contact_phone": "1234",
+    "sections": [
+      "6a7622bf72031acd0ee0a2dd"
+    ],
+    "image": "https://it.wikipedia.org/wiki/Pagina_principale",
+    "tags": [],
+    "__v": 0,
+    "accessibility": [
+      "none"
+    ],
+    "services": [],
+    "ticketPrice": 5,
+    "schedule": [],
+    "latitude": null,
+    "longitude": null,
+    "facilities": []
+  },
+  {
+    "latitude": null,
+    "longitude": null,
+    "_id": "6a8028245a7bf4a32787ceb5",
+    "name": "Museo di Test Postman",
+    "address": "Via dei Bit 101",
+    "contact_email": "hello@museotest.it",
+    "contact_phone": "3331234567",
+    "sections": [],
+    "image": "https://dummyimage.com/600x400",
+    "tags": [
+      "Arte Moderna",
+      "Tecnologia"
+    ],
+    "ticketPrice": 15,
+    "services": [
+      "bookshop",
+      "cafe"
+    ],
+    "accessibility": [
+      "wheelchair"
+    ],
+    "facilities": [],
+    "__v": 0,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582369",
+        "day": "monday",
+        "hours": "08:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858236a",
+        "day": "tuesday",
+        "hours": "08:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858236b",
+        "day": "wednesday",
+        "hours": "08:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858236c",
+        "day": "thursday",
+        "hours": "08:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858236d",
+        "day": "friday",
+        "hours": "08:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858236e",
+        "day": "saturday",
+        "hours": "08:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858236f",
+        "day": "sunday",
+        "hours": "08:00 - 20:00"
+      }
+    ]
+  },
+  {
+    "_id": "6a81cc550bf4fc3fd102cb31",
+    "name": "Museo Mirandola",
+    "address": "via Agnini 13, Mirandola (MO)",
+    "latitude": 44.8911038,
+    "longitude": 11.0537176,
+    "contact_email": "Museoprova@as",
+    "contact_phone": "1234",
+    "sections": [
+      "6a856a5b7dbf05bd4b707620"
+    ],
+    "image": "https://it.wikipedia.org/wiki/Pagina_principale",
+    "tags": [],
+    "ticketPrice": 12,
+    "services": [
+      "cloakroom"
+    ],
+    "accessibility": [
+      "none"
+    ],
+    "facilities": [],
+    "__v": 0,
+    "schedule": [
+      {
+        "day": "tuesday",
+        "hours": "09:30 - 19:30",
+        "_id": "6a871aab8629e24afc1cb4e4"
+      },
+      {
+        "day": "wednesday",
+        "hours": "09:30 - 19:30",
+        "_id": "6a871aab8629e24afc1cb4e5"
+      },
+      {
+        "day": "thursday",
+        "hours": "09:30 - 19:30",
+        "_id": "6a871aab8629e24afc1cb4e6"
+      },
+      {
+        "day": "friday",
+        "hours": "09:30 - 19:30",
+        "_id": "6a871aab8629e24afc1cb4e7"
+      },
+      {
+        "day": "saturday",
+        "hours": "09:30 - 19:30",
+        "_id": "6a871aab8629e24afc1cb4e8"
+      },
+      {
+        "day": "sunday",
+        "hours": "09:30 - 19:30",
+        "_id": "6a871aab8629e24afc1cb4e9"
+      }
+    ]
+  }
+]

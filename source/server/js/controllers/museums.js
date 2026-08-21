@@ -42,6 +42,23 @@ exports.getAllMuseums = async () => {
   }
 };
 
+exports.uploadAllMuseums = async (data) => {
+  try {
+    let cleared = await Museum.deleteMany({});
+
+    console.log(`... ${cleared.deletedCount || 0} records deleted.`);
+    console.log(`Trying to add ${data.length} new records... `);
+
+ 		let insertedCount = 0;
+		await Museum.insertMany(data).then(() => {
+			insertedCount += data.length;
+		});
+
+ 		console.log(`... ${insertedCount || 0} records added.`);
+  } catch (e) {
+    console.log(e);
+  }
+
 exports.saveMuseum = async (museumData, userId) => {
   const { name, address, contact_email, contact_phone, image, tags, ticketPrice, sections, schedule, services, accessibility } = museumData;
 

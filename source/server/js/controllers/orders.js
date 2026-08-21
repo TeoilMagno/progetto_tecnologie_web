@@ -2,6 +2,31 @@ const Order = require('../models/orders');
 const { User } = require('../models/users'); 
 const Item = require('../models/items');
 
+exports.getAllOrders = async () => {
+  try {
+    return await Order.find();
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.uploadAllOrders = async (data) => {
+  try {
+    let cleared = await Order.deleteMany({});
+
+    console.log(`... ${cleared.deletedCount || 0} records deleted.`);
+    console.log(`Trying to add ${data.length} new records... `);
+
+ 		let insertedCount = 0;
+		await Order.insertMany(data).then(() => {
+			insertedCount += data.length;
+		});
+
+ 		console.log(`... ${insertedCount || 0} records added.`);
+  } catch (e) {
+    console.log(e);
+  }
+
 // Processa il carrello e crea l'ordine
 exports.processCheckout = async (userId, cartData) => {
   const { items, visits, totalAmount } = cartData;
