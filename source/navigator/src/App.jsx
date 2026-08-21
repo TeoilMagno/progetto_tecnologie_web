@@ -6,6 +6,7 @@ import { Home, Compass, User, MapPin, Map as MapIcon, Menu, Settings, Users } fr
 import HomePage from './pages/Home';
 import Visits from './pages/Visits';
 import JoinSession from './pages/JoinSession';
+import FreeVisitMap from './pages/FreeVisitMap';
 import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
 
 // Placeholder per le pagine future
@@ -60,8 +61,7 @@ export default function App() {
               <Route path="/visits" element={<Visits selectedMuseum={selectedMuseum} />} />
               <Route path="/join" element={<JoinSession />} />
               <Route path="/my-visits" element={<Placeholder title="My Visits" />} />
-              <Route path="/free" element={<Placeholder title="Free Mode" />} />
-              <Route path="/map" element={<Placeholder title="Interactive Map" />} />
+              <Route path="/free-map" element={<FreeVisitMap selectedMuseum={selectedMuseum} />} />
               <Route path="/menu" element={<Placeholder title="Menu" />} />
             </Routes>
           </main>
@@ -74,8 +74,7 @@ export default function App() {
                 <MobileNavItem to="/" icon={<Home size={24} />} label="Home" />
                 <MobileNavItem to="/visits" icon={<Compass size={24} />} label="Visits" />
                 <MobileNavItem to="/join" icon={<Users size={24} />} label="Join" />
-                <MobileNavItem to="/free" icon={<MapPin size={24} />} label="Free" />
-                <MobileNavItem to="/map" icon={<MapIcon size={24} />} label="Map" />
+                <MobileNavItem to="/free-map" icon={<MapIcon size={24} />} label="Free Visit-Map" />
                 <MobileNavItem to="/menu" icon={<Menu size={24} />} label="Menu" />
               </ul>
             </div>
