@@ -977,6 +977,56 @@ apiRouter.get("/downloadDB", async (req, res) => {
   }
 });
 
-apiRouter.post('/uploadDB')
+apiRouter.post('/uploadDB', async (req,res) => {
+  try {
+    console.log("Inizio importazione dei dati nel DB...");
+
+    // Costruiamo il percorso assoluto alla cartella 'data'
+    const dataFolder = path.join(__dirname, '..', '..', 'data');
+
+    // Creiamo un array di "task" che accoppia il nome del file alla funzione giusta
+    const uploadTasks = [
+      { file: 'museum.json', uploadFunction: museumController.uploadAllMuseums },
+      { file: 'item.json', uploadFunction: itemController.uploadAllItems },
+      { file: 'work.json', uploadFunction: workController.uploadAllWorks },
+      { file: 'section.json', uploadFunction: sectionController.uploadAllSections },
+      { file: 'visit.json', uploadFunction: visitController.uploadAllVisits },
+      { file: 'order.json', uploadFunction: orderController.uploadAllOrders },
+      { file: 'adoption.json', uploadFunction: adoptionController.uploadAllAdoptions },
+      { file: 'author.json', uploadFunction: authorController.uploadAllAuthors },
+      { file: 'style.json', uploadFunction: styleController.uploadAllStyles }
+    ];
+
+    // Eseguiamo il ciclo in modo sequenziale per non sovraccaricare il database
+    for (const task of uploadTasks) {
+      const filePath = path.join(dataFolder, task.file);
+
+      try {
+        // 1. Legge il file dalla cartella come stringa di testo
+        const rawData = await fs.readFile(filePath, 'utf8');
+
+        // 2. Trasforma la stringa in un vero array/oggetto JavaScript
+        const parsedData = JSON.parse(rawData);
+
+        // 3. Passa i dati convertiti alla funzione del tuo controller
+        await task.uploadFunction(parsedData);
+
+        console.log(`${task.file} caricato con successo!`);
+      } catch (fileError) {
+        // Gestiamo l'errore del singolo file senza bloccare necessariamente gli altri
+        console.error(`Errore durante il caricamento di ${task.file}:`, fileError.message);
+        // Se preferisci che l'intera rotta si blocchi al primo errore, de-commenta la riga sotto:
+        // throw fileError; 
+      }
+    }
+
+    // Rispondiamo al client che l'operazione è finita
+    res.status(200).json({ message: "Importazione del database completata con successo!" });
+
+  } catch (e) {
+    console.error("Errore critico durante l'importazione:", e);
+    res.status(500).json({ error: e.message });
+  }
+});
 
 module.exports = apiRouter;
