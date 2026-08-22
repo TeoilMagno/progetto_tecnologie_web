@@ -438,7 +438,7 @@ apiRouter.get("/current-user", (req, res) => {
         _id: req.user._id,
         username: req.user.username || req.user.name,
         role: req.user.role,
-        //type: req.user.type || 'none',
+        type: req.user.type || 'none',
       });
     } else {
       res.json(null);

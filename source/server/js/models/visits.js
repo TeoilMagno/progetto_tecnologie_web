@@ -48,6 +48,13 @@ const visitSchema = new mongoose.Schema({
             'none'
         ]
     }],
+
+    // per insegnanti
+    quiz: [{
+        question: { type: String, required: true },
+        options: [{ type: String, required: true }], // Es. ["Roma", "Milano", "Firenze", "Napoli"]
+        correctAnswerIndex: { type: Number, required: true } // L'indice (0, 1, 2, 3) della risposta esatta
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Visit', visitSchema);

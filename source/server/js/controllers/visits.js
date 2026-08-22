@@ -16,7 +16,8 @@ exports.createVisit = async (visitPayload, user) => {
     preferredLength,
     targetAudience, 
     accessibility,  
-    coverImage      
+    coverImage,
+    quiz
   } = visitPayload;
 
   // dati di base della visita
@@ -32,6 +33,10 @@ exports.createVisit = async (visitPayload, user) => {
   };
 
   if(coverImage) visitData.coverImage = coverImage;
+
+  if (quiz && Array.isArray(quiz) && quiz.length > 0) {
+    visitData.quiz = quiz;
+  }
 
   // logica differenziata in base al ruolo
   if (user.role === "curator" || user.role === "admin") {

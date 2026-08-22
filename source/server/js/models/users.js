@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
 
   type: {
     type: String,
-    enum: ['student', 'teacher', 'none'],
+    enum: ['student', 'teacher', 'participant', 'guide', 'none'], // participant e guide per le visite con guida del museo
     default: 'none'
   },
 
