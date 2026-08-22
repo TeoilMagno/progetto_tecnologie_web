@@ -333,6 +333,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         onSpeak={speakText}
         isSharedSession={isSharedSession}
         isTeacher={isTeacher}
+        currentLength={currentLength}
+        expertiseLevel={expertiseLevel}
       />
 
       {/* Modali e Bottom Sheet */}

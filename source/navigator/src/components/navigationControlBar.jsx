@@ -13,7 +13,9 @@ export default function NavigationControlBar({
   setInputMode,
   onSpeak,
   isSharedSession,
-  isTeacher
+  isTeacher,
+  currentLength,
+  expertiseLevel
 }) {
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
 
@@ -98,7 +100,7 @@ export default function NavigationControlBar({
           <button 
             type="button" 
             className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${playMode === 'listen' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
-            onClick={() => onSpeak(`Descrizione opera: ${currentWork?.description?.[0]?.description}`)}
+            onClick={() => onSpeak(`Descrizione opera: ${currentWork?.description?.[expertiseLevel]?.[currentLength]}`)}
           >
             <Volume2 size={14} /> Ascolta
           </button>
