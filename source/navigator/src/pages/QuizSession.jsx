@@ -139,7 +139,7 @@ export default function QuizSession() {
                 // 1. Qui prepariamo il payload da mandare al backend
                 const reportPayload = {
                   roomCode,
-                  date: new Date(),
+                  visitId,
                   results: studentResults
                 };
                 
