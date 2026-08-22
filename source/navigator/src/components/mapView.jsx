@@ -366,7 +366,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                     <button 
                       onClick={() => {
                          socket.emit('start_quiz', { roomCode, quizData: visitQuiz });
-                         navigate(`/quiz?roomCode=${roomCode}&role=teacher`, { state: { quizData: visitQuiz } });
+                         navigate(`/quiz?roomCode=${roomCode}&role=teacher`, { state: { quizData: visitQuiz, visitId: visitId } });
                       }} 
                       className="w-full px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-xl text-white font-bold transition-colors shadow-lg cursor-pointer"
                     >

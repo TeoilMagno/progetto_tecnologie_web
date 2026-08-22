@@ -11,8 +11,7 @@ const authorSchema = new Schema({
   data: [{
     museumId: [{ // cosi' piu' musei possono utilizzare la stessa descrizione
       type: Schema.Types.ObjectId,
-      ref: 'Museum',
-      required: true
+      ref: 'Museum'
     }],
     bio: { type: String }, // Biografia scritta dal curatore
     bd: { type: String },  // Birth and Death 

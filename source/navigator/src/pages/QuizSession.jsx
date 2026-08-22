@@ -12,6 +12,7 @@ export default function QuizSession() {
   const roomCode = searchParams.get('roomCode');
   const role = searchParams.get('role'); // 'teacher' o 'student'
   const quizData = location.state?.quizData || [];
+  const visitId = location.state?.visitId;
 
   // Stato Studente
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -134,24 +135,31 @@ export default function QuizSession() {
 
           <button 
             onClick={async () => {
-              // 1. Qui prepariamo il payload da mandare al backend
-              const reportPayload = {
-                roomCode,
-                date: new Date(),
-                results: studentResults
-              };
-              
-              // 2. Esempio di chiamata (creerai poi la rotta nel backend)
-              /*
-              await fetch(`${API_BASE_URL}/quiz-results`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(reportPayload)
-              });
-              */
-              
-              alert("Risultati salvati con successo! (Da implementare nel backend)");
-              navigate('/my-visits');
+              try {
+                // 1. Qui prepariamo il payload da mandare al backend
+                const reportPayload = {
+                  roomCode,
+                  date: new Date(),
+                  results: studentResults
+                };
+                
+                const response = await fetch(`${API_BASE_URL}/quiz-results`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  credentials: 'include', // Fondamentale per far riconoscere l'utente al backend
+                  body: JSON.stringify(reportPayload)
+                });
+                
+                if (response.ok) {
+                  alert("Risultati salvati con successo!");
+                  navigate('/my-visits');
+                } else {
+                  alert("Si è verificato un errore nel salvataggio.");
+                }
+              } catch (error) {
+                console.error(error);
+                alert("Errore di connessione.");
+              }
             }} 
             className="w-full mt-8 bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 rounded-xl transition-colors cursor-pointer"
           >

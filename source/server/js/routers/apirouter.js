@@ -17,6 +17,7 @@ const Museum = require("../models/museums");
 const Adoption = require("../models/adoptions");
 const Item = require("../models/items");
 const Visit = require("../models/visits");
+const QuizReport = require("../models/quizReport")
 
 // Controllers
 const museumController = require("../controllers/museums");
@@ -959,6 +960,34 @@ apiRouter.post("/ai/map-request", async (req,res) => {
     res.status(200).json(mapped_request);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ------------------ Quiz --------------------------
+// Salva i risultati di un quiz di gruppo
+apiRouter.post('/quiz-results', auth.isLoggedIn, async (req, res) => {
+  try {
+    const { visitId, roomCode, results } = req.body;
+
+    // Trasformiamo il dizionario React (oggetto) in un Array piatto per Mongoose
+    const resultsArray = Object.keys(results).map(studentId => ({
+      studentName: results[studentId].name,
+      score: results[studentId].score,
+      answers: results[studentId].history
+    }));
+
+    const newReport = new QuizReport({
+      visitId,
+      guideId: req.user._id,
+      roomCode,
+      results: resultsArray
+    });
+
+    await newReport.save();
+    res.status(201).json({ success: true, reportId: newReport._id });
+  } catch (error) {
+    console.error("Errore salvataggio report del quiz:", error);
+    res.status(500).json({ error: 'Errore interno del server' });
   }
 });
 

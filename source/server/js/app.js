@@ -170,10 +170,28 @@ io.on('connection', (socket) => {
   // Slave (Studente) risponde al quiz
   socket.on('submit_answer', ({ roomCode, answer }) => {
     if (activeSessions[roomCode]) {
+      const session = activeSessions[roomCode];
       // Cerchiamo il nome dello studente salvato quando è entrato nella stanza
       const student = activeSessions[roomCode].students.find(s => s.id === socket.id);
       const studentName = student ? student.name : 'Visitatore';
       
+      // 1. Inizializziamo un registro delle risposte per questa stanza se non esiste
+        if (!session.answeredQuestions) {
+          session.answeredQuestions = {};
+        }
+
+        // 2. Creiamo una chiave univoca: ID studente + Indice della domanda
+        const answerKey = `${socket.id}_${answer.qIndex}`;
+
+        // 3. CONTROLLO DI SICUREZZA: Se lo studente ha già risposto a questa domanda, blocchiamo tutto!
+        if (session.answeredQuestions[answerKey]) {
+          console.log(`Tentativo di risposta multipla bloccato per ${studentName}`);
+          return; 
+        }
+
+        // 4. Registriamo che lo studente ha risposto
+        session.answeredQuestions[answerKey] = true;
+
       io.to(activeSessions[roomCode].teacherSocketId).emit('student_answered', { 
         studentId: socket.id, 
         studentName: studentName,
