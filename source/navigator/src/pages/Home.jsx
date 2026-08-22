@@ -25,21 +25,12 @@ const Home = () => {
     },
     {
       id: 3,
-      title: "Interactive Map",
-      desc: "Explore the museum layout and find artworks",
+      title: "Audio Guide Map",
+      desc: "Explore the museum layout with interactive audio guidance",
       icon: "🗺️",
-      color: "bg-blue-500",
-      glow: "shadow-[0_0_15px_rgba(59,130,246,0.3)]",
-      path: "/map"
-    },
-    {
-      id: 4,
-      title: "Audio Guide",
-      desc: "Free exploration with voice-guided narration",
-      icon: "🎧",
       color: "bg-teal-500",
       glow: "shadow-[0_0_15px_rgba(20,184,166,0.3)]",
-      path: "/free"
+      path: "/free-map"
     },
     {
       id: 5,

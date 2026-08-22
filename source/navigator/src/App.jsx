@@ -8,6 +8,7 @@ import HomePage from './pages/Home';
 import Visits from './pages/Visits';
 import JoinSession from './pages/JoinSession';
 import StudentWaitingRoom from './pages/StudentWaitingRoom';
+import FreeVisitMap from './pages/FreeVisitMap';
 import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
 import MapView from './components/mapView';
 import QuizSession from './pages/QuizSession';
@@ -82,22 +83,22 @@ function AppLayout() {
         </header>
       )}
 
-      {/* --- MAIN CONTENT WRAPPER --- */}
-      <div className="flex-1 flex flex-col relative w-full h-full overflow-hidden">
-        
-        <main className="flex-1 overflow-y-auto scroll-smooth w-full relative">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/visits" element={<Visits selectedMuseum={selectedMuseum} />} />
-            <Route path="/join" element={<JoinSession />} />
-            <Route path="/my-visits" element={<Placeholder title="My Visits" />} />
-            <Route path="/free" element={<Placeholder title="Free Mode" />} />
-            <Route path="/map" element={<MapRouteWrapper />} />
-            <Route path="/menu" element={<Placeholder title="Menu" />} />
-            <Route path="/waiting-room" element={<StudentWaitingRoom />} />
-            <Route path="/quiz" element={<QuizSession />} />
-          </Routes>
-        </main>
+        {/* --- MAIN CONTENT WRAPPER --- */}
+        <div className="flex-1 flex flex-col relative w-full h-full overflow-hidden">
+          
+          {/* Area Scorrevole (Contenuto Pagina) */}
+          <main className="flex-1 overflow-y-auto scroll-smooth w-full relative">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/visits" element={<Visits selectedMuseum={selectedMuseum} />} />
+              <Route path="/join" element={<JoinSession />} />
+              <Route path="/my-visits" element={<Placeholder title="My Visits" />} />
+              <Route path="/free-map" element={<FreeVisitMap selectedMuseum={selectedMuseum} />} />
+              <Route path="/menu" element={<Placeholder title="Menu" />} />
+              <Route path="/waiting-room" element={<StudentWaitingRoom />} />
+              <Route path="/quiz" element={<QuizSession />} />
+            </Routes>
+          </main>
 
         {/* --- MOBILE BOTTOM BAR (Nascosta su /map) --- */}
         {!hideGlobalUI && (
@@ -107,8 +108,7 @@ function AppLayout() {
                 <MobileNavItem to="/" icon={<Home size={24} />} label="Home" />
                 <MobileNavItem to="/visits" icon={<Compass size={24} />} label="Visits" />
                 <MobileNavItem to="/join" icon={<Users size={24} />} label="Join" />
-                <MobileNavItem to="/free" icon={<MapPin size={24} />} label="Free" />
-                <MobileNavItem to="/map" icon={<MapIcon size={24} />} label="Map" />
+                <MobileNavItem to="/free-map" icon={<MapIcon size={24} />} label="Free Visit-Map" />
                 <MobileNavItem to="/menu" icon={<Menu size={24} />} label="Menu" />
               </ul>
             </div>
