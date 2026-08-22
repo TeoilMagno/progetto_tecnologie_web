@@ -171,35 +171,36 @@ io.on('connection', (socket) => {
   });
 
   // Slave (Studente) risponde al quiz
-  socket.on('submit_answer', ({ roomCode, answer }) => {
+// Lo studente consegna l'intero quiz al termine
+  socket.on('submit_quiz', (data) => {
+    console.log(">>> RICEVUTA CONSEGNA QUIZ DAL CLIENT:", data);
+    if (!data || !data.roomCode) return;
+    
+    const roomCode = data.roomCode.toUpperCase();
+    const { history, score } = data;
+
     if (activeSessions[roomCode]) {
-      const session = activeSessions[roomCode];
-      // Cerchiamo il nome dello studente salvato quando è entrato nella stanza
-      const student = activeSessions[roomCode].students.find(s => s.id === socket.id);
-      const studentName = student ? student.name : 'Visitatore';
-      
-      // 1. Inizializziamo un registro delle risposte per questa stanza se non esiste
-        if (!session.answeredQuestions) {
-          session.answeredQuestions = {};
+        const session = activeSessions[roomCode];
+        const student = session.students.find(s => s.id === socket.id);
+        const studentName = student ? student.name : `Studente ${socket.id.substring(0,4)}`;
+
+        console.log(`[Quiz] Inoltro risultati di ${studentName} (Score: ${score}) al Prof!`);
+
+        const payload = { 
+            studentId: socket.id, 
+            studentName: studentName,
+            history,
+            score 
+        };
+
+        // DOPPIO INVIO BLINDATO: sia alla stanza generale che al socket specifico del prof
+        io.to(roomCode).emit('student_quiz_submitted', payload);
+        
+        if (session.teacherSocketId) {
+            io.to(session.teacherSocketId).emit('student_quiz_submitted', payload);
         }
-
-        // 2. Creiamo una chiave univoca: ID studente + Indice della domanda
-        const answerKey = `${socket.id}_${answer.qIndex}`;
-
-        // 3. CONTROLLO DI SICUREZZA: Se lo studente ha già risposto a questa domanda, blocchiamo tutto!
-        if (session.answeredQuestions[answerKey]) {
-          console.log(`Tentativo di risposta multipla bloccato per ${studentName}`);
-          return; 
-        }
-
-        // 4. Registriamo che lo studente ha risposto
-        session.answeredQuestions[answerKey] = true;
-
-      io.to(activeSessions[roomCode].teacherSocketId).emit('student_answered', { 
-        studentId: socket.id, 
-        studentName: studentName,
-        answer 
-      });
+    } else {
+        console.log(`[Quiz] ERRORE: Stanza ${roomCode} non trovata in memoria.`);
     }
   });
 
@@ -208,6 +209,13 @@ io.on('connection', (socket) => {
       activeSessions[roomCode].hasStarted = true;
     }
     socket.to(roomCode).emit('session_started', { visitId });
+  });
+
+  // L'insegnante ha raggiunto la fine della visita
+  socket.on('end_shared_visit', ({ roomCode }) => {
+    if (!roomCode) return;
+    // Avvisiamo tutti gli studenti nella stanza che la visita è terminata
+    socket.to(roomCode.toUpperCase()).emit('visit_ended');
   });
 
   socket.on('disconnect', () => {

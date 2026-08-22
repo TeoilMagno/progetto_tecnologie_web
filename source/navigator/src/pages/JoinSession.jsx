@@ -7,7 +7,7 @@ import QrScanner from 'qr-scanner';
 import QrScannerWorkerPath from 'qr-scanner/qr-scanner-worker.min.js?url';
 import { API_BASE_URL } from '../config';
 import { useSocket } from '../context/SocketContext';
-import LoginModal from '../components/loginModal';
+import LoginModal from '../components/LoginModal';
 
 QrScanner.WORKER_PATH = QrScannerWorkerPath;
 

@@ -10,8 +10,9 @@ import JoinSession from './pages/JoinSession';
 import StudentWaitingRoom from './pages/StudentWaitingRoom';
 import FreeVisitMap from './pages/FreeVisitMap';
 import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
-import MapView from './components/mapView';
+import MapView from './components/MapView';
 import QuizSession from './pages/QuizSession';
+import QuizReportView from './components/QuizReportView';
 
 // Placeholder per le pagine future
 const Placeholder = ({ title }) => (
@@ -95,8 +96,10 @@ function AppLayout() {
               <Route path="/my-visits" element={<Placeholder title="My Visits" />} />
               <Route path="/free-map" element={<FreeVisitMap selectedMuseum={selectedMuseum} />} />
               <Route path="/menu" element={<Placeholder title="Menu" />} />
+              <Route path="/map" element={<MapRouteWrapper />} />
               <Route path="/waiting-room" element={<StudentWaitingRoom />} />
               <Route path="/quiz" element={<QuizSession />} />
+              <Route path="/quiz-report/:reportId" element={<QuizReportView/>} />
             </Routes>
           </main>
 

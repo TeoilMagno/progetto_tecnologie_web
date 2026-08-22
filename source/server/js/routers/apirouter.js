@@ -941,6 +941,7 @@ apiRouter.post("/ai/map-request", async (req,res) => {
 });
 
 // ------------------ Quiz --------------------------
+
 // Salva i risultati di un quiz di gruppo
 apiRouter.post('/quiz-results', auth.isLoggedIn, async (req, res) => {
   try {
@@ -964,6 +965,24 @@ apiRouter.post('/quiz-results', auth.isLoggedIn, async (req, res) => {
     res.status(201).json({ success: true, reportId: newReport._id });
   } catch (error) {
     console.error("Errore salvataggio report del quiz:", error);
+    res.status(500).json({ error: 'Errore interno del server' });
+  }
+});
+
+// Recupera i risultati dei quiz
+apiRouter.get('/quiz-results/:id', auth.isLoggedIn, async (req, res) => {
+  try {
+    const report = await QuizReport.findById(req.params.id).populate('visitId', 'title quiz');
+    if (!report) return res.status(404).json({ error: 'Report non trovato' });
+    
+    // Sicurezza: solo l'insegnante che l'ha generato (o un admin) può scaricarlo
+    if (report.guideId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+       return res.status(403).json({ error: 'Accesso negato' });
+    }
+    
+    res.json(report);
+  } catch (error) {
+    console.error("Errore recupero report:", error);
     res.status(500).json({ error: 'Errore interno del server' });
   }
 });

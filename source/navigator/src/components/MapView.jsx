@@ -4,10 +4,10 @@ import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2, Compass,
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { useSocket } from "../context/SocketContext";
-import SectionLayer from "./sectionLayer";
-import RoomLayer from "./roomLayer";
-import WorkDetailsSheet from "./workDetailsSheet";
-import NavigationControlBar from "./navigationControlBar";
+import SectionLayer from "./SectionLayer";
+import RoomLayer from "./RoomLayer";
+import WorkDetailsSheet from "./WorkDetailsSheet";
+import NavigationControlBar from "./NavigationControlBar";
 
 export default function MapView({ visitId, roomCode, isTeacher }) {
   const navigate = useNavigate();
@@ -157,12 +157,17 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         navigate(`/quiz?roomCode=${roomCode}&role=student`, { state: { quizData } });
       });
 
+      socket.on("visit_ended", () => {
+        setShowEndModal(true);
+      });
+
       return () => {
         socket.off("change_artwork");
         socket.off("quiz_started");
+        socket.off("visit_ended");
       };
     }
-  }, [isSharedSession, isTeacher, visitedWorks, socket, navigate, roomCode]);
+  }, [isSharedSession, isTeacher, visitedWorks, socket, navigate, roomCode, hasMap]);
 
   const handleNext = () => {
     if (currentWorkIndex < visitedWorks.length - 1) {
@@ -194,6 +199,11 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       const shuffled = [...remainingWorks].sort(() => 0.5 - Math.random());
       setSuggestedWorks(shuffled.slice(0, 3));
       setShowEndModal(true);
+
+      // Se è l'insegnante ad aver finito, avvisa il server per far comparire il modale agli studenti
+      if (isSharedSession && isTeacher && socket) {
+        socket.emit("end_shared_visit", { roomCode });
+      }
     }
   };
 
