@@ -157,8 +157,8 @@ io.on('connection', (socket) => {
   // Slave (Studente) interagisce (es. chiede un livello più basso)
   socket.on('student_interaction', ({ roomCode, type, details }) => {
     if (activeSessions[roomCode]) {
-        const teacherId = activeSessions[roomCode].teacherSocketId;
-        io.to(teacherId).emit('student_activity', { studentId: socket.id, type, details });
+      const teacherId = activeSessions[roomCode].teacherSocketId;
+      io.to(teacherId).emit('student_activity', { studentId: socket.id, type, details });
     }
   });
 
@@ -170,10 +170,15 @@ io.on('connection', (socket) => {
   // Slave (Studente) risponde al quiz
   socket.on('submit_answer', ({ roomCode, answer }) => {
     if (activeSessions[roomCode]) {
-        io.to(activeSessions[roomCode].teacherSocketId).emit('student_answered', { 
-            studentId: socket.id, 
-            answer 
-        });
+      // Cerchiamo il nome dello studente salvato quando è entrato nella stanza
+      const student = activeSessions[roomCode].students.find(s => s.id === socket.id);
+      const studentName = student ? student.name : 'Visitatore';
+      
+      io.to(activeSessions[roomCode].teacherSocketId).emit('student_answered', { 
+        studentId: socket.id, 
+        studentName: studentName,
+        answer 
+      });
     }
   });
 

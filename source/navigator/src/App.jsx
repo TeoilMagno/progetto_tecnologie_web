@@ -10,6 +10,7 @@ import JoinSession from './pages/JoinSession';
 import StudentWaitingRoom from './pages/StudentWaitingRoom';
 import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
 import MapView from './components/mapView';
+import QuizSession from './pages/QuizSession';
 
 // Placeholder per le pagine future
 const Placeholder = ({ title }) => (
@@ -37,8 +38,8 @@ function AppLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Definiamo un flag: se siamo su /map, nascondiamo le barre globali!
-  const hideGlobalUI = location.pathname === '/map';
+  // Definiamo un flag: se siamo su /map o su /quiz, nascondiamo le barre globali!
+  const hideGlobalUI = location.pathname === '/map' || location.pathname === '/quiz';
 
   const [selectedMuseum, setSelectedMuseum] = useState(() => {
     const params = new URLSearchParams(location.search);
@@ -94,6 +95,7 @@ function AppLayout() {
             <Route path="/map" element={<MapRouteWrapper />} />
             <Route path="/menu" element={<Placeholder title="Menu" />} />
             <Route path="/waiting-room" element={<StudentWaitingRoom />} />
+            <Route path="/quiz" element={<QuizSession />} />
           </Routes>
         </main>
 

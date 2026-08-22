@@ -26,6 +26,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [inputMode, setInputMode] = useState("write"); 
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
+  const [visitQuiz, setVisitQuiz] = useState([]);
 
   //Domande per assistente vocale
   const [commandsMap, setCommandsMap] = useState(null);
@@ -58,6 +59,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         const apiData = await visitResponse.json();
         const visitData = apiData.visit;
         const dictionary = apiData.commands_map;
+
+        setVisitQuiz(visitData.quiz || []);
 
         //salviamo i comandi vocali disponibili
         setCommandsMap(dictionary);
@@ -139,9 +142,17 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           if (hasMap) selectSectionForWork(visitedWorks[index]);
         }
       });
-      return () => socket.off("change_artwork");
+
+      socket.on("quiz_started", (quizData) => {
+        navigate(`/quiz?roomCode=${roomCode}&role=student`, { state: { quizData } });
+      });
+
+      return () => {
+        socket.off("change_artwork");
+        socket.off("quiz_started");
+      };
     }
-  }, [isSharedSession, isTeacher, visitedWorks, socket]);
+  }, [isSharedSession, isTeacher, visitedWorks, socket, navigate, roomCode]);
 
   const handleNext = () => {
     if (currentWorkIndex < visitedWorks.length - 1) {
@@ -338,22 +349,65 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       {/* Modali e Bottom Sheet */}
       {showEndModal && (
         <div className="fixed inset-0 bg-black/85 z-[10000] flex items-center justify-center p-4">
-          <div className="w-full max-w-[560px] bg-[#121218] border border-white/10 rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.8)] text-white">
-            <h3 className="flex items-center justify-center gap-2 text-cyan-400 text-xl font-extrabold mb-3">
-              <CheckCircle2 className="text-green-500" size={24} /> Visita Completata!
-            </h3>
-            <p className="text-slate-400 text-center text-sm mb-6">
-              Hai visitato tutte le opere d'arte presenti in questa visita. Cosa desideri fare ora?
-            </p>
+          <div className="w-full max-w-[560px] bg-[#121218] border border-white/10 rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.8)] text-white text-center">
             
-            <div className="flex gap-3 justify-center">
-              <button 
-                onClick={() => window.location.href = "/my-visits"} 
-                className="px-6 py-2.5 border border-white/20 rounded-full text-white hover:bg-white/10 transition-colors text-sm font-medium cursor-pointer"
-              >
-                Termina Visita
-              </button>
-            </div>
+            <h3 className="flex items-center justify-center gap-2 text-cyan-400 text-xl font-extrabold mb-3">
+              <CheckCircle2 className="text-green-500" size={24} /> Visita completata!
+            </h3>
+            
+            {/* LOGICA INSEGNANTE: Sceglie cosa fare */}
+            {isSharedSession && isTeacher ? (
+              <>
+                <p className="text-slate-400 text-sm mb-6">
+                  Hai guidato i tuoi studenti attraverso tutte le opere. Vuoi avviare il quiz di verifica o terminare la sessione?
+                </p>
+                <div className="flex flex-col gap-3">
+                  {visitQuiz && visitQuiz.length > 0 && (
+                    <button 
+                      onClick={() => {
+                         socket.emit('start_quiz', { roomCode, quizData: visitQuiz });
+                         navigate(`/quiz?roomCode=${roomCode}&role=teacher`, { state: { quizData: visitQuiz } });
+                      }} 
+                      className="w-full px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-xl text-white font-bold transition-colors shadow-lg cursor-pointer"
+                    >
+                      Lancia quiz finale
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => navigate("/my-visits")} 
+                    className="w-full px-6 py-3 border border-white/20 rounded-xl text-white hover:bg-white/10 transition-colors font-medium cursor-pointer"
+                  >
+                    Termina sessione definitivamente
+                  </button>
+                </div>
+              </>
+            ) : isSharedSession && !isTeacher ? (
+              /* LOGICA STUDENTE: Attende il comando del prof */
+              <>
+                <p className="text-slate-400 text-sm mb-6">
+                  Il percorso guidato è terminato. Resta in attesa, l'insegnante potrebbe avviare un quiz a breve!
+                </p>
+                <div className="flex justify-center">
+                  <div className="flex items-center gap-2 text-amber-500 bg-amber-500/10 px-4 py-2 rounded-lg text-sm">
+                    <Loader2 size={16} className="animate-spin" /> In attesa dell'insegnante...
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* LOGICA VISITATORE NORMALE (Navigazione Libera) */
+              <>
+                <p className="text-slate-400 text-sm mb-6">
+                  Hai visitato tutte le opere d'arte presenti in questa visita. Cosa desideri fare ora?
+                </p>
+                <button 
+                  onClick={() => navigate("/my-visits")} 
+                  className="px-6 py-2.5 border border-white/20 rounded-full text-white hover:bg-white/10 transition-colors text-sm font-medium cursor-pointer"
+                >
+                  Termina visita
+                </button>
+              </>
+            )}
+            
           </div>
         </div>
       )}
