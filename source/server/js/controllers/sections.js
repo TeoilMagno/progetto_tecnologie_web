@@ -3,6 +3,32 @@ const Work = require('../models/works');
 
 const { getWorksById, deleteWorkById } = require('./works');
 
+exports.getAllSections = async () => {
+  try {
+    return await Section.find();
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.uploadAllSections = async (data) => {
+  try {
+    let cleared = await Section.deleteMany({});
+
+    console.log(`... ${cleared.deletedCount || 0} records deleted.`);
+    console.log(`Trying to add ${data.length} new records... `);
+
+ 		let insertedCount = 0;
+		await Section.insertMany(data).then(() => {
+			insertedCount += data.length;
+		});
+
+ 		console.log(`... ${insertedCount || 0} records added.`);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 exports.saveSection = async (sectionData, museumId) => {
   let workObjects = [];
   

@@ -4,6 +4,32 @@ const Museum = require('../models/museums');
 const { User } = require('../models/users');
 const Visit = require('../models/visits');
 
+exports.getAllAdoptions = async () => {
+  try {
+    return await Adoption.find();
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.uploadAllAdoptions = async (data) => {
+  try {
+    let cleared = await Adoption.deleteMany({});
+
+    console.log(`... ${cleared.deletedCount || 0} records deleted.`);
+    console.log(`Trying to add ${data.length} new records... `);
+
+ 		let insertedCount = 0;
+		await Adoption.insertMany(data).then(() => {
+			insertedCount += data.length;
+		});
+
+ 		console.log(`... ${insertedCount || 0} records added.`);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 exports.getWorkByAdoption = async (adoptionId) => {
   try {
     const adoption = await Adoption.findOne({ _id: adoptionId });

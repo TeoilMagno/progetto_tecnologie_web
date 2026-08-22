@@ -1,5 +1,31 @@
 const Author = require('../models/author');
 
+exports.getAllAuthors = async () => {
+  try {
+    return await Author.find();
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.uploadAllAuthors = async (data) => {
+  try {
+    let cleared = await Author.deleteMany({});
+
+    console.log(`... ${cleared.deletedCount || 0} records deleted.`);
+    console.log(`Trying to add ${data.length} new records... `);
+
+ 		let insertedCount = 0;
+		await Author.insertMany(data).then(() => {
+			insertedCount += data.length;
+		});
+
+ 		console.log(`... ${insertedCount || 0} records added.`);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // Ricerca autori con fuzzy search
 exports.searchAuthors = async (query) => {
   if (!query) return [];

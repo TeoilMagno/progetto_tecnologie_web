@@ -1,0 +1,151 @@
+[
+  {
+    "_id": "6a75a5dd05183be2a8d12a98",
+    "user": "6a6dab11ccd4a931660f74e4",
+    "items": [
+      {
+        "itemId": "696a7128d10f009d3d77e043",
+        "name": "Ronda di Notte",
+        "price": 70,
+        "quantity": 1,
+        "_id": "6a75a5dd05183be2a8d12a99"
+      },
+      {
+        "itemId": "696a7128d10f009d3d77e044",
+        "name": "Lattaia",
+        "price": 50,
+        "quantity": 1,
+        "_id": "6a75a5dd05183be2a8d12a9a"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 120,
+    "status": "completed",
+    "createdAt": "2026-08-07T09:31:09.717Z",
+    "updatedAt": "2026-08-07T09:31:09.717Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a75a7836ba61273d1e88643",
+    "user": "6a6dab11ccd4a931660f74e4",
+    "items": [
+      {
+        "itemId": "696a7128d10f009d3d77e045",
+        "name": "Autoritratto",
+        "price": 40,
+        "quantity": 1,
+        "_id": "6a75a7836ba61273d1e88644"
+      },
+      {
+        "itemId": "696a7128d10f009d3d77e044",
+        "name": "Lattaia",
+        "price": 50,
+        "quantity": 1,
+        "_id": "6a75a7836ba61273d1e88645"
+      }
+    ],
+    "visits": [
+      {
+        "visitId": "6a70a73e3e6d2134c05bee9d",
+        "title": "Visita pubblica al Louvre",
+        "price": 45,
+        "_id": "6a75a7836ba61273d1e88646"
+      }
+    ],
+    "totalAmount": 135,
+    "status": "completed",
+    "createdAt": "2026-08-07T09:38:11.416Z",
+    "updatedAt": "2026-08-07T09:38:11.416Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a7f1f48cede002bfbfd8782",
+    "user": "6a71eaad1d50777ccbe3e75a",
+    "items": [
+      {
+        "itemId": "696a7129d10f009d3d77e04e",
+        "name": "Il 3 maggio 1808",
+        "price": 40,
+        "quantity": 1,
+        "_id": "6a7f1f48cede002bfbfd8783"
+      },
+      {
+        "itemId": "696a7129d10f009d3d77e04f",
+        "name": "Giardino delle delizie",
+        "price": 45,
+        "quantity": 1,
+        "_id": "6a7f1f48cede002bfbfd8784"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 85,
+    "status": "completed",
+    "createdAt": "2026-08-14T13:59:36.138Z",
+    "updatedAt": "2026-08-14T13:59:36.138Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a8229bd87ff6839c1c4e47b",
+    "user": "6a6dab11ccd4a931660f74e4",
+    "items": [
+      {
+        "itemId": "6a82279fe8a49affe844c0ab",
+        "name": "Tazza girasoli",
+        "price": 10,
+        "quantity": 1,
+        "_id": "6a8229bd87ff6839c1c4e47c"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 10,
+    "status": "completed",
+    "createdAt": "2026-08-16T21:21:01.708Z",
+    "updatedAt": "2026-08-16T21:21:01.708Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a857012177aaad0085d98d8",
+    "user": "6a6dab11ccd4a931660f74e4",
+    "items": [
+      {
+        "itemId": "6a82279fe8a49affe844c0ab",
+        "name": "Tazza girasoli",
+        "price": 10,
+        "quantity": 1,
+        "_id": "6a857012177aaad0085d98d9"
+      },
+      {
+        "itemId": "696a7128d10f009d3d77e043",
+        "name": "Puzzle 1000pz: Ronda di Notte",
+        "price": 70,
+        "quantity": 4,
+        "_id": "6a857012177aaad0085d98da"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 290,
+    "status": "completed",
+    "createdAt": "2026-08-19T08:57:54.476Z",
+    "updatedAt": "2026-08-19T08:57:54.476Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a886d751b743fe60c6be0c4",
+    "user": "6a79e82abec8ac8f2ee4ff11",
+    "items": [
+      {
+        "itemId": "696a7129d10f009d3d77e04e",
+        "name": "Stampa: Il 3 maggio 1808",
+        "price": 40,
+        "quantity": 1,
+        "_id": "6a886d751b743fe60c6be0c5"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 40,
+    "status": "completed",
+    "createdAt": "2026-08-21T15:23:33.028Z",
+    "updatedAt": "2026-08-21T15:23:33.028Z",
+    "__v": 0
+  }
+]

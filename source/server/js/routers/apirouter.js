@@ -564,9 +564,13 @@ apiRouter.get("/visits/:id", async (req, res) => {
     //altrimenti la fusione con lo spread operator (...) fallirà
     const visitObj = visit.toObject ? visit.toObject() : visit;
 
+    const isLogged = req.isAuthenticated();
+    const userData = isLogged ? req.user : null;
+
     res.status(200).json({
       visit: visitObj,                // dati della visita richiesta
-      commands_map: dictionary        // aggiunge il tuo nuovo dizionario alla risposta
+      commands_map: dictionary,        // aggiunge il tuo nuovo dizionario alla risposta
+      user: userData
     });
   } catch (error) {
     const status = error.statusCode || 500;
@@ -628,33 +632,6 @@ apiRouter.post("/visits/recommend-length", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-//TODO: DA CANCELLARE
-//manda tutti i dati per la visualizzazione del museo
-// apiRouter.get("/visits/:id/museum", async (req, res) => {
-//   try {
-//     const userId = req.user ? req.user._id : null;
-//     const visit = await visitController.getVisitById(req.params.id, userId);
-//
-//     if(!visit) return res.status(404).json({ error: "visita non trovata" });
-//
-//     const dictPath = path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'src', 'data', 'dictionary.json');
-//     const dictRaw = await fs.readFile(dictPath, 'utf8');
-//     const dictionary = JSON.parse(dictRaw);
-//     //conversione in oggetto standard
-//     //Se "visit" è un documento Mongoose, bisogna convertirlo prima di poterci aggiungere roba, 
-//     //altrimenti la fusione con lo spread operator (...) fallirà
-//     const visitObj = visit.toObject ? visit.toObject() : visit;
-//
-//     res.json({
-//       visit: visitObj,                  // dati della visita richiesta
-//       commands_map: dictionary      // aggiunge il tuo nuovo dizionario alla risposta
-//     });
-//
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
 
 // ----------------------- ordini & checkout ----------------------------
 
@@ -988,6 +965,102 @@ apiRouter.post('/quiz-results', auth.isLoggedIn, async (req, res) => {
   } catch (error) {
     console.error("Errore salvataggio report del quiz:", error);
     res.status(500).json({ error: 'Errore interno del server' });
+  }
+});
+
+
+// ---------------- Gestione DB ---------------------
+apiRouter.get("/downloadDB", async (req, res) => {
+  try {
+    console.log("Inizio esportazione di tutto il DB...");
+    
+    // Costruiamo il percorso assoluto alla cartella 'data' in modo sicuro
+    // (Aggiusta i '..' in base a dove si trova questo file router)
+    const dataFolder = path.join(__dirname, '..', '..', 'data');
+
+    // 1. Recupero di tutti i dati dai controller
+    const collections = {
+      'museum.json': await museumController.getAllMuseums(),
+      'item.json': await itemController.getAllItems(),
+      'work.json': await workController.getAllWorks(),
+      'section.json': await sectionController.getAllSections(),
+      'visit.json': await visitController.getAllVisits(),
+      'order.json': await orderController.getAllOrders(),
+      'adoption.json': await adoptionController.getAllAdoptions(),
+      'author.json': await authorController.getAllAuthors(),
+      'style.json': await styleController.getAllStyles()
+    };
+
+    // 2. Scrittura dinamica di tutti i file
+    for (const [filename, data] of Object.entries(collections)) {
+      const filePath = path.join(dataFolder, filename);
+      
+      // Trasformiamo i dati in formato JSON ben formattato (null, 2 serve per l'indentazione)
+      const jsonData = JSON.stringify(data, null, 2);
+      
+      await fs.writeFile(filePath, jsonData, 'utf8');
+      console.log(`${filename} scritto con successo!`);
+    }
+
+    // 3. Comunichiamo al client che abbiamo finito
+    res.status(200).json({ message: "Backup completo del database eseguito con successo!" });
+
+  } catch (e) {
+    console.error("Errore durante l'esportazione:", e);
+    // Rispondiamo anche in caso di errore per non far bloccare il client
+    res.status(500).json({ error: e.message });
+  }
+});
+
+apiRouter.post('/uploadDB', async (req,res) => {
+  try {
+    console.log("Inizio importazione dei dati nel DB...");
+
+    // Costruiamo il percorso assoluto alla cartella 'data'
+    const dataFolder = path.join(__dirname, '..', '..', 'data');
+
+    // Creiamo un array di "task" che accoppia il nome del file alla funzione giusta
+    const uploadTasks = [
+      { file: 'museum.json', uploadFunction: museumController.uploadAllMuseums },
+      { file: 'item.json', uploadFunction: itemController.uploadAllItems },
+      { file: 'work.json', uploadFunction: workController.uploadAllWorks },
+      { file: 'section.json', uploadFunction: sectionController.uploadAllSections },
+      { file: 'visit.json', uploadFunction: visitController.uploadAllVisits },
+      { file: 'order.json', uploadFunction: orderController.uploadAllOrders },
+      { file: 'adoption.json', uploadFunction: adoptionController.uploadAllAdoptions },
+      { file: 'author.json', uploadFunction: authorController.uploadAllAuthors },
+      { file: 'style.json', uploadFunction: styleController.uploadAllStyles }
+    ];
+
+    // Eseguiamo il ciclo in modo sequenziale per non sovraccaricare il database
+    for (const task of uploadTasks) {
+      const filePath = path.join(dataFolder, task.file);
+
+      try {
+        // 1. Legge il file dalla cartella come stringa di testo
+        const rawData = await fs.readFile(filePath, 'utf8');
+
+        // 2. Trasforma la stringa in un vero array/oggetto JavaScript
+        const parsedData = JSON.parse(rawData);
+
+        // 3. Passa i dati convertiti alla funzione del tuo controller
+        await task.uploadFunction(parsedData);
+
+        console.log(`${task.file} caricato con successo!`);
+      } catch (fileError) {
+        // Gestiamo l'errore del singolo file senza bloccare necessariamente gli altri
+        console.error(`Errore durante il caricamento di ${task.file}:`, fileError.message);
+        // Se preferisci che l'intera rotta si blocchi al primo errore, de-commenta la riga sotto:
+        // throw fileError; 
+      }
+    }
+
+    // Rispondiamo al client che l'operazione è finita
+    res.status(200).json({ message: "Importazione del database completata con successo!" });
+
+  } catch (e) {
+    console.error("Errore critico durante l'importazione:", e);
+    res.status(500).json({ error: e.message });
   }
 });
 

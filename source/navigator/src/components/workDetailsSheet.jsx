@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import { Volume, VolumeX, Mic, X } from "lucide-react";
 import { API_BASE_URL } from "../config";
 
-export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }) {
+export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, expertiseLevel }) {
   // --- LOGICA TRASCINAMENTO BOTTOM SHEET ---
   const [dragStartY, setDragStartY] = useState(null);
   const [dragCurrentY, setDragCurrentY] = useState(0);
-  const [currentDescIndex, setCurrentDescIndex] = useState(0);
+  const [currentLength, setCurrentLength] = useState("medium");
   const [isListening, setIsListening] = useState(false);
+  
+  //lunghezza descrizione opera
+  const lengthLevels = ["short", "medium", "long", "exhaustive"];
 
   const handlePointerDown = (e) => {
     setDragStartY(e.clientY);
@@ -32,22 +35,48 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }
     e.target.releasePointerCapture(e.pointerId);
   };
 
-  const handleMoreDesc = () => {
-    if (work?.description && currentDescIndex < work.description.length - 1) {
-      const nextIndex = currentDescIndex + 1;
-      setCurrentDescIndex(nextIndex);
-      onSpeak(work.description[nextIndex].description)
+const handleMoreDesc = () => {
+    // Troviamo a che punto siamo (es. "medium" è indice 1)
+    const currentIndex = lengthLevels.indexOf(currentLength);
+
+    // Se non siamo ancora all'ultimo livello ("exhaustive" = indice 3)
+    if (currentIndex < lengthLevels.length - 1) {
+      const nextLength = lengthLevels[currentIndex + 1];
+      setCurrentLength(nextLength); // Aggiorniamo lo stato
+
+      // Estraiamo il nuovo testo in modo sicuro con l'Optional Chaining
+      const textToSpeak = work?.description?.[expertiseLevel]?.[nextLength];
+      
+      if (textToSpeak) {
+        onSpeak(textToSpeak);
+      } else {
+        onSpeak("Mi dispiace, ma non ho ulteriori dettagli scritti per quest'opera.");
+      }
+    } else {
+      console.log("Siamo già al massimo livello di dettaglio.");
+      // Opzionale: onSpeak("Hai già raggiunto il massimo livello di dettaglio.");
     }
-  }
+  };
 
   const handleLessDesc = () => {
-    if (work?.description && currentDescIndex > 0) {
-      const nextIndex = currentDescIndex - 1;
-      setCurrentDescIndex(nextIndex);
-      onSpeak(work.description[nextIndex].description)
-    }
-  }
+    const currentIndex = lengthLevels.indexOf(currentLength);
 
+    // Se non siamo al primissimo livello ("short" = indice 0)
+    if (currentIndex > 0) {
+      const prevLength = lengthLevels[currentIndex - 1];
+      setCurrentLength(prevLength);
+
+      const textToSpeak = work?.description?.[expertiseLevel]?.[prevLength];
+      
+      if (textToSpeak) {
+        onSpeak(textToSpeak);
+      } else {
+        onSpeak("Non ci sono versioni più brevi di questa descrizione.");
+      }
+    } else {
+      console.log("Siamo già al riassunto minimo.");
+    }
+  };
   const startListening = () => {
     // 1. Controllo compatibilità browser
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -81,6 +110,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }
       let action = commandsMap[cleanTranscript];
 
       if(!action) {
+        console.log("AI");
         // --- FUTURA FASE 2: INTEGRAZIONE AI ---
         // Qui in futuro metterai: const aiResponse = await fetch('/api/ai-mapper', { body: cleanTranscript })
 
@@ -103,7 +133,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }
 
       switch (action) {
         case "PLAY":
-          onSpeak(work.description?.[currentDescIndex]?.description);
+          onSpeak(work?.description?.[expertiseLevel]?.[currentLength]);
           break;
         case "NEXT_DESC":
           handleMoreDesc();
@@ -137,11 +167,11 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }
   };
 
   // Resettiamo la posizione del menu se l'utente lo chiude con la X
-  useEffect(() => {
+useEffect(() => {
     if (!work) {
       setDragCurrentY(0);
     }
-    setCurrentDescIndex(0);
+    setCurrentLength("medium"); // <-- CORRETTO!
   }, [work]);
 
   return (
@@ -193,7 +223,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }
 
               <h6 className="text-white/50 uppercase tracking-wider mb-2 text-xs font-bold">Descrizione</h6>
               <p className="leading-relaxed text-slate-300 text-sm mb-7">
-                {work.description?.[0]?.description || "Nessuna descrizione disponibile per quest'opera."}
+                {work.description?.[expertiseLevel]?.[currentLength] || "Nessuna descrizione disponibile per quest'opera."}
               </p>
 
               <div className="flex gap-2">
@@ -204,7 +234,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap }
                   <VolumeX size={16} /> Dimmi di meno
                 </button>
                 <button 
-                  onClick={() => onSpeak(work.description?.[currentDescIndex]?.description)}
+                  onClick={() => onSpeak(work.description?.[expertiseLevel]?.[currentLength])}
                   className="flex-1 flex items-center justify-center gap-2 rounded-full bg-cyan-400 text-slate-900 font-semibold py-2.5 hover:bg-cyan-300 transition-colors text-sm" 
                 >
                   <Volume size={16} /> Ascolta

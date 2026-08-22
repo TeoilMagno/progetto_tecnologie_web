@@ -2,6 +2,32 @@ const Visit = require("../models/visits");
 const Work = require("../models/works");
 const { calculateVisitDuration, recommendLengthForTime } = require('../utils/visitCalculator')
 
+exports.getAllVisits = async () => {
+  try {
+    return await Visit.find();
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.uploadAllVisits = async (data) => {
+  try {
+    let cleared = await Visit.deleteMany({});
+
+    console.log(`... ${cleared.deletedCount || 0} records deleted.`);
+    console.log(`Trying to add ${data.length} new records... `);
+
+ 		let insertedCount = 0;
+		await Visit.insertMany(data).then(() => {
+			insertedCount += data.length;
+		});
+
+ 		console.log(`... ${insertedCount || 0} records added.`);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 exports.createVisit = async (visitPayload, user) => {
   const {
     title,

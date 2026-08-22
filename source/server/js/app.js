@@ -21,6 +21,8 @@ connectDB();
 
 const app = express(); // Inizializza Express subito!
 
+app.set('trust proxy', 1);
+
 // --- 3. CREAZIONE SERVER HTTP E SOCKET.IO ---
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -57,10 +59,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret',
   resave: false,
   saveUninitialized: false,
-  cookie: { 
+  cookie: {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     secure: false,
-    sameSite: 'lax'
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production'
   }
 }));
 app.use(passport.initialize());

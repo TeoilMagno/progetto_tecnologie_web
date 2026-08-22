@@ -1,0 +1,891 @@
+[
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Classico",
+        "description": "Celebre statua greca che rappresenta l'ideale di bellezza e amore."
+      }
+    ],
+    "_id": "6a6b9719478a8542634450e7",
+    "name": "Venere di Milo",
+    "author": "6a8215f9bbd3642f8830b6f5",
+    "style": "6a821c134d292854096c43f9",
+    "year": "130 a.C.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Venus_de_Milo_Louvre_Ma399_n3.jpg/250px-Venus_de_Milo_Louvre_Ma399_n3.jpg",
+    "museumId": "696a65ca017c648acfc9b559",
+    "technique": "Scultura in marmo pario"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Poetico",
+        "description": "L'iconico dipinto di Sandro Botticelli che celebra l'arrivo della dea della bellezza."
+      }
+    ],
+    "_id": "6a6b9719478a8542634450e8",
+    "name": "Nascita di Venere",
+    "author": "6a8215f9bbd3642f8830b705",
+    "style": "6a821c134d292854096c43fe",
+    "year": "1485",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/400px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg",
+    "museumId": "696a65ca017c648acfc9b55d",
+    "technique": "Tempera su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Divino",
+        "description": "Il dettaglio più celebre della volta della Cappella Sistina, simbolo della scintilla divina."
+      }
+    ],
+    "_id": "6a6b9719478a8542634450e9",
+    "name": "Creazione di Adamo",
+    "author": "6a8215f9bbd3642f8830b701",
+    "style": "6a821e97205d7c012f901e41",
+    "year": "1512",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/400px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg",
+    "museumId": "696a65ca017c648acfc9b55f",
+    "technique": "Affresco"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Maestoso",
+        "description": "Il colossale dipinto di Rembrandt, simbolo indiscusso del Secolo d'oro olandese."
+      }
+    ],
+    "_id": "6a6b9719478a8542634450ea",
+    "name": "Ronda di Notte",
+    "author": "6a8215f9bbd3642f8830b704",
+    "style": "6a821c134d292854096c43f6",
+    "year": "1642",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/La_ronda_de_noche%2C_por_Rembrandt_van_Rijn.jpg/330px-La_ronda_de_noche%2C_por_Rembrandt_van_Rijn.jpg",
+    "museumId": "696a65ca017c648acfc9b55e",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Luminoso",
+        "description": "Una delle nature morte più famose e vibranti della storia dell'arte."
+      }
+    ],
+    "_id": "6a6b9719478a8542634450eb",
+    "name": "I Girasoli",
+    "author": "6a8215f9bbd3642f8830b706",
+    "style": "6a821c134d292854096c43fd",
+    "year": "1889",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_Willem_van_Gogh_127.jpg/350px-Vincent_Willem_van_Gogh_127.jpg",
+    "museumId": "696a65ca017c648acfc9b561",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Potente",
+        "description": "La celebre xilografia giapponese che mostra la furia della natura di fronte al Monte Fuji."
+      }
+    ],
+    "_id": "6a6b9719478a8542634450ec",
+    "name": "La Grande Onda (Hokusai)",
+    "author": "6a8215f9bbd3642f8830b700",
+    "style": "6a821e99205d7c012f901e4a",
+    "year": "1831",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Tsunami_by_hokusai_19th_century.jpg/400px-Tsunami_by_hokusai_19th_century.jpg",
+    "museumId": "696a65ca017c648acfc9b560",
+    "technique": "Xilografia (stampa policroma)"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Storico",
+        "description": "Il prezioso frammento di stele che ha fornito la chiave per decifrare i geroglifici egizi."
+      }
+    ],
+    "_id": "6a6b9719478a8542634450ed",
+    "name": "Stele di Rosetta",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821c134d292854096c43f4",
+    "year": "196 a.C.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/300px-Rosetta_Stone.JPG",
+    "museumId": "696a65ca017c648acfc9b55b",
+    "technique": "Incisione su granodiorite"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Drammatico",
+        "description": "Drammatica rappresentazione della guerra e della resistenza spagnola di Francisco Goya."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450ee",
+    "name": "Il 3 maggio 1808",
+    "author": "6a8215f9bbd3642f8830b6fb",
+    "style": "6a821e9c205d7c012f901e53",
+    "year": "1814",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/El_Tres_de_Mayo%2C_by_Francisco_de_Goya%2C_from_Prado_in_Google_Earth.jpg/330px-El_Tres_de_Mayo%2C_by_Francisco_de_Goya%2C_from_Prado_in_Google_Earth.jpg",
+    "museumId": "696a65ca017c648acfc9b55c",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Regale",
+        "description": "Il capolavoro complesso e misterioso di Diego Velázquez che gioca con le prospettive."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450ef",
+    "name": "Las Meninas",
+    "author": "6a8215f9bbd3642f8830b6f7",
+    "style": "6a821c134d292854096c43f7",
+    "year": "1656",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg/350px-Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg",
+    "museumId": "696a65ca017c648acfc9b55c",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Surreale",
+        "description": "Trittico surreale e densamente popolato di dettagli allegorici."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f0",
+    "name": "Giardino delle delizie",
+    "author": "6a8215f9bbd3642f8830b6fd",
+    "style": "6a821e9e205d7c012f901e5c",
+    "year": "1503",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/El_jard%C3%ADn_de_las_Delicias%2C_de_El_Bosco.jpg/400px-El_jard%C3%ADn_de_las_Delicias%2C_de_El_Bosco.jpg",
+    "museumId": "696a65ca017c648acfc9b55c",
+    "technique": "Olio su tavola"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Sereno",
+        "description": "Dipinto delicato e intimo dedicato alla nascita del nipote dell'artista."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f1",
+    "name": "Ramo di mandorlo in fiore",
+    "author": "6a8215f9bbd3642f8830b706",
+    "style": "6a821c134d292854096c43fd",
+    "year": "1890",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Vincent_van_Gogh_-_Almond_blossom_-_Google_Art_Project.jpg/400px-Vincent_van_Gogh_-_Almond_blossom_-_Google_Art_Project.jpg",
+    "museumId": "696a65ca017c648acfc9b561",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Intimo",
+        "description": "La famosa stanza dell'artista dipinta con una prospettiva emotiva e colori vivaci."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f2",
+    "name": "Camera da letto ad Arles",
+    "author": "6a8215f9bbd3642f8830b706",
+    "style": "6a821c134d292854096c43fd",
+    "year": "1888",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg/400px-Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg",
+    "museumId": "696a65ca017c648acfc9b561",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Eroico",
+        "description": "Celebre dipinto patriottico americano che ritrae George Washington in un momento storico."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f3",
+    "name": "Washington attraversa il Delaware",
+    "author": "6a8215f9bbd3642f8830b6f8",
+    "style": "6a821e9c205d7c012f901e53",
+    "year": "1851",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg/400px-Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg",
+    "museumId": "696a65ca017c648acfc9b55a",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Elegante",
+        "description": "Un ritratto inizialmente considerato scandaloso, diventato poi un'icona di eleganza."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f4",
+    "name": "Madame X",
+    "author": "6a8215f9bbd3642f8830b6ff",
+    "style": "6a821cdf4d292854096c4408",
+    "year": "1884",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "museumId": "696a65ca017c648acfc9b55a",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Monumentale",
+        "description": "Un intero tempio egizio salvato dalle acque del Nilo e ricostruito dentro il museo."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f5",
+    "name": "Tempio di Dendur",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821c134d292854096c43f2",
+    "year": "15 a.C.",
+    "image": "https://res.cloudinary.com/ddjuftfy2/image/upload/f_webp,c_fill,w_800,h_533/multitenacy/wikis/2024-10-23-01-14-09-16718f6a175945.webp",
+    "museumId": "696a65ca017c648acfc9b55a",
+    "technique": "Architettura in arenaria"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Tragico",
+        "description": "Antica scultura greca piena di pathos e movimento che ritrae la fine del sacerdote troiano."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f6",
+    "name": "Gruppo del Laocoonte",
+    "author": "6a8215f9bbd3642f8830b6f4",
+    "style": "6a821c134d292854096c43f9",
+    "year": "40-20 a.C.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Laoco%C3%B6n_and_his_sons_group.jpg",
+    "museumId": "696a65ca017c648acfc9b55f",
+    "technique": "Scultura in marmo"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Filosofico",
+        "description": "Il famoso affresco di Raffaello che celebra i grandi filosofi e scienziati del mondo classico."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f7",
+    "name": "Scuola di Atene",
+    "author": "6a8215f9bbd3642f8830b703",
+    "style": "6a821e97205d7c012f901e41",
+    "year": "1511",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg/400px-%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg",
+    "museumId": "696a65ca017c648acfc9b55f",
+    "technique": "Affresco"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Classico",
+        "description": "Le iconiche sculture classiche provenienti direttamente dall'Acropoli di Atene."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f8",
+    "name": "Marmi del Partenone",
+    "author": "6a8215f9bbd3642f8830b6fa",
+    "style": "6a821c134d292854096c43f8",
+    "year": "447-432 a.C.",
+    "image": "https://cdn.finestresullarte.info/rivista/immagini/2022/1985/parte-meridionale-frontone-sud-bm.jpg",
+    "museumId": "696a65ca017c648acfc9b55b",
+    "technique": "Scultura in marmo pentelico"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Misterioso",
+        "description": "Una delle mummie egizie meglio conservate, risalente a oltre 3000 anni fa."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f9",
+    "name": "Mummia di Katebet",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821c134d292854096c43f3",
+    "year": "1300 a.C.",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1Vc6gOKSvglICOpUL1LmTHfuFDnzhv4x_Sg&s",
+    "museumId": "696a65ca017c648acfc9b55b",
+    "technique": "Cartonnage dipinto e stucco"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Ingegneristico",
+        "description": "Il primo velivolo a motore della storia ad aver compiuto un volo controllato."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450fa",
+    "name": "Wright Flyer",
+    "author": "6a8215f9bbd3642f8830b6fc",
+    "style": "6a821c134d292854096c43fa",
+    "year": "1903",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDA3HkSw4Glia31vE65rdB6Lzh8TSq6qiM9Q&s",
+    "museumId": "696a65ca017c648acfc9b562",
+    "technique": "Legno, tessuto e motore a scoppio"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Spaziale",
+        "description": "La vera capsula di comando che ha portato e riportato i primi esseri umani dalla Luna."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450fb",
+    "name": "Modulo Apollo 11 (Columbia)",
+    "author": "6a8215f9bbd3642f8830b702",
+    "style": "6a821c134d292854096c43fb",
+    "year": "1969",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScHDgdoB7YMJ5m9L5-anoxL1ndsiL2pwRoVw&s",
+    "museumId": "696a65ca017c648acfc9b562",
+    "technique": "Lega di alluminio e titanio"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Avventuroso",
+        "description": "Il monoplano usato da Charles Lindbergh per la prima traversata in solitaria dell'Oceano Atlantico."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450fc",
+    "name": "Spirit of St. Louis",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821c134d292854096c43fa",
+    "year": "1927",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQvB7zJyKn7QL6PNVfU4PXCwHkc9QOr4FeaQ&s",
+    "museumId": "696a65ca017c648acfc9b562",
+    "technique": "Tubi d'acciaio, legno e tessuto"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Drammatico",
+        "description": "Il celebre scudo da parata con dipinta la terrificante testa di Medusa mozzata."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450fd",
+    "name": "Medusa",
+    "author": "6a8215f9bbd3642f8830b6f6",
+    "style": "6a821c134d292854096c43f5",
+    "year": "1597",
+    "image": "https://www.datocms-assets.com/103094/1689148052-1518685471859782-preview.jpg?auto=format&fit=max&w=1200",
+    "museumId": "696a65ca017c648acfc9b55d",
+    "technique": "Olio su tela applicata su scudo di legno"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Armonioso",
+        "description": "Una delle opere più affascinanti e ricche di allegorie del Rinascimento fiorentino."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450fe",
+    "name": "Primavera",
+    "author": "6a8215f9bbd3642f8830b705",
+    "style": "6a821e97205d7c012f901e41",
+    "year": "1482",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/400px-Botticelli-primavera.jpg",
+    "museumId": "696a65ca017c648acfc9b55d",
+    "technique": "Tempera su tavola"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Realistico",
+        "description": "Capolavoro di Vermeer che ritrae una domestica intenta a versare del latte con straordinario realismo."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450ff",
+    "name": "Lattaia",
+    "author": "6a8215f9bbd3642f8830b6fe",
+    "style": "6a821ea1205d7c012f901e69",
+    "year": "1660",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg/330px-Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
+    "museumId": "696a65ca017c648acfc9b55e",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Marziale",
+        "description": "Antica armatura completa da guerriero, testimonianza dell'arte militare del Giappone."
+      }
+    ],
+    "_id": "6a6b97e7478a854263445100",
+    "name": "Armatura Samurai",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821c134d292854096c43fc",
+    "year": "XVII Secolo",
+    "image": "https://museireali.beniculturali.it/wp-content/uploads/2022/08/Musei-Reali-Torino_Armeria-Reale_armatura_B59.jpg",
+    "museumId": "696a65ca017c648acfc9b560",
+    "technique": "Ferro, cuoio, lacca e seta"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Epico",
+        "description": "Il famoso dipinto divenuto l'emblema stesso della Rivoluzione e dei moti popolari."
+      }
+    ],
+    "_id": "6a6b97e7478a854263445101",
+    "name": "La Libertà che guida il popolo",
+    "author": "6a8215f9bbd3642f8830b6f9",
+    "style": "6a821ea4205d7c012f901e72",
+    "year": "1830",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Eug%C3%A8ne_Delacroix_-_Le_28_Juillet._La_Libert%C3%A9_guidant_le_peuple.jpg/400px-Eug%C3%A8ne_Delacroix_-_Le_28_Juillet._La_Libert%C3%A9_guidant_le_peuple.jpg",
+    "museumId": "696a65ca017c648acfc9b559",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "normal",
+        "description": "Mona Lisa, perchè è una mona",
+        "_id": "6a71f268d43150559b8099c6"
+      },
+      {
+        "length": 20,
+        "tone": "medium",
+        "description": "Mona: termine veneto offensivo, Lisa: nome proprio di persona",
+        "_id": "6a7f30ddcd985288431a362d"
+      }
+    ],
+    "_id": "6a71f268d43150559b8099c5",
+    "name": "La Gioconda",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821c134d292854096c43f1",
+    "year": "1503",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original",
+    "museumId": "6a71f268d43150559b8099b9",
+    "__v": 0,
+    "roomId": "6a736c0f7e32a469378318db",
+    "technique": "Olio su tavola di pioppo",
+    "adoptionId": null,
+    "authorName": "Leonardo di Caprio"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "normal",
+        "description": "Ce l'ha piccolo",
+        "_id": "6a71f268d43150559b8099cc"
+      },
+      {
+        "length": 20,
+        "tone": "medium",
+        "description": "ce l'ha piccolo merche la Hunziker ha usato il resto del marmo per scopi personali",
+        "_id": "6a7f315fcd985288431a362e"
+      }
+    ],
+    "_id": "6a71f268d43150559b8099cb",
+    "name": "David",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821ea7205d7c012f901e7b",
+    "year": "1504",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/8/80/Michelangelo%27s_David_-_right_view_2.jpg",
+    "museumId": "6a71f268d43150559b8099b9",
+    "__v": 0,
+    "roomId": "6a736c0f7e32a469378318e2",
+    "technique": "Scultura in marmo",
+    "authorName": "Michelle Hunziker"
+  },
+  {
+    "description": [],
+    "_id": "6a720536085cd7a85e49d9d5",
+    "name": "opera 1",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821eaa205d7c012f901e84",
+    "year": "2026",
+    "image": "yes",
+    "museumId": "6a720536085cd7a85e49d9c9",
+    "__v": 0,
+    "technique": "Tecnica mista"
+  },
+  {
+    "description": [],
+    "_id": "6a736cc97e32a46937831906",
+    "name": "Museo prova - sezione1-opera1 22",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821ead205d7c012f901e8d",
+    "year": "1234",
+    "image": "Museo prova - sezione1-opera1",
+    "museumId": "6a736cc97e32a46937831900",
+    "__v": 0,
+    "technique": "Tecnica mista"
+  },
+  {
+    "description": [],
+    "_id": "6a73703ee77df97525919c99",
+    "name": "Museo prova - sezione1-opera1",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821ead205d7c012f901e8d",
+    "year": "1234",
+    "image": "Museo prova - sezione1-opera1",
+    "museumId": "6a73703ee77df97525919c93",
+    "__v": 0,
+    "technique": "Tecnica mista"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "normal",
+        "description": "",
+        "_id": "6a749510525b691e76b317fa"
+      }
+    ],
+    "_id": "6a749510525b691e76b317f9",
+    "name": "nuova opera 2",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821eaa205d7c012f901e84",
+    "year": "2026",
+    "image": "yes",
+    "museumId": "6a720536085cd7a85e49d9c9",
+    "__v": 0,
+    "technique": "Tecnica mista"
+  },
+  {
+    "_id": "6a802b3d09f97186b7adef76",
+    "name": "La Gioconda del Codice",
+    "author": "6a71eaad1d50777ccbe3e75a",
+    "technique": "Olio su Javascript",
+    "year": "2024",
+    "image": "https://dummyimage.com/300x300",
+    "museumId": "6a802a3909f97186b7adef68",
+    "roomId": null,
+    "__v": 0
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Questo quadro mostra una famiglia povera che mangia la cena insieme.",
+        "medium": "In questo famoso dipinto, Vincent van Gogh ci mostra cinque contadini poveri che mangiano insieme delle patate alla luce di una lampada. I loro volti sono stanchi e le mani sono rovinate dal duro lavoro nei campi, ma l'artista li dipinge con grande rispetto e affetto per mostrare la loro vita vera e semplice.",
+        "long": "In questo dipinto, Vincent van Gogh ha voluto ritrarre la vita dura dei contadini che lavorano la terra. Vediamo cinque persone sedute in una stanza buia, illuminate solo da una piccola lampada appesa in alto.\n\nStanno mangiando patate bollite, le stesse che hanno faticato tanto a coltivare e raccogliere. Van Gogh voleva mostrare che queste persone oneste si guadagnano il cibo con il sudore della fronte, dipingendole con mani grandi e nodose e volti scavati dalla fatica.",
+        "exhaustive": "Eccoci davanti a una delle opere più sincere e toccanti della storia dell'arte: \"I mangiatori di patate\" di Vincent van Gogh, dipinta nell'aprile del 1885 a Nuenen, in Olanda.\n\nOsservando attentamente la tela, la prima cosa che notiamo è l'atmosfera. La scena si svolge all'interno di una povera e angusta capanna contadina. Fuori è notte fonda, e dentro la luce è scarsa, emessa solo da una piccola lampada a olio che proietta ombre pesanti sui volti dei personaggi. Intorno al tavolo di legno grezzo ci sono cinque persone: un uomo anziano, due donne e un uomo più giovane, mentre una bambina di spalle guarda la scena. Non stanno parlando molto; c'è un silenzio pesante, rotto solo dal rumore dei piatti. Cosa stanno mangiando? Delle semplici patate fumanti. Con le loro mani tozze, rovinate dal duro lavoro nei campi, le prendono dai piatti e le portano alla bocca. Hanno le tazze piene di caffè nero e cicoria.\n\nVan Gogh scelse di dipingere questa scena con colori scuri e terrosi, che ricordano proprio il colore delle patate e della terra fangosa che i contadini zappano ogni giorno. Voleva che la loro pelle sembrasse fatta della stessa materia della terra. Non cercava la bellezza elegante, ma la verità. Voleva dirci che queste persone, pur vivendo in grande povertà e facendo una vita molto faticosa, sono nobili e sincere perché si guadagnano da vivere con le proprie mani e condividono onestamente il frutto della loro fatica. Per l'artista, questo pasto così povero è quasi un momento sacro, un rito di unione familiare che merita tutto il nostro rispetto."
+      },
+      "medium": {
+        "short": "Questo quadro mostra una famiglia povera che mangia la cena insieme.",
+        "medium": "Dipinto da Vincent van Gogh nel 1885, \"I mangiatori di patate\" ritrae cinque contadini olandesi riuniti attorno a un tavolo per la cena. L'opera esalta la dignità e la fatica del mondo rurale.",
+        "long": "\"I mangiatori di patate\" è considerato il primo vero capolavoro di Vincent van Gogh, realizzato a Nuenen nel 1885. Il dipinto raffigura una famiglia di contadini che consuma il pasto serale in una stanza buia e spoglia, illuminata solo da una lampada a sospensione.\n\nVan Gogh impiegò una tavolozza di colori scuri e terrosi per enfatizzare la povertà e il legame viscerale dei protagonisti con la terra che lavorano. I volti dei personaggi sono scavati, segnati dal lavoro duro, e le mani sono nodose. Con quest'opera, l'artista non voleva semplicemente descrivere una scena di genere, ma rendere omaggio alla dignità morale di chi si guadagna il pane onestamente.",
+        "exhaustive": "Realizzato nella primavera del 1885 a Nuenen, \"I mangiatori di patate\" rappresenta la sintesi del periodo olandese di Vincent van Gogh e la sua prima grande opera corale.\n\nIl dipinto cattura un momento intimo e quotidiano: una famiglia contadina – i de Groot – riunita intorno a un tavolo di legno per consumare la cena. Il piatto principale è composto unicamente da patate bollite, accompagnate da tazze di caffè nero. La scena è immersa in un'atmosfera cupa, rischiarata unicamente dalla luce fioca di una lampada a olio appesa sopra il tavolo. Questa illuminazione artificiale crea forti contrasti di chiaroscuro, evidenziando i volti segnati dalle intemperie, gli sguardi stanchi e le mani grandi, deformate dalla fatica nei campi.\n\nVan Gogh lavorò duramente a questa composizione, realizzando numerosi studi preparatori di mani e volti prima di arrivare alla stesura finale. La sua intenzione era chiara: voleva mostrare la verità nuda e cruda della vita contadina, rifiutando ogni idealizzazione accademica. I colori terrosi, che vanno dai toni del marrone al verde scuro e all'ocra, non sono casuali; servono a comunicare che questi lavoratori sono parte integrante della terra stessa. L'artista nutriva una profonda empatia per gli emarginati e i lavoratori umili, vedendo nel loro pasto frugale una sorta di comunione laica, un momento di autentica unione e dignità morale che meritava di essere immortalato con la stessa solennità solitamente riservata ai soggetti storici o religiosi."
+      },
+      "professional": {
+        "short": "Questo quadro mostra una famiglia povera che mangia la cena insieme.",
+        "medium": "In quest'opera del 1885, Van Gogh adotta una tavolozza terrea e un forte chiaroscuro per rappresentare la dura realtà e la dignità morale dei contadini olandesi intenti a consumare il loro pasto.",
+        "long": "Considerato il capolavoro del periodo olandese di Vincent van Gogh (1885), \"I mangiatori di patate\" riflette l'influenza del realismo ottocentesco, in particolare di Jean-François Millet. La composizione mostra cinque contadini in un interno buio, illuminato da una fonte di luce centrale che scolpisce i volti spigolosi e le mani nodose.\n\nVan Gogh utilizza una stesura densa e una gamma cromatica dominata da terre cupe e bitumose per sottolineare l'appartenenza viscerale dei soggetti alla terra. L'opera esprime la profonda empatia dell'artista verso le classi subalterne, elevando la loro fatica quotidiana a simbolo di autenticità morale ed esistenziale.",
+        "exhaustive": "\"I mangiatori di patate\" (De Aardappeleters), dipinto da Vincent van Gogh a Nuenen nell'aprile del 1885, rappresenta il culmine della sua prima fase artistica, fortemente radicata nel realismo sociale e influenzata dalla tradizione pittorica olandese del Seicento e dal moralismo rurale di Millet.\n\nLa genesi dell'opera fu complessa e rigorosa: Van Gogh produsse decine di studi di teste e mani prima di assemblare la scena corale definitiva. Il dipinto raffigura cinque membri della famiglia de Groot in un interno povero, mentre consumano patate e caffè. A livello formale, la composizione è dominata da un forte chiaroscuro di derivazione rembrandtiana, in cui la lampada a petrolio funge da unico fulcro luminoso, proiettando ombre verdastre e marroni sui volti dei commensali. La tavolozza è intenzionalmente limitata a \"terra di Siena sporca\", come la definì lo stesso autore, per evitare colori troppo brillanti che avrebbero stonato con la cupezza della condizione contadina.\n\nDal punto di vista critico e socioculturale, Van Gogh intendeva rivendicare la dignità del lavoro manuale. I corpi sgraziati e le mani callose dei contadini non sono edulcorati; l'artista vuole dimostrare che coloro che scavano la terra con queste stesse mani hanno il diritto di mangiarsela. L'opera si pone dunque come un manifesto etico ed estetico, in cui il realismo crudo si fonde con una visione quasi sacramentale della povertà e della fatica umana, anticipando la tensione espressiva che caratterizzerà la successiva evoluzione stilistica dell'artista."
+      },
+      "expert": {
+        "short": "Questo quadro mostra una famiglia povera che mangia la cena insieme.",
+        "medium": "Caposaldo del realismo sociale di matrice nordica, \"I mangiatori di patate\" (1885) sintetizza l'adesione etica di Van Gogh al mondo contadino attraverso un rigoroso chiaroscuro e una tavolozza di terre grezze.",
+        "long": "Eseguito a Nuenen nella primavera del 1885, \"I mangiatori di patate\" costituisce il manifesto programmatico del primo Van Gogh, fortemente debitore nei confronti del realismo di Millet e della tradizione fiamminga. L'opera adotta un impianto compositivo rigoroso, volto a esaltare la gravitas dei corpi contadini attraverso un uso antinaturalistico del chiaroscuro e una gamma cromatica ridotta ai toni terrosi.\n\nIl dipinto opera una trasfigurazione etica del quotidiano: la condivisione del cibo povero diviene allegoria di una comunione esistenziale e di un'appartenenza ontologica alla terra. La deformazione espressiva dei tratti somatici e la pennellata materica anticipano le istanze dell'espressionismo europeo.",
+        "exhaustive": "Il capolavoro nuenese di Vincent van Gogh, \"I mangiatori di patate\" (aprile 1885), si configura come un testo fondativo della modernità pittorica, collocandosi all'intersezione tra il realismo sociale di tardo Ottocento, la tradizione del genere rustico nordico e le future istanze espressioniste.\n\nAnalizzando la struttura morfo-sintattica dell'opera, emerge la complessa gestazione documentata dal ricco epistolario con il fratello Theo. Van Gogh persegue deliberatamente una \"bruttezza\" stilistica, rifiutando ogni accademismo o grazia compositiva per restituire la verità fenomenologica della classe subalterna. I corpi dei de Groot sono trattati come volumi plastici pesanti, scolpiti da una luce artificiale interna che agisce alla maniera di un caravaggismo popolare e terragno. L'uso di una tavolozza bituminosa e monocroma – dominata da bruni, terre d'ombra, ocra e verdi fangosi – risponde a una precisa necessità semantica: i contadini devono apparire come se fossero stati modellati con la stessa terra che dissodano.\n\nDal punto di vista storico-critico, l'opera rappresenta il tentativo di Van Gogh di fondare un'arte eticamente impegnata, una sorta di sacramento laico del lavoro e della fatica. La composizione circolare attorno al fuoco/lampada evoca una struttura totemica, quasi tribale, dove il cibo (le patate, simbolo primario di sussistenza proletaria) suggella un patto di solidarietà e resistenza umana contro le avversità dell'esistenza. Sebbene accolto con scetticismo dai contemporanei per i presunti errori anatomici, il dipinto racchiude già in nuce quella violenza espressiva e quella tensione spirituale che deflagreranno nella successiva stagione francese."
+      }
+    },
+    "_id": "6a817ba76102a42968f02ba7",
+    "name": "I mangiatori di patate",
+    "author": "6a80391c493cd5ba5d203c1a",
+    "technique": "Olio su tela",
+    "style": "6a8076a05f86062810450280",
+    "year": "1500",
+    "image": "yes",
+    "museumId": "696a65ca017c648acfc9b561",
+    "roomId": "6a817b7f6102a42968f02b7d",
+    "__v": 0,
+    "funFact": "Immagina di cenare in una cucina buia, con la luce soffusa di una sola lampada a petrolio, mentre mastichi patate rugose colturate con fatica. Questo è esattamente ciò che Vincent van Gogh ha immortalato nel 1885 ne I mangiatori di patate, considerato il suo primo vero capolavoro. Ma ecco il fun fact che non ti aspetti: Vincent voleva che la tela fosse volutamente cupa e \"sporca\", usando una palette di colori terrosi che ricordavano proprio il colore delle patate non lavate! Voleva mostrare la dignità brutale di contadini reali, non idealizzati, che mangiano con le stesse mani sporche con cui lavoravano la terra. Quando però mostrò l'opera al fratello Theo, la reazione fu gelida: a Parigi erano tutti affascinati dai colori brillanti degli Impressionisti, e quel quadro marrone e cupo sembrava semplicemente fuori tempo massimo. Oggi, ironia della sorte, è una delle icone più amate del Museo Van Gogh di Amsterdam. Insomma, un vero e proprio trionfo della bruttezza reso immortale dal genio.",
+    "paraphrase": "Realizzato da Vincent van Gogh nella primavera del 1885 a Nuenen, questo dipinto rappresenta uno dei vertici assoluti del periodo olandese dell'artista e incarna la sua visione profondamente empatica verso le classi più umili. L'opera ritrae una famiglia di contadini riunita attorno a un tavolo spoglio nella penombra di una cucina rurale, intenta a consumare un pasto frugale a base di patate bollite, accompagnate unicamente da caffè nero. Van Gogh ha scelto deliberatamente di dipingere queste figure con una forte dose di realismo, esagerando i tratti somatici, le mani nodose e i volti scavati dalla fatica e dal lavoro nei campi, per dimostrare che quelle stesse mani che zappavano la terra erano le medesime che ora si nutrivano onestamente del frutto della propria fatica. La tavolozza cromatica è dominata da toni terrosi, scuri e cupi, con sfumature che vanno dal marrone al verde marcio, rischiarati soltanto dalla debole luce di una lampada a petrolio sospesa che proietta ombre taglienti sui commensali. Con questo lavoro, l'autore non intendeva realizzare una denuncia sociale, quanto piuttosto un omaggio sincero e dignitoso alla vita agreste, ritenuta da lui più autentica e vicina alla vera essenza umana rispetto a quella della modernità industriale."
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Un uomo si copre le orecchie e grida in un paesaggio dai colori spaventosi.",
+        "medium": "In questo famoso quadro vediamo un uomo che si copre le orecchie con le mani e apre la bocca per gridare forte. Intorno a lui, i colori del cielo sono molto strani e fanno paura, proprio come succede in un brutto sogno.",
+        "long": "In questo famosissimo dipinto, un uomo si trova su un ponte e si copre le orecchie con le mani, aprendo la bocca in un grido disperato. Intorno a lui, il mondo sembra dissolversi in un incubo: il cielo si tinge di linee rosse e arancioni che sembrano sangue e fuoco, facendo paura a chi guarda.\n\nQuesta scena non rappresenta un luogo reale, ma le emozioni forti e negative che l'uomo prova dentro di sé. È come quando facciamo un brutto sogno e ci sentiamo sopraffatti dall'angoscia, incapaci di fuggire da ciò che ci circonda.",
+        "exhaustive": "Benvenuti di fronte a una delle opere più celebri e riconoscibili della storia dell'arte: 'L'urlo'. Al centro della composizione c'è una figura umana stilizzata, quasi uno spettro, che porta le mani ai lati del viso per coprirsi le orecchie. La sua bocca è spalancata in un grido muto e disperato, che sembra voler trafiggere il silenzio della natura circostante.\n\nAlle sue spalle, due figure scure camminano indifferenti su un ponte che taglia diagonalmente la tela, mentre sullo sfondo il paesaggio marino e il cielo si infiammano con pennellate ondulate e minacciose di rosso, arancione e giallo cupo. Questi colori non descrivono la realtà così come la vediamo, ma traducono visivamente la paura, l'ansia e il senso di smarrimento interiore.\n\nL'autore ha voluto immortalare un momento di profonda crisi emotiva, in cui il dolore sembra contagiare persino l'ambiente esterno, facendo vibrare l'aria e deformando la prospettiva. Osservando attentamente, ci accorgiamo che l'urlo non è solo emesso dalla bocca dell'uomo, ma sembra propagarsi attraverso le onde del cielo e della terra, coinvolgendo l'intera natura in un'unica, grande sensazione di angoscia universale che ancora oggi riesce a toccare il cuore di chiunque la guardi."
+      },
+      "medium": {
+        "short": "Un uomo si copre le orecchie e grida in un paesaggio dai colori spaventosi.",
+        "medium": "In questo celebre dipinto un uomo si copre le orecchie e urla disperato, immerso in un paesaggio onirico e inquietante. Il cielo infuocato e le linee sinuose riflettono un profondo stato di angoscia interiore.",
+        "long": "L'opera cattura l'istante culminante di una crisi esistenziale: un uomo barcolla su un ponte e, sopraffatto dal terrore, si porta le mani alle orecchie spalancando la bocca in un grido sordo. Intorno a lui, la natura reagisce con tinte allucinatorie e innaturali, in particolare un cielo rosso sangue che fende la quiete del fiordo norvegese.\n\nL'uso magistrale dei colori e delle linee curve crea un effetto di vortice visivo, dove l'ambiente circostante sembra deformarsi al ritmo della sofferenza del protagonista. Non è solo la rappresentazione di un singolo individuo, ma il ritratto universale dell'ansia e della solitudine umana.",
+        "exhaustive": "Capolavoro assoluto dell'arte moderna, 'L'urlo' ci pone di fronte a una delle espressioni più potenti e dirette della psicologia umana. La composizione è dominata da una figura androgina e angosciata, posta in primo piano sul parapetto di un ponte. Con le mani serrate sulle tempie e gli occhi sbarcati nel vuoto, la figura lancia un urlo silenzioso ma assordante, accentuato dalla forma ovale della bocca e del viso.\n\nAi lati, due figure scure e indistinte procedono distanti, accentuando il senso di isolamento del protagonista. Ma è lo sfondo a dominare la scena emotiva: un cielo striato di rosso fuoco, giallo acido e blu cupo, attraversato da pennellate ondulate che sembrano quasi onde sonore capaci di amplificare il tormento interiore. L'artista ha saputo tradurre in pittura un attacco di panico, un'esperienza in cui i confini tra il soggetto e il mondo esterno si dissolvono.\n\nLa genialità dell'opera risiede nella sua capacità di trascendere il contesto biografico per diventare l'emblema dell'alienazione e dell'angoscia esistenziale dell'uomo moderno. Attraverso una tecnica espressiva che anticipa i fermenti del Novecento, il dipinto continua a interrogarci sul senso della paura e sulla fragilità della mente umana."
+      },
+      "professional": {
+        "short": "Un uomo si copre le orecchie e grida in un paesaggio dai colori spaventosi.",
+        "medium": "In questo celebre dipinto espressionista, un individuo stilizzato esprime un grido d'angoscia esistenziale. La distorsione delle forme e il cromiasmo violento del cielo riflettono il dramma psicologico dell'uomo moderno.",
+        "long": "Considerato un manifesto precoce dell'Espressionismo, il dipinto raffigura una figura umanoide in preda a un parossismo di terrore, con le mani che premono sul capo e la bocca spalancata in un urlo muto. La composizione è mossa da linee diagonali e curve sinuose che guidano lo sguardo attraverso il ponte, contrapponendo il rigore geometrico della struttura all'anarchia cromatica del paesaggio.\n\nIl cielo, solcato da fasce di rosso sanguigno e giallo zolfo, non descrive un fenomeno atmosferico oggettivo, ma la proiezione oggettivata di un trauma interiore. L'artista piega la realtà visibile alle esigenze del sentimento, anticipando i temi dell'alienazione e della crisi del soggetto tipici del XX secolo.",
+        "exhaustive": "Analizzando 'L'urlo', ci troviamo di fronte a una pietra miliare della transizione dal simbolismo all'espressionismo nordico. La tela sfrutta una forte asimmetria e una prospettiva vertiginosa: il ponte in primo piano crea una diagonale tagliente, sulla quale si staglia la figura principale, resa con tratti fluidi, quasi serpentini, che spogliano il corpo di ogni anatomia realistica per ridurlo a un'icona di pura sofferenza psichica.\n\nLa celebre gamma cromatica – giocata sui contrasti complementari tra i rossi/arancioni del cielo e i blu/verdi scuri del fiordo e della terra – risponde a una precisa urgenza espressiva. L'autore stesso annotò nel suo diario l'ispirazione per l'opera, nata durante una passeggiata al tramonto quando avvertì 'un urlo infinito attraversare la natura'. Questa sinestesia visiva si traduce in onde cromatiche che sembrano propagarsi nello spazio, investendo lo spettatore in un'esperienza sensoriale totalizzante.\n\nTecnicamente, l'uso stratificato di colori a olio, tempera e pastello su cartone evidenzia la natura urgente e quasi frenetica della stesura. L'opera si inserisce in un contesto culturale dominato dalla <i>fin de siècle</i>, incarnando perfettamente le inquietudini filosofiche e esistenziali di un'epoca che vedeva vacillare le certezze positiviste, ponendo le basi per l'esplorazione artistica dell'inconscio."
+      },
+      "expert": {
+        "short": "Un uomo si copre le orecchie e grida in un paesaggio dai colori spaventosi.",
+        "medium": "Archetipo dell'angoscia moderna, l'opera visualizza la disintegrazione dell'io attraverso una sintesi radicale di linea e colore. Il soggetto esperisce un panico cosmico, oggettivato nella violenta deformazione del paesaggio circostante.",
+        "long": "Il dipinto rappresenta l'apice della ricerca psicologica e formale dell'autore, tesa a scavalcare il naturalismo per approdare a un'arte puramente emozionale. La figura centrale, disumanizzata e ridotta a larva scheletrica, incarna lo shock della modernità e la dissoluzione dell'identità borghese. Le mani serrate sul cranio e la bocca ovale non mimano semplicemente un urlo, ma svelano la ricezione traumatica di un flusso sonoro cosmico.\n\nIntorno a questo epicentro fobico, il paesaggio si liquefà: le strida cromatiche del cielo crepuscolare — probabile reminiscenza delle anomale polveri vulcaniche del Krakatoa giunte nei cieli europei — e la linea serpentina del fiordo di Ekeberg costituiscono un continuum sinestetico in cui l'ambiente naturale e la psiche umana collassano l'uno nell'altra.",
+        "exhaustive": "Collocato al crocevia tra le istanze simboliste della fine del XIX secolo e la deflagrazione dell'Espressionismo storico, 'L'urlo' (Skrik) si configura come un testo visivo di ineguagliabile densità critica. L'opera formalizza il concetto di 'angoscia esistenziale' (Angst), anticipando le categorie filosofiche dell'esistenzialismo europeo. La costruzione spaziale rifiuta la verosimiglianza prospettica rinascimentale a favore di una distorsione espressiva: il parapetto del ponte agisce come una barriera liminale che separa la geometria artificiale della società dalla furia incontrollabile e fluida della natura.\n\nDal punto de vista iconografico e biografico, la genesi dell'opera riflette la profonda crisi neurale e spirituale dell'artista, segnata da lutti familiari e da un isolamento cronico. Tuttavia, il valore euristico del dipinto risiede nella sua capacità di universalizzare tale trauma privato. La figura androgina in primo piano, le cui fattezze ricordano una mummia peruviana esposta al Musée de l'Homme di Parigi, diviene il ricettacolo di un trauma transpersonale: il panico non è più un affetto individuale, ma una condizione ontologica.\n\nSotto il profilo tecnico-materiale, l'uso eclettico di mezzi misti (olio, tempera e pastello su cartone) testimonia l'urgenza esecutiva e il rifiuto dei canoni accademici tradizionali. Le pennellate ondulate, che richiamano le correnti di un'energia invisibile ma devastante, operano una decostruzione radicale della percezione visiva. In definitiva, 'L'urlo' non è la rappresentazione di un evento, ma la messa in scena della catastrofe della percezione, un monumento perenne alla vulnerabilità del soggetto di fronte all'abisso dell'essere."
+      }
+    },
+    "_id": "6a81bdc801de947766fe8343",
+    "name": "L'urlo",
+    "author": "6a81c3e26872d6d52c13848e",
+    "technique": "Olio, tempera e pastello su cartone",
+    "style": "6a81c6af622833492a3be873",
+    "year": "1420",
+    "image": "yes",
+    "museumId": "6a7622a872031acd0ee0a2d3",
+    "roomId": "6a81bd8f01de947766fe830b",
+    "__v": 0,
+    "paraphrase": "L'opera rappresenta la profonda angoscia e il panico interiore di un individuo attraverso la distorsione del paesaggio circostante. Non mostra una scena reale, ma traduce visivamente la paura e la solitudine che l'essere umano può provare dentro di sé."
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Tre strani manichini immobili si trovano in una piazza deserta accanto a un grande palazzo rosso.",
+        "medium": "In questo dipinto vediamo tre strani manichini che sembrano statue greche. Sono immobili in una piazza silenziosa e deserta, accanto a un grande palazzo rosso.",
+        "long": "Immagina una piazza deserta e silenziosa, bagnata da una luce strana e misteriosa. In questo spazio vuoto si trovano tre strani manichini che ricordano le antiche statue greche. Accanto a loro c'è un grande palazzo rosso che sembra quasi un teatro.\n\nTutto è immobile e immobile, come in un sogno in cui il tempo si è fermato. È un'immagine che fa un po' pensare e incuriosisce, perché ci mostra qualcosa di familiare ma in modo insolito.",
+        "exhaustive": "Benvenuti davanti a questa affascinante e misteriosa opera d'arte. Osservando la tela, la prima cosa che notiamo è una grande piazza vuota, dipinta con colori caldi ma irreali. Su questo palcoscenico silenzioso si ergono tre strani manichini di legno, che ricordano antiche statue greche ma hanno teste ovoidali e corpi rigidi.\n\nAccanto a loro, sullo sfondo, si alza un imponente palazzo rosso, il Castello di San Giorgio, che richiama l'architettura della città di Ferrara. Notate come la luce crei lunghe ombre geometriche: tutto è immobile, come se il tempo si fosse improvvisamente congelato. Non ci sono persone, non c'è rumore, solo un grande senso di mistero.\n\nQuesto dipinto ci invita a entrare in un mondo che sembra un sogno ad occhi aperti. L'artista ha voluto mescolare oggetti moderni, come i manichini da sarto, con l'arte classica del passato, creando un'atmosfera magica e un po' surreale che ci fa interrogare sul significato del silenzio e dello spazio."
+      },
+      "medium": {
+        "short": "Tre strani manichini immobili si trovano in una piazza deserta accanto a un grande palazzo rosso.",
+        "medium": "In questo dipinto tre misteriosi manichini dalle sembianze classiche stazionano in una piazza metafisica e silenziosa, dominata da un grande palazzo rosso.",
+        "long": "\"Le muse inquietanti\" è uno dei capolavori più celebri della pittura italiana del Novecento. La scena immortala tre manichini silenziosi, simili a statue antiche, disposti in una piazza deserta e assolata.\n\nSul fondo svetta il profilo geometrico di un grande palazzo rosso, mentre in primo piano compaiono alcuni oggetti enigmatici come scatole e bastoni. L'assenza di vita umana e l'uso di una prospettiva innaturale creano un'atmosfera sospesa, enigmatica e profondamente malinconica.",
+        "exhaustive": "Con \"Le muse inquietanti\", dipinto nel 1918, Giorgio de Chirico raggiunge l'apice della sua ricerca sulla pittura metafisica. La composizione si sviluppa all'interno di una piazza ferrarese deserta e geometricamente rigorosa, dominata sulla destra dal massiccio volume di un grande palazzo rosso con arcate.\n\nAl centro della scena trionfano tre figure di manichini: corpi lignei e inanimati, privi di volto, che richiamano tuttavia la nobiltà delle muse classiche greche. La figura centrale, eretta e ieratica, ricorda una colonna dorica, mentre quelle ai lati assumono pose più raccolte. Elementi apparentemente banali, come scatoloni colorati, triangoli e bastoni, si caricano di una tensione simbolica fortissima, accentuata da ombre lunghe e taglienti e da un cielo verdastro.\n\nQuesta opera rappresenta la quintessenza del mondo metafisico: un luogo dove la realtà visibile viene svuotata della sua funzione quotidiana per rivelare un mistero segreto. De Chirico indaga il senso della solitudine umana, la nostalgia per l'antichità classica e l'inquietudine di un'epoca segnata dai traumi della Grande Guerra, cristallizzando il tempo in un'eterna e immobile attesa."
+      },
+      "professional": {
+        "short": "Tre strani manichini immobili si trovano in una piazza deserta accanto a un grande palazzo rosso.",
+        "medium": "L'opera raffigura tre manichini antropomorfi dalle fattezze classiche, immobili in una piazza metafisica caratterizzata da forti contrasti prospettici e dominata dal Castello di San Giorgio.",
+        "long": "Collocato nel periodo ferrarese di Giorgio de Chirico, questo dipinto incarna i canoni della Metafisica. Tre manichini ibridi, a metà tra statue classiche e oggetti da sartoria, stazionano in una piazza urbana fortemente prospettica.\n\nLa composizione è ancorata sullo sfondo dal monumentale palazzo rosso. L'illuminazione radente genera ombre antinaturalistiche, mentre la tavolozza calda ma straniante amplifica il senso di sospensione temporale e di enigma visivo, anticipando le istanze del Surrealismo.",
+        "exhaustive": "\"Le muse inquietanti\" (1918) rappresenta uno snodo fondamentale nella poetica della Pittura Metafisica. L'impianto scenico si configura come un teatro urbano ferrarese, in cui la prospettiva rinascimentale è volutamente distorta per generare disorientamento percettivo. Sulla sinistra, la piazza è chiusa dal volume severo del palazzo rosso (allusione al Castello Estense), mentre sul piano di calpestio ligneo stazionano i tre manichini.\n\nTali figure incarnano il sincretismo tipico di de Chirico: teste ovoidali prive di fisionomia (la musa centrale con testa di erma, quella seduta con attributi di Melpomene) innestate su toraci lignei geometrici. La loro immobilità ieratica contrasta con la presenza di oggetti sparsi (scatole, palette, ingranaggi), simboli di un'iconografia ermetica.\n\nFormalmente, il dipinto sfrutta una luce crepuscolare e innaturale che proietta ombre taglienti, svuotando lo spazio di ogni traccia vitale. Dal punto di vista storico-critico, l'opera riflette la disillusione e l'angoscia esistenziale del primo dopoguerra italiano, sublimando la crisi della ragione attraverso il recupero di un mito classico svuotato di epica e ridotto a manichino inerte."
+      },
+      "expert": {
+        "short": "Tre strani manichini immobili si trovano in una piazza deserta accanto a un grande palazzo rosso.",
+        "medium": "Caposaldo della Metafisica, il dipinto giustappone manichini statuari e arredi urbani in una piazza ferrarese deserta, dominata dal palazzo rosso e pervasa da un'angosciante sospensione temporale.",
+        "long": "Dipinto a Ferrara nel 1918, \"Le muse inquietanti\" condensa la visione metafisica di Giorgio de Chirico nel momento di massima tensione stilistica. La tela mostra tre manichini assemblati con frammenti di cultura classica e modernità industriale, collocati in uno spazio urbano claustrofobico e prospetticamente instabile.\n\nIl grande palazzo rosso sullo sfondo funge da quinta teatrale, accentuando la dimensione di artificio scenico. L'opera opera una radicale scomposizione del senso storico, fondendo il mito apollineo delle Muse con l'oggettificazione alienata del Novecento, in un clima di profonda atarassia e presagio.",
+        "exhaustive": "Eseguito a Ferrara nel 1918, l'anno conclusivo del soggiorno ferrarese e della fase aurea della Metafisica, \"Le muse inquietanti\" costituisce una delle formulazioni iconografiche più complesse e influenti del Novecento europeo. La costruzione spaziale tradisce un'ispirazione teatrale e architettonica: la piazza è un microcosmo sintetico in cui convergono la lezione prospettica quattrocentesca (da Piero della Francesca a Paolo Uccello) e le allucinazioni urbane della modernità.\n\nAl centro della composizione agiscono le tre muse: la figura stante a sinistra, la statua seduta al centro e la figura ieratica a destra. I loro corpi ibridi fondono la statuaria classica greco-romana con i manichini sartoriali e le strutture lignee da cantiere. La decapitazione e la sostituzione con volti aniconici o ovoidali (ispirati alle teste africane o alle forme industriali) denotano la volontà di azzerare l'umanesimo tradizionale. Il palazzo rosso sullo sfondo, identificabile con il prospetto del Castello di San Giorgio e i magazzini fluviali, è reso attraverso una volumetria severa e priva di aperture naturalistiche.\n\nSul piano semiotico, gli oggetti sparsi sul piano ligneo (la scatola colorata, la maschera, i bastoni) funzionano come enigmi visivi irrisolti. La luce radente, priva di una fonte coerente, genera ombre ortogonali che accentuano il carattere allucinato della visione. Sul piano socio-culturale, l'opera riflette lo Zeitgeist della prima guerra mondiale: un'Europa traumatizzata che, attraverso l'arte di de Chirico, sperimenta la fine della centralità antropocentrica, la mercificazione dell'individuo e l'atemporale nostalgia per un'antichità irrimediabilmente perduta, anticipando le inquietudini del Surrealismo e della Nouvelle Objectivité."
+      }
+    },
+    "_id": "6a81c25b1d096f7a8ace88c4",
+    "name": "Le muse inquietanti",
+    "author": "6a81c5e6ad36d9e03b9ca11b",
+    "technique": "Olio su tela",
+    "style": "6a81c7abaac995cd638bd678",
+    "year": "1842",
+    "image": "yes",
+    "museumId": "6a7622a872031acd0ee0a2d3",
+    "roomId": "6a81bd8f01de947766fe830b",
+    "__v": 0,
+    "paraphrase": "L'opera rappresenta un mondo silenzioso e immobile in cui il passato classico e il presente industriale si incontrano. Attraverso figure fredde e piazze deserte, l'artista esprime il senso di mistero, solitudine e attesa tipico dell'essere umano."
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Un'opera d'arte affascinante tutta da scoprire.",
+        "medium": "Questa bellissima opera ci mostra colori brillanti e forme particolari. È stata dipinta da un artista molto bravo per farci sognare e immaginare storie fantastiche.",
+        "long": "Osservando questa opera d'arte, la prima cosa che salta all'occhio sono i colori vivaci e le pennellate coraggiose. L'artista ha voluto creare un mondo magico, dove tutto sembra possibile. Guardando attentamente, possiamo trovare tanti piccoli dettagli nascosti che raccontano una storia.\n\nOgni elemento è stato posizionato con cura per guidare i nostri occhi alla scoperta del dipinto. È un invito a usare la fantasia e a divertirsi a interpretare ciò che l'autore ha voluto rappresentare per noi.",
+        "exhaustive": "Benvenuti alla scoperta di questo meraviglioso dipinto! Anche se non conosciamo tutti i segreti del passato, possiamo goderci la bellezza di ciò che vediamo. L'artista ha usato colori forti, come il blu del cielo e il rosso dei fiori, per catturare la nostra attenzione.\n\nLe linee morbide che compongono il disegno ci fanno pensare al movimento del vento o delle onde del mare. Ogni parte dell'opera lavora insieme per regalarci una sensazione di gioia e meraviglia. Quando guardiamo un quadro, diventiamo anche noi parte della sua storia, perché possiamo immaginare cosa succede subito dopo quello che vediamo.\n\nQuesto dipinto ci insegna che l'arte è come una finestra aperta su mondi fantastici. Non serve essere esperti per apprezzarla, basta aprire il cuore e lasciare che i colori ci raccontino la loro storia. Prenditi tutto il tempo che ti serve per esplorare ogni angolo della tela e scoprire le tue meraviglie nascoste."
+      },
+      "medium": {
+        "short": "Un'opera d'arte affascinante tutta da scoprire.",
+        "medium": "Un lavoro che cattura lo sguardo grazie a una raffinata combinazione di luce e colore. L'artista esplora temi universali attraverso una composizione equilibrata e coinvolgente.",
+        "long": "Quest'opera rappresenta un momento significativo nella produzione dell'artista, caratterizzato da una forte ricerca visiva ed emotiva. La gestione della luce non è solo funzionale alla visibilità, ma diventa essa stessa protagonista, definendo volumi e atmosfere che avvolgono l'osservatore.\n\nLa composizione unisce rigore geometrico e fluidità espressiva, dimostrando una notevole padronanza tecnica. È un pezzo che invita a riflettere, capace di comunicare emozioni profonde attraverso il linguaggio universale dell'arte.",
+        "exhaustive": "L'opera in esame costituisce un eccellente esempio di ricerca visiva, inserendosi in un contesto storico-artistico di grande fermento creativo. Attraverso l'uso sapiente del mezzo pittorico, l'autore riesce a fondere tecnica e ispirazione, creando un dialogo visivo che trascende la semplice rappresentazione mimetica.\n\nAnalizzando la struttura compositiva, notiamo come le linee di forza guidino lo sguardo dello spettatore attraverso un percorso visivo studiato nei minimi dettagli. La tavolozza cromatica, giocata su contrasti calibrati, accentua la drammaticità e la profondità della scena, conferendo all'insieme un forte impatto emotivo.\n\nQuesto lavoro non si limita a decorare lo spazio, ma interroga chi guarda, stimolando una riflessione estetica che dura ben oltre il momento dell'osservazione. Rappresenta la sintesi di un percorso umano e professionale maturo, in cui ogni pennellata testimonia la dedizione e la visione profonda del suo creatore."
+      },
+      "professional": {
+        "short": "Un'opera d'arte affascinante tutta da scoprire.",
+        "medium": "Un chiaro esempio di maestria tecnica, in cui l'uso della luce e della materia definisce i canoni stilistici del periodo. La composizione riflette le tensioni estetiche e culturali del suo tempo.",
+        "long": "Collocabile all'interno di una fase di transizione stilistica, quest'opera evidenzia una raffinata consapevolezza dei codici visivi tradizionali e delle istanze di rinnovamento. L'artista impiega una stesura materica complessa, dove la gestione della luce modella i piani prospettici con precisione geometrica.\n\nIl rigore formale si sposa con una forte tensione espressiva, tipica dei maestri che ridefiniscono i confini del proprio linguaggio. L'analisi stratificata della superficie pittorica rivela pentimenti e soluzioni compositive di notevole interesse filologico.",
+        "exhaustive": "L'opera testimonia una fase cruciale di elaborazione formale e concettuale, ponendosi come snodo fondamentale per comprendere l'evoluzione stilistica dell'autore. Dal punto di vista tecnico, si osserva una straordinaria perizia nella modulazione della luce, la quale, attraverso passaggi tonali calibrati, articola lo spazio secondo una regia prospettica impeccabile.\n\nLa struttura compositiva si regge su un impianto sottilmente geometrico, capace tuttavia di celarsi dietro un'apparente fluidità narrativa. L'uso dei pigmenti e la stesura della pellicola pittorica riflettono le innovazioni dei laboratori dell'epoca, evidenziando un dialogo costante tra tradizione accademica e spinte sperimentali.\n\nLa critica ha spesso sottolineato come questo lavoro incarni le contraddizioni e le aspirazioni del proprio milieu culturale, offrendo una lettura stratificata che unisce istanze iconografiche e formali. Un documento visivo di primaria importanza per tracciare la traiettoria del movimento di appartenenza."
+      },
+      "expert": {
+        "short": "Un'opera d'arte affascinante tutta da scoprire.",
+        "medium": "Un capolavoro che sintetizza le istanze estetiche del suo tempo, caratterizzato da un virtuosismo tecnico che decostruisce e reinventa la tradizione figurativa.",
+        "long": "Quest'opera si configura come un testo visivo di altissima densità critica, in cui convergono le matrici culturali e le tensioni filosofiche del proprio orizzonte storico. L'architettura compositiva tradisce una complessa decostruzione dei paradigmi prospettici tradizionali, rielaborati attraverso una sintassi formale autonoma e rigorosa.\n\nLa materia pittorica è trattata con una consapevolezza che trascende il mero dato mimetico, facendosi veicolo di un'istanza ontologica profonda. Ogni segno e transizione tonale partecipa a un campo tensionale che ridefinisce il rapporto tra l'opera, lo spazio espositivo e il fruitore.",
+        "exhaustive": "Il manufatto artistico in oggetto rappresenta un apogeo ermeneutico all'interno della produzione di riferimento, offrendo un terreno d'indagine imprescindibile per la storiografia artistica. L'analisi paleografica e stilistica rivela un'adesione critica ma al contempo sovversiva rispetto ai canoni accademici vigenti, inserendosi nel solco di quella genealogia visiva che privilegia la rottura epistemologica.\n\nSul piano morfologico, la composizione opera una sintesi audace tra la volumetria di ascendenza classica e l'asystematicità delle spinte avanguardistiche. La pennellata, ora analitica ora gestuale, decostruisce la percezione ottica convenzionale, costringendo lo spettatore a un'attiva riconsiderazione dei confini tra figurazione e astrazione. Le velature e i sottofondi cromatici testimoniano un processo ideativo tormentato, in cui l'errore e il ripensamento diventano categorie estetiche costitutive.\n\nIn ultima analisi, l'opera trascende la contingenza della sua genesi per assurgere a paradigma visivo universale, capace di interrogare permanentemente lo statuto dell'immagine e le sue infinite possibilità di significazione nel tessuto socio-culturale d'appartenenza."
+      }
+    },
+    "_id": "6a871aa88629e24afc1cb4d2",
+    "name": "nuova opera",
+    "author": "6a80391c493cd5ba5d203c1a",
+    "authorName": "Vincent Van Gogh",
+    "technique": "olio",
+    "style": "6a81c6af622833492a3be873",
+    "styleName": "Impressionismo",
+    "year": "2026",
+    "image": "yes",
+    "museumId": "6a81cc550bf4fc3fd102cb31",
+    "roomId": "6a856a637dbf05bd4b707627",
+    "__v": 0,
+    "funFact": "Spesso le opere d'arte nascondono sotto la superficie visibile altri disegni, chiamati 'pentimenti', che gli artisti hanno coperto perché preferivano cambiare idea durante il lavoro!",
+    "paraphrase": "L'opera utilizza forme e colori per esprimere emozioni profonde e raccontare una storia visiva, invitando chi guarda a riflettere e a lasciarsi trasportare dalla propria immaginazione.",
+    "adoptionId": null
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Questa è un'opera d'arte moderna che esplora lo spazio e la percezione visiva.",
+        "medium": "Questa opera d'arte moderna ci porta dentro una stanza speciale. Gioca con i colori e lo spazio per farci vedere le cose in modo nuovo e divertente.",
+        "long": "Benvenuti davanti a questa affascinante installazione contemporanea, intitolata 'nuova opera con room'. L'artista ha creato un vero e proprio ambiente in cui entrare e perdersi, usando elementi visivi insoliti.\n\nOsservando attentamente, noterete come la luce e le forme cambiano a seconda di dove vi mettete. È un'esperienza pensata per farvi sentire parte dell'arte stessa, trasformando il visitatore in un protagonista.\n\nNon abbiate paura di esplorare con gli occhi ogni angolo di questa stanza: ogni dettaglio è stato pensato per stimolare la vostra fantasia e regalarvi un momento di pura meraviglia.",
+        "exhaustive": "Questa straordinaria installazione artistica contemporanea, denominata 'nuova opera con room', rappresenta un eccellente esempio di come l'arte moderna non sia più solo qualcosa da guardare da lontano, ma uno spazio da vivere.\n\nEntrando idealmente o fisicamente in questo contesto spaziale, lo spettatore viene immediatamente avvolto da un'atmosfera unica. L'artista ha sapientemente combinato elementi architettonici, giochi di luce e percezioni cromatiche per creare una stanza che sembra quasi viva. Ogni parete, ogni angolo e ogni superficie riflettono una ricerca meticolosa sul rapporto tra l'essere umano e lo spazio circostante.\n\nNei secoli passati, l'arte era racchiusa dentro una cornice o scolpita in un blocco di marmo immobile. Oggi, invece, opere come questa ci insegnano che l'arte può abbracciarci. Quando vi ponete di fronte a questa creazione, provate a immaginare di camminare al suo interno, di toccare con lo sguardo le pareti invisibili che delimitano questo universo visivo.\n\nÈ un viaggio emozionante che stimola la curiosità dei più piccoli e fa riflettere gli adulti su come percepiamo il mondo. La stanza diventa così una metafora della mente umana: complessa, piena di sorprese e tutta da scoprire. Prendete tutto il tempo necessario per osservare i dettagli, lasciatevi guidare dai colori e godetevi questa fantastica avventura nel cuore dell'arte contemporanea."
+      },
+      "medium": {
+        "short": "Questa è un'opera d'arte moderna che esplora lo spazio e la percezione visiva.",
+        "medium": "L'opera 'nuova opera con room' ridefinisce il concetto di spazio espositivo, trasformando l'ambiente circostante in un elemento scultoreo attivo e coinvolgente.",
+        "long": "L'installazione 'nuova opera con room' si inserisce nel panorama dell'arte contemporanea come una riflessione profonda sul concetto di spazialità. L'artista non si limita a proporre un oggetto bidimensionale, ma costruisce una vera e propria architettura sensoriale.\n\nAll'interno di questo spazio, il pubblico è invitato a riconsiderare il proprio punto di vista. La combinazione di volumi, luce e materiali crea un dialogo continuo tra l'opera e l'ambiente circostante, rompendo le tradizionali barriere tra osservatore e creazione artistica.\n\nOgni elemento è posizionato con cura per guidare lo sguardo e generare una narrazione visiva fluida, capace di sorprendere e di offrire una prospettiva inedita sulla percezione della realtà.",
+        "exhaustive": "L'opera 'nuova opera con room' rappresenta un intrigante connubio tra ricerca spaziale e linguaggio contemporaneo. Nel panorama artistico odierno, l'esplorazione della 'stanza' (room) come medium espressivo si ricollega alle grandi installazioni site-specific che hanno ridefinito la fruizione museale a partire dalla seconda metà del Novecento.\n\nAnalizzando la struttura, emerge chiaramente la volontà dell'autore di decostruire la percezione tradizionale dello spazio geometrico. L'ambiente non è un semplice contenitore neutro, ma diventa il soggetto principale dell'opera. Attraverso un uso calibrato delle proporzioni e delle superfici, l'installazione riesce a generare un senso di alterazione prospettica che disorienta piacevolmente il visitatore, spingendolo a mettere in discussione le proprie certezze visive.\n\nLa luce gioca un ruolo fondamentale, agendo quasi come un materiale tangibile che scolpisce i volumi interni e definisce i confini di questa dimensione parallela. L'interazione tra l'osservatore e la stanza avviene su un piano multisensoriale, dove la vista si fonde con la percezione cinetica e psicologica dello spazio. In definitiva, 'nuova opera con room' non è solo un oggetto estetico da contemplare, ma un dispositivo esperienziale che interroga lo spettatore sulla natura stessa dell'abitare e del percepire il mondo."
+      },
+      "professional": {
+        "short": "Questa è un'opera d'arte moderna che esplora lo spazio e la percezione visiva.",
+        "medium": "Un'indagine rigorosa sui limiti della percezione spaziale, in cui l'installazione ambientale ('room') diventa il vettore principale di un discorso estetico post-minimalista.",
+        "long": "Collocabile nell'alveo delle ricerche ambientali e site-specific, 'nuova opera con room' si pone come un'articolata riflessione sulla fenomenologia della percezione. L'artista impiega lo spazio architettonico non come mero sfondo, ma come medium primario della composizione.\n\nL'interazione tra i volumi interni e le linee direttrici della stanza genera un campo tensivo che coinvolge direttamente il fruitore. Tale approccio evidenzia una chiara filiazione con le poetiche minimaliste e concettuali, in cui la volumetria e il vuoto assumono una valenza scultorea autonoma.\n\nL'opera richiede una lettura critica attenta alle dinamiche di scala e di fruizione, ponendosi come un dispositivo formale che interroga lo spettatore circa la costruzione culturale dello spazio e la sua rappresentazione visiva.",
+        "exhaustive": "L'analisi critica di 'nuova opera con room' richiede un inquadramento teorico che attinga alla tradizione delle installazioni ambientali e della scultura espansa. L'opera si articola attorno al concetto chiave di 'room' intesa non come spazio architettonico preesistente, ma come costrutto fenomenologico rimodellato dall'intervento autoriale.\n\nDal punto di vista formale, l'installazione evidenzia una forte componente post-minimalista, in cui la riduzione degli elementi decorativi a favore di una rigorosa sintesi geometrica amplifica la presenza volumetrica dell'insieme. Il rapporto tra pieno e vuoto viene calibrato attraverso una meticolosa gestione delle linee di fuga e dei piani prospettici, costringendo il fruitore a rinegoziare costantemente la propria posizione corporea all'interno del campo visivo. Questa attivazione dello spazio circostante richiama le teorie sulla percezione corporea e sulla teatralità dell'opera d'arte formulate da critici come Michael Fried, pur declinandole in una sensibilità contemporanea.\n\nLa luce, trattata alla stregua di un elemento plastico, taglia e definisce i volumi, accentuando la tensione tra la bidimensionalità della superficie e la tridimensionalità dell'ambiente. 'Nuova opera con room' si configura dunque come un raffinato metatesto visivo: un'opera che interroga i codici stessi della rappresentazione spaziale e il ruolo istituzionale dello spazio espositivo, offrendo agli studiosi un densissimo campo di indagine sulla spazialità nell'arte contemporanea."
+      },
+      "expert": {
+        "short": "Questa è un'opera d'arte moderna che esplora lo spazio e la percezione visiva.",
+        "medium": "Un sofisticato dispositivo fenomenologico che decostruisce l'archetipo spaziale della 'stanza', problematizzando il rapporto tra ontologia dell'oggetto e spazialità istituzionale.",
+        "long": "L'opera 'nuova opera con room' si inserisce nel solco teorico della critique institutionnelle e della scultura ambientale, operando una radicale decostruzione dell'architettura museale. La 'stanza' non funge da semplice contenitore neutro (white cube), bensì da matrice ontologica che ridefinisce lo statuto dell'opera d'arte.\n\nAttraverso una rigorosa economia di mezzi formali, l'artista attiva una dialettica complessa tra fenomenologia della percezione e spazialità liminale. Il fruitore non è più un soggetto contemplante esterno, ma un agente la cui corporeità viene inglobata nel campo operativo dell'installazione, sovvertendo i tradizionali codici della fruizione estetica.\n\nL'impianto critico dell'opera interroga la matrice politica e spaziale del display espositivo, configurandosi come un dispositivo teorico che smaschera le convenzioni visive e spaziali della modernità.",
+        "exhaustive": "L'indagine ermeneutica di 'nuova opera con room' impone una ricognizione approfondita all'interno dei paradigmi della spazialità post-mediale e della fenomenologia merleau-pontyana. L'opera opera una sutura complessa tra il concetto di site-specificity e la tradizione della installazione immersiva, ridefinendo radicalmente il concetto di 'room' come spazio liminale tra interno ed esterno, tra visibile e invisibile.\n\nA livello macrostrutturale, l'intervento si appropria dei codici del minimalismo storico (si pensi alla literalness di Robert Morris o alle site-specific works di Bruce Nauman), ma li trascende attraverso una decostruzione ideo-critica del dispositivo espositivo. La stanza non è solo il luogo in cui l'opera si manifesta, ma coincide con l'opera stessa in un regime di tautologia spaziale. I vettori geometrici, la modulazione della luce ambientale e la gestione millimetrica dei flussi di movimento del pubblico costituiscono una sintassi visiva che mette in crisi la presunta neutralità del luogo museale.\n\nIn questa prospettiva, 'nuova opera con room' agisce come un eterotopia foucaultiana: uno spazio altro che riflette e al contempo inverte lo spazio sociale codificato. Il fruitore sperimenta una dislocazione sensoriale che decostruisce l'abituale habitus visivo, costringendolo a confrontarsi con l'irriducibilità della propria presenza corporea di fronte al vuoto strutturato. L'opera si rivela così non come un oggetto finito, bensì come un processo critico permanente, un'indagine spietata e poetica sulle condizioni di possibilità dell'esperienza estetica nel tardo capitalismo."
+      }
+    },
+    "_id": "6a8722d40ee9a0ad15b1cd1b",
+    "name": "nuova opera con room",
+    "author": "6a80391c493cd5ba5d203c1a",
+    "authorName": "Vincent Van Gogh",
+    "technique": "olio",
+    "style": "6a81c6af622833492a3be873",
+    "styleName": "Impressionismo",
+    "year": "2026",
+    "image": "res",
+    "museumId": "6a7622a872031acd0ee0a2d3",
+    "roomId": "6a856a637dbf05bd4b707627",
+    "__v": 0,
+    "funFact": "Sapevi che la parola 'room' in questa installazione non indica solo una stanza fisica, ma è stata concepita dall'artista come un'entità vivente che si espande e si contrae a seconda di quante persone ci sono dentro? È come se l'arte respirasse insieme ai visitatori!",
+    "paraphrase": "Questa opera d'arte trasforma una semplice stanza in un'esperienza visiva totale. Ci invita a entrare nello spazio e a guardare il mondo da una prospettiva completamente nuova, giocando con forme, luci e volumi.",
+    "adoptionId": null
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Socrate beve la cicuta circondato dai suoi discepoli in lacrime.",
+        "medium": "Un capolavoro del neoclassicismo che celebra la fedeltà ai propri ideali e alla ragione filosofica fino alla morte.",
+        "long": "La scena ritrae Socrate nel momento di bere la cicuta, continuando a insegnare la filosofia ai suoi discepoli disperati.",
+        "exhaustive": "La scena ritrae Socrate nel momento di bere la cicuta, continuando a insegnare la filosofia ai suoi discepoli disperati."
+      }
+    },
+    "_id": "6a8879bfe6c216683b02eb81",
+    "name": "La Morte di Socrate",
+    "author": "6a8879bfe6c216683b02eb71",
+    "technique": "Dipinto a olio su tela",
+    "style": "6a8879bfe6c216683b02eb78",
+    "year": "1787",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Charles-alphonse_dufresnoy%2C_morte_di_socrate%2C_1650_ca.jpg/960px-Charles-alphonse_dufresnoy%2C_morte_di_socrate%2C_1650_ca.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "funFact": "David studiò attentamente i dialoghi di Platone per ricreare fedelmente la cerchia e l'atteggiamento dei presenti.",
+    "paraphrase": "Socrate sceglie di morire per obbedire alle leggi della sua città, piuttosto che rinnegare la propria filosofia.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "__v": 0
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "George Washington guida le truppe americane attraverso il fiume ghiacciato Delaware.",
+        "medium": "Celebre dipinto che commemora l'attacco a sorpresa di Washington a Trenton durante la rivoluzione americana.",
+        "long": "Il dipinto è noto per la sua composizione eroica e patriottica, con Washington fiero a prua della barca.",
+        "exhaustive": "Il dipinto è noto per la sua composizione eroica e patriottica, con Washington fiero a prua della barca."
+      }
+    },
+    "_id": "6a8879bfe6c216683b02eb82",
+    "name": "Washington attraversa il Delaware",
+    "author": "6a8215f9bbd3642f8830b6f8",
+    "technique": "Dipinto a olio su tela",
+    "style": "6a8879bfe6c216683b02eb7a",
+    "year": "1851",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/9/95/Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg",
+    "funFact": "Il dipinto fu originariamente realizzato in Germania per incoraggiare i riformatori europei dopo le rivoluzioni del 1848.",
+    "paraphrase": "Washington guida i suoi soldati attraverso una notte gelida per compiere un attacco decisivo per l'indipendenza.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "__v": 0
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Uno dei celebri autoritratti di Van Gogh dipinto a Parigi.",
+        "medium": "Dipinto con colori brillanti e pennellate rapide, mostra l'influenza della teoria del colore impressionista.",
+        "long": "In questo autoritratto, Van Gogh usa forti contrasti cromatici e una vibrante pennellata circolare.",
+        "exhaustive": "In questo autoritratto, Van Gogh usa forti contrasti cromatici e una vibrante pennellata circolare."
+      }
+    },
+    "_id": "6a8879bfe6c216683b02eb83",
+    "name": "Autoritratto con cappello di paglia",
+    "author": "6a8215f9bbd3642f8830b706",
+    "technique": "Dipinto a olio su tela",
+    "style": "6a821c134d292854096c43fd",
+    "year": "1887",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Self-Portrait_with_a_Straw_Hat_%28obverse-_The_Potato_Peeler%29_MET_DT1502_cropped2.jpg/960px-Self-Portrait_with_a_Straw_Hat_%28obverse-_The_Potato_Peeler%29_MET_DT1502_cropped2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "funFact": "Sul retro di questa tela Van Gogh dipinse un'altra opera, 'La tosatura delle pecore', per risparmiare denaro sulle tele.",
+    "paraphrase": "Van Gogh si ritrae come un contadino o lavoratore, esprimendo la sua complessa interiorità con colori accesi.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "__v": 0
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Ritratto di Virginie Amélie Avegno Gautreau in un abito nero scollato.",
+        "medium": "Un ritratto audace che suscitò enorme scandalo a Parigi per via del suo stile sensuale e anticonvenzionale.",
+        "long": "Il dipinto enfatizza la pelle bianchissima della modella e la linea sinuosa del suo abito di raso nero.",
+        "exhaustive": "Il dipinto enfatizza la pelle bianchissima della modella e la linea sinuosa del suo abito di raso nero."
+      }
+    },
+    "_id": "6a8879bfe6c216683b02eb84",
+    "name": "Madame X",
+    "author": "6a8215f9bbd3642f8830b6ff",
+    "technique": "Dipinto a olio su tela",
+    "style": "6a8879bfe6c216683b02eb7d",
+    "year": "1884",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "funFact": "Sargent originariamente dipinse una delle spalline dell'abito caduta sulla spalla, ma dovette ridipingerla al suo posto a causa dello scandalo.",
+    "paraphrase": "Una donna dell'alta società parigina posa fiera, sfidando i costumi morali tradizionali del tempo.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "__v": 0
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Un ponte di legno in stile giapponese che sovrasta un laghetto fiorito di ninfee.",
+        "medium": "Monet dipinse questo celebre scorcio del suo giardino a Giverny, catturando i riflessi della luce sull'acqua.",
+        "long": "Il dipinto si concentra sulla vegetazione lussureggiante e sulle variazioni atmosferiche di luce e ombra.",
+        "exhaustive": "Il dipinto si concentra sulla vegetazione lussureggiante e sulle variazioni atmosferiche di luce e ombra."
+      }
+    },
+    "_id": "6a8879bfe6c216683b02eb85",
+    "name": "Lo stagno delle ninfee",
+    "author": "6a8879bfe6c216683b02eb76",
+    "technique": "Dipinto a olio su tela",
+    "style": "6a81c6af622833492a3be873",
+    "year": "1899",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Claude_Monet%2C_The_Water-Lily_Pond_%28National_Gallery%2C_London%29.jpg/960px-Claude_Monet%2C_The_Water-Lily_Pond_%28National_Gallery%2C_London%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "funFact": "Monet costruì di persona lo stagno e il ponte giapponese per avere sempre a disposizione il soggetto perfetto da dipingere.",
+    "paraphrase": "La natura del giardino di Monet viene rappresentata come un'armonia di colori riflessi e forme soffuse.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "__v": 0
+  }
+]
