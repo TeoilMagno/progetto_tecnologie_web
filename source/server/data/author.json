@@ -168,14 +168,16 @@
     "data": [
       {
         "museumId": [
-          "6a8219f26865287b46b42af9"
+          "6a8219f26865287b46b42af9",
+          "6a8879bfe6c216683b02eb70"
         ],
         "bio": "",
         "bd": "",
         "studies": "",
         "_id": "6a821a156865287b46b42b46"
       }
-    ]
+    ],
+    "__v": 1
   },
   {
     "_id": "6a8215f9bbd3642f8830b6f9",
@@ -277,7 +279,8 @@
     "data": [
       {
         "museumId": [
-          "6a8219f26865287b46b42af9"
+          "6a8219f26865287b46b42af9",
+          "6a8879bfe6c216683b02eb70"
         ],
         "bio": "John Singer Sargent (1856–1925) è stato uno dei più celebri ritrattisti della sua epoca, nonché un maestro indiscusso della pittura en plein air. Vissuto tra la fine del XIX e l'inizio del XX secolo, sebbene non si sia mai legato ufficialmente a un singolo movimento, la sua tecnica brillante e vibrante lo colloca a metà strada tra l'Impressionismo e il Realismo accademico. Americato di nascita ma cosmopolita per educazione, ha immortalato l'alta società europea e americana con un virtuosismo pittorico straordinario, capace di catturare non solo le sembianze fisiche ma anche la psicologia e lo status dei suoi soggetti.\n\nLa sua carriera subì una svolta e una celebrità immediata a Parigi, seguita poi dal definitivo successo a Londra e negli Stati Uniti. L'impatto di Sargent nel mondo dell'arte risiede nella sua pennellata audace, fluida e apparentemente disinvolta, che ha ridefinito i canoni del ritratto mondano. Pur avendo affrontato occasionali controversie, come nel caso del celebre 'Madame X', Sargent ha lasciato un'eredità visiva ineguagliabile che documenta l'eleganza e la transizione culturale dell'epoca edoardiana e della Belle Époque.",
         "bd": "1856 - 1925",
@@ -285,7 +288,8 @@
         "_id": "6a821a176865287b46b42b4b",
         "mainWorks": "Tra le sue opere più iconiche spicca 'Madame X' (1884), un ritratto audace e scandaloso che segnò profondamente la sua carriera parigina. Altri capolavori fondamentali sono 'I carracci' (Carnation, Lily, Lily, Rose, 1885-1886), che dimostra la sua maestria nella luce impressionista, e il monumentale ciclo di affreschi realizzato per la Boston Public Library."
       }
-    ]
+    ],
+    "__v": 1
   },
   {
     "_id": "6a8215f9bbd3642f8830b700",
@@ -388,7 +392,8 @@
     "data": [
       {
         "museumId": [
-          "6a8219f26865287b46b42af9"
+          "6a8219f26865287b46b42af9",
+          "6a8879bfe6c216683b02eb70"
         ],
         "bio": "Vincent van Gogh è una delle figure più emblematiche e rivoluzionarie della storia dell'arte occidentale. Vissuto nella seconda metà del XIX secolo, durante il periodo tardo-ottocentesco, viene tradizionalmente associato al movimento del Post-impressionismo, pur anticipando fortemente i tratti drammatici dell'Espressionismo attraverso l'uso tumultuoso del colore e del segno pittorico.\n\nLa sua vita fu segnata da una profonda instabilità psicologica, da un'irrequietezza esistenziale e da una radicale dedizione alla pittura, intesa come veicolo di assoluta sincerità emotiva. Nonostante in vita abbia ottenuto scarsissimo successo commerciale e riconoscimento critico, la sua visione artistica ha ridefinito i confini della rappresentazione visiva.\n\nOggi Van Gogh è universalmente riconosciuto come un pioniere dell'arte moderna. Il suo impatto sul Novecento è incalcolabile: la sua tecnica basata su pennellate dense e cariche di tensione ha influenzato profondamente i movimenti d'avanguardia successivi, consacrandolo come il mito dell'artista geniale e tormentato.",
         "bd": "1853 - 1890",
@@ -396,7 +401,8 @@
         "_id": "6a821a006865287b46b42b17",
         "mainWorks": "Tra i suoi capolavori assoluti spicca \"Notte stellata\" (1889), dipinto durante il ricovero nel manicomio di Saint-Rémy, in cui il cielo notturno si anima di vortici cosmici carichi di intensa drammaticità psicologica. Altrettanto celebri sono i \"Girasoli\" (1888), una serie di dipinti caratterizzati da vibranti tonalità di giallo che testimoniano la ricerca espressiva del colore durante il soggiorno ad Arles. Infine, \"I mangiatori di patate\" (1885) rappresenta il culmine del suo periodo giovanile olandese, focalizzato sulla rappresentazione cruda e partecipe della dura realtà contadina."
       }
-    ]
+    ],
+    "__v": 1
   },
   {
     "_id": "6a8215f9bbd3642f8830b707",
@@ -428,5 +434,39 @@
       }
     ],
     "__v": 1
+  },
+  {
+    "_id": "6a8879bfe6c216683b02eb71",
+    "name": "Jacques-Louis David",
+    "data": [
+      {
+        "museumId": [
+          "6a8879bfe6c216683b02eb70"
+        ],
+        "bio": "Famoso pittore neoclassico francese.",
+        "bd": "1748 - 1825",
+        "studies": "Accademia di Belle Arti",
+        "mainWorks": "Vari capolavori",
+        "_id": "6a8879bfe6c216683b02eb72"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": "6a8879bfe6c216683b02eb76",
+    "name": "Claude Monet",
+    "data": [
+      {
+        "museumId": [
+          "6a8879bfe6c216683b02eb70"
+        ],
+        "bio": "Padre fondatore dell'impressionismo francese.",
+        "bd": "1840 - 1926",
+        "studies": "Accademia di Belle Arti",
+        "mainWorks": "Vari capolavori",
+        "_id": "6a8879bfe6c216683b02eb77"
+      }
+    ],
+    "__v": 0
   }
 ]

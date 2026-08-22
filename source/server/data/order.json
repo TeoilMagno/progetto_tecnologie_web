@@ -128,5 +128,24 @@
     "createdAt": "2026-08-19T08:57:54.476Z",
     "updatedAt": "2026-08-19T08:57:54.476Z",
     "__v": 0
+  },
+  {
+    "_id": "6a886d751b743fe60c6be0c4",
+    "user": "6a79e82abec8ac8f2ee4ff11",
+    "items": [
+      {
+        "itemId": "696a7129d10f009d3d77e04e",
+        "name": "Stampa: Il 3 maggio 1808",
+        "price": 40,
+        "quantity": 1,
+        "_id": "6a886d751b743fe60c6be0c5"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 40,
+    "status": "completed",
+    "createdAt": "2026-08-21T15:23:33.028Z",
+    "updatedAt": "2026-08-21T15:23:33.028Z",
+    "__v": 0
   }
 ]

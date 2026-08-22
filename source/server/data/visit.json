@@ -200,33 +200,6 @@
     "__v": 0
   },
   {
-    "visitType": "custom",
-    "_id": "6a75e1d255e2cfb8e2f9a640",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b55c",
-    "creator": "6a71eaad1d50777ccbe3e75a",
-    "works": [
-      "6a6b97e7478a8542634450f0",
-      "6a6b97e7478a8542634450ef"
-    ],
-    "price": 0,
-    "isDraft": false,
-    "isPublic": false,
-    "language": "it",
-    "createdAt": "2026-08-07T13:46:58.641Z",
-    "updatedAt": "2026-08-20T15:04:10.302Z",
-    "__v": 0,
-    "duration": 6,
-    "preferredLength": "medium",
-    "accessibility": [
-      "none"
-    ],
-    "targetAudience": [
-      "all"
-    ]
-  },
-  {
     "duration": 0,
     "preferredLength": "medium",
     "visitType": "custom",
@@ -259,55 +232,6 @@
       "all"
     ],
     "accessibility": [],
-    "_id": "6a7decbcbbddc63450e3a1a8",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b562",
-    "creator": "6a6dab11ccd4a931660f74e4",
-    "works": [
-      "6a6b97e7478a8542634450fb"
-    ],
-    "price": 0,
-    "isDraft": false,
-    "isPublic": false,
-    "language": "it",
-    "createdAt": "2026-08-13T16:11:40.781Z",
-    "updatedAt": "2026-08-13T16:11:40.781Z",
-    "__v": 0
-  },
-  {
-    "duration": 0,
-    "preferredLength": "medium",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "_id": "6a7def91bbddc63450e3a1fe",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b562",
-    "creator": "6a6dab11ccd4a931660f74e4",
-    "works": [
-      "6a6b97e7478a8542634450fa",
-      "6a6b97e7478a8542634450fb"
-    ],
-    "price": 0,
-    "isDraft": false,
-    "isPublic": false,
-    "language": "it",
-    "createdAt": "2026-08-13T16:23:45.330Z",
-    "updatedAt": "2026-08-13T16:23:45.330Z",
-    "__v": 0
-  },
-  {
-    "duration": 0,
-    "preferredLength": "medium",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
     "_id": "6a7df089bbddc63450e3a223",
     "title": "a spasso 2",
     "description": "",
@@ -323,31 +247,6 @@
     "language": "it",
     "createdAt": "2026-08-13T16:27:53.794Z",
     "updatedAt": "2026-08-13T16:28:01.898Z",
-    "__v": 0
-  },
-  {
-    "duration": 0,
-    "preferredLength": "medium",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "_id": "6a7f1e6d19f3e4ee66455c85",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b55a",
-    "creator": "6a6dab11ccd4a931660f74e4",
-    "works": [
-      "6a6b97e7478a8542634450f3",
-      "6a6b97e7478a8542634450f4"
-    ],
-    "price": 0,
-    "isDraft": true,
-    "isPublic": false,
-    "language": "it",
-    "createdAt": "2026-08-14T13:55:57.881Z",
-    "updatedAt": "2026-08-14T13:58:00.823Z",
     "__v": 0
   },
   {
@@ -549,180 +448,6 @@
     "__v": 0
   },
   {
-    "duration": 0,
-    "preferredLength": "medium",
-    "_id": "6a808dd460e8087a95648f03",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b55e",
-    "creator": "6a6dab11ccd4a931660f74e4",
-    "works": [
-      "6a6b9719478a8542634450ea",
-      "6a6b97e7478a8542634450ff"
-    ],
-    "price": 0,
-    "isDraft": true,
-    "isPublic": false,
-    "language": "it",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-15T16:03:32.587Z",
-    "updatedAt": "2026-08-15T16:03:40.890Z",
-    "__v": 0
-  },
-  {
-    "duration": 0,
-    "preferredLength": "medium",
-    "_id": "6a808f0647ced75d0664d130",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b562",
-    "creator": "6a6dab11ccd4a931660f74e4",
-    "works": [
-      "6a6b97e7478a8542634450fa"
-    ],
-    "price": 0,
-    "isDraft": false,
-    "isPublic": false,
-    "language": "it",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-15T16:08:38.659Z",
-    "updatedAt": "2026-08-15T16:08:38.659Z",
-    "__v": 0
-  },
-  {
-    "duration": 0,
-    "preferredLength": "medium",
-    "_id": "6a808f848b5494ef3d60b8a2",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b559",
-    "creator": "6a6dab11ccd4a931660f74e4",
-    "works": [
-      "6a6b9719478a8542634450e7",
-      "6a6b97e7478a854263445101"
-    ],
-    "price": 0,
-    "isDraft": true,
-    "isPublic": false,
-    "language": "it",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-15T16:10:44.919Z",
-    "updatedAt": "2026-08-15T16:10:55.873Z",
-    "__v": 0
-  },
-  {
-    "duration": 0,
-    "preferredLength": "medium",
-    "_id": "6a80900f6d082998f2bae1fe",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b55a",
-    "creator": "6a6dab11ccd4a931660f74e4",
-    "works": [
-      "6a6b97e7478a8542634450f4",
-      "6a6b97e7478a8542634450f3"
-    ],
-    "price": 0,
-    "isDraft": true,
-    "isPublic": false,
-    "language": "it",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-15T16:13:03.364Z",
-    "updatedAt": "2026-08-15T16:13:11.760Z",
-    "__v": 0
-  },
-  {
-    "duration": 0,
-    "preferredLength": "medium",
-    "_id": "6a80914746bcc5cb2f36677b",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b560",
-    "creator": "6a6dab11ccd4a931660f74e4",
-    "works": [
-      "6a6b97e7478a854263445100",
-      "6a6b9719478a8542634450ec"
-    ],
-    "price": 0,
-    "isDraft": false,
-    "isPublic": false,
-    "language": "it",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-15T16:18:15.545Z",
-    "updatedAt": "2026-08-15T16:18:15.545Z",
-    "__v": 0
-  },
-  {
-    "duration": 0,
-    "preferredLength": "medium",
-    "_id": "6a80917c50fd2029a2b5adc5",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b559",
-    "creator": "6a6dab11ccd4a931660f74e4",
-    "works": [
-      "6a6b9719478a8542634450e7",
-      "6a6b97e7478a854263445101"
-    ],
-    "price": 0,
-    "isDraft": false,
-    "isPublic": false,
-    "language": "it",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-15T16:19:08.513Z",
-    "updatedAt": "2026-08-15T16:19:08.513Z",
-    "__v": 0
-  },
-  {
-    "duration": 0,
-    "preferredLength": "medium",
-    "_id": "6a8091dac3cb4a67778e283c",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b560",
-    "creator": "6a6dab11ccd4a931660f74e4",
-    "works": [
-      "6a6b97e7478a854263445100",
-      "6a6b9719478a8542634450ec"
-    ],
-    "price": 0,
-    "isDraft": false,
-    "isPublic": false,
-    "language": "it",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-15T16:20:42.322Z",
-    "updatedAt": "2026-08-15T16:20:42.322Z",
-    "__v": 0
-  },
-  {
     "_id": "6a81cc550bf4fc3fd102cb33",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
@@ -795,82 +520,6 @@
     "__v": 0
   },
   {
-    "_id": "6a841d9268ff23f581019035",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b55d",
-    "creator": "69bbcc8442929ff5331b368a",
-    "works": [
-      "6a6b97e7478a8542634450fd",
-      "6a6b97e7478a8542634450fe",
-      "6a6b9719478a8542634450e8"
-    ],
-    "price": 0,
-    "isDraft": true,
-    "isPublic": false,
-    "duration": 11,
-    "language": "it",
-    "preferredLength": "long",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-18T08:53:38.801Z",
-    "updatedAt": "2026-08-18T08:53:38.801Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a841e96f37e4c81cc0f4986",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b55e",
-    "creator": "6a78a30033e2e31e8d045a1a",
-    "works": [
-      "6a6b9719478a8542634450ea",
-      "6a6b97e7478a8542634450ff"
-    ],
-    "price": 0,
-    "isDraft": true,
-    "isPublic": false,
-    "duration": 6,
-    "language": "it",
-    "preferredLength": "medium",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-18T08:57:58.367Z",
-    "updatedAt": "2026-08-18T08:57:58.367Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a841ea3f37e4c81cc0f49a3",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "6a7622a872031acd0ee0a2d3",
-    "creator": "6a78a30033e2e31e8d045a1a",
-    "works": [
-      "6a81bdc801de947766fe8343",
-      "6a81c25b1d096f7a8ace88c4"
-    ],
-    "price": 0,
-    "isDraft": true,
-    "isPublic": false,
-    "duration": 4,
-    "language": "it",
-    "preferredLength": "medium",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-18T08:58:11.998Z",
-    "updatedAt": "2026-08-18T08:58:11.998Z",
-    "__v": 0
-  },
-  {
     "_id": "6a841feef59d55d1a7c35d86",
     "title": "Nuova visita",
     "description": "",
@@ -895,31 +544,6 @@
     ],
     "createdAt": "2026-08-18T09:03:42.208Z",
     "updatedAt": "2026-08-18T09:04:15.592Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a842203cbd613c6b6282848",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "6a7622a872031acd0ee0a2d3",
-    "creator": "6a78a30033e2e31e8d045a1a",
-    "works": [
-      "6a81bdc801de947766fe8343",
-      "6a81c25b1d096f7a8ace88c4"
-    ],
-    "price": 0,
-    "isDraft": true,
-    "isPublic": false,
-    "duration": 4,
-    "language": "it",
-    "preferredLength": "medium",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-18T09:12:35.510Z",
-    "updatedAt": "2026-08-18T09:12:35.510Z",
     "__v": 0
   },
   {
@@ -995,6 +619,11 @@
     "__v": 0
   },
   {
+    "price": 0,
+    "targetAudience": [
+      "all"
+    ],
+    "accessibility": [],
     "_id": "6a85716e177aaad0085d9936",
     "title": "Ferragosto",
     "description": "",
@@ -1005,47 +634,28 @@
       "6a6b97e7478a8542634450fe",
       "6a6b97e7478a8542634450fd"
     ],
-    "price": 0,
     "isDraft": false,
     "isPublic": false,
     "duration": 9,
     "language": "it",
     "preferredLength": "medium",
     "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [
-      "none"
-    ],
     "createdAt": "2026-08-19T09:03:42.566Z",
-    "updatedAt": "2026-08-19T09:03:55.056Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a87131832c70e5307f49dea",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "696a65ca017c648acfc9b55e",
-    "creator": "6a71eaad1d50777ccbe3e75a",
-    "works": [
-      "6a6b9719478a8542634450ea",
-      "6a6b97e7478a8542634450ff"
-    ],
-    "price": 0,
-    "isDraft": true,
-    "isPublic": false,
-    "duration": 6,
-    "language": "it",
-    "preferredLength": "medium",
-    "visitType": "custom",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [],
-    "createdAt": "2026-08-20T14:45:44.183Z",
-    "updatedAt": "2026-08-20T14:45:44.183Z",
-    "__v": 0
+    "updatedAt": "2026-08-22T09:36:45.334Z",
+    "__v": 0,
+    "quiz": [
+      {
+        "question": "Chi ha dipinto la Nascita di Venere?",
+        "options": [
+          "Antonello Da Messina",
+          "Leonardo Da Vinci",
+          "Sandro Botticelli",
+          "VittorioSgarbi"
+        ],
+        "correctAnswerIndex": 2,
+        "_id": "6a896dad82630a858972b729"
+      }
+    ]
   },
   {
     "price": 0,
@@ -1078,14 +688,14 @@
       "all"
     ],
     "accessibility": [],
-    "_id": "6a88693e59fabeef038d5db9",
-    "title": "Visita prova teacher",
+    "_id": "6a886eb71d635be0b862425d",
+    "title": "Visita con quiz",
     "description": "",
-    "museumId": "696a65ca017c648acfc9b560",
+    "museumId": "696a65ca017c648acfc9b55c",
     "creator": "6a6dab11ccd4a931660f74e4",
     "works": [
-      "6a6b9719478a8542634450ec",
-      "6a6b97e7478a854263445100"
+      "6a6b97e7478a8542634450ee",
+      "6a6b97e7478a8542634450ef"
     ],
     "isDraft": false,
     "isPublic": false,
@@ -1093,9 +703,21 @@
     "language": "it",
     "preferredLength": "medium",
     "visitType": "custom",
-    "quiz": [],
-    "createdAt": "2026-08-21T15:05:34.014Z",
-    "updatedAt": "2026-08-21T15:06:13.306Z",
+    "quiz": [
+      {
+        "question": "Chi ha dipinto Il 3 maggio 1808",
+        "options": [
+          "io",
+          "tu",
+          "egli",
+          "noi"
+        ],
+        "correctAnswerIndex": 2,
+        "_id": "6a886efe1d635be0b862426a"
+      }
+    ],
+    "createdAt": "2026-08-21T15:28:55.672Z",
+    "updatedAt": "2026-08-21T15:30:06.342Z",
     "__v": 0
   }
 ]

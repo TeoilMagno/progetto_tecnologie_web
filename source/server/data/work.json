@@ -233,7 +233,7 @@
     "author": "6a8215f9bbd3642f8830b6ff",
     "style": "6a821cdf4d292854096c4408",
     "year": "1884",
-    "image": "https://kuadros.com/cdn/shop/products/madamex2.jpg?v=1688303157",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
     "museumId": "696a65ca017c648acfc9b55a",
     "technique": "Olio su tela"
   },
@@ -782,5 +782,110 @@
     "funFact": "Sapevi che la parola 'room' in questa installazione non indica solo una stanza fisica, ma è stata concepita dall'artista come un'entità vivente che si espande e si contrae a seconda di quante persone ci sono dentro? È come se l'arte respirasse insieme ai visitatori!",
     "paraphrase": "Questa opera d'arte trasforma una semplice stanza in un'esperienza visiva totale. Ci invita a entrare nello spazio e a guardare il mondo da una prospettiva completamente nuova, giocando con forme, luci e volumi.",
     "adoptionId": null
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Socrate beve la cicuta circondato dai suoi discepoli in lacrime.",
+        "medium": "Un capolavoro del neoclassicismo che celebra la fedeltà ai propri ideali e alla ragione filosofica fino alla morte.",
+        "long": "La scena ritrae Socrate nel momento di bere la cicuta, continuando a insegnare la filosofia ai suoi discepoli disperati.",
+        "exhaustive": "La scena ritrae Socrate nel momento di bere la cicuta, continuando a insegnare la filosofia ai suoi discepoli disperati."
+      }
+    },
+    "_id": "6a8879bfe6c216683b02eb81",
+    "name": "La Morte di Socrate",
+    "author": "6a8879bfe6c216683b02eb71",
+    "technique": "Dipinto a olio su tela",
+    "style": "6a8879bfe6c216683b02eb78",
+    "year": "1787",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Charles-alphonse_dufresnoy%2C_morte_di_socrate%2C_1650_ca.jpg/960px-Charles-alphonse_dufresnoy%2C_morte_di_socrate%2C_1650_ca.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "funFact": "David studiò attentamente i dialoghi di Platone per ricreare fedelmente la cerchia e l'atteggiamento dei presenti.",
+    "paraphrase": "Socrate sceglie di morire per obbedire alle leggi della sua città, piuttosto che rinnegare la propria filosofia.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "__v": 0
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "George Washington guida le truppe americane attraverso il fiume ghiacciato Delaware.",
+        "medium": "Celebre dipinto che commemora l'attacco a sorpresa di Washington a Trenton durante la rivoluzione americana.",
+        "long": "Il dipinto è noto per la sua composizione eroica e patriottica, con Washington fiero a prua della barca.",
+        "exhaustive": "Il dipinto è noto per la sua composizione eroica e patriottica, con Washington fiero a prua della barca."
+      }
+    },
+    "_id": "6a8879bfe6c216683b02eb82",
+    "name": "Washington attraversa il Delaware",
+    "author": "6a8215f9bbd3642f8830b6f8",
+    "technique": "Dipinto a olio su tela",
+    "style": "6a8879bfe6c216683b02eb7a",
+    "year": "1851",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/9/95/Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg",
+    "funFact": "Il dipinto fu originariamente realizzato in Germania per incoraggiare i riformatori europei dopo le rivoluzioni del 1848.",
+    "paraphrase": "Washington guida i suoi soldati attraverso una notte gelida per compiere un attacco decisivo per l'indipendenza.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "__v": 0
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Uno dei celebri autoritratti di Van Gogh dipinto a Parigi.",
+        "medium": "Dipinto con colori brillanti e pennellate rapide, mostra l'influenza della teoria del colore impressionista.",
+        "long": "In questo autoritratto, Van Gogh usa forti contrasti cromatici e una vibrante pennellata circolare.",
+        "exhaustive": "In questo autoritratto, Van Gogh usa forti contrasti cromatici e una vibrante pennellata circolare."
+      }
+    },
+    "_id": "6a8879bfe6c216683b02eb83",
+    "name": "Autoritratto con cappello di paglia",
+    "author": "6a8215f9bbd3642f8830b706",
+    "technique": "Dipinto a olio su tela",
+    "style": "6a821c134d292854096c43fd",
+    "year": "1887",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Self-Portrait_with_a_Straw_Hat_%28obverse-_The_Potato_Peeler%29_MET_DT1502_cropped2.jpg/960px-Self-Portrait_with_a_Straw_Hat_%28obverse-_The_Potato_Peeler%29_MET_DT1502_cropped2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "funFact": "Sul retro di questa tela Van Gogh dipinse un'altra opera, 'La tosatura delle pecore', per risparmiare denaro sulle tele.",
+    "paraphrase": "Van Gogh si ritrae come un contadino o lavoratore, esprimendo la sua complessa interiorità con colori accesi.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "__v": 0
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Ritratto di Virginie Amélie Avegno Gautreau in un abito nero scollato.",
+        "medium": "Un ritratto audace che suscitò enorme scandalo a Parigi per via del suo stile sensuale e anticonvenzionale.",
+        "long": "Il dipinto enfatizza la pelle bianchissima della modella e la linea sinuosa del suo abito di raso nero.",
+        "exhaustive": "Il dipinto enfatizza la pelle bianchissima della modella e la linea sinuosa del suo abito di raso nero."
+      }
+    },
+    "_id": "6a8879bfe6c216683b02eb84",
+    "name": "Madame X",
+    "author": "6a8215f9bbd3642f8830b6ff",
+    "technique": "Dipinto a olio su tela",
+    "style": "6a8879bfe6c216683b02eb7d",
+    "year": "1884",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "funFact": "Sargent originariamente dipinse una delle spalline dell'abito caduta sulla spalla, ma dovette ridipingerla al suo posto a causa dello scandalo.",
+    "paraphrase": "Una donna dell'alta società parigina posa fiera, sfidando i costumi morali tradizionali del tempo.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "__v": 0
+  },
+  {
+    "description": {
+      "simple": {
+        "short": "Un ponte di legno in stile giapponese che sovrasta un laghetto fiorito di ninfee.",
+        "medium": "Monet dipinse questo celebre scorcio del suo giardino a Giverny, catturando i riflessi della luce sull'acqua.",
+        "long": "Il dipinto si concentra sulla vegetazione lussureggiante e sulle variazioni atmosferiche di luce e ombra.",
+        "exhaustive": "Il dipinto si concentra sulla vegetazione lussureggiante e sulle variazioni atmosferiche di luce e ombra."
+      }
+    },
+    "_id": "6a8879bfe6c216683b02eb85",
+    "name": "Lo stagno delle ninfee",
+    "author": "6a8879bfe6c216683b02eb76",
+    "technique": "Dipinto a olio su tela",
+    "style": "6a81c6af622833492a3be873",
+    "year": "1899",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Claude_Monet%2C_The_Water-Lily_Pond_%28National_Gallery%2C_London%29.jpg/960px-Claude_Monet%2C_The_Water-Lily_Pond_%28National_Gallery%2C_London%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "funFact": "Monet costruì di persona lo stagno e il ponte giapponese per avere sempre a disposizione il soggetto perfetto da dipingere.",
+    "paraphrase": "La natura del giardino di Monet viene rappresentata come un'armonia di colori riflessi e forme soffuse.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "__v": 0
   }
 ]

@@ -563,9 +563,13 @@ apiRouter.get("/visits/:id", async (req, res) => {
     //altrimenti la fusione con lo spread operator (...) fallirà
     const visitObj = visit.toObject ? visit.toObject() : visit;
 
+    const isLogged = req.isAuthenticated();
+    const userData = isLogged ? req.user : null;
+
     res.status(200).json({
       visit: visitObj,                // dati della visita richiesta
-      commands_map: dictionary        // aggiunge il tuo nuovo dizionario alla risposta
+      commands_map: dictionary,        // aggiunge il tuo nuovo dizionario alla risposta
+      user: userData
     });
   } catch (error) {
     const status = error.statusCode || 500;

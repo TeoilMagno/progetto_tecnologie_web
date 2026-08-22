@@ -19,7 +19,8 @@
     "data": [
       {
         "museumId": [
-          "6a7622a872031acd0ee0a2d3"
+          "6a7622a872031acd0ee0a2d3",
+          "6a8879bfe6c216683b02eb70"
         ],
         "description": "",
         "_id": "6a81c6af622833492a3be874"
@@ -32,7 +33,7 @@
         "_id": "6a856a847dbf05bd4b707637"
       }
     ],
-    "__v": 6
+    "__v": 7
   },
   {
     "_id": "6a81c7abaac995cd638bd678",
@@ -210,12 +211,14 @@
     "data": [
       {
         "museumId": [
-          "6a821d4940de71cb515d1407"
+          "6a821d4940de71cb515d1407",
+          "6a8879bfe6c216683b02eb70"
         ],
         "description": "Il Post-Impressionismo non è un movimento omogeneo, ma piuttosto una straordinaria fioritura di ricerche individuali che, tra la fine degli anni ottanta e i primi anni novanta dell'Ottocento, presero le distanze dalla pittura en plein air degli impressionisti. Artisti iconici come Paul Cézanne, Vincent van Gogh, Paul Gauguin e Georges Seurat sentirono l'esigenza di andare oltre la mera registrazione ottica della realtà, cercando nella loro arte una profondità psicologica, una struttura geometrica o un significato simbolico che l'impressionismo, con la sua attenzione esclusiva alla luce effimera, aveva trascurato.\n\nDal punto di vista visivo, questa corrente si distingue per l'uso audace e antinaturalistico del colore, che smette di descrivere fedelmente l'oggetto per farsi veicolo di emozione pura, come accade nei cieli tormentati e vibranti di Van Gogh. Si assiste inoltre al recupero della linea di contorno e della volumetria solida, ben visibile nelle 'montagne geometriche' di Cézanne, e alla sperimentazione scientifica della percezione visiva, come nel puntinismo di Seurat. I temi fondanti spaziano dall'introspezione esistenziale al fascino per l'esotico e il primitivo, ponendo le basi imprescindibili per le avanguardie storiche del Novecento.",
         "_id": "6a821d5340de71cb515d141c"
       }
-    ]
+    ],
+    "__v": 1
   },
   {
     "_id": "6a821c134d292854096c43fe",
@@ -337,6 +340,48 @@
         ],
         "description": "Il termine 'scultoreo' in storia dell'arte non definisce un singolo movimento cronologico, ma piuttosto una qualita estetica trascendente che affonda le sue radici nella classicita greco-romana e si rinnova costantemente nei secoli. Questa cifra stilistica trova la sua massima esaltazione nel Rinascimento con Michelangelo, il quale vedeva nella scultura la 'liberazione' della forma dalla materia. Tuttavia, il concetto si estende a qualsiasi opera pittorica o architettonica che possieda una tale possanza plastica da sembrare scolpita nel marmo, sfidando i confini tradizionali delle discipline artistiche.\n\nVisivamente, lo stile 'scultoreo' si distingue per l'esasperazione del chiaroscuro, linee di contorno nette e una monumentalita che conferisce ai soggetti una presenza fisica quasi palpabile. I volumi sono studiati con rigorosa precisione anatomica e spaziale, dando l'illusione di un peso e di un equilibrio tridimensionale. I temi fondanti ruotano attorno alla celebrazione del corpo umano, spesso caricato di tensione eroica, pathos drammatico o intensa introspezione psicologica, elevando la figura a simbolo universale.\n\nAdottare un approccio 'scultoreo' significa per l'artista conferire all'opera un senso di eternita e monumentalita incrollabile. Anche in epoche successive, come nel Barocco con Bernini o nella modernita con Henry Moore, la ricerca della volumetria pura e della tridimensionalita ha continuato a dominare, dimostrando come il fascino della pietra scolpita rimanga uno dei linguaggi piu potenti e duraturi della creativita umana.",
         "_id": "6a821ea7205d7c012f901e7d"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": "6a8879bfe6c216683b02eb78",
+    "name": "Neoclassicismo",
+    "data": [
+      {
+        "museumId": [
+          "6a8879bfe6c216683b02eb70"
+        ],
+        "description": "Movimento artistico ispirato all'arte classica greca e romana.",
+        "_id": "6a8879bfe6c216683b02eb79"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": "6a8879bfe6c216683b02eb7a",
+    "name": "Romanticismo Storico",
+    "data": [
+      {
+        "museumId": [
+          "6a8879bfe6c216683b02eb70"
+        ],
+        "description": "Scene drammatiche e storiche cariche di pathos.",
+        "_id": "6a8879bfe6c216683b02eb7b"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": "6a8879bfe6c216683b02eb7d",
+    "name": "Realismo / Ritrattismo",
+    "data": [
+      {
+        "museumId": [
+          "6a8879bfe6c216683b02eb70"
+        ],
+        "description": "Ritratti espressivi con forte realismo psicologico.",
+        "_id": "6a8879bfe6c216683b02eb7e"
       }
     ],
     "__v": 0

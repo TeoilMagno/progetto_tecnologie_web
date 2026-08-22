@@ -27,10 +27,15 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
 
+  // Livello di dettaglio della descrizione
+  const [expertiseLevel, setExpertiseLevel] = useState("medium");
+
   //Domande per assistente vocale
   const [commandsMap, setCommandsMap] = useState(null);
 
   const isSharedSession = Boolean(roomCode);
+  //lunghezza descrizione opera
+  const currentLength = "medium";
   
   // Se non ci sono sezioni valide, attiviamo la modalità Fallback (Audioguida List Mode)
   const hasMap = sections && sections.length > 0;
@@ -58,9 +63,14 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         const apiData = await visitResponse.json();
         const visitData = apiData.visit;
         const dictionary = apiData.commands_map;
+        const userData = apiData.user;
 
         //salviamo i comandi vocali disponibili
         setCommandsMap(dictionary);
+
+        //setta il livello di difficoltà della visita
+        if(userData)
+          setExpertiseLevel(userData.expertiseLevel);
         
         // Controllo di sicurezza: ci assicuriamo che works sia un array
         const worksArray = Array.isArray(visitData.works) ? visitData.works : [];
@@ -287,7 +297,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                   
                   <h6 className="text-white/50 uppercase tracking-wider mb-2 text-xs font-bold">Descrizione</h6>
                   <p className="leading-relaxed text-slate-300 text-sm pb-8">
-                    {currentWork?.description?.[0]?.description || "Nessuna descrizione disponibile per quest'opera."}
+                    {currentWork?.description?.[expertiseLevel]?.[currentLength] || "Nessuna descrizione disponibile per quest'opera."}
                   </p>
                 </div>
               </div>
@@ -354,6 +364,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           onClose={() => setDetailsWork(null)}
           onSpeak={speakText}
           commandsMap={commandsMap}
+          expertiseLevel={expertiseLevel}
         />
       )}
     </div>
