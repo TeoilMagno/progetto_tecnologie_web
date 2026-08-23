@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Compass, Clock, Globe, Palette, Loader2, AlertCircle, Sparkles, UserCheck, Heart } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
+import VisitPreviewModal from '../components/VisitPreviewModal';
+
 export default function Visits({ selectedMuseum }) {
   const loaction = useLocation();
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ export default function Visits({ selectedMuseum }) {
   const [myVisits, setMyVisits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [previewVisit, setPreviewVisit] = useState(null);
 
   // Carica TUTTE le visite pubbliche per il museo selezionato
   const fetchAllVisits = () => {
@@ -24,9 +27,10 @@ export default function Visits({ selectedMuseum }) {
         return res.json();
       })
       .then((data) => {
-        const filtered = data.filter(
-          (visit) => visit.museumId && visit.museumId._id === selectedMuseum._id
-        );
+        const filtered = data.filter((visit) => {
+          const visitMuseumId = visit.museumId?._id || visit.museumId;
+          return visitMuseumId === selectedMuseum._id;
+        });
         setAllVisits(filtered);
         setLoading(false);
       })
@@ -70,9 +74,10 @@ export default function Visits({ selectedMuseum }) {
       .then((data) => {
         if (data) {
           // Filtriamo le mie visite solo per il museo correntemente selezionato
-          const filtered = data.filter(
-            (visit) => visit.museumId && visit.museumId._id === selectedMuseum._id
-          );
+          const filtered = data.filter((visit) => {
+            const visitMuseumId = visit.museumId?._id || visit.museumId;
+            return visitMuseumId === selectedMuseum._id;
+          });
           setMyVisits(filtered);
           setLoading(false);
         }
@@ -224,7 +229,7 @@ export default function Visits({ selectedMuseum }) {
                       <span className="uppercase">{visit.language || 'it'}</span>
                     </div>
                   </div>
-                  
+
                   {/* PULSANTE ESPLORA */}
                   <button 
                     onClick={() => {
@@ -234,12 +239,12 @@ export default function Visits({ selectedMuseum }) {
                         navigate(`/free-map?visitId=${visit._id}`);
                       } else {
                         // Puntiamo a /map, che caricherà MapView in modalità Visitatore Singolo
-                        navigate(`/map?visitId=${visit._id}`);
+                        setPreviewVisit(visit);
                       }
                     }}
                     className="w-full mt-4 bg-slate-800 hover:bg-amber-500 group-hover:bg-amber-500 text-slate-300 group-hover:text-slate-950 font-bold py-2.5 px-4 rounded-xl transition-all text-xs flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    Avvia Itinerario
+                    {activeTab === 'my' ? 'Avvia itinerario' : 'Scopri itinerario'}
                   </button>
                 </div>
               </div>
@@ -272,6 +277,13 @@ export default function Visits({ selectedMuseum }) {
 
         </div>
       </div>
+
+      {/* --- MODALE ANTEPRIMA ITINERARIO ESTERNATO --- */}
+      <VisitPreviewModal 
+        visit={previewVisit} 
+        onClose={() => setPreviewVisit(null)} 
+        activeTab={activeTab} 
+      />
 
     </div>
   );

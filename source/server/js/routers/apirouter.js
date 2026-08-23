@@ -496,13 +496,22 @@ apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
 
 // ----------------------- visits ----------------------------
 
-// TODO: per ora solo create -> ampliare con comprate
 // recupera le visite create/comprate dallo user
 apiRouter.get("/my-visits", auth.isLoggedIn, async (req, res) => {
   try {
     const userId = req.user._id;
-    const visits = await visitController.getVisits(userId);
-    res.status(200).json(visits);
+    const createdVisits = await visitController.getVisits(userId);
+
+    const user = await User.findById(userId).populate({
+      path: 'purchased_visits',
+      populate: { path: 'works' }
+    });
+    const purchasedVisits = user.purchased_visits || [];
+
+    const allVisits = [...createdVisits, ...purchasedVisits];
+    const uniqueVisits = Array.from(new Map(allVisits.map(v => [v._id.toString(), v])).values());
+
+    res.status(200).json(uniqueVisits);
   } catch (error) {
     console.error("Errore nel recupero delle visite: ", error);
     res
