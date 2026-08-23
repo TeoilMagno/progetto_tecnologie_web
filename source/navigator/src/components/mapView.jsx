@@ -366,7 +366,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           onClose={() => setDetailsWork(null)}
           onSpeak={speakText}
           commandsMap={commandsMap}
-          expertiseLevel={expertiseLevel}
+          currentExpertise={expertiseLevel}
+          setCurrentExpertise={setExpertiseLevel}
         />
       )}
     </div>

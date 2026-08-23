@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Volume, VolumeX, Mic, X } from "lucide-react";
 import { API_BASE_URL } from "../config";
 
-export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, expertiseLevel }) {
+export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, currentExpertise, setCurrentExpertise }) {
   // --- LOGICA TRASCINAMENTO BOTTOM SHEET ---
   const [dragStartY, setDragStartY] = useState(null);
   const [dragCurrentY, setDragCurrentY] = useState(0);
@@ -11,6 +11,7 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, 
   
   //lunghezza descrizione opera
   const lengthLevels = ["short", "medium", "long", "exhaustive"];
+  const expertiseLevels = ["simple", "medium", "professional", "expert"];
 
   const handlePointerDown = (e) => {
     setDragStartY(e.clientY);
@@ -45,7 +46,7 @@ const handleMoreDesc = () => {
       setCurrentLength(nextLength); // Aggiorniamo lo stato
 
       // Estraiamo il nuovo testo in modo sicuro con l'Optional Chaining
-      const textToSpeak = work?.description?.[expertiseLevel]?.[nextLength];
+      const textToSpeak = work?.description?.[currentExpertise]?.[nextLength];
       
       if (textToSpeak) {
         onSpeak(textToSpeak);
@@ -66,7 +67,7 @@ const handleMoreDesc = () => {
       const prevLength = lengthLevels[currentIndex - 1];
       setCurrentLength(prevLength);
 
-      const textToSpeak = work?.description?.[expertiseLevel]?.[prevLength];
+      const textToSpeak = work?.description?.[currentExpertise]?.[prevLength];
       
       if (textToSpeak) {
         onSpeak(textToSpeak);
@@ -77,6 +78,50 @@ const handleMoreDesc = () => {
       console.log("Siamo già al riassunto minimo.");
     }
   };
+
+const handleHigherExper = () => {
+    // Troviamo a che punto siamo (es. "medium" è indice 1)
+    const currentIndex = expertiseLevels.indexOf(currentExpertise);
+
+    // Se non siamo ancora all'ultimo livello ("exhaustive" = indice 3)
+    if (currentIndex < expertiseLevels.length - 1) {
+      const nextExpertise = expertiseLevels[currentIndex + 1];
+      setCurrentExpertise(nextExpertise); // Aggiorniamo lo stato
+
+      // Estraiamo il nuovo testo in modo sicuro con l'Optional Chaining
+      const textToSpeak = work?.description?.[nextExpertise]?.[currentLength];
+      
+      if (textToSpeak) {
+        onSpeak(textToSpeak);
+      } else {
+        onSpeak("Mi dispiace, ma non ho una spiegazione più tecnica per quest'opera.");
+      }
+    } else {
+      console.log("Siamo già al massimo livello di dettaglio.");
+      // Opzionale: onSpeak("Hai già raggiunto il massimo livello di dettaglio.");
+    }
+  };
+
+  const handleLowerExper = () => {
+    const currentIndex = expertiseLevels.indexOf(currentExpertise);
+
+    // Se non siamo al primissimo livello ("short" = indice 0)
+    if (currentIndex > 0) {
+      const prevExpertise = expertiseLevels[currentIndex - 1];
+      setCurrentExpertise(prevExpertise);
+
+      const textToSpeak = work?.description?.[prevExpertise]?.[currentLength];
+      
+      if (textToSpeak) {
+        onSpeak(textToSpeak);
+      } else {
+        onSpeak("Non riesco a semplificare ulteriormente questa spiegazione.");
+      }
+    } else {
+      console.log("Siamo già al riassunto minimo.");
+    }
+  };
+
   const startListening = () => {
     // 1. Controllo compatibilità browser
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -141,6 +186,11 @@ const handleMoreDesc = () => {
         case "PREV_DESC":
           handleLessDesc();
           break;
+        case "NEXT_EXPER":
+          handleHigherExepr();
+          break;
+        case "PREV_EXPER":
+          handleLowerExepr();
         case "CLOSE":
           onClose();
           break;
@@ -171,7 +221,7 @@ useEffect(() => {
     if (!work) {
       setDragCurrentY(0);
     }
-    setCurrentLength("medium"); // <-- CORRETTO!
+    setCurrentLength("medium");
   }, [work]);
 
   return (
@@ -220,43 +270,64 @@ useEffect(() => {
                 alt={work.name} 
                 className="w-full max-h-[250px] object-cover rounded-xl mb-5 mt-2" 
               />
-
+              
               <h6 className="text-white/50 uppercase tracking-wider mb-2 text-xs font-bold">Descrizione</h6>
               <p className="leading-relaxed text-slate-300 text-sm mb-7">
-                {work.description?.[expertiseLevel]?.[currentLength] || "Nessuna descrizione disponibile per quest'opera."}
+                {work.description?.[currentExpertise]?.[currentLength] || "Nessuna descrizione disponibile per quest'opera."}
               </p>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={handleLessDesc}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 text-white hover:bg-white/10 py-2.5 transition-colors text-sm"
-                >
-                  <VolumeX size={16} /> Dimmi di meno
-                </button>
-                <button 
-                  onClick={() => onSpeak(work.description?.[expertiseLevel]?.[currentLength])}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full bg-cyan-400 text-slate-900 font-semibold py-2.5 hover:bg-cyan-300 transition-colors text-sm" 
-                >
-                  <Volume size={16} /> Ascolta
-                </button>
-                <button
-                  onClick={handleMoreDesc}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 text-white hover:bg-white/10 py-2.5 transition-colors text-sm"
-                >
-                  <Volume size={16} /> Dimmi di più
-                </button>
-                <button
-                  onClick={startListening}
-                  className="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-300 shrink-0"
-                  style={{ 
-                    backgroundColor: isListening ? "#ff4444" : "rgba(255,255,255,0.1)",
-                    color: isListening ? "white" : "#ccc",
-                    boxShadow: isListening ? "0 0 15px rgba(255, 68, 68, 0.6)" : "none"
-                  }}
-                  title="Comandi vocali"
-                >
-                  <Mic size={20} />
-                </button>
+              {/* Contenitore principale flex-col per impaginare su due righe */}
+              <div className="flex flex-col gap-3">
+                
+                {/* RIGA 1: Riproduzione e Lunghezza */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleLessDesc}
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-full border border-white/20 text-white hover:bg-white/10 py-2.5 transition-colors text-xs sm:text-sm"
+                  >
+                    <VolumeX size={16} /> Più corta
+                  </button>
+                  <button 
+                    onClick={() => onSpeak(work.description?.[currentExpertise]?.[currentLength])}
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-full bg-cyan-400 text-slate-900 font-semibold py-2.5 hover:bg-cyan-300 transition-colors text-xs sm:text-sm" 
+                  >
+                    <Volume size={16} /> Ascolta
+                  </button>
+                  <button
+                    onClick={handleMoreDesc}
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-full border border-white/20 text-white hover:bg-white/10 py-2.5 transition-colors text-xs sm:text-sm"
+                  >
+                    <Volume size={16} /> Più lunga
+                  </button>
+                </div>
+
+                {/* RIGA 2: Difficoltà e Microfono */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleLowerExper}
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-full border border-white/20 text-white hover:bg-white/10 py-2.5 transition-colors text-xs sm:text-sm"
+                  >
+                    Semplifica
+                  </button>
+                  <button
+                    onClick={handleHigherExper}
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-full border border-white/20 text-white hover:bg-white/10 py-2.5 transition-colors text-xs sm:text-sm"
+                  >
+                    Approfondisci
+                  </button>
+                  <button
+                    onClick={startListening}
+                    className="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-300 shrink-0"
+                    style={{ 
+                      backgroundColor: isListening ? "#ff4444" : "rgba(255,255,255,0.1)",
+                      color: isListening ? "white" : "#ccc",
+                      boxShadow: isListening ? "0 0 15px rgba(255, 68, 68, 0.6)" : "none"
+                    }}
+                    title="Comandi vocali"
+                  >
+                    <Mic size={20} />
+                  </button>
+                </div>
               </div>
             </div>
           </>

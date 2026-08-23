@@ -218,6 +218,13 @@ exports.mapRequest = async (prompt) => {
         Esempi:
         Utente: "Puoi leggermi il testo?" -> PLAY
         Utente: "Voglio sapere altro" -> NEXT_DESC
+        Utente: "La descrizione è troppo corta" -> NEXT_DESC
+        Utente: "Voglio sapere meno" -> PREV_DESC
+        Utente: "La descrizione è troppo lunga" -> PREV_DESC
+        Utente: "La descrizione è troppo semplice" -> NEXT_EXPER
+        Utente: "Voglio una spiegazione più tecnica" -> NEXT_EXPER
+        Utente: "La descrizione è troppo difficile" -> PREV_EXPER
+        Utente: "Voglio una spiegazione meno tecnica" -> PREV_EXPER
         Utente: "Togli questa schermata" -> CLOSE
         Utente: "Che ore sono?" -> UNKNOWN
       `,

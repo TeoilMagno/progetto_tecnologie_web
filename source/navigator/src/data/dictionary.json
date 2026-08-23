@@ -5,6 +5,13 @@
   "avanti": "NEXT_DESC",
   "dimmi di meno": "PREV_DESC",
   "indietro": "PREV_DESC",
+  "troppo semplice": "NEXT_EXPER",
+  "usa termini più tecnici": "NEXT_EXPER",
+  "sii più specifico": "NEXT_EXPER",
+  "troppo difficile": "PREV_EXPER",
+  "usa termini meno tecnici": "PREV_EXPER",
+  "non capisco": "PREV_EXPER",
+  "non ho capito": "PREV_EXPER",
   "chiudi": "CLOSE",
   "esci": "CLOSE"
 }
