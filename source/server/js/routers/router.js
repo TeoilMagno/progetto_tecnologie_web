@@ -97,4 +97,14 @@ router.get('/404', auth.isAdminPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', '404.html'));
 });
 
+// pagina dei report dei quiz lanciati da una guida
+router.get('/quiz-reports', auth.isLoggedInPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'quiz-reports.html'));
+});
+
+// pagina di un report in particolare di un quiz
+router.get('/quiz-report-details', auth.isLoggedInPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'quiz-report-details.html'));
+});
+
 module.exports = router;
