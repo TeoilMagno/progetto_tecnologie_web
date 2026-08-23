@@ -95,7 +95,7 @@ function AppLayout() {
               <Route path="/" element={<HomePage />} />
               <Route path="/visits" element={<Visits selectedMuseum={selectedMuseum} />} />
               <Route path="/join" element={<JoinSession />} />
-              <Route path="/my-visits" element={<Placeholder title="My Visits" />} />
+              <Route path="/my-visits" element={<Visits selectedMuseum={selectedMuseum} />} />
               <Route path="/free-map" element={<FreeVisitMap selectedMuseum={selectedMuseum} />} />
               <Route path="/menu" element={<MenuPage/>} />
               <Route path="/map" element={<MapRouteWrapper />} />
