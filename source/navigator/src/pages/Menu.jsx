@@ -18,7 +18,7 @@ export default function MenuPage() {
         throw new Error("Non autenticato");
       })
       .then((data) => {
-        if (data && data.name && data.name !== 'Ospite') {
+        if (data && (data.username || data._id)) {
           setCurrentUser(data);
         }
       })
@@ -53,8 +53,13 @@ export default function MenuPage() {
               <User size={32} />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-200">{currentUser.name}</h2>
-              <p className="text-sm text-slate-400 capitalize">{currentUser.type === 'none' ? 'Utente' : currentUser.type}</p>
+              <h2 className="text-lg font-bold text-slate-200">{currentUser.username}</h2>
+              
+              {/* Mostriamo sia il ruolo di base (es. visitor/curator) che il tipo nella visita (es. teacher/student) */}
+              <p className="text-sm text-slate-400 capitalize">
+                {currentUser.role === 'visitor' ? 'Visitatore' : currentUser.role}
+                {currentUser.type !== 'none' && ` • ${currentUser.type}`}
+              </p>
             </div>
           </div>
         ) : (

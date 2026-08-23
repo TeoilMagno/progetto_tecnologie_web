@@ -16,6 +16,7 @@ import QuizReportView from './components/QuizReportView';
 import QuizReportsList from './pages/QuizReportsList';
 import MenuPage from './pages/Menu';
 import SettingsPage from './pages/Settings';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Placeholder per le pagine future
 const Placeholder = ({ title }) => (
@@ -96,15 +97,33 @@ function AppLayout() {
               <Route path="/" element={<HomePage />} />
               <Route path="/visits" element={<Visits selectedMuseum={selectedMuseum} />} />
               <Route path="/join" element={<JoinSession />} />
-              <Route path="/my-visits" element={<Visits selectedMuseum={selectedMuseum} />} />
               <Route path="/free-map" element={<FreeVisitMap selectedMuseum={selectedMuseum} />} />
+              <Route path="/my-visits" element={<Visits selectedMuseum={selectedMuseum} />} />
               <Route path="/menu" element={<MenuPage/>} />
-              <Route path="/map" element={<MapRouteWrapper />} />
-              <Route path="/waiting-room" element={<StudentWaitingRoom />} />
-              <Route path="/quiz" element={<QuizSession />} />
-              <Route path="/quiz-report/:reportId" element={<QuizReportView/>} />
-              <Route path="/my-reports" element={<QuizReportsList/>} />
               <Route path="/settings" element={<SettingsPage/>} />
+              <Route path="/waiting-room" element={<StudentWaitingRoom />} />
+
+              {/* Rotte protette */}
+              <Route path="/map" element={
+                <ProtectedRoute>
+                  <MapRouteWrapper />
+                </ProtectedRoute>
+              } />
+              <Route path="/quiz" element={
+                <ProtectedRoute>
+                  <QuizSession />
+                </ProtectedRoute>
+              } />
+              <Route path="/quiz-report/:reportId" element={
+                <ProtectedRoute>
+                  <QuizReportView/>
+                </ProtectedRoute>
+              } />
+              <Route path="/my-reports" element={
+                <ProtectedRoute>
+                  <QuizReportsList/>
+                </ProtectedRoute>
+              } />
             </Routes>
           </main>
 
