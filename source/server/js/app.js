@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const { MongoStore } = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const http = require('http')
@@ -44,10 +45,7 @@ app.use((req, res, next) => {
 });
 
 // ─── Middleware base ───────────────────────────────────────────────────────
-app.use(cors({
-  origin: "http://localhost:5173", // TODO: da sostituire con qualunque sia l'url in produzione
-  credentials: true                
-}));
+app.use(cors({ credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -56,14 +54,20 @@ app.use("/navigator",   express.static(path.join(__dirname, '..', '..', 'navigat
 
 // ─── Sessione e Passport ───────────────────────────────────────────────────
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'dev-secret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  // Aggiungiamo lo store persistente su MongoDB!
+  store: MongoStore.create({
+    // Assicurati che questo URI sia uguale a quello che usi in db.js per connetterti
+    mongoUrl: process.env.DB_URI, 
+    collectionName: 'sessions', // Creerà automaticamente una collezione 'sessions' nel DB
+    autoRemove: 'native' // Rimuove automaticamente le sessioni scadute
+  }),
   cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    secure: false,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production'
+    maxAge: 7 * 24 * 60 * 60 * 1000, // La sessione dura 1 settimana
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
   }
 }));
 app.use(passport.initialize());
