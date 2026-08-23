@@ -987,6 +987,21 @@ apiRouter.get('/quiz-results/:id', auth.isLoggedIn, async (req, res) => {
   }
 });
 
+// Aggiungi questa rotta in apirouter.js per ottenere la lista dei report
+apiRouter.get('/my-quiz-results', auth.isLoggedIn, async (req, res) => {
+  try {
+    // Recuperiamo tutti i report dell'insegnante, ordinati dal più recente
+    const reports = await QuizReport.find({ guideId: req.user._id })
+                                    .populate('visitId', 'title')
+                                    .sort({ date: -1 });
+    
+    res.json(reports);
+  } catch (error) {
+    console.error("Errore recupero lista report:", error);
+    res.status(500).json({ error: 'Errore interno del server' });
+  }
+});
+
 
 // ---------------- Gestione DB ---------------------
 apiRouter.get("/downloadDB", async (req, res) => {

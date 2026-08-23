@@ -184,8 +184,6 @@ io.on('connection', (socket) => {
         const student = session.students.find(s => s.id === socket.id);
         const studentName = student ? student.name : `Studente ${socket.id.substring(0,4)}`;
 
-        console.log(`[Quiz] Inoltro risultati di ${studentName} (Score: ${score}) al Prof!`);
-
         const payload = { 
             studentId: socket.id, 
             studentName: studentName,
@@ -200,7 +198,7 @@ io.on('connection', (socket) => {
             io.to(session.teacherSocketId).emit('student_quiz_submitted', payload);
         }
     } else {
-        console.log(`[Quiz] ERRORE: Stanza ${roomCode} non trovata in memoria.`);
+        console.log(`Stanza ${roomCode} non trovata in memoria.`);
     }
   });
 

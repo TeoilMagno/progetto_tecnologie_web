@@ -13,6 +13,8 @@ import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
 import MapView from './components/MapView';
 import QuizSession from './pages/QuizSession';
 import QuizReportView from './components/QuizReportView';
+import QuizReportsList from './pages/QuizReportsList';
+import MenuPage from './pages/Menu';
 
 // Placeholder per le pagine future
 const Placeholder = ({ title }) => (
@@ -95,11 +97,12 @@ function AppLayout() {
               <Route path="/join" element={<JoinSession />} />
               <Route path="/my-visits" element={<Placeholder title="My Visits" />} />
               <Route path="/free-map" element={<FreeVisitMap selectedMuseum={selectedMuseum} />} />
-              <Route path="/menu" element={<Placeholder title="Menu" />} />
+              <Route path="/menu" element={<MenuPage/>} />
               <Route path="/map" element={<MapRouteWrapper />} />
               <Route path="/waiting-room" element={<StudentWaitingRoom />} />
               <Route path="/quiz" element={<QuizSession />} />
               <Route path="/quiz-report/:reportId" element={<QuizReportView/>} />
+              <Route path="/my-reports" element={<QuizReportsList/>} />
             </Routes>
           </main>
 
