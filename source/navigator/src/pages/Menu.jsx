@@ -101,7 +101,7 @@ export default function MenuPage() {
           )}
 
           <button 
-            onClick={() => alert("Impostazioni in arrivo!")}
+            onClick={() => navigate('/settings')}
             className="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 p-4 rounded-2xl flex items-center justify-between transition-all cursor-pointer"
           >
             <div className="flex items-center gap-3">

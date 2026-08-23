@@ -15,6 +15,7 @@ import QuizSession from './pages/QuizSession';
 import QuizReportView from './components/QuizReportView';
 import QuizReportsList from './pages/QuizReportsList';
 import MenuPage from './pages/Menu';
+import SettingsPage from './pages/Settings';
 
 // Placeholder per le pagine future
 const Placeholder = ({ title }) => (
@@ -103,6 +104,7 @@ function AppLayout() {
               <Route path="/quiz" element={<QuizSession />} />
               <Route path="/quiz-report/:reportId" element={<QuizReportView/>} />
               <Route path="/my-reports" element={<QuizReportsList/>} />
+              <Route path="/settings" element={<SettingsPage/>} />
             </Routes>
           </main>
 

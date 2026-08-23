@@ -128,6 +128,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     setPlayMode("listen");
     const utterance = new SpeechSynthesisUtterance(textToRead);
     utterance.lang = "it-IT";
+    utterance.rate = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
     utterance.onend = () => setPlayMode("read");
     window.speechSynthesis.speak(utterance);
   };
