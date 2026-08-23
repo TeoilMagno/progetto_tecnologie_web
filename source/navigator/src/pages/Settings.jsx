@@ -19,7 +19,7 @@ export default function SettingsPage() {
     if (window.confirm("Sei sicuro di voler svuotare i dati salvati offline? Dovrai rifare l'accesso.")) {
       localStorage.clear();
       alert("Cache svuotata con successo.");
-      window.location.href = "/";
+      window.location.href = "/navigator";
     }
   };
 
@@ -69,7 +69,11 @@ export default function SettingsPage() {
             </h3>
             <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
               <button 
-                onClick={() => navigate('/')}
+                onClick={() => {
+                  // Rimuoviamo il museo salvato e forziamo il ricaricamento sulla root del navigator
+                  localStorage.removeItem('selectedMuseum'); 
+                  window.location.href = "/navigator/";
+                }}
                 className="w-full flex items-center justify-between p-4 hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <div className="text-left">
