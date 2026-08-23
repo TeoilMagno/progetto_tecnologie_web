@@ -483,7 +483,7 @@ async function showMuseumSelector() {
                       .map(
                         (m) => `
                         <button class="list-group-item list-group-item-action bg-transparent text-white border-secondary mb-2 rounded" 
-                                onclick="window.location.href='/create-visit?museumId=${m._id}'">
+                                onclick="window.location.replace('/create-visit?museumId=${m._id}')">
                             <i class="bi bi-bank me-2"></i> ${m.name}
                         </button>
                     `,
@@ -675,7 +675,7 @@ async function submitVisit(isSavingAsDraft = false) {
 
     if (isSavingAsDraft) {
       alert("Bozza salvata con successo!");
-      window.location.href = "/my-visits"; // Le bozze rimangono nella lista "Le mie visite"
+      window.location.replace("/my-visits"); // Le bozze rimangono nella lista "Le mie visite"
     } else {
       alert(
         isPublic
@@ -683,7 +683,7 @@ async function submitVisit(isSavingAsDraft = false) {
           : "Visita privata salvata con successo!"
       );
       // Reindirizza direttamente alla pagina di dettaglio della visita creata/modificata!
-      window.location.href = `/visit-details?id=${finalVisitId}`;
+      window.location.replace(`/visit-details?id=${finalVisitId}`);
     }
   } catch (error) {
     console.error("Errore salvataggio:", error);
