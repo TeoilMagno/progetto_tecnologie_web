@@ -30,6 +30,7 @@ export default function JoinSession() {
   const [selectedVisitId, setSelectedVisitId] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [savedSession, setSavedSession] = useState(null);
+  const [isVisitDropdownOpen, setIsVisitDropdownOpen] = useState(false);
 
   // --- Stato per lo scanner QR reale (lato studente) ---
   const [cameraStatus, setCameraStatus] = useState('idle'); // 'idle' | 'starting' | 'active' | 'error' | 'scanned'
@@ -131,12 +132,14 @@ export default function JoinSession() {
           const activeVisits = data.filter(visit => {
             if (visit.isDraft) return false;
 
-            // Gestione sicura del confronto del museo (può essere stringa o oggetto)
-            if (!currentMuseumId) return true; // Se per qualche motivo non c'è il museo salvato, le mostra tutte
+            if (!currentMuseumId) return true; 
             
             const visitMuseumId = visit.museumId?._id ? visit.museumId._id.toString() : visit.museumId?.toString();
             return visitMuseumId === currentMuseumId;
           });
+
+          // ORDINAMENTO: Dal più recente al più vecchio usando l'ID di Mongo
+          activeVisits.sort((a, b) => b._id.localeCompare(a._id));
 
           setAvailableVisits(activeVisits);
           if (activeVisits.length > 0 && !selectedVisitId) {
@@ -619,21 +622,57 @@ export default function JoinSession() {
 
             {!isRoomCreated ? (
               <div className="w-full bg-[#1e293b]/40 backdrop-blur-md border border-slate-800 rounded-3xl p-6 flex flex-col items-center">
-                <div className="w-full mb-4 text-left">
+                
+                {/* CUSTOM DROPDOWN VISITE */}
+                <div className="w-full mb-6 text-left relative">
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-1">
                     Seleziona Percorso da Sincronizzare
                   </label>
-                  <select
-                    value={selectedVisitId}
-                    onChange={(e) => setSelectedVisitId(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500"
+                  
+                  {/* Bottone Principale */}
+                  <button
+                    onClick={() => setIsVisitDropdownOpen(!isVisitDropdownOpen)}
+                    className="w-full bg-slate-800 border border-slate-700 hover:border-slate-600 text-white rounded-xl px-4 py-3.5 text-sm font-medium flex items-center justify-between transition-all cursor-pointer shadow-sm"
                   >
-                    {availableVisits.map((visit) => (
-                      <option key={visit._id} value={visit._id} className="bg-slate-900 text-white">
-                        {visit.title} ({visit.works?.length || 0} opere)
-                      </option>
-                    ))}
-                  </select>
+                    <span className="truncate pr-2">
+                      {availableVisits.find(v => v._id === selectedVisitId)?.title || "Seleziona un percorso..."}
+                    </span>
+                    <svg className={`fill-current h-4 w-4 shrink-0 text-slate-400 transition-transform ${isVisitDropdownOpen ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                  </button>
+
+                  {/* Tendina a Scomparsa */}
+                  {isVisitDropdownOpen && (
+                    <div className="absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden animate-fadeIn">
+                      <div className="max-h-48 overflow-y-auto p-1 custom-scrollbar">
+                        {availableVisits.length === 0 ? (
+                          <p className="text-slate-500 text-sm py-4 text-center">Nessun percorso disponibile.</p>
+                        ) : (
+                          availableVisits.map((visit) => (
+                            <button
+                              key={visit._id}
+                              onClick={() => {
+                                setSelectedVisitId(visit._id);
+                                setIsVisitDropdownOpen(false); // Chiude al click
+                              }}
+                              className={`w-full text-left p-3 rounded-lg transition-colors flex items-center justify-between cursor-pointer ${
+                                selectedVisitId === visit._id 
+                                  ? 'bg-purple-500/20 text-purple-400' 
+                                  : 'hover:bg-slate-800 text-slate-300'
+                              }`}
+                            >
+                              <div className="flex flex-col overflow-hidden">
+                                <span className="font-semibold text-sm truncate pr-2">{visit.title}</span>
+                                <span className="text-[10px] opacity-70">{visit.works?.length || 0} opere</span>
+                              </div>
+                              {selectedVisitId === visit._id && <CheckCircle2 size={16} className="shrink-0" />}
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <button
