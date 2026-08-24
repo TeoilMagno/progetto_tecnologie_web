@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const { MongoStore } = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const http = require('http')
@@ -44,10 +45,7 @@ app.use((req, res, next) => {
 });
 
 // ─── Middleware base ───────────────────────────────────────────────────────
-app.use(cors({
-  origin: "http://localhost:5173", // TODO: da sostituire con qualunque sia l'url in produzione
-  credentials: true                
-}));
+app.use(cors({ credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -56,14 +54,20 @@ app.use("/navigator",   express.static(path.join(__dirname, '..', '..', 'navigat
 
 // ─── Sessione e Passport ───────────────────────────────────────────────────
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'dev-secret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  // Aggiungiamo lo store persistente su MongoDB!
+  store: MongoStore.create({
+    // Assicurati che questo URI sia uguale a quello che usi in db.js per connetterti
+    mongoUrl: process.env.DB_URI, 
+    collectionName: 'sessions', // Creerà automaticamente una collezione 'sessions' nel DB
+    autoRemove: 'native' // Rimuove automaticamente le sessioni scadute
+  }),
   cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    secure: false,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production'
+    maxAge: 7 * 24 * 60 * 60 * 1000, // La sessione dura 1 settimana
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
   }
 }));
 app.use(passport.initialize());
@@ -91,7 +95,8 @@ io.on('connection', (socket) => {
     activeSessions[roomCode] = { 
         teacherSocketId: socket.id, 
         students: [],
-        visitId: visitId
+        visitId: visitId,
+        hasStarted: false
     };
     console.log(`L'insegnante ha creato la stanza: ${roomCode} per la visita ${visitId}`);
   });
@@ -104,7 +109,12 @@ io.on('connection', (socket) => {
       const studentData = { id: socket.id, name: studentName };
       activeSessions[roomCode].students.push(studentData);
       
-      socket.emit('room_joined', { success: true, roomCode });
+      socket.emit('room_joined', { 
+        success: true, 
+        roomCode,
+        hasStarted: activeSessions[roomCode].hasStarted,
+        visitId: activeSessions[roomCode].visitId
+      });
       io.to(activeSessions[roomCode].teacherSocketId).emit('student_joined', studentData);
     } else {
       socket.emit('error', 'Stanza non trovata. Controlla il codice.');
@@ -113,20 +123,19 @@ io.on('connection', (socket) => {
 
   // Master (Insegnante) cambia opera
   socket.on('change_artwork', (data) => {
-    // Sicurezza: controlliamo che ci sia il roomCode
     if (!data || !data.roomCode) return;
     const room = data.roomCode.toUpperCase();
     
     if (activeSessions[room]) {
-      // 1. Salva l'ID per chi entra dopo
+      // 1. SALVIAMO LO STATO: Ci ricordiamo l'opera per chi entra in ritardo
       activeSessions[room].currentArtworkId = data.artworkId;
       
-      // 2. Inoltra L'INTERO pacchetto (roomCode compreso!) agli studenti
+      // 2. Inoltriamo L'INTERO pacchetto (incluso il roomCode) usando l'evento corretto!
       socket.to(room).emit('change_artwork', data);
     }
   });
 
-  // Client (Studente o Insegnante) che si ri-unisce
+  // Client (Studente o Insegnante) che si ri-unisce caricando la Mappa
   socket.on('rejoin_room', ({ roomCode, role }) => {
     if (!roomCode) return;
     roomCode = roomCode.toUpperCase();
@@ -137,27 +146,31 @@ io.on('connection', (socket) => {
       if (role === 'teacher') {
         activeSessions[roomCode].teacherSocketId = socket.id;
       }
+      console.log(`Un client (${role}) è entrato nella mappa della stanza: ${roomCode}`);
       
-      // Se la lezione è già iniziata, allineiamo il ritardatario
-      if (activeSessions[roomCode].currentArtworkId) {
-        // LA MAGIA: Aspettiamo 800 millisecondi. 
-        // Diamo tempo al MapView dello studente di fare il fetch delle opere dal DB!
-        setTimeout(() => {
-          socket.emit('change_artwork', { 
-            roomCode: roomCode,
-            artworkId: activeSessions[roomCode].currentArtworkId 
-          });
-        }, 800);
+      if(activeSessions[roomCode].hasStarted) {
+        socket.emit('session_started', { visitId: activeSessions[roomCode].visitId });
+        
+        // 3. Se la lezione è già iniziata, allineiamo il ritardatario/chi rientra
+        if (activeSessions[roomCode].currentArtworkId) {
+          // Aspettiamo 800ms per dare il tempo al MapView di scaricare le opere dal DB
+          setTimeout(() => {
+            socket.emit('change_artwork', { 
+              roomCode: roomCode,
+              artworkId: activeSessions[roomCode].currentArtworkId 
+            });
+          }, 800);
+        }
       }
+      
     }
   });
-
 
   // Slave (Studente) interagisce (es. chiede un livello più basso)
   socket.on('student_interaction', ({ roomCode, type, details }) => {
     if (activeSessions[roomCode]) {
-        const teacherId = activeSessions[roomCode].teacherSocketId;
-        io.to(teacherId).emit('student_activity', { studentId: socket.id, type, details });
+      const teacherId = activeSessions[roomCode].teacherSocketId;
+      io.to(teacherId).emit('student_activity', { studentId: socket.id, type, details });
     }
   });
 
@@ -167,17 +180,64 @@ io.on('connection', (socket) => {
   });
 
   // Slave (Studente) risponde al quiz
-  socket.on('submit_answer', ({ roomCode, answer }) => {
+// Lo studente consegna l'intero quiz al termine
+  socket.on('submit_quiz', (data) => {
+    console.log(">>> RICEVUTA CONSEGNA QUIZ DAL CLIENT:", data);
+    if (!data || !data.roomCode) return;
+    
+    const roomCode = data.roomCode.toUpperCase();
+    const { history, score } = data;
+
     if (activeSessions[roomCode]) {
-        io.to(activeSessions[roomCode].teacherSocketId).emit('student_answered', { 
+        const session = activeSessions[roomCode];
+        const student = session.students.find(s => s.id === socket.id);
+        const studentName = student ? student.name : `Studente ${socket.id.substring(0,4)}`;
+
+        const payload = { 
             studentId: socket.id, 
-            answer 
-        });
+            studentName: studentName,
+            history,
+            score 
+        };
+
+        // DOPPIO INVIO BLINDATO: sia alla stanza generale che al socket specifico del prof
+        io.to(roomCode).emit('student_quiz_submitted', payload);
+        
+        if (session.teacherSocketId) {
+            io.to(session.teacherSocketId).emit('student_quiz_submitted', payload);
+        }
+    } else {
+        console.log(`Stanza ${roomCode} non trovata in memoria.`);
     }
   });
 
   socket.on('start_shared_session', ({ roomCode, visitId }) => {
+    if(activeSessions[roomCode]) {
+      activeSessions[roomCode].hasStarted = true;
+    }
     socket.to(roomCode).emit('session_started', { visitId });
+  });
+
+  // L'insegnante ha raggiunto la fine della visita -> puo' scegliere di fare il quiz o terminare la stanza
+  socket.on('end_shared_visit', ({ roomCode }) => {
+    if (!roomCode) return;
+    // Avvisiamo tutti gli studenti nella stanza che la visita è terminata
+    socket.to(roomCode.toUpperCase()).emit('visit_ended');
+  });
+
+  // L'insegnante chiude definitivamente la stanza (dalla mappa o dal quiz)
+  socket.on('close_room', ({ roomCode }) => {
+    if (!roomCode) return;
+    const room = roomCode.toUpperCase();
+    
+    // Avvisa tutti gli studenti che la sessione è finita
+    socket.to(room).emit('room_closed');
+    
+    // Pulizia della memoria
+    if (activeSessions[room]) {
+      delete activeSessions[room];
+      console.log(`Stanza ${room} chiusa e rimossa dalla memoria.`);
+    }
   });
 
   socket.on('disconnect', () => {

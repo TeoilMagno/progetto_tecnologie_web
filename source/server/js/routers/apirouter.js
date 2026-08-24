@@ -17,6 +17,7 @@ const Museum = require("../models/museums");
 const Adoption = require("../models/adoptions");
 const Item = require("../models/items");
 const Visit = require("../models/visits");
+const QuizReport = require("../models/quizReport")
 
 // Controllers
 const museumController = require("../controllers/museums");
@@ -438,7 +439,7 @@ apiRouter.get("/current-user", (req, res) => {
         _id: req.user._id,
         username: req.user.username || req.user.name,
         role: req.user.role,
-        //type: req.user.type || 'none',
+        type: req.user.type || 'none',
       });
     } else {
       res.json(null);
@@ -495,13 +496,22 @@ apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
 
 // ----------------------- visits ----------------------------
 
-// TODO: per ora solo create -> ampliare con comprate
 // recupera le visite create/comprate dallo user
 apiRouter.get("/my-visits", auth.isLoggedIn, async (req, res) => {
   try {
     const userId = req.user._id;
-    const visits = await visitController.getVisits(userId);
-    res.status(200).json(visits);
+    const createdVisits = await visitController.getVisits(userId);
+
+    const user = await User.findById(userId).populate({
+      path: 'purchased_visits',
+      populate: { path: 'works' }
+    });
+    const purchasedVisits = user.purchased_visits || [];
+
+    const allVisits = [...createdVisits, ...purchasedVisits];
+    const uniqueVisits = Array.from(new Map(allVisits.map(v => [v._id.toString(), v])).values());
+
+    res.status(200).json(uniqueVisits);
   } catch (error) {
     console.error("Errore nel recupero delle visite: ", error);
     res
@@ -566,10 +576,16 @@ apiRouter.get("/visits/:id", async (req, res) => {
     const isLogged = req.isAuthenticated();
     const userData = isLogged ? req.user : null;
 
+    // Recuperiamo l'opera corrente se la sessione condivisa è attiva
+    const currentArtworkId = (isSharedValid && sessions[roomCode]?.currentArtworkId) 
+      ? sessions[roomCode].currentArtworkId 
+      : null;
+
     res.status(200).json({
-      visit: visitObj,                // dati della visita richiesta
-      commands_map: dictionary,        // aggiunge il tuo nuovo dizionario alla risposta
-      user: userData
+      visit: visitObj,
+      commands_map: dictionary,
+      user: userData,
+      currentArtworkId: currentArtworkId // <-- Invia l'opera corrente attiva
     });
   } catch (error) {
     const status = error.statusCode || 500;
@@ -939,6 +955,70 @@ apiRouter.post("/ai/map-request", async (req,res) => {
   }
 });
 
+// ------------------ Quiz --------------------------
+
+// Salva i risultati di un quiz di gruppo
+apiRouter.post('/quiz-results', auth.isLoggedIn, async (req, res) => {
+  try {
+    const { visitId, roomCode, results } = req.body;
+
+    // Trasformiamo il dizionario React (oggetto) in un Array piatto per Mongoose
+    const resultsArray = Object.keys(results).map(studentId => ({
+      studentName: results[studentId].name,
+      score: results[studentId].score,
+      answers: results[studentId].history
+    }));
+
+    const newReport = new QuizReport({
+      visitId,
+      guideId: req.user._id,
+      roomCode,
+      results: resultsArray
+    });
+
+    await newReport.save();
+    res.status(201).json({ success: true, reportId: newReport._id });
+  } catch (error) {
+    console.error("Errore salvataggio report del quiz:", error);
+    res.status(500).json({ error: 'Errore interno del server' });
+  }
+});
+
+// Recupera i risultati dei quiz
+apiRouter.get('/quiz-results/:id', auth.isLoggedIn, async (req, res) => {
+  try {
+    const report = await QuizReport.findById(req.params.id).populate('visitId', 'title quiz');
+    if (!report) return res.status(404).json({ error: 'Report non trovato' });
+    
+    // Sicurezza: solo l'insegnante che l'ha generato (o un admin) può scaricarlo
+    if (report.guideId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+       return res.status(403).json({ error: 'Accesso negato' });
+    }
+    
+    res.json(report);
+  } catch (error) {
+    console.error("Errore recupero report:", error);
+    res.status(500).json({ error: 'Errore interno del server' });
+  }
+});
+
+// Aggiungi questa rotta in apirouter.js per ottenere la lista dei report
+apiRouter.get('/my-quiz-results', auth.isLoggedIn, async (req, res) => {
+  try {
+    // Recuperiamo tutti i report dell'insegnante, ordinati dal più recente
+    const reports = await QuizReport.find({ guideId: req.user._id })
+                                    .populate('visitId', 'title')
+                                    .sort({ date: -1 });
+    
+    res.json(reports);
+  } catch (error) {
+    console.error("Errore recupero lista report:", error);
+    res.status(500).json({ error: 'Errore interno del server' });
+  }
+});
+
+
+// ---------------- Gestione DB ---------------------
 apiRouter.get("/downloadDB", async (req, res) => {
   try {
     console.log("Inizio esportazione di tutto il DB...");

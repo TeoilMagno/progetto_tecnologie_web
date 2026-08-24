@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../config';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -7,8 +8,8 @@ const Home = () => {
   const cards = [
     {
       id: 1,
-      title: "Explore Visits",
-      desc: "Discover available visits and start your autonomous exploration",
+      title: "Esplora visite",
+      desc: "Scopri i percorsi offerti dal museo e inizia la tua visita",
       icon: "🧭", // Usa SVG per fedeltà massima, qui uso emoji per brevità codice
       color: "bg-amber-500",
       glow: "shadow-[0_0_15px_rgba(245,158,11,0.3)]",
@@ -16,8 +17,8 @@ const Home = () => {
     },
     {
       id: 2,
-      title: "Join a Session",
-      desc: "Participate in a synchronized guided tour with the teacher",
+      title: "Join a session",
+      desc: "Partecipa a una visita guidata di gruppo",
       icon: "👥",
       color: "bg-purple-600",
       glow: "shadow-[0_0_15px_rgba(147,51,234,0.3)]",
@@ -25,39 +26,31 @@ const Home = () => {
     },
     {
       id: 3,
-      title: "Interactive Map",
-      desc: "Explore the museum layout and find artworks",
+      title: "Audio Guide Map",
+      desc: "Esplora liberamente la mappa interattiva con audio-guida",
       icon: "🗺️",
-      color: "bg-blue-500",
-      glow: "shadow-[0_0_15px_rgba(59,130,246,0.3)]",
-      path: "/map"
+      color: "bg-teal-500",
+      glow: "shadow-[0_0_15px_rgba(20,184,166,0.3)]",
+      path: "/free-map"
     },
     {
       id: 4,
-      title: "Audio Guide",
-      desc: "Free exploration with voice-guided narration",
-      icon: "🎧",
-      color: "bg-teal-500",
-      glow: "shadow-[0_0_15px_rgba(20,184,166,0.3)]",
-      path: "/free"
-    },
-    {
-      id: 5,
-      title: "Create Visit",
-      desc: "Build your own custom museum tour",
-      icon: "➕",
-      color: "bg-red-500",
-      glow: "shadow-[0_0_15px_rgba(239,68,68,0.3)]",
-      path: "/visits" // Redirect o creazione
-    },
-    {
-      id: 6,
-      title: "My Visits",
-      desc: "View your saved visits and history",
+      title: "Le mie visite",
+      desc: "Rivedi e avvia i percorsi che hai creato",
       icon: "👤",
       color: "bg-cyan-500",
       glow: "shadow-[0_0_15px_rgba(6,182,212,0.3)]",
-      path: "/visits" // Va comunque alla pagina unificata di Visits
+      path: "/my-visits" // Va comunque alla pagina unificata di Visits
+    },
+    {
+      id: 5,
+      title: "Marketplace",
+      desc: "Build your own custom museum tour",
+      icon: "✨",
+      color: "bg-pink-500",
+      glow: "shadow-[0_0_15px_rgba(236,72,153,0.3)]",
+      isExternal: true, // <-- Flag speciale per i link fuori dal Navigator
+      path: BASE_URL
     }
   ];
 
@@ -99,7 +92,7 @@ const Home = () => {
           {cards.map((card) => (
             <div 
               key={card.id}
-              onClick={() => navigate(card.path)}
+              onClick={() => card.isExternal ? window.location.href = card.path : navigate(card.path)}
               className="group relative flex items-center p-4 bg-[#1e293b]/60 backdrop-blur-md border border-slate-700/50 rounded-2xl hover:bg-[#1e293b]/80 transition-all active:scale-[0.98] cursor-pointer"
             >
               {/* Icona Quadrata Colorata */}

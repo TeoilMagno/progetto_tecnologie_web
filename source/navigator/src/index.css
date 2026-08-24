@@ -92,3 +92,21 @@
 .toast-error { border-left: 4px solid #ef4444; }
 .toast-warning { border-left: 4px solid #f59e0b; }
 .toast-info { border-left: 4px solid #0ea5e9; }
+
+/* --- CUSTOM SCROLLBAR --- */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Molto sottile ed elegante */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Sfondo invisibile */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #334155; /* Corrisponde a bg-slate-700 di Tailwind */
+  border-radius: 10px; /* Bordi arrotondati */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #f59e0b; /* Si illumina di ambra quando ci passi sopra! */
+}

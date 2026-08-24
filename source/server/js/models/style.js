@@ -10,7 +10,7 @@ const styleSchema = new Schema({
   data: [{
     museumId: [{
       type: Schema.Types.ObjectId,
-      ref: 'Museum',
+      ref: 'Museum'
     }],
     description: { type: String } // La definizione dello stile secondo il curatore
   }]

@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   currentMuseumId = urlParams.get("id");
 
   if (!currentMuseumId) {
-    window.location.href = "/my-museums";
+    window.location.replace("/my-museums");
     return;
   }
 
@@ -604,7 +604,7 @@ async function saveAllMuseumChanges() {
 
     if (res.ok) {
       alert("Museo aggiornato con successo!");
-      window.location.href = "/my-museums"; 
+      window.location.replace("/my-museums"); 
     } else {
       alert("Errore nel salvataggio delle modifiche.");
     }
@@ -699,7 +699,7 @@ async function confirmDeleteMuseum() {
     if (res.ok) {
       deleteMuseumModalInstance.hide();
       alert("Museo eliminato definitivamente.");
-      window.location.href = "/my-museums"; 
+      window.location.replace("/my-museums"); 
     } else {
       alert("Errore durante l'eliminazione del museo.");
     }

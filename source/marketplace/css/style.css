@@ -713,3 +713,65 @@ body.artaround-theme::-webkit-scrollbar {
     color: rgba(255, 255, 255, 0.6) ; /* Bianco al 60% di opacità */
     opacity: 1; /* Obbligatorio per Firefox che li sbiadisce di default */
 }
+
+/*  Dropdown menu  */
+/* Sovrascritture per Tom Select tema scuro/glass */
+.ts-control, .ts-wrapper.single.input-active .ts-control {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 8px;
+}
+.ts-dropdown, .ts-control, .ts-control input {
+  color: white;
+}
+.ts-dropdown {
+  background: rgba(20, 20, 30, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+.ts-dropdown .option {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.ts-dropdown .option:hover, .ts-dropdown .option.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* Scrollbar custom per i menu a tendina Tom Select */
+.ts-dropdown .ts-dropdown-content::-webkit-scrollbar {
+  width: 6px;
+}
+.ts-dropdown .ts-dropdown-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+.ts-dropdown .ts-dropdown-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+}
+.ts-dropdown .ts-dropdown-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Fix per lo sfondo bianco quando un'opzione è selezionata in Tom Select */
+.ts-wrapper.single .ts-control .item {
+  background: transparent ;
+  color: #ffffff ;
+  border: none ;
+  text-shadow: none ;
+}
+
+/* Evita che l'input diventi bianco quando ci clicchi dentro (focus) */
+.ts-wrapper.single.focus .ts-control,
+.ts-wrapper.single.input-active .ts-control {
+  background: rgba(255, 255, 255, 0.05) ;
+  border-color: rgba(255, 255, 255, 0.2) ;
+  box-shadow: none ;
+}
+
+/* Rende il testo dell'input sempre bianco mentre scrivi */
+.ts-wrapper.single .ts-control input {
+  color: #ffffff ;
+}

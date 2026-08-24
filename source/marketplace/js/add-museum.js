@@ -43,7 +43,7 @@ async function museumHandleSave(event) {
       const data = await response.json();
       
       // La magia! Redirigiamo l'utente direttamente all'editor del nuovo museo
-      window.location.href = `/edit-museum?id=${data.id}`;
+      window.location.replace(`/edit-museum?id=${data.id}`);
       
     } else {
       const errorData = await response.json();

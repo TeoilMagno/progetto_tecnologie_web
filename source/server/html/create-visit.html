@@ -6,6 +6,7 @@
     <title>ArtAround - Crea Visita</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="/marketplace/css/style.css" />
     <link rel="stylesheet" href="/marketplace/css/visits.css" />
@@ -202,6 +203,22 @@
                 </div>
             </div>
 
+            <!-- Sezione Quiz (nascosta di default, si sblocca solo se type è guide, teacher o admin) -->
+            <div id="quiz-creation-area" class="col-12 mt-3 d-none">
+              <div class="border-top border-secondary border-opacity-25 pt-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <p class="small text-white mb-0"><i class="bi bi-ui-radios me-1"></i>Quiz di Fine Visita</p>
+                  <button type="button" class="btn btn-sm btn-outline-info py-0 px-2" style="font-size: 0.75rem;" onclick="addQuizQuestion()">
+                    <i class="bi bi-plus-lg me-1"></i> Aggiungi Domanda
+                  </button>
+                </div>
+                <p class="text-secondary mb-3" style="font-size: 0.75rem;">Aggiungi domande a risposta multipla per gli studenti al termine del percorso.</p>
+                
+                <!-- Qui il JS disegnerà le domande -->
+                <div id="quiz-questions-container"></div>
+              </div>
+            </div>
+
           </div>
           
           <div class="modal-footer border-top-custom p-3 flex-column gap-2">
@@ -226,6 +243,7 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script src="/marketplace/js/config.js"></script>
     <script src="/vendor/sortablejs/Sortable.min.js"></script>
     <script src="/marketplace/js/search-bar.js"></script>

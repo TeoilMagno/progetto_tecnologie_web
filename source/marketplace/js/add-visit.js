@@ -5,6 +5,7 @@ let editingVisitId = null;
 let isCurrentVisitDraft = true;
 let allMuseumWorks = [];
 let allMuseumSections = [];
+let currentQuiz = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
   // inizializza il drag & drop
@@ -84,7 +85,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/visits/${editingVisitId}`);
       if (res.ok) {
-        const draft = await res.json();
+        const responseData = await res.json();
+        
+        // Gestiamo in modo sicuro sia se l'API restituisce direttamente la visita, sia se la racchiude in { visit: ... }
+        const draft = responseData.visit || responseData;
 
         // TRASFORMAZIONE CORRETTIVA: Convertiamo gli _id del DB in id per il carrello del front-end
         currentVisitCart = (draft.works || []).map((work) => ({
@@ -97,6 +101,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentMuseumId = draft.museumId?._id || draft.museumId;
 
         renderVisitCart();
+
+        // Ripristiniamo anche il select del ritmo (preferredLength) se presente
+        if (draft.preferredLength) {
+          const prefSelect = document.getElementById("visit-pref-length");
+          if (prefSelect) prefSelect.value = draft.preferredLength;
+        }
+
+        triggerDurationUpdate();
 
         // Popoliamo i campi
         document.getElementById("visit-title").value = draft.title || "";
@@ -148,7 +160,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           loadMuseumWorks(currentMuseumId);
         }
 
-        triggerDurationUpdate();
+        // recuperiamo il quiz se c'e'
+        currentQuiz = draft.quiz || [];
+        renderQuizBuilder();
       }
     } catch (e) {
       console.error("Errore nel caricamento della bozza", e);
@@ -163,6 +177,12 @@ async function checkUserRole() {
     const response = await fetch(`${API_BASE_URL}/current-user`);
     if (response.ok) {
       const user = await response.json();
+
+      // Sblocchiamo il pannello del quiz se è una guida (o teacher/admin)
+      if (user?.type === "guide" || user?.type === "teacher" || user?.role === "admin") {
+        const quizArea = document.getElementById("quiz-creation-area");
+        quizArea?.classList.remove("d-none");
+      }
       
       // Se è un admin, ha poteri assoluti ovunque
       if (user?.role === "admin") {
@@ -203,6 +223,83 @@ async function checkUserRole() {
     console.error("Error checking user role:", error);
   }
 }
+
+// --------------------------------------------------------
+// --- GESTIONE QUIZ ---
+// --------------------------------------------------------
+
+function renderQuizBuilder() {
+  const container = document.getElementById("quiz-questions-container");
+  if (!container) return; // Se l'HTML non ha l'area, esci.
+
+  container.innerHTML = "";
+
+  if (currentQuiz.length === 0) {
+    container.innerHTML = `<p class="text-secondary small mb-3">Nessuna domanda inserita. Aggiungine una per creare un quiz finale.</p>`;
+  }
+
+  currentQuiz.forEach((q, qIndex) => {
+    let optionsHtml = "";
+    q.options.forEach((opt, optIndex) => {
+      const isCorrect = q.correctAnswerIndex === optIndex;
+      optionsHtml += `
+        <div class="input-group mb-2">
+          <div class="input-group-text bg-transparent border-secondary">
+            <input class="form-check-input mt-0" type="radio" name="correctAnswer_${qIndex}" value="${optIndex}" ${isCorrect ? 'checked' : ''} onchange="updateQuizQuestion(${qIndex}, 'correctAnswerIndex', this.value)" aria-label="Risposta corretta">
+          </div>
+          <input type="text" class="form-control bg-transparent text-white border-secondary" placeholder="Opzione ${optIndex + 1}" value="${opt}" oninput="updateQuizQuestion(${qIndex}, 'option', this.value, ${optIndex})">
+        </div>
+      `;
+    });
+
+    container.innerHTML += `
+      <div class="card custom-card p-3 mb-3 border-secondary bg-dark bg-opacity-25">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="text-info mb-0">Domanda ${qIndex + 1}</h6>
+          <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" onclick="removeQuizQuestion(${qIndex})" title="Rimuovi domanda">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+        <div class="mb-3">
+          <input type="text" class="form-control bg-transparent text-white border-secondary" placeholder="Scrivi qui la domanda..." value="${q.question}" oninput="updateQuizQuestion(${qIndex}, 'question', this.value)">
+        </div>
+        <div>
+          <label class="form-label small text-secondary">Opzioni (seleziona quella corretta):</label>
+          ${optionsHtml}
+        </div>
+      </div>
+    `;
+  });
+}
+
+function addQuizQuestion() {
+  currentQuiz.push({
+    question: "",
+    options: ["", "", "", ""], // 4 opzioni di default
+    correctAnswerIndex: 0 // La prima corretta di default
+  });
+  renderQuizBuilder();
+  triggerAutoSave();
+}
+
+function removeQuizQuestion(index) {
+  currentQuiz.splice(index, 1);
+  renderQuizBuilder();
+  triggerAutoSave();
+}
+
+function updateQuizQuestion(qIndex, field, value, optIndex = null) {
+  if (field === 'question') {
+    currentQuiz[qIndex].question = value;
+  } else if (field === 'correctAnswerIndex') {
+    currentQuiz[qIndex].correctAnswerIndex = parseInt(value);
+  } else if (field === 'option' && optIndex !== null) {
+    currentQuiz[qIndex].options[optIndex] = value;
+  }
+  triggerAutoSave();
+}
+
+// --------------------------------------------------------
 
 async function loadMuseumWorks(museumId) {
   const catalogArea = document.getElementById("works-catalog-area");
@@ -372,29 +469,44 @@ async function showMuseumSelector() {
   const museumNameLabel = document.getElementById("current-museum-name");
 
   museumNameLabel.innerText = "Scelta del museo";
-  catalogArea.innerHTML = `<div class="col-12 text-center mt-4"><div class="spinner-border text-info"></div></div>`;
+  
+  // INIETTIAMO IL TAG SELECT VUOTO INVECE DEI BOTTONI!
+  catalogArea.innerHTML = `
+    <div class="col-12 mt-4">
+        <p class="text-white mb-3">Seleziona il museo in cui vuoi creare la tua visita:</p>
+        <select id="museum-target-select" placeholder="Cerca il museo o la città..."></select>
+    </div>
+  `;
 
   try {
     const res = await fetch(`${API_BASE_URL}/museums`);
     const museums = await res.json();
 
-    catalogArea.innerHTML = `
-            <div class="col-12">
-                <p class="text-white mb-3">Seleziona il museo in cui vuoi creare la tua visita:</p>
-                <div class="list-group bg-transparent">
-                    ${museums
-                      .map(
-                        (m) => `
-                        <button class="list-group-item list-group-item-action bg-transparent text-white border-secondary mb-2 rounded" 
-                                onclick="window.location.href='/create-visit?museumId=${m._id}'">
-                            <i class="bi bi-bank me-2"></i> ${m.name}
-                        </button>
-                    `,
-                      )
-                      .join("")}
-                </div>
-            </div>
-        `;
+    // Ora Tom Select troverà il tag e lo trasformerà!
+    new TomSelect("#museum-target-select", {
+      valueField: '_id',
+      labelField: 'name',
+      searchField: ['name', 'address'],
+      options: museums,
+      render: {
+        option: function(data, escape) {
+          return `
+            <div class="d-flex flex-column p-2">
+              <span class="fw-bold"><i class="bi bi-bank me-2 text-info"></i>${escape(data.name)}</span>
+              <span class="small text-secondary ms-4">${escape(data.address || '')}</span>
+            </div>`;
+        },
+        item: function(data, escape) {
+          return `<div class="fw-bold">${escape(data.name)}</div>`;
+        }
+      },
+      onChange: function(selectedId) {
+        if (selectedId) {
+          window.location.replace(`/create-visit?museumId=${selectedId}`);
+        }
+      }
+    });
+
   } catch (error) {
     console.error("Motivo errore:", error);
     catalogArea.innerHTML = `<p class="text-danger">Errore nel caricamento dei musei.</p>`;
@@ -518,14 +630,19 @@ async function submitVisit(isSavingAsDraft = false) {
     description: description,
     museumId: currentMuseumId,
     works: workIds,
-    price: price,
-    isPublic: isPublic,
-    isDraft: isDraft,
     duration: durationNum,
     preferredLength: prefLength,
-    targetAudience: targets,        
-    accessibility: accessibilities  
+    isDraft: isDraft,
+    isPublic: isPublic,
+    quiz: currentQuiz
   };
+
+  // Aggiungiamo i campi del marketplace SOLO se la visita è pubblica (o se l'utente li vuole abilitare)
+  if (isPublic) {
+    payload.price = price;
+    payload.targetAudience = targets;
+    payload.accessibility = accessibilities;
+  }
 
   const submitBtn = document.getElementById("confirm-save-visit-btn");
   const draftBtn = document.getElementById("save-draft-btn");
@@ -573,7 +690,7 @@ async function submitVisit(isSavingAsDraft = false) {
 
     if (isSavingAsDraft) {
       alert("Bozza salvata con successo!");
-      window.location.href = "/my-visits"; // Le bozze rimangono nella lista "Le mie visite"
+      window.location.replace("/my-visits"); // Le bozze rimangono nella lista "Le mie visite"
     } else {
       alert(
         isPublic
@@ -581,7 +698,7 @@ async function submitVisit(isSavingAsDraft = false) {
           : "Visita privata salvata con successo!"
       );
       // Reindirizza direttamente alla pagina di dettaglio della visita creata/modificata!
-      window.location.href = `/visit-details?id=${finalVisitId}`;
+      window.location.replace(`/visit-details?id=${finalVisitId}`);
     }
   } catch (error) {
     console.error("Errore salvataggio:", error);
@@ -640,7 +757,8 @@ async function autoSaveDraft() {
     isPublic: false,
     isDraft: true, // È sempre una bozza
     duration: durationNum,
-    preferredLength: prefLength
+    preferredLength: prefLength,
+    quiz: currentQuiz
   };
 
   const method = editingVisitId ? "PUT" : "POST";

@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
 
   type: {
     type: String,
-    enum: ['student', 'teacher', 'none'],
+    enum: ['student', 'teacher', 'participant', 'guide', 'none'], // participant e guide per le visite con guida del museo
     default: 'none'
   },
 
@@ -27,9 +27,6 @@ const userSchema = new mongoose.Schema({
 
   // Musei gestiti (per curatori)
   managed_museums: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Museum' }],
-
-  // Visite create (per curatori)
-  created_visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visit' }],
 
   // Visite acquistate (per visitatori)
   purchased_visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visit' }],

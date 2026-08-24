@@ -1,27 +1,36 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Compass, Clock, Globe, Palette, Loader2, AlertCircle, Sparkles, UserCheck, Heart } from 'lucide-react';
+import { API_BASE_URL } from '../config';
+
+import VisitPreviewModal from '../components/VisitPreviewModal';
 
 export default function Visits({ selectedMuseum }) {
-  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'my'
+  const loaction = useLocation();
+  const navigate = useNavigate();
+
+  const [activeTab, setActiveTab] = useState(location.pathname.includes('my-visits') ? 'my' : 'all');
   const [allVisits, setAllVisits] = useState([]);
   const [myVisits, setMyVisits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [previewVisit, setPreviewVisit] = useState(null);
 
   // Carica TUTTE le visite pubbliche per il museo selezionato
   const fetchAllVisits = () => {
     if (!selectedMuseum) return;
     setLoading(true);
     setError(null);
-    fetch('http://localhost:8000/api/visits')
+    fetch(`${API_BASE_URL}/visits`, { credentials: 'include' })
       .then((res) => {
         if (!res.ok) throw new Error('Impossibile recuperare le visite pubbliche');
         return res.json();
       })
       .then((data) => {
-        const filtered = data.filter(
-          (visit) => visit.museumId && visit.museumId._id === selectedMuseum._id
-        );
+        const filtered = data.filter((visit) => {
+          const visitMuseumId = visit.museumId?._id || visit.museumId;
+          return visitMuseumId === selectedMuseum._id;
+        });
         setAllVisits(filtered);
         setLoading(false);
       })
@@ -36,7 +45,7 @@ export default function Visits({ selectedMuseum }) {
   const fetchMyVisits = () => {
     setLoading(true);
     setError(null);
-    fetch('http://localhost:8000/api/my-visits')
+    fetch(`${API_BASE_URL}/my-visits`, { credentials: 'include' })
       .then((res) => {
         if (res.status === 401) {
           // Gestione utente non loggato: mostriamo mock-data locali per scopi demo
@@ -65,9 +74,10 @@ export default function Visits({ selectedMuseum }) {
       .then((data) => {
         if (data) {
           // Filtriamo le mie visite solo per il museo correntemente selezionato
-          const filtered = data.filter(
-            (visit) => visit.museumId && visit.museumId._id === selectedMuseum._id
-          );
+          const filtered = data.filter((visit) => {
+            const visitMuseumId = visit.museumId?._id || visit.museumId;
+            return visitMuseumId === selectedMuseum._id;
+          });
           setMyVisits(filtered);
           setLoading(false);
         }
@@ -221,8 +231,20 @@ export default function Visits({ selectedMuseum }) {
                   </div>
 
                   {/* PULSANTE ESPLORA */}
-                  <button className="w-full mt-4 bg-slate-800 hover:bg-amber-500 group-hover:bg-amber-500 text-slate-300 group-hover:text-slate-950 font-bold py-2.5 px-4 rounded-xl transition-all text-xs flex items-center justify-center gap-2">
-                    Avvia Itinerario
+                  <button 
+                    onClick={() => {
+                      if (visit.isGuestMock) {
+                        // TODO: mettere la seguente riga o una logica simile alla fine
+                        // alert("Questa è una visita dimostrativa. Accedi per creare e avviare itinerari reali sulla mappa!");
+                        navigate(`/free-map?visitId=${visit._id}`);
+                      } else {
+                        // Puntiamo a /map, che caricherà MapView in modalità Visitatore Singolo
+                        setPreviewVisit(visit);
+                      }
+                    }}
+                    className="w-full mt-4 bg-slate-800 hover:bg-amber-500 group-hover:bg-amber-500 text-slate-300 group-hover:text-slate-950 font-bold py-2.5 px-4 rounded-xl transition-all text-xs flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    {activeTab === 'my' ? 'Avvia itinerario' : 'Scopri itinerario'}
                   </button>
                 </div>
               </div>
@@ -255,6 +277,13 @@ export default function Visits({ selectedMuseum }) {
 
         </div>
       </div>
+
+      {/* --- MODALE ANTEPRIMA ITINERARIO ESTERNATO --- */}
+      <VisitPreviewModal 
+        visit={previewVisit} 
+        onClose={() => setPreviewVisit(null)} 
+        activeTab={activeTab} 
+      />
 
     </div>
   );

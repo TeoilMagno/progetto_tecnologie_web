@@ -1,12 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { Building2, Landmark, Loader2, AlertCircle } from 'lucide-react';
+import { Building2, Landmark, Loader2, AlertCircle, Search } from 'lucide-react';
 import { API_BASE_URL } from '../config';
+
+// Algoritmo di Levenshtein
+function levenshteinDistance(a, b) {
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+// Ricerca Fuzzy
+function fuzzySearch(query, targetText, maxTypos = 2) {
+  query = query.toLowerCase().trim();
+  targetText = targetText.toLowerCase().trim();
+  
+  if (query === "") return true;
+  if (targetText.includes(query)) return true;
+
+  const queryWords = query.split(/\s+/);
+  const targetWords = targetText.split(/\s+/);
+
+  return queryWords.every(qw => 
+    targetWords.some(tw => levenshteinDistance(qw, tw) <= maxTypos)
+  );
+}
 
 export default function MuseumSelectorOverlay({ onSelect }) {
   const [museums, setMuseums] = useState([]);
   const [selectedId, setSelectedId] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const filteredMuseums = museums.filter(m => fuzzySearch(searchQuery, m.name));
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/museums`)
@@ -71,31 +111,70 @@ export default function MuseumSelectorOverlay({ onSelect }) {
           </div>
         ) : (
           <div className="w-full space-y-6">
-            {/* SELECT MENU */}
-            <div className="relative">
-              <label className="block text-left text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-1">
+            {/* CUSTOM DROPDOWN MUSEI */}
+            <div className="w-full relative text-left">
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-1">
                 Seleziona Museo
               </label>
-              <div className="relative flex items-center">
-                <Building2 className="absolute left-4 text-slate-500" size={18} />
-                <select
-                  value={selectedId}
-                  onChange={(e) => setSelectedId(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 hover:border-slate-600 text-white rounded-xl pl-12 pr-4 py-3.5 text-sm font-medium appearance-none focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all cursor-pointer"
-                >
-                  {museums.map((m) => (
-                    <option key={m._id} value={m._id} className="bg-slate-900 text-white">
-                      {m.name}
-                    </option>
-                  ))}
-                </select>
-                {/* Custom arrow decoration */}
-                <div className="pointer-events-none absolute right-4 flex items-center text-slate-400">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
+              
+              {/* Bottone Principale (Mostra il museo selezionato) */}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full bg-slate-800 border border-slate-700 hover:border-slate-600 text-white rounded-xl px-4 py-3.5 text-sm font-medium flex items-center justify-between transition-all cursor-pointer"
+              >
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <Building2 size={18} className="text-amber-500 shrink-0" />
+                  <span className="truncate">
+                    {museums.find(m => m._id === selectedId)?.name || "Seleziona un museo..."}
+                  </span>
                 </div>
-              </div>
+                <svg className={`fill-current h-4 w-4 shrink-0 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </button>
+
+              {/* Tendina a Scomparsa (con Ricerca e Lista) */}
+              {isOpen && (
+                <div className="absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden animate-fadeIn">
+                  
+                  {/* Barra di ricerca interna alla tendina */}
+                  <div className="p-2 border-b border-slate-800 relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+                    <input
+                      type="text"
+                      placeholder="Cerca museo..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-slate-800/50 border border-slate-700 text-white rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-amber-500 transition-colors"
+                    />
+                  </div>
+                  
+                  {/* Lista risultati (max 4-5 visibili, poi scrolla) */}
+                  <div className="max-h-48 overflow-y-auto p-1 custom-scrollbar">
+                    {filteredMuseums.length === 0 ? (
+                      <p className="text-slate-500 text-sm py-3 text-center">Nessun risultato.</p>
+                    ) : (
+                      filteredMuseums.map((m) => (
+                        <button
+                          key={m._id}
+                          onClick={() => {
+                            setSelectedId(m._id);
+                            setIsOpen(false); // Chiude la tendina dopo la scelta
+                            setSearchQuery(''); // Resetta la ricerca
+                          }}
+                          className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors flex items-center gap-2 cursor-pointer ${
+                            selectedId === m._id 
+                              ? 'bg-amber-500/20 text-amber-400 font-bold' 
+                              : 'hover:bg-slate-800 text-slate-300'
+                          }`}
+                        >
+                          <span className="text-sm truncate">{m.name}</span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* BOTTONE CONFERMA */}
