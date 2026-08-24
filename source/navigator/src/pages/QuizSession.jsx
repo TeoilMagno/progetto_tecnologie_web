@@ -35,7 +35,7 @@ export default function QuizSession() {
   }, [roomCode, quizData, navigate]);
 
   // Ascolto consegne quiz (Solo Insegnante)
-// Ascolto consegne quiz (Solo Insegnante)
+  // Ascolto consegne quiz (Solo Insegnante)
   useEffect(() => {
     if (role === 'teacher' && socket) {
       socket.on('student_quiz_submitted', (payload) => {
@@ -53,6 +53,18 @@ export default function QuizSession() {
       return () => socket.off('student_quiz_submitted');
     }
   }, [role, socket]);
+
+  // Ascolto chiusura stanza definitiva (Studente)
+  useEffect(() => {
+    if (role === 'student' && socket) {
+      socket.on('room_closed', () => {
+        alert("La sessione è stata terminata definitivamente dall'insegnante.");
+        navigate('/'); // Rimanda lo studente alla home (o a '/my-visits' se preferisci)
+      });
+
+      return () => socket.off('room_closed');
+    }
+  }, [role, socket, navigate]);
 
   const handleOptionSelect = (optIndex) => {
     setStudentAnswers(prev => ({ ...prev, [currentQuestionIndex]: optIndex }));
@@ -136,6 +148,8 @@ export default function QuizSession() {
 
           <button 
             onClick={async () => {
+              socket.emit('close_room', { roomCode });
+
               try {
                 const reportPayload = {
                   roomCode,

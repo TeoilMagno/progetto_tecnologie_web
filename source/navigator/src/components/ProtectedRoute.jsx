@@ -10,6 +10,13 @@ export default function ProtectedRoute({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Se c'è un roomCode nell'URL, è uno studente che entra in una sessione condivisa, non serve il login!
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('roomCode')) {
+      setIsAuthenticated(true);
+      return;
+    }
+    
     // Verifichiamo lo stato dell'utente ad ogni mount della rotta protetta
     fetch(`${API_BASE_URL}/current-user`, { credentials: 'include' })
       .then(res => {

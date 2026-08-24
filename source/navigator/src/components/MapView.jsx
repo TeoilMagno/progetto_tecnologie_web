@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2, Compass, Image as ImageIcon } from "lucide-react";
+import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2, Compass, Image as ImageIcon, QrCode, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { useSocket } from "../context/SocketContext";
@@ -8,6 +8,7 @@ import SectionLayer from "./SectionLayer";
 import RoomLayer from "./RoomLayer";
 import WorkDetailsSheet from "./WorkDetailsSheet";
 import NavigationControlBar from "./NavigationControlBar";
+import RoomQRCode from "./RoomQRCode";
 
 export default function MapView({ visitId, roomCode, isTeacher }) {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
   const [visitQuiz, setVisitQuiz] = useState([]);
+  const [showJoinModal, setShowJoinModal] = useState(false);
 
   // Livello di dettaglio della descrizione
   const [expertiseLevel, setExpertiseLevel] = useState("medium");
@@ -78,6 +80,16 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         // Controllo di sicurezza: ci assicuriamo che works sia un array
         const worksArray = Array.isArray(visitData.works) ? visitData.works : [];
         setVisitedWorks(worksArray);
+
+        // Se stiamo entrando in una sessione già in corso, ci allineiamo subito all'opera del prof
+        if (apiData.currentArtworkId && worksArray.length > 0) {
+          const activeIndex = worksArray.findIndex(
+            (w) => (w._id?.toString() || w.toString()) === apiData.currentArtworkId.toString()
+          );
+          if (activeIndex !== -1) {
+            setCurrentWorkIndex(activeIndex);
+          }
+        }
         
         const museumId = visitData.museumId?._id || visitData.museumId;
         
@@ -147,6 +159,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   useEffect(() => {
     if (isSharedSession && !isTeacher && socket) {
       socket.on("change_artwork", (data) => {
+        if (!data || !data.artworkId) return;
         const index = visitedWorks.findIndex(w => w._id === data.artworkId);
         if (index != -1) {
           setCurrentWorkIndex(index);
@@ -162,10 +175,16 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         setShowEndModal(true);
       });
 
+      socket.on("room_closed", () => {
+        alert("L'insegnante ha terminato definitivamente la sessione.");
+        navigate("/my-visits"); 
+      });
+
       return () => {
         socket.off("change_artwork");
         socket.off("quiz_started");
         socket.off("visit_ended");
+        socket.off("room_closed")
       };
     }
   }, [isSharedSession, isTeacher, visitedWorks, socket, navigate, roomCode, hasMap]);
@@ -367,6 +386,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         isTeacher={isTeacher}
         currentLength={currentLength}
         expertiseLevel={expertiseLevel}
+        onShowJoinModal={() => setShowJoinModal(true)}
       />
 
       {/* Modali e Bottom Sheet */}
@@ -397,7 +417,11 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                     </button>
                   )}
                   <button 
-                    onClick={() => navigate("/my-visits")} 
+                    onClick={() => {
+                      // Chiude la stanza per tutti
+                      socket.emit('close_room', { roomCode });
+                      navigate("/my-visits");
+                    }}
                     className="w-full px-6 py-3 border border-white/20 rounded-xl text-white hover:bg-white/10 transition-colors font-medium cursor-pointer"
                   >
                     Termina sessione definitivamente
@@ -443,6 +467,38 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           commandsMap={commandsMap}
           expertiseLevel={expertiseLevel}
         />
+      )}
+
+      {/* Modale Codice Stanza (Solo Insegnante) */}
+      {showJoinModal && (
+        <div className="fixed inset-0 bg-black/85 z-[10000] flex items-center justify-center p-4 animate-fadeIn">
+          <div className="w-full max-w-sm bg-[#121218] border border-white/10 rounded-3xl p-6 shadow-2xl relative text-center">
+            
+            <button 
+              onClick={() => setShowJoinModal(false)}
+              className="absolute top-4 right-4 p-2 bg-slate-800 text-slate-400 rounded-full hover:bg-slate-700 hover:text-white cursor-pointer transition-colors"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="w-16 h-16 bg-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center mx-auto mb-4 mt-2">
+              <QrCode size={32} />
+            </div>
+            
+            <h3 className="text-xl font-bold text-white mb-2">Codice Stanza</h3>
+            <p className="text-slate-400 text-sm mb-6">Fai inquadrare questo codice o comunicalo agli utenti in ritardo.</p>
+            
+            {/* Il nostro nuovo componente riutilizzabile! */}
+            <div className="mb-6">
+              <RoomQRCode roomCode={roomCode} />
+            </div>
+            
+            <div className="bg-slate-900 border border-slate-700 py-4 rounded-2xl mb-2">
+              <span className="text-4xl font-mono font-bold text-cyan-400 tracking-widest">{roomCode}</span>
+            </div>
+            
+          </div>
+        </div>
       )}
     </div>
   );

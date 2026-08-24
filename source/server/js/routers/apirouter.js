@@ -576,10 +576,16 @@ apiRouter.get("/visits/:id", async (req, res) => {
     const isLogged = req.isAuthenticated();
     const userData = isLogged ? req.user : null;
 
+    // Recuperiamo l'opera corrente se la sessione condivisa è attiva
+    const currentArtworkId = (isSharedValid && sessions[roomCode]?.currentArtworkId) 
+      ? sessions[roomCode].currentArtworkId 
+      : null;
+
     res.status(200).json({
-      visit: visitObj,                // dati della visita richiesta
-      commands_map: dictionary,        // aggiunge il tuo nuovo dizionario alla risposta
-      user: userData
+      visit: visitObj,
+      commands_map: dictionary,
+      user: userData,
+      currentArtworkId: currentArtworkId // <-- Invia l'opera corrente attiva
     });
   } catch (error) {
     const status = error.statusCode || 500;

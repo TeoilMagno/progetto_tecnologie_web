@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QrCode, GraduationCap, Presentation, Users, Loader2, AlertCircle, RefreshCw, Sparkles, ArrowLeft, ArrowRight, Play, Send, Camera, CameraOff, CheckCircle2 } from 'lucide-react';
-import QRCode from 'react-qr-code';
 import QrScanner from 'qr-scanner';
 // Vite: importa l'URL del worker già bundlato dalla libreria (necessario per farlo funzionare col bundler)
 import QrScannerWorkerPath from 'qr-scanner/qr-scanner-worker.min.js?url';
 import { API_BASE_URL } from '../config';
 import { useSocket } from '../context/SocketContext';
 import LoginModal from '../components/LoginModal';
+import RoomQRCode from '../components/RoomQRCode';
 
 QrScanner.WORKER_PATH = QrScannerWorkerPath;
 
@@ -58,8 +58,13 @@ export default function JoinSession() {
 
     socket.on('room_joined', (data) => {
       if (data.success) {
-        // Reindirizziamo alla sala d'attesa dello studente anziché direttamente alla mappa
-        navigate(`/waiting-room?roomCode=${data.roomCode}&studentName=${encodeURIComponent(studentName)}`);
+        // SE LA VISITA E' GIA' INIZIATA, catapulta il ritardatario direttamente in mappa!
+        if (data.hasStarted) {
+          navigate(`/map?visitId=${data.visitId}&roomCode=${data.roomCode}&role=student`);
+        } else {
+          // Altrimenti, normale sala d'attesa
+          navigate(`/waiting-room?roomCode=${data.roomCode}&studentName=${encodeURIComponent(studentName)}`);
+        }
       }
     });
 
@@ -646,23 +651,8 @@ export default function JoinSession() {
                   <h2 className="text-4xl font-black text-amber-500 tracking-widest uppercase font-mono mb-4">{teacherRoomCode}</h2>
                   
                   {/* GENERATORE QR CODE REALE */}
-                  <div className="relative w-44 h-44 bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-center shadow-lg shadow-white/5 mb-4 overflow-hidden">
-                    <QRCode
-                      value={`${window.location.origin}/navigator/join?roomCode=${teacherRoomCode}`}
-                      size={256}
-                      style={{ width: '100%', height: '100%' }}
-                      fgColor="#020617"
-                      bgColor="#ffffff"
-                      viewBox="0 0 256 256"
-                      level="H"
-                    />
-                    <div className="absolute inset-0 m-auto w-10 h-10 bg-slate-950 border-2 border-white rounded-lg flex items-center justify-center text-xs font-black text-amber-500">
-                      AA
-                    </div>
-                  </div>
-                  <p className="text-slate-400 text-xs max-w-xs leading-relaxed">
-                    Mostra questo codice o proietta il QR code per permettere ai tuoi studenti di accedere.
-                  </p>
+                  <RoomQRCode roomCode={teacherRoomCode} />
+                  
                 </div>
 
                 <div className="w-full bg-[#1e293b]/40 backdrop-blur-md border border-slate-800 rounded-3xl p-5">

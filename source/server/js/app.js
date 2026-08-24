@@ -109,7 +109,12 @@ io.on('connection', (socket) => {
       const studentData = { id: socket.id, name: studentName };
       activeSessions[roomCode].students.push(studentData);
       
-      socket.emit('room_joined', { success: true, roomCode });
+      socket.emit('room_joined', { 
+        success: true, 
+        roomCode,
+        hasStarted: activeSessions[roomCode].hasStarted,
+        visitId: activeSessions[roomCode].visitId
+      });
       io.to(activeSessions[roomCode].teacherSocketId).emit('student_joined', studentData);
     } else {
       socket.emit('error', 'Stanza non trovata. Controlla il codice.');
@@ -213,11 +218,26 @@ io.on('connection', (socket) => {
     socket.to(roomCode).emit('session_started', { visitId });
   });
 
-  // L'insegnante ha raggiunto la fine della visita
+  // L'insegnante ha raggiunto la fine della visita -> puo' scegliere di fare il quiz o terminare la stanza
   socket.on('end_shared_visit', ({ roomCode }) => {
     if (!roomCode) return;
     // Avvisiamo tutti gli studenti nella stanza che la visita è terminata
     socket.to(roomCode.toUpperCase()).emit('visit_ended');
+  });
+
+  // L'insegnante chiude definitivamente la stanza (dalla mappa o dal quiz)
+  socket.on('close_room', ({ roomCode }) => {
+    if (!roomCode) return;
+    const room = roomCode.toUpperCase();
+    
+    // Avvisa tutti gli studenti che la sessione è finita
+    socket.to(room).emit('room_closed');
+    
+    // Pulizia della memoria
+    if (activeSessions[room]) {
+      delete activeSessions[room];
+      console.log(`Stanza ${room} chiusa e rimossa dalla memoria.`);
+    }
   });
 
   socket.on('disconnect', () => {

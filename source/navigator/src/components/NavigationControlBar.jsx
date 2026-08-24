@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lock, ChevronLeft, Play, ChevronRight, BookOpen, Volume2, Keyboard, Mic } from 'lucide-react';
+import { Lock, ChevronLeft, Play, ChevronRight, BookOpen, Volume2, Keyboard, Mic, QrCode } from 'lucide-react';
 
 export default function NavigationControlBar({
   currentWorkIndex,
@@ -15,7 +15,8 @@ export default function NavigationControlBar({
   isSharedSession,
   isTeacher,
   currentLength,
-  expertiseLevel
+  expertiseLevel,
+  onShowJoinModal
 }) {
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
 
@@ -123,6 +124,16 @@ export default function NavigationControlBar({
           </button>
         </div>
       </div>
+
+      {isSharedSession && isTeacher && (
+          <button 
+            onClick={onShowJoinModal}
+            className="p-3 bg-purple-600/20 text-purple-400 border border-purple-500/30 rounded-full hover:bg-purple-600/40 transition-colors"
+            title="Mostra Codice Accesso"
+          >
+            <QrCode size={20} />
+          </button>
+        )}
 
     </div>
   );
