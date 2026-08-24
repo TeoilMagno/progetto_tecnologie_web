@@ -27,6 +27,24 @@ async function getMyVisits() {
     if (!response.ok) throw new Error("Errore server");
     cachedVisits = await response.json();
 
+    // 2. Ordinamento "Ibrido" Intelligente
+    cachedVisits.forEach((visit, index) => {
+      const creatorId = visit.creator?._id || visit.creator;
+      const isPurchased = currentUser && creatorId && (creatorId.toString() !== currentUser._id.toString());
+
+      if (isPurchased) {
+        // TRUCCO: Le visite acquistate arrivano dal backend nello stesso ordine in cui le hai comprate.
+        // Assegniamo loro la data di "Adesso" aggiungendo un millisecondo per ogni indice.
+        // Così l'ultima comprata avrà la data più alta e finirà prima in classifica!
+        visit.sortDate = new Date(Date.now() + index * 1000);
+      } else {
+        // Le visite create da te usano la loro vera data di aggiornamento/creazione
+        visit.sortDate = new Date(visit.updatedAt || visit.createdAt || 0);
+      }
+    });
+
+    // 3. Ordina usando il nuovo campo temporaneo
+    cachedVisits.sort((a, b) => b.sortDate - a.sortDate);
     renderVisitsList(cachedVisits, "managed-visits-area");
   } catch (error) {
     console.error(error);
@@ -47,16 +65,37 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
 
     let statusBadge = "";
     let actionButton = "";
+    let deleteButtonHtml = "";
 
-    if (visit.isDraft) {
-      statusBadge = `<span class="badge bg-warning text-dark border border-warning mb-2"><i class="bi bi-pencil-square me-1"></i> Bozza</span>`;
-      actionButton = `<a href="/create-visit?editId=${visit._id}" class="btn btn-sm btn-gradient flex-grow-1">Continua Bozza</a>`;
-    } else if (visit.isPublic) {
-      statusBadge = `<span class="badge bg-success bg-opacity-25 text-success border border-success mb-2"><i class="bi bi-globe me-1"></i> Pubblicata</span>`;
-      actionButton = `<a href="/visit-details?id=${visit._id}" class="btn btn-sm btn-glass flex-grow-1">Vedi Dettagli</a>`;
+    // 1. Verifichiamo se la visita NON è stata creata dall'utente corrente
+    const creatorId = visit.creator?._id || visit.creator;
+    const isPurchased = currentUser && creatorId && (creatorId.toString() !== currentUser._id.toString());
+
+    if (isPurchased) {
+      // Visita Acquistata
+      statusBadge = `<span class="badge bg-primary bg-opacity-25 text-primary border border-primary mb-2"><i class="bi bi-cart-check me-1"></i> Acquistata</span>`;
+      actionButton = `<a href="/visit-details?id=${visit._id}" class="btn btn-sm btn-glass flex-grow-1">Inizia Visita</a>`;
+      // NON mostriamo il cestino: l'utente non può eliminare visite di altri
+      deleteButtonHtml = ``; 
     } else {
-      statusBadge = `<span class="badge bg-secondary bg-opacity-25 text-light border border-secondary mb-2"><i class="bi bi-lock me-1"></i> Privata</span>`;
-      actionButton = `<a href="/visit-details?id=${visit._id}" class="btn btn-sm btn-glass flex-grow-1">Vedi Dettagli</a>`;
+      // Le MIE visite (Bozza, Pubblica o Privata)
+      if (visit.isDraft) {
+        statusBadge = `<span class="badge bg-warning text-dark border border-warning mb-2"><i class="bi bi-pencil-square me-1"></i> Bozza</span>`;
+        actionButton = `<a href="/create-visit?editId=${visit._id}" class="btn btn-sm btn-gradient flex-grow-1">Continua Bozza</a>`;
+      } else if (visit.isPublic) {
+        statusBadge = `<span class="badge bg-success bg-opacity-25 text-success border border-success mb-2"><i class="bi bi-globe me-1"></i> Pubblicata</span>`;
+        actionButton = `<a href="/visit-details?id=${visit._id}" class="btn btn-sm btn-glass flex-grow-1">Vedi Dettagli</a>`;
+      } else {
+        statusBadge = `<span class="badge bg-secondary bg-opacity-25 text-light border border-secondary mb-2"><i class="bi bi-lock me-1"></i> Privata</span>`;
+        actionButton = `<a href="/visit-details?id=${visit._id}" class="btn btn-sm btn-glass flex-grow-1">Vedi Dettagli</a>`;
+      }
+      
+      // Mostriamo il cestino solo per le visite create dall'utente
+      deleteButtonHtml = `
+        <button class="btn btn-sm btn-outline-danger ms-2" onclick="event.stopPropagation(); deleteVisit('${visit._id}')" title="Elimina visita o bozza">
+          <i class="bi bi-trash"></i>
+        </button>
+      `;
     }
 
     let extraTagsHtml = "";
@@ -120,9 +159,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
             
             <div class="d-flex justify-content-between align-items-center mt-3">
               ${actionButton}
-              <button class="btn btn-sm btn-outline-danger ms-2" onclick="event.stopPropagation(); deleteVisit('${visit._id}')" title="Elimina visita o bozza">
-                <i class="bi bi-trash"></i>
-              </button>
+              ${deleteButtonHtml}
             </div>
           </div>
         </div>
