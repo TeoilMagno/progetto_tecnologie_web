@@ -3,9 +3,73 @@ let currentUserId = null;
 let cachedIncoming = [];
 let cachedOutgoing = [];
 
+let sourceTs, workTs, targetTs, roomTs;
+
 document.addEventListener("DOMContentLoaded", async () => {
   newAdoptionModalInstance = new bootstrap.Modal(document.getElementById("newAdoptionModal"));
   
+  // 1. INIZIALIZZA I TOM SELECT VUOTI
+  sourceTs = new TomSelect("#source-museum-select", {
+    valueField: '_id', labelField: 'name', searchField: ['name'],
+    onChange: onSourceMuseumChange // Innesca la cascata!
+  });
+
+  workTs = new TomSelect("#work-select", {
+    valueField: '_id', labelField: 'name', searchField: ['name', 'author'],
+    render: {
+      option: function(data, escape) {
+        return `
+          <div class="d-flex align-items-center p-2">
+            <img src="${escape(data.image || '/img/fallback-work.jpg')}" style="width:30px; height:30px; object-fit:cover; border-radius:4px;" class="me-3">
+            <div>
+              <div class="fw-bold text-white">${escape(data.name)}</div>
+              <div class="small text-secondary">${escape(data.author || 'Ignoto')}</div>
+            </div>
+          </div>`;
+      }
+    }
+  });
+
+  targetTs = new TomSelect("#target-museum-select", {
+    valueField: '_id', labelField: 'name', searchField: ['name'],
+    onChange: onTargetMuseumChange // Innesca la cascata delle stanze!
+  });
+
+  roomTs = new TomSelect("#target-room-select", {
+    valueField: '_id', labelField: 'name', searchField: ['name'],
+    optgroupField: 'sectionId', optgroupLabelField: 'label', optgroupValueField: 'id',
+    render: {
+      optgroup_header: function(data, escape) {
+        return `<div class="fw-bold text-info p-2 border-bottom border-secondary border-opacity-25" style="background: rgba(255,255,255,0.02); font-size: 0.75rem; text-transform: uppercase;">${escape(data.label)}</div>`;
+      }
+    }
+  });
+
+  // INIZIALIZZAZIONE IMASK PER LE DATE
+  const dateMaskOptions = {
+    mask: Date,
+    pattern: 'd/m/Y',
+    lazy: false, // Mostra la traccia: __/__/____
+    format: function (date) {
+      let day = date.getDate().toString().padStart(2, '0');
+      let month = (date.getMonth() + 1).toString().padStart(2, '0');
+      let year = date.getFullYear();
+      return [day, month, year].join('/');
+    },
+    parse: function (str) {
+      const parts = str.split('/');
+      return new Date(parts[2], parts[1] - 1, parts[0]);
+    },
+    blocks: {
+      d: { mask: IMask.MaskedRange, from: 1, to: 31, maxLength: 2 },
+      m: { mask: IMask.MaskedRange, from: 1, to: 12, maxLength: 2 },
+      Y: { mask: IMask.MaskedRange, from: 2024, to: 2100 }
+    }
+  };
+
+  IMask(document.getElementById("begin-date-input"), dateMaskOptions);
+  IMask(document.getElementById("end-date-input"), dateMaskOptions);
+
   await fetchCurrentUser();
   if (currentUser) currentUserId = currentUser._id;
 
@@ -226,102 +290,88 @@ async function completeAdoption(adoptionId) {
 
 // ------------------- MODALE NUOVA ADOZIONE -------------------
 async function openNewAdoptionModal() {
-  const sourceSelect = document.getElementById("source-museum-select");
-  const targetSelect = document.getElementById("target-museum-select");
-  const roomSelect = document.getElementById("target-room-select");
+  // Svuota i vecchi dati
+  sourceTs.clear(); sourceTs.clearOptions();
+  workTs.clear(); workTs.clearOptions();
+  targetTs.clear(); targetTs.clearOptions();
+  roomTs.clear(); roomTs.clearOptions();
 
-  if(roomSelect) {
-     roomSelect.innerHTML = `<option value="">Prima seleziona un tuo museo...</option>`;
-     roomSelect.disabled = true;
-  }
-
-  targetSelect.onchange = onTargetMuseumChange;
-
-  // Popoliamo i musei
   try {
     // 1. Musei totali per la fonte
     const allMuseumsRes = await fetch(`${API_BASE_URL}/museums`);
     const allMuseums = await allMuseumsRes.json();
-    sourceSelect.innerHTML = `<option value="">Seleziona un museo...</option>` +
-      allMuseums.map(m => `<option value="${m._id}">${m.name}</option>`).join('');
+    sourceTs.addOptions(allMuseums);
+    sourceTs.control_input.placeholder = "Cerca un museo...";
 
     // 2. I miei musei per la destinazione
     const myMuseumsRes = await fetch(`${API_BASE_URL}/my-museums`);
     const myMuseums = await myMuseumsRes.json();
-    targetSelect.innerHTML = `<option value="">Seleziona un tuo museo...</option>` +
-      myMuseums.map(m => `<option value="${m._id}">${m.name}</option>`).join('');
+    targetTs.addOptions(myMuseums);
+    targetTs.control_input.placeholder = "Cerca un tuo museo...";
 
     newAdoptionModalInstance.show();
   } catch (error) { console.error(error); }
 }
 
-async function onTargetMuseumChange() {
-  const toMuseumId = document.getElementById("target-museum-select").value;
-  const roomSelect = document.getElementById("target-room-select");
-
-  if (!toMuseumId) {
-    roomSelect.disabled = true;
-    roomSelect.innerHTML = `<option value="">Prima seleziona un tuo museo...</option>`;
+async function onSourceMuseumChange(museumId) {
+  workTs.clear();
+  workTs.clearOptions();
+  
+  if (!museumId) {
+    workTs.control_input.placeholder = "Prima scegli un museo...";
     return;
   }
 
-  roomSelect.innerHTML = `<option value="">Caricamento stanze...</option>`;
+  workTs.control_input.placeholder = "Caricamento opere...";
 
   try {
-    const res = await fetch(`${API_BASE_URL}/museums/${toMuseumId}/sections`);
+    const res = await fetch(`${API_BASE_URL}/museums/${museumId}/works`);
+    const works = await res.json();
+    
+    if(works.length > 0) {
+      workTs.addOptions(works);
+      workTs.control_input.placeholder = "Cerca o seleziona un'opera...";
+    } else {
+      workTs.control_input.placeholder = "Nessuna opera trovata";
+    }
+  } catch(error) { console.error(error); }
+}
+
+async function onTargetMuseumChange(museumId) {
+  roomTs.clear();
+  roomTs.clearOptions();
+  roomTs.clearOptionGroups();
+
+  if (!museumId) {
+    roomTs.control_input.placeholder = "Prima scegli un tuo museo...";
+    return;
+  }
+
+  roomTs.control_input.placeholder = "Caricamento stanze...";
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`);
     const sections = await res.json();
 
-    let optionsHtml = `<option value="">Seleziona la stanza in cui esporla...</option>`;
     let hasRooms = false;
 
-    // Raggruppiamo le stanze per sezione usando <optgroup> (molto elegante visivamente)
+    // Aggiungiamo i gruppi (Sezioni) e le opzioni (Stanze)
     sections.forEach(sec => {
       if (sec.rooms && sec.rooms.length > 0) {
         hasRooms = true;
-        optionsHtml += `<optgroup label="Sezione: ${sec.name}">`;
+        roomTs.addOptionGroup(sec._id, { id: sec._id, label: `Sezione: ${sec.name}` });
+        
         sec.rooms.forEach(room => {
-          optionsHtml += `<option value="${room._id}">${room.name}</option>`;
+          roomTs.addOption({ _id: room._id, name: room.name, sectionId: sec._id });
         });
-        optionsHtml += `</optgroup>`;
       }
     });
 
     if (!hasRooms) {
-      roomSelect.innerHTML = `<option value="">Nessuna stanza creata in questo museo!</option>`;
-      roomSelect.disabled = true;
+      roomTs.control_input.placeholder = "Nessuna stanza creata!";
     } else {
-      roomSelect.innerHTML = optionsHtml;
-      roomSelect.disabled = false;
+      roomTs.control_input.placeholder = "Seleziona la stanza in cui esporla...";
     }
-  } catch (error) { 
-    console.error(error); 
-    roomSelect.innerHTML = `<option value="">Errore caricamento stanze</option>`;
-  }
-}
-
-async function onSourceMuseumChange() {
-  const sourceMuseumId = document.getElementById("source-museum-select").value;
-  const workSelect = document.getElementById("work-select");
-
-  if (!sourceMuseumId) {
-    workSelect.disabled = true;
-    workSelect.innerHTML = `<option value="">Prima seleziona un museo...</option>`;
-    return;
-  }
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/museums/${sourceMuseumId}/works`);
-    const works = await res.json();
-
-    if (works.length === 0) {
-      workSelect.disabled = true;
-      workSelect.innerHTML = `<option value="">Nessuna opera disponibile in questo museo</option>`;
-      return;
-    }
-
-    workSelect.disabled = false;
-    workSelect.innerHTML = `<option value="">Seleziona l'opera...</option>` +
-      works.map(w => `<option value="${w._id}">${w.name} (${w.author || 'Autore ignoto'})</option>`).join('');
   } catch (error) { console.error(error); }
 }
 
@@ -329,17 +379,30 @@ async function submitAdoptionRequest() {
   const workId = document.getElementById("work-select").value;
   const toMuseumId = document.getElementById("target-museum-select").value;
   const targetRoomId = document.getElementById("target-room-select").value;
-  const beginDate = document.getElementById("begin-date-input").value;
-  const endDate = document.getElementById("end-date-input").value;
+  const beginDateStr = document.getElementById("begin-date-input").value;
+  const endDateStr = document.getElementById("end-date-input").value;
 
-  if (!workId || !toMuseumId || !targetRoomId || !beginDate || !endDate) {
+  if (!workId || !toMuseumId || !targetRoomId || !beginDateStr || !endDateStr) {
     alert("Tutti i campi sono obbligatori!");
     return;
   }
 
-  // controlli sulle date
-  const beginDateNr = new Date(beginDate);
-  const endDateNr = new Date(endDate);
+  // Creiamo una funzione di supporto per trasformare DD/MM/YYYY in un oggetto Date
+  const parseDateString = (str) => {
+    // Rimuove eventuali underscore residui della maschera
+    const cleanStr = str.replace(/_/g, ''); 
+    if (cleanStr.length < 10) return null; // Se non ha finito di scrivere
+    const parts = cleanStr.split('/');
+    return new Date(parts[2], parts[1] - 1, parts[0]);
+  };
+
+  const beginDateNr = parseDateString(beginDateStr);
+  const endDateNr = parseDateString(endDateStr);
+
+  if (!beginDateNr || !endDateNr) {
+    alert("Compila le date completamente nel formato GG/MM/AAAA.");
+    return;
+  }
   
   // Creiamo la data di oggi e azzeriamo l'ora per un confronto equo (solo anno/mese/giorno)
   const today = new Date();
@@ -360,6 +423,11 @@ async function submitAdoptionRequest() {
     alert(`Errore: La data di fine non può superare l'anno ${maxYear}.`);
     return;
   }
+
+  // ORA CONVERTIAMO NEL FORMATO YYYY-MM-DD DA MANDARE AL BACKEND
+  // Questo perché il DB apprezza le stringhe ISO o comunque formattate in standard americano
+  const beginDate = beginDateNr.toISOString().split('T')[0];
+  const endDate = endDateNr.toISOString().split('T')[0];
 
   try {
     const res = await fetch(`${API_BASE_URL}/adoptions`, {

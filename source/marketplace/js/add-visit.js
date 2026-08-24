@@ -469,29 +469,44 @@ async function showMuseumSelector() {
   const museumNameLabel = document.getElementById("current-museum-name");
 
   museumNameLabel.innerText = "Scelta del museo";
-  catalogArea.innerHTML = `<div class="col-12 text-center mt-4"><div class="spinner-border text-info"></div></div>`;
+  
+  // INIETTIAMO IL TAG SELECT VUOTO INVECE DEI BOTTONI!
+  catalogArea.innerHTML = `
+    <div class="col-12 mt-4">
+        <p class="text-white mb-3">Seleziona il museo in cui vuoi creare la tua visita:</p>
+        <select id="museum-target-select" placeholder="Cerca il museo o la città..."></select>
+    </div>
+  `;
 
   try {
     const res = await fetch(`${API_BASE_URL}/museums`);
     const museums = await res.json();
 
-    catalogArea.innerHTML = `
-            <div class="col-12">
-                <p class="text-white mb-3">Seleziona il museo in cui vuoi creare la tua visita:</p>
-                <div class="list-group bg-transparent">
-                    ${museums
-                      .map(
-                        (m) => `
-                        <button class="list-group-item list-group-item-action bg-transparent text-white border-secondary mb-2 rounded" 
-                                onclick="window.location.replace('/create-visit?museumId=${m._id}')">
-                            <i class="bi bi-bank me-2"></i> ${m.name}
-                        </button>
-                    `,
-                      )
-                      .join("")}
-                </div>
-            </div>
-        `;
+    // Ora Tom Select troverà il tag e lo trasformerà!
+    new TomSelect("#museum-target-select", {
+      valueField: '_id',
+      labelField: 'name',
+      searchField: ['name', 'address'],
+      options: museums,
+      render: {
+        option: function(data, escape) {
+          return `
+            <div class="d-flex flex-column p-2">
+              <span class="fw-bold"><i class="bi bi-bank me-2 text-info"></i>${escape(data.name)}</span>
+              <span class="small text-secondary ms-4">${escape(data.address || '')}</span>
+            </div>`;
+        },
+        item: function(data, escape) {
+          return `<div class="fw-bold">${escape(data.name)}</div>`;
+        }
+      },
+      onChange: function(selectedId) {
+        if (selectedId) {
+          window.location.replace(`/create-visit?museumId=${selectedId}`);
+        }
+      }
+    });
+
   } catch (error) {
     console.error("Motivo errore:", error);
     catalogArea.innerHTML = `<p class="text-danger">Errore nel caricamento dei musei.</p>`;
