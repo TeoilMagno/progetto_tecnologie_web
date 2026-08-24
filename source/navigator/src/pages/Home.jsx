@@ -27,7 +27,7 @@ const Home = () => {
     {
       id: 3,
       title: "Audio Guide Map",
-      desc: "Esplora liberamente la mappa interattiva con audio-guida",
+      desc: "Explore the museum layout with interactive audio guidance",
       icon: "🗺️",
       color: "bg-teal-500",
       glow: "shadow-[0_0_15px_rgba(20,184,166,0.3)]",
@@ -35,15 +35,24 @@ const Home = () => {
     },
     {
       id: 4,
-      title: "Le mie visite",
-      desc: "Rivedi e avvia i percorsi che hai creato",
+      title: "Create Visit",
+      desc: "Build your own custom museum tour",
+      icon: "➕",
+      color: "bg-red-500",
+      glow: "shadow-[0_0_15px_rgba(239,68,68,0.3)]",
+      path: "/visits" // Redirect o creazione
+    },
+    {
+      id: 5,
+      title: "My Visits",
+      desc: "View your saved visits and history",
       icon: "👤",
       color: "bg-cyan-500",
       glow: "shadow-[0_0_15px_rgba(6,182,212,0.3)]",
       path: "/my-visits" // Va comunque alla pagina unificata di Visits
     },
     {
-      id: 5,
+      id: 6,
       title: "Marketplace",
       desc: "Build your own custom museum tour",
       icon: "✨",
