@@ -12,6 +12,8 @@
   "usa termini meno tecnici": "PREV_EXPER",
   "non capisco": "PREV_EXPER",
   "non ho capito": "PREV_EXPER",
+  "stupiscimi": "FUN_FACT",
+  "dimmi qualcosa di interessante": "FUNFACT",
   "chiudi": "CLOSE",
   "esci": "CLOSE"
 }

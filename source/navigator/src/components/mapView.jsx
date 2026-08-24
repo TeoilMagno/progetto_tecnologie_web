@@ -70,7 +70,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
         //setta il livello di difficoltà della visita
         if(userData)
-          setExpertiseLevel(userData.expertiseLevel);
+          setExpertiseLevel(userData.preferences.expertiseLevel || 'medium');
         
         // Controllo di sicurezza: ci assicuriamo che works sia un array
         const worksArray = Array.isArray(visitData.works) ? visitData.works : [];

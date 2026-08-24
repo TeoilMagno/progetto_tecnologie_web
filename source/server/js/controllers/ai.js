@@ -226,6 +226,9 @@ exports.mapRequest = async (prompt) => {
         Utente: "La descrizione è troppo difficile" -> PREV_EXPER
         Utente: "Voglio una spiegazione meno tecnica" -> PREV_EXPER
         Utente: "Togli questa schermata" -> CLOSE
+        Utente: "dimmi una curiosità su quest'opera" -> FUN_FACT
+        Utente: "raccontami qualcosa di divertente su quest'opera" -> FUN_FACT
+        Utente: "dimmi qualcosa che non so" -> FUN_FACT
         Utente: "Che ore sono?" -> UNKNOWN
       `,
       generationConfig: {
