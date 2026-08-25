@@ -1,0 +1,30 @@
+{
+  "name": "Museo Internazionale del Fumetto e dell'Animazione",
+  "iconUrl": "/assets/icons/comics-logo.svg",
+  "backgroundImage": "/assets/images/comics-background.jpg",
+  "welcomeMessage": "SBAM! Benvenuto nel fantastico mondo dei fumetti! Esplora le tavole originali dei supereroi e dei manga più celebri.",
+  "description": "Un museo vivace e colorato dedicato interamente alla storia del fumetto, dell'animazione, del collezionismo e dell'illustrazione pop mondiale.",
+  "mapFile": "mappa-fumetto.svg",
+  "openingHours": "Tutti i giorni: 10:00 - 20:00",
+  "theme": {
+    "primary": "#FFDE00",
+    "secondary": "#FF0000",
+    "accent": "#00ADEE",
+    "bg-main": "#FFFFFF",
+    "bg-overlay": "0.85",
+    "bg-card": "#FFFFFF",
+    "bg-dark": "#000000",
+    "text-main": "#000000",
+    "text-muted": "#444444",
+    "text-on-dark": "#FFFFFF",
+    "text-on-primary": "#000000",
+    "radius": "0px",
+    "border-width": "4px",
+    "border-style": "solid",
+    "border-color": "#000000",
+    "shadow": "10px 10px 0px 0px rgba(0,0,0,1)",
+    "font-heading": "'Bangers', cursive",
+    "font-body": "'Comic Neue', sans-serif",
+    "bg-pattern": "radial-gradient(#000000 10%, transparent 11%), radial-gradient(#000000 10%, transparent 11%)"
+  }
+}

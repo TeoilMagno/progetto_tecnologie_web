@@ -1,0 +1,30 @@
+{
+  "name": "Museo della Scienza e del Futuro Tecnologico",
+  "iconUrl": "/assets/icons/future-logo.svg",
+  "backgroundImage": "/assets/images/future-background.jpg",
+  "welcomeMessage": "Inizializzazione sistema... Benvenuto nel domani. Tocca con mano l'intelligenza artificiale, la robotica e i viaggi spaziali.",
+  "description": "Un hub interattivo e immersivo all'avanguardia per l'esplorazione scientifica, la robotica avanzata, la realtà virtuale e le tecnologie ecosostenibili del futuro.",
+  "mapFile": "mappa-tecnologica.svg",
+  "openingHours": "Tutti i giorni: 09:30 - 18:30",
+  "theme": {
+    "primary": "#00f2ff",
+    "secondary": "#1a1a2e",
+    "accent": "#7000ff",
+    "bg-main": "#050508",
+    "bg-overlay": "0.80",
+    "bg-card": "#0f172a",
+    "bg-dark": "#020203",
+    "text-main": "#e2e8f0",
+    "text-muted": "#94a3b8",
+    "text-on-dark": "#ffffff",
+    "text-on-primary": "#000000",
+    "radius": "8px",
+    "border-width": "1px",
+    "border-style": "solid",
+    "border-color": "#00f2ff66",
+    "shadow": "0 0 20px rgba(0, 242, 255, 0.2)",
+    "font-heading": "Orbitron, sans-serif",
+    "font-body": "Inter, sans-serif",
+    "bg-pattern": "linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px)"
+  }
+}

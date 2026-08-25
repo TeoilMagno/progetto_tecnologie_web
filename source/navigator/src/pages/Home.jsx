@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Home = () => {
+const Home = ({ config }) => {
   const navigate = useNavigate();
 
   const cards = [
@@ -59,7 +59,7 @@ const Home = () => {
       {/* L'immagine copre tutto lo sfondo ed è fissa */}
       <div className="absolute inset-0 z-0">
          <img 
-            src="/img1.jpg" 
+            src={config && config.backgroundImage ? config.backgroundImage : "/img1.jpg"} 
             alt="Background" 
             className="w-full h-full object-cover"
          />
@@ -80,8 +80,8 @@ const Home = () => {
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
             <span className="text-amber-500">ArtAround</span> <span className="text-white">Navigator</span>
           </h1>
-          <p className="text-slate-400 text-sm md:text-base">
-            Esplora musei con guide audio interattive
+          <p className="text-slate-400 text-sm md:text-base" style={{ fontFamily: 'var(--font-body)' }}>
+            {config && config.welcomeMessage ? config.welcomeMessage : "Esplora musei con guide audio interattive"}
           </p>
         </div>
 

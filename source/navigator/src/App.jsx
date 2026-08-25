@@ -9,6 +9,9 @@ import JoinSession from './pages/JoinSession';
 import FreeVisitMap from './pages/FreeVisitMap';
 import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
 
+// Importiamo l'hook modulare per i temi dei musei
+import useMuseumTheme from './hooks/useMuseumTheme';
+
 // Placeholder per le pagine future
 const Placeholder = ({ title }) => (
   <div className="flex flex-col items-center justify-center h-full text-slate-500 bg-slate-950 p-6 text-center">
@@ -22,6 +25,9 @@ const Placeholder = ({ title }) => (
 
 export default function App() {
   const [selectedMuseum, setSelectedMuseum] = useState(null);
+  
+  // Hook modulare per il caricamento dinamico della configurazione e l'applicazione del tema CSS
+  const config = useMuseumTheme(selectedMuseum);
 
   return (
     <Router>
@@ -41,9 +47,13 @@ export default function App() {
           <div className="flex items-center justify-center max-w-lg mx-auto">
             <div className="flex items-center gap-3 justify-center">
               <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0 overflow-hidden">
-                <img src="/img/logob.svg" alt="Logo Museo" className="w-full h-full object-cover" />
+                <img 
+                  src={config && config.iconUrl ? config.iconUrl : "/img/logob.svg"} 
+                  alt="Logo Museo" 
+                  className="w-full h-full object-cover" 
+                />
               </div>
-              <h1 className="font-bold text-lg text-white">
+              <h1 className="font-bold text-lg text-white" style={{ fontFamily: 'var(--font-heading)' }}>
                 {selectedMuseum ? selectedMuseum.name : 'Seleziona un museo'}
               </h1>
             </div>
@@ -57,7 +67,7 @@ export default function App() {
           {/* Area Scorrevole (Contenuto Pagina) */}
           <main className="flex-1 overflow-y-auto scroll-smooth w-full relative">
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<HomePage config={config} />} />
               <Route path="/visits" element={<Visits selectedMuseum={selectedMuseum} />} />
               <Route path="/join" element={<JoinSession />} />
               <Route path="/my-visits" element={<Placeholder title="My Visits" />} />

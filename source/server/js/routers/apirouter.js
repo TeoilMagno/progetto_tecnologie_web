@@ -915,4 +915,38 @@ apiRouter.post("/ai/generate-item-targetage", async (req,res) => {
   aiController.generateAndSaveItemTargetAge(itemId, itemName, itemDescription);
 })
 
+// --- CONFIGURAZIONE MUSEI DINAMICA ---
+apiRouter.get("/config/default", async (req, res) => {
+  try {
+    const db = mongoose.connection.db;
+    const configCollection = db.collection('config');
+    const defaultDoc = await configCollection.findOne({ filename: "defaultconfig.json" });
+    if (!defaultDoc) {
+      return res.status(404).json({ error: "Configurazione di default non trovata nel database" });
+    }
+    res.json(defaultDoc.config);
+  } catch (err) {
+    res.status(500).json({ error: "Errore del server: " + err.message });
+  }
+});
+
+apiRouter.get("/config/by-museum/:museumName", async (req, res) => {
+  try {
+    const museumName = req.params.museumName;
+    const db = mongoose.connection.db;
+    const configCollection = db.collection('config');
+    
+    // Cerchiamo un config che abbia lo stesso nome del museo nel campo "config.name"
+    const configDoc = await configCollection.findOne({ "config.name": museumName });
+    
+    if (!configDoc) {
+      return res.status(404).json({ error: "Configurazione specifica non trovata per questo museo" });
+    }
+    
+    res.json(configDoc.config);
+  } catch (err) {
+    res.status(500).json({ error: "Errore del server: " + err.message });
+  }
+});
+
 module.exports = apiRouter;
