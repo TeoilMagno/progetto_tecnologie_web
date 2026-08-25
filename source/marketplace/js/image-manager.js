@@ -9,43 +9,61 @@ function initImageWidget(containerId, hiddenInputId, labelText, uploadOnly = fal
   // Se NON è solo upload, mostriamo i bottoni Wiki e la barra URL
   if (!uploadOnly) {
     externalSearchHtml = `
-      <span class="text-secondary small d-flex align-items-center">oppure</span>
-      <button type="button" class="btn btn-sm btn-outline-info flex-grow-1" onclick="searchWikimediaForWidget('${hiddenInputId}')">
-        <i class="bi bi-wikipedia"></i> Cerca Wiki
+      <button type="button" class="btn btn-sm btn-glass text-info px-3 d-flex align-items-center justify-content-center" onclick="searchWikimediaForWidget('${hiddenInputId}')" title="Cerca immagine su Wikimedia">
+        <i class="bi bi-wikipedia me-2"></i> Wiki
       </button>
     `;
     urlInputHtml = `
-      <div class="input-group input-group-sm mb-2">
-        <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-link"></i></span>
-        <input type="text" id="${hiddenInputId}-url-input" class="form-control glass-input text-white" placeholder="Link web da salvare in locale...">
-        <button class="btn btn-sm btn-outline-success" type="button" onclick="downloadExternalToLocal('${hiddenInputId}')">
-          <i class="bi bi-download"></i> Salva
+      <div class="input-group input-group-sm mt-2 shadow-sm">
+        <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-link-45deg fs-5"></i></span>
+        <input type="text" id="${hiddenInputId}-url-input" class="form-control glass-input text-white border-secondary" placeholder="Incolla un URL esterno e clicca Salva...">
+        <button class="btn btn-sm btn-outline-success px-3" type="button" onclick="downloadExternalToLocal('${hiddenInputId}')">
+          Salva
         </button>
       </div>
     `;
   }
 
   container.innerHTML = `
-    <label class="form-label small text-secondary mb-1">${labelText}</label>
-    <div class="card bg-dark border border-secondary border-opacity-25 p-2 mb-3">
+    <label class="form-label small text-info fw-bold mb-1"><i class="bi bi-image me-2"></i>${labelText}</label>
+    <div class="card custom-card bg-dark bg-opacity-25 border-secondary border-opacity-25 mb-3" style="border-radius: 12px; transition: all 0.3s ease;">
       
       <input type="hidden" id="${hiddenInputId}">
       
-      <div class="d-flex gap-2 mb-2">
-        <div class="flex-grow-1">
-          <input type="file" id="${hiddenInputId}-file" class="form-control form-control-sm glass-input text-white" accept="image/*" onchange="handleImageUpload(this, '${hiddenInputId}')">
+      <div class="card-body p-3">
+        
+        <!-- SEZIONE INPUT (Scompare quando un'immagine è caricata) -->
+        <div id="${hiddenInputId}-input-section">
+          <div class="d-flex flex-column flex-md-row gap-2">
+            <div class="flex-grow-1 position-relative shadow-sm">
+              <input type="file" id="${hiddenInputId}-file" class="form-control form-control-sm glass-input text-white w-100 border-secondary" accept="image/*" onchange="handleImageUpload(this, '${hiddenInputId}')" style="padding-left: 2.2rem;">
+              <i class="bi bi-cloud-arrow-up position-absolute text-info" style="top: 50%; left: 0.75rem; transform: translateY(-50%); pointer-events: none; font-size: 1.1rem;"></i>
+            </div>
+            ${externalSearchHtml}
+          </div>
+          
+          ${urlInputHtml}
+
+          <!-- Contenitore Risultati Wiki -->
+          <div id="${hiddenInputId}-wiki-results" class="d-flex gap-2 overflow-auto py-2 d-none custom-scrollbar mt-2" style="max-height: 110px;"></div>
         </div>
-        ${externalSearchHtml}
-      </div>
 
-      ${urlInputHtml}
+        <!-- SEZIONE ANTEPRIMA (Appare solo ad immagine caricata) -->
+        <div id="${hiddenInputId}-preview-container" class="d-none text-center">
+          <div class="position-relative d-inline-block rounded-3 overflow-hidden shadow-lg border border-secondary border-opacity-50 bg-dark">
+            <img id="${hiddenInputId}-preview" src="" class="img-fluid" style="max-height: 180px; object-fit: contain;">
+          </div>
+          <div class="mt-2 d-flex justify-content-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-info px-3" onclick="triggerReplaceImage('${hiddenInputId}')">
+              <i class="bi bi-arrow-repeat me-1"></i> Cambia
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger px-3" onclick="clearImageWidget('${hiddenInputId}')">
+              <i class="bi bi-trash me-1"></i> Rimuovi
+            </button>
+          </div>
+          <div class="mt-1 text-success small fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Immagine acquisita</div>
+        </div>
 
-      <div id="${hiddenInputId}-wiki-results" class="d-flex gap-2 overflow-auto py-2 d-none custom-scrollbar" style="max-height: 120px;"></div>
-
-      <div id="${hiddenInputId}-preview-container" class="text-center mt-2 d-none position-relative">
-         <span class="badge bg-success mb-1">Immagine pronta</span><br>
-         <img id="${hiddenInputId}-preview" src="" class="rounded border border-secondary" style="max-height: 120px; object-fit: contain;">
-         <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 mt-4 me-2" onclick="clearImageWidget('${hiddenInputId}')" title="Rimuovi immagine"><i class="bi bi-trash"></i></button>
       </div>
     </div>
   `;
@@ -70,7 +88,6 @@ async function handleImageUpload(fileInput, targetId) {
 }
 
 async function searchWikimediaForWidget(targetId) {
-  // Sfruttiamo un prompt nativo per scollegare la logica dai vari ID del form
   const query = prompt("Cosa vuoi cercare su Wikimedia? (es. La Gioconda Leonardo)");
   if (!query || query.trim() === "") return;
 
@@ -83,12 +100,12 @@ async function searchWikimediaForWidget(targetId) {
     const urls = await res.json();
 
     if (urls.length === 0) {
-      resultsContainer.innerHTML = `<span class="small text-secondary m-auto">Nessun risultato.</span>`;
+      resultsContainer.innerHTML = `<span class="small text-secondary m-auto">Nessun risultato. Riprova con altre parole chiave.</span>`;
       return;
     }
 
     resultsContainer.innerHTML = urls.map(url => `
-      <img src="${url}" class="rounded border border-secondary cursor-pointer hover-scale" 
+      <img src="${url}" class="rounded border border-info cursor-pointer hover-scale shadow-sm" 
            style="height: 80px; object-fit: cover; cursor: pointer; transition: transform 0.2s;" 
            onclick="selectWikiImage('${url}', '${targetId}')" title="Clicca per scegliere">
     `).join('');
@@ -129,19 +146,22 @@ function setFinalImage(targetId, finalUrl) {
   // Aggiorna l'input nascosto per il database
   document.getElementById(targetId).value = finalUrl;
   
-  // Aggiorna l'input testuale visibile all'utente
+  // Aggiorna la barra URL (anche se ora verrà nascosta, fa da backup)
   const urlInput = document.getElementById(`${targetId}-url-input`);
-  if (urlInput) {
-    urlInput.value = finalUrl;
-  }
+  if (urlInput) urlInput.value = finalUrl;
 
-  // Mostra l'anteprima
+  // Elementi UI
   const previewContainer = document.getElementById(`${targetId}-preview-container`);
   const previewImg = document.getElementById(`${targetId}-preview`);
+  const inputSection = document.getElementById(`${targetId}-input-section`);
   
+  // Mostra l'anteprima e nasconde il form di input
   if (previewContainer && previewImg) {
     previewImg.src = finalUrl;
     previewContainer.classList.remove("d-none");
+  }
+  if (inputSection) {
+    inputSection.classList.add("d-none");
   }
 }
 
@@ -149,7 +169,7 @@ async function clearImageWidget(targetId) {
   const hiddenInput = document.getElementById(targetId);
   const imageUrl = hiddenInput.value;
 
-  // Se c'è un'immagine già caricata fisicamente sul nostro server, la eliminiamo
+  // Se c'è un'immagine caricata, la eliminiamo dal disco
   if (imageUrl && imageUrl.startsWith('/uploads/')) {
     try {
       await fetch(`${API_BASE_URL}/delete-image`, {
@@ -162,15 +182,26 @@ async function clearImageWidget(targetId) {
     }
   }
 
-  // Svuota i campi visivi
+  // Svuotamento campi dati
   hiddenInput.value = "";
-  
   const fileInput = document.getElementById(`${targetId}-file`);
   if (fileInput) fileInput.value = "";
-  
   const urlInput = document.getElementById(`${targetId}-url-input`);
   if (urlInput) urlInput.value = "";
   
+  // Elementi UI: Nascondiamo l'anteprima e ripristiniamo il form
   const previewContainer = document.getElementById(`${targetId}-preview-container`);
+  const inputSection = document.getElementById(`${targetId}-input-section`);
+  
+  if (previewContainer) previewContainer.classList.add("d-none");
+  if (inputSection) inputSection.classList.remove("d-none");
+}
+
+// Permette di riaprire la sezione di input per sostituire l'immagine esistente
+function triggerReplaceImage(targetId) {
+  const inputSection = document.getElementById(`${targetId}-input-section`);
+  const previewContainer = document.getElementById(`${targetId}-preview-container`);
+  
+  if (inputSection) inputSection.classList.remove("d-none");
   if (previewContainer) previewContainer.classList.add("d-none");
 }

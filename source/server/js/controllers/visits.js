@@ -1,6 +1,7 @@
 const Visit = require("../models/visits");
 const Work = require("../models/works");
 const { calculateVisitDuration, recommendLengthForTime } = require('../utils/visitCalculator')
+const { deleteLocalFile } = require("../utils/file-helper");
 
 exports.getAllVisits = async () => {
   try {
@@ -160,6 +161,12 @@ exports.editVisitById = async (visitId, payload, user) => {
       coverImage: 1
     };
   }
+
+  // Pulizia immagine
+  const oldVisit = await Visit.findOne(query);
+  if (oldVisit && oldVisit.image && oldVisit.image !== updateData.image) {
+    await deleteLocalFile(oldVisit.image);
+  }
   
   // Troviamo e aggiorniamo SOLO se l'ID corrisponde e il creatore è l'utente corrente
   const updatedVisit = await Visit.findOneAndUpdate(      
@@ -193,6 +200,11 @@ exports.deleteVisitById = async (visitId, user) => {
   // Se NON è admin, limitiamo l'eliminazione alla sole visite create dall'utente
   if (user.role !== 'admin') {
     query.creator = user._id;
+  }
+
+  const visitToDelete = await Visit.findOne(query);
+  if (visitToDelete && visitToDelete.image) {
+    await deleteLocalFile(visitToDelete.image);
   }
 
   const deletedVisit = await Visit.findOneAndDelete(query);
