@@ -128,6 +128,9 @@ async function loadSectionsAndWorks() {
 
       container.innerHTML += renderSectionAccordionItem(section, works, index);
     }
+
+    // Inizializza il Drag and Drop dopo aver generato l'HTML
+    setTimeout(initSortableWorks, 100);
   } catch (error) {
     console.error("Errore sezioni:", error);
     container.innerHTML = `<div class="alert alert-danger">Errore caricamento struttura.</div>`;
@@ -155,25 +158,34 @@ function renderSectionAccordionItem(section, works, index) {
       const safeRoomName = (room.name || "").replace(/'/g, "\\'");
 
       // HTML delle opere dentro la stanza
-      let worksHtml = roomWorks.length === 0 ? `<p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa stanza.</p>` : `
-        <div class="row row-cols-1 row-cols-md-2 g-3 mt-1">
-          ${roomWorks.map(w => `
-            <div class="col">
-              <div class="card bg-transparent border border-secondary border-opacity-25 h-100 p-2 d-flex flex-row align-items-center rounded-3" style="transition: all 0.2s ease;">
-                <img src="${w.image || '/img/fallback-work.jpg'}" class="rounded me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
-                <div class="flex-grow-1 text-truncate">
-                  <h6 class="mb-0 text-white text-truncate small fw-bold">${w.name}</h6>
-                  <small class="text-white-50" style="font-size: 0.7rem;">${w.author?.name || w.author || 'Autore Sconosciuto'}</small>
-                </div>
-                <div class="d-flex gap-1 ms-2">
-                  <button class="btn btn-sm btn-glass text-info p-1 px-2 border-0" title="Gestisci Testi" onclick="openTextManager('${w._id}')"><i class="bi bi-card-text"></i></button>
-                  <button class="btn btn-sm btn-glass text-white p-1 px-2 border-0" title="Modifica Opera" onclick="openWorkModal('${section._id}', '${room._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm btn-glass text-danger p-1 px-2 border-0" title="Elimina Opera" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
-                </div>
+      // Aggiunti data-attributes, altezza minima e classi per Sortable
+      let worksHtml = `<div class="row row-cols-1 row-cols-md-2 g-3 mt-1 sortable-works-container" data-section-id="${section._id}" data-room-id="${room._id}" style="min-height: 80px;">`;
+      
+      if (roomWorks.length === 0) {
+        worksHtml += `<div class="col-12 empty-room-placeholder"><p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa stanza. Trascinane una qui!</p></div>`;
+      } else {
+        worksHtml += roomWorks.map(w => `
+          <div class="col sortable-work-item" data-work-id="${w._id}">
+            <div class="card bg-transparent border border-secondary border-opacity-25 h-100 p-2 d-flex flex-row align-items-center rounded-3" style="transition: all 0.2s ease;">
+              
+              <!-- Maniglia per il trascinamento -->
+              <i class="bi bi-grip-vertical text-secondary me-2 drag-handle fs-5" style="cursor: grab;" title="Trascina per spostare"></i>
+              
+              <img src="${w.image || '/img/fallback-work.jpg'}" class="rounded me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
+              <div class="flex-grow-1 text-truncate">
+                <h6 class="mb-0 text-white text-truncate small fw-bold">${w.name}</h6>
+                <small class="text-white-50" style="font-size: 0.7rem;">${w.author?.name || w.author || 'Autore Sconosciuto'}</small>
+              </div>
+              <div class="d-flex gap-1 ms-2">
+                <button class="btn btn-sm btn-glass text-info p-1 px-2 border-0" title="Gestisci Testi" onclick="openTextManager('${w._id}')"><i class="bi bi-card-text"></i></button>
+                <button class="btn btn-sm btn-glass text-white p-1 px-2 border-0" title="Modifica Opera" onclick="openWorkModal('${section._id}', '${room._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-glass text-danger p-1 px-2 border-0" title="Elimina Opera" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
               </div>
             </div>
-          `).join('')}
-        </div>`;
+          </div>
+        `).join('');
+      }
+      worksHtml += `</div>`;
 
       // HTML della singola Stanza (in stile card scura)
       roomsHtml += `
@@ -203,7 +215,7 @@ function renderSectionAccordionItem(section, works, index) {
         </button>
       </h2>
       
-      <div id="${collapseId}" class="accordion-collapse collapse mt-2" data-bs-parent="#sectionsAccordion">
+      <div id="${collapseId}" class="accordion-collapse collapse mt-2">
         <div class="accordion-body p-4 custom-card border-secondary border-opacity-25 bg-dark bg-opacity-50" style="border-radius: 12px;">
           
           <!-- Header Azioni Sezione -->
@@ -393,6 +405,8 @@ async function saveRoomFromModal() {
             tempDiv.innerHTML = renderSectionAccordionItem(museumSections[secIndex], works, secIndex);
             const newBodyContent = tempDiv.querySelector('.accordion-body').innerHTML;
             collapseBody.innerHTML = newBodyContent;
+
+            setTimeout(initSortableWorks, 100);
           }
         }
       }
@@ -584,6 +598,7 @@ async function saveWorkFromModal() {
           const tempDiv = document.createElement('div');
           tempDiv.innerHTML = renderSectionAccordionItem(museumSections[secIndex], works, secIndex);
           collapseBody.innerHTML = tempDiv.querySelector('.accordion-body').innerHTML;
+          setTimeout(initSortableWorks, 100);
         }
       }
     } else {
@@ -1615,4 +1630,68 @@ function getMuseumFormData() {
   
   payload.schedule = schedule;
   return payload;
+}
+
+function initSortableWorks() {
+  const containers = document.querySelectorAll('.sortable-works-container');
+  
+  containers.forEach(container => {
+    // Evita doppie inizializzazioni se ricarichiamo la UI
+    if (container.sortableInstance) {
+      container.sortableInstance.destroy();
+    }
+
+    container.sortableInstance = new Sortable(container, {
+      group: 'shared-works-group', // FONDAMENTALE: Dice a Sortable che le stanze possono scambiarsi le opere
+      handle: '.drag-handle',
+      animation: 150,
+      ghostClass: 'bg-dark',
+      fallbackOnBody: true,        // LA MAGIA: Fa galleggiare l'opera fuori dall'accordion!
+      swapThreshold: 0.65,
+      onEnd: async function (evt) {
+        const itemEl = evt.item;
+        const toContainer = evt.to;
+        const fromContainer = evt.from;
+
+        if (toContainer === fromContainer) return; 
+
+        const workId = itemEl.dataset.workId;
+        const newSectionId = toContainer.dataset.sectionId;
+        const newRoomId = toContainer.dataset.roomId;
+        const oldSectionId = fromContainer.dataset.sectionId;
+
+        const placeholder = toContainer.querySelector('.empty-room-placeholder');
+        if (placeholder) placeholder.remove();
+
+        if (fromContainer.children.length === 0) {
+          fromContainer.innerHTML = `<div class="col-12 empty-room-placeholder"><p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa stanza. Trascinane una qui!</p></div>`;
+        }
+
+        itemEl.style.opacity = '0.4';
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/works/${workId}/move`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              museumId: currentMuseumId,
+              oldSectionId: oldSectionId,
+              newSectionId: newSectionId,
+              newRoomId: newRoomId
+            })
+          });
+          
+          if (!res.ok) throw new Error("Errore API spostamento");
+          
+          if (worksCache[workId]) worksCache[workId].roomId = newRoomId;
+          
+          itemEl.style.opacity = '1';
+        } catch (error) {
+          console.error(error);
+          alert("Errore nello spostamento dell'opera.");
+          loadSectionsAndWorks(); 
+        }
+      }
+    });
+  });
 }

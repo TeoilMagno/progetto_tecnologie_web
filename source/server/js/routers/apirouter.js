@@ -353,6 +353,28 @@ apiRouter.delete("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, 
   }
 });
 
+// Rotta esclusiva per il Drag & Drop delle opere
+apiRouter.put("/works/:id/move", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
+  try {
+    const workId = req.params.id;
+    const { museumId, oldSectionId, newSectionId, newRoomId } = req.body;
+
+    // 1. Aggiorna la stanza nell'opera tramite il controller (grazie al fix di prima, l'immagine è salva!)
+    await workController.updateWorkById(workId, { roomId: newRoomId }, museumId);
+
+    // 2. Se l'opera è stata trascinata in un'altra SEZIONE, spostiamo il suo ID nei rispettivi array
+    if (oldSectionId !== newSectionId) {
+      await sectionController.removeWorkFromSection(oldSectionId, workId);
+      await sectionController.addWorkToSection(newSectionId, workId);
+    }
+
+    res.json({ message: "Opera spostata con successo" });
+  } catch (error) {
+    console.error("Errore spostamento opera:", error);
+    res.status(500).json({ error: "Impossibile spostare l'opera" });
+  }
+});
+
 //------------------ form ------------------------
 
 // Rotta per creare e aggiungere un'opera sul db
