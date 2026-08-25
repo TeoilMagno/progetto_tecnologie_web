@@ -32,12 +32,18 @@ function initImageWidget(containerId, hiddenInputId, labelText, uploadOnly = fal
       
       <div class="card-body p-3">
         
-        <!-- SEZIONE INPUT (Scompare quando un'immagine è caricata) -->
+        <!-- SEZIONE INPUT -->
         <div id="${hiddenInputId}-input-section">
           <div class="d-flex flex-column flex-md-row gap-2">
-            <div class="flex-grow-1 position-relative shadow-sm">
-              <input type="file" id="${hiddenInputId}-file" class="form-control form-control-sm glass-input text-white w-100 border-secondary" accept="image/*" onchange="handleImageUpload(this, '${hiddenInputId}')" style="padding-left: 2.2rem;">
-              <i class="bi bi-cloud-arrow-up position-absolute text-info" style="top: 50%; left: 0.75rem; transform: translateY(-50%); pointer-events: none; font-size: 1.1rem;"></i>
+            <div class="flex-grow-1 position-relative">
+              <!-- Input file nascosto ma perfettamente funzionante -->
+              <input type="file" id="${hiddenInputId}-file" class="d-none" accept="image/*" onchange="handleImageUpload(this, '${hiddenInputId}')">
+              
+              <!-- Finto bottone moderno che attiva l'input nascosto -->
+              <label for="${hiddenInputId}-file" class="btn btn-sm btn-glass text-white w-100 border border-secondary border-opacity-50 py-2 d-flex align-items-center justify-content-center gap-2 mb-0 shadow-sm" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
+                <i class="bi bi-cloud-arrow-up text-info fs-5"></i>
+                <span class="small fw-bold">Scegli un'immagine dal dispositivo</span>
+              </label>
             </div>
             ${externalSearchHtml}
           </div>
@@ -73,6 +79,10 @@ async function handleImageUpload(fileInput, targetId) {
   const file = fileInput.files[0];
   if (!file) return;
 
+  // Mostra il nome del file scelto nel bottone
+  const labelEl = document.querySelector(`label[for="${targetId}-file"] span`);
+  if (labelEl) labelEl.innerText = file.name;
+
   const formData = new FormData();
   formData.append("image", file);
 
@@ -83,8 +93,12 @@ async function handleImageUpload(fileInput, targetId) {
       setFinalImage(targetId, data.url);
     } else {
       alert("Errore durante il caricamento del file.");
+      if (labelEl) labelEl.innerText = "Scegli un'immagine dal dispositivo";
     }
-  } catch (error) { console.error(error); }
+  } catch (error) { 
+    console.error(error); 
+    if (labelEl) labelEl.innerText = "Scegli un'immagine dal dispositivo";
+  }
 }
 
 async function searchWikimediaForWidget(targetId) {
