@@ -8,6 +8,9 @@ const express = require("express");
 const fs = require('fs').promises;
 const path = require("path");
 const mongoose = require("mongoose");
+const multer = require("multer");
+const axios = require("axios");
+const crypto = require("crypto");
 
 // Models
 const { User } = require("../models/users");
@@ -33,6 +36,22 @@ const aiController = require("../controllers/ai");
 
 // Middleware
 const auth = require("../middleware/roles");
+
+// Gestione immagini
+// 1. Configurazione Multer per i caricamenti locali
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const dir = path.join(__dirname, '..', '..', '..', 'uploads');
+    // Crea la cartella se non esiste
+    await fs.mkdir(dir, { recursive: true }).catch(console.error);
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage: storage });
 
 const apiRouter = express.Router();
 
@@ -426,6 +445,81 @@ apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
       error: "Dati incompleti o errati",
       details: error.message,
     });
+  }
+});
+
+// ------------- immagini ------------------------
+
+// 1. Upload File Locale
+apiRouter.post("/upload-image", auth.isCurator, upload.single('image'), (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "Nessun file caricato" });
+    // Restituisce il percorso relativo per il frontend
+    const imageUrl = `/uploads/${req.file.filename}`;
+    res.json({ url: imageUrl });
+  } catch (error) {
+    res.status(500).json({ error: "Errore durante l'upload" });
+  }
+});
+
+// 2. Cerca Immagini su Wikimedia Commons
+apiRouter.get("/search-wikimedia", auth.isCurator, async (req, res) => {
+  try {
+    const query = req.query.q;
+    if (!query) return res.status(400).json({ error: "Testo di ricerca mancante" });
+
+    // Interroga le API di Wikimedia Commons
+    const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=url&format=json`;
+    
+    // AGGIUNTA LA MAGIA: User-Agent anche per la ricerca!
+    const response = await axios.get(url, {
+      headers: {
+        'User-Agent': 'ArtAround (progetto universitario)'
+      }
+    });
+    
+    const pages = response.data.query?.pages || {};
+    
+    // Estraiamo solo gli URL originali delle immagini trovate
+    const imageUrls = Object.values(pages)
+      .map(page => page.imageinfo?.[0]?.url)
+      .filter(url => url != null);
+
+    res.json(imageUrls);
+  } catch (error) {
+    console.error("Errore Wikimedia:", error.message);
+    res.status(500).json({ error: "Errore ricerca su Wikimedia" });
+  }
+});
+
+// 3. Proxy Download: Scarica un URL esterno e lo salva in locale (Risolve il problema dei link rotti!)
+apiRouter.post("/download-external-image", auth.isCurator, async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) return res.status(400).json({ error: "URL mancante" });
+
+    const response = await axios({ 
+      url, 
+      responseType: 'arraybuffer',
+      headers: {
+        'User-Agent': 'ArtAround (progetto universitario)'
+      }
+    });
+    
+    // Ricaviamo l'estensione (es. .jpg, .png)
+    const contentType = response.headers['content-type'];
+    const ext = contentType ? '.' + contentType.split('/')[1] : '.jpg';
+    
+    const filename = `ext-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${ext}`;
+    const filePath = path.join(__dirname, '..', '..', '..', 'uploads', filename);
+
+    // Scrive il file sul disco del server
+    await fs.writeFile(filePath, response.data);
+
+    res.json({ url: `/uploads/${filename}` });
+  } catch (error) {
+    console.error("Errore download immagine:", error.message);
+    res.status(500).json({ error: "Impossibile scaricare e salvare l'immagine. Usa l'upload manuale." });
   }
 });
 

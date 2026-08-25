@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   buildScheduleForm();
+
+  initImageWidget("museum-image-widget", "museum-image", "Immagine di Copertina del Museo");
 });
 
 async function museumHandleSave(event) {
@@ -59,7 +61,6 @@ async function museumHandleSave(event) {
   }
 }
 
-// Raccoglie tutti i dati dal form in un unico payload formattato per Mongoose
 // Raccoglie tutti i dati dal form in un unico payload formattato per Mongoose
 function getMuseumFormData() {
   const payload = {

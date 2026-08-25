@@ -63,10 +63,8 @@
                 <label class="form-label small text-secondary">Telefono</label>
                 <input type="text" class="form-control glass-input text-white" id="museum-phone" />
               </div>
-              <div class="col-12">
-                <label class="form-label small text-secondary">URL Immagine di Copertina</label>
-                <input type="url" class="form-control glass-input text-white" id="museum-image" />
-              </div>
+              
+              <div class="col-12" id="edit-museum-image-widget"></div>
               
               <div class="col-md-8">
                 <label class="form-label small text-secondary">Tag (separati da virgola)</label>
@@ -138,10 +136,9 @@
                 <label class="form-label small text-secondary">Nome Sezione *</label>
                 <input type="text" class="form-control glass-input" id="section-name-input" required />
               </div>
-              <div class="mb-3">
-                <label class="form-label small text-secondary">URL Immagine Sezione</label>
-                <input type="url" class="form-control glass-input" id="section-image-input" placeholder="https://..." />
-              </div>
+
+              <div class="mb-3" id="edit-section-image-widget"></div>
+              
             </form>
           </div>
           <div class="modal-footer border-top-custom">
@@ -261,10 +258,7 @@
                 </div>
 
                 <!-- URL Immagine -->
-                <div class="col-12">
-                  <label class="form-label small text-secondary">URL Immagine *</label>
-                  <input type="url" class="form-control glass-input" id="work-image" required />
-                </div>
+                <div class="col-12" id="edit-work-image-widget"></div>
 
                 <!-- Descrizione Culturale Base -->
                 <div class="col-12">
@@ -445,6 +439,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/marketplace/js/config.js"></script>
     <script src="/marketplace/js/personal-area.js"></script>
+    <script src="/marketplace/js/image-manager.js"></script>
     <script src="/marketplace/js/edit-museum.js"></script>
   </body>
 </html>

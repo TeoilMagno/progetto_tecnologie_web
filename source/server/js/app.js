@@ -51,13 +51,13 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/marketplace", express.static(path.join(__dirname, '..', '..', 'marketplace')));
 app.use("/navigator",   express.static(path.join(__dirname, '..', '..', 'navigator', 'dist')));
+app.use("/uploads",     express.static(path.join(__dirname, '..', '..', 'uploads')));
 
 // ─── Sessione e Passport ───────────────────────────────────────────────────
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  // Aggiungiamo lo store persistente su MongoDB!
   store: MongoStore.create({
     // Assicurati che questo URI sia uguale a quello che usi in db.js per connetterti
     mongoUrl: process.env.DB_URI, 

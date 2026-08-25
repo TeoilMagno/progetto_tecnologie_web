@@ -31,6 +31,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   buildScheduleForm();
 
+  initImageWidget("edit-museum-image-widget", "museum-image", "Immagine di Copertina del Museo");
+  initImageWidget("edit-work-image-widget", "work-image", "Immagine dell'Opera *");
+  initImageWidget("edit-section-image-widget", "section-image-input", "Mappa / Piantina della Sezione", true);
+
   await loadMuseumDetails();
 });
 
@@ -46,10 +50,15 @@ async function loadMuseumDetails() {
     document.getElementById("museum-address").value = currentMuseumData.address || "";
     document.getElementById("museum-email").value = currentMuseumData.contact_email || "";
     document.getElementById("museum-phone").value = currentMuseumData.contact_phone || "";
-    document.getElementById("museum-image").value = currentMuseumData.image || "";
     document.getElementById("museum-tags").value = (currentMuseumData.tags || []).join(", ");
     document.getElementById("editor-title").innerText = `Modifica: ${currentMuseumData.name}`;
     document.getElementById("museum-price").value = currentMuseumData.ticketPrice || "";
+    
+    if (currentMuseumData.image) {
+      setFinalImage("museum-image", currentMuseumData.image);
+    } else {
+      clearImageWidget("museum-image");
+    }
 
     // Spunta le checkbox dei servizi
     if (currentMuseumData.services) {
@@ -224,8 +233,14 @@ function renderSectionAccordionItem(section, works, index) {
 function openSectionModal(sectionId = null, currentName = "", currentImage = "") {
   document.getElementById("section-id-input").value = sectionId || "";
   document.getElementById("section-name-input").value = currentName;
-  document.getElementById("section-image-input").value = currentImage;
   document.getElementById("sectionModalLabel").innerText = sectionId ? "Modifica Sezione" : "Nuova Sezione";
+  
+  if (currentImage) {
+    setFinalImage("section-image-input", currentImage);
+  } else {
+    clearImageWidget("section-image-input");
+  }
+  
   sectionModalInstance.show();
 }
 
@@ -448,6 +463,10 @@ async function openWorkModal(sectionId, roomId, workId = null) {
     else document.getElementById("style-cards-container").style.display = "none";
     // ---------------------------------------------
 
+    if (w.image) {
+      document.getElementById("work-image-url-input").value = w.image; // Extra visivo opzionale
+      setFinalImage("work-image", w.image);
+    }
   } else {
     document.getElementById("workModalLabel").innerText = "Nuova Opera";
     document.getElementById("save-work-btn").innerText = "Crea Opera";
@@ -462,6 +481,8 @@ async function openWorkModal(sectionId, roomId, workId = null) {
     // Nascondiamo gli slider delle card se l'opera è nuova
     document.getElementById("author-cards-container").style.display = "none";
     document.getElementById("style-cards-container").style.display = "none";
+
+    clearImageWidget("work-image"); // Pulisce il widget per la nuova opera
   }
   
   workModalInstance.show();
