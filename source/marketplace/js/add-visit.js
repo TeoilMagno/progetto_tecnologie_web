@@ -8,6 +8,9 @@ let allMuseumSections = [];
 let currentQuiz = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // Inizializza il widget immagine
+  initImageWidget("edit-visit-image-widget", "visit-image", "Scegli un'immagine di copertina per la visita");
+
   // inizializza il drag & drop
   const cartListElement = document.getElementById("visit-cart-list");
 
@@ -115,6 +118,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("visit-desc").value = draft.description || "";
         document.getElementById("visit-price").value = draft.price || "";
         document.getElementById("visit-public").checked = draft.isPublic || false;
+
+        // Gestione immagine nel widget
+        if (draft.image) {
+          setFinalImage("visit-image", draft.image);
+        } else {
+          clearImageWidget("visit-image");
+        }
 
         toggleCuratorDetails();
 
@@ -591,6 +601,7 @@ async function submitVisit(isSavingAsDraft = false) {
   }
 
   const description = document.getElementById("visit-desc")?.value || "";
+  const imageUrl = document.getElementById("visit-image")?.value || "";
   const priceInput = document.getElementById("visit-price");
   const price =
     priceInput && priceInput.value ? parseFloat(priceInput.value) : 0;
@@ -628,6 +639,7 @@ async function submitVisit(isSavingAsDraft = false) {
   const payload = {
     title: titleInput.value.trim(),
     description: description,
+    coverImage: imageUrl,
     museumId: currentMuseumId,
     works: workIds,
     duration: durationNum,
@@ -734,8 +746,9 @@ async function autoSaveDraft() {
   // Se non c'è un museo, non possiamo collegare la visita a nulla
   if (!currentMuseumId) return;
 
-  const titleInput = document.getElementById("visit-title")?.value.trim();
-  const descInput = document.getElementById("visit-desc")?.value.trim();
+  const titleInput = document.getElementById("visit-title")?.value.trim() || "Bozza in corso...";
+  const descInput = document.getElementById("visit-desc")?.value.trim() || "";
+  const imageUrl = document.getElementById("visit-image")?.value || "";
   const price = parseFloat(document.getElementById("visit-price")?.value) || 0;
 
   // CONDIZIONE: Se il carrello è vuoto E non ha scritto né titolo né descrizione, FERMATI.
@@ -749,8 +762,9 @@ async function autoSaveDraft() {
   const durationNum = parseInt(durationBadgeText) || 0;
 
   const payload = {
-    title: titleInput || "Bozza in corso...", // Fallback essenziale se non ha ancora aperto la modale
-    description: descInput || "",
+    title: titleInput, 
+    description: descInput,
+    coverImage: imageUrl,
     museumId: currentMuseumId,
     works: currentVisitCart.map((work) => work.id),
     price: price,
