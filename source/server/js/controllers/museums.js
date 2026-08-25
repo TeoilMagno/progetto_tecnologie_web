@@ -6,6 +6,8 @@ const Visit = require("../models/visits");
 const Author = require("../models/author");
 const Style = require("../models/style");
 
+const { deleteLocalFile } = require("../utils/file-helper");
+
 // va riscritta anche se c'e' gia' in config.js
 // Funzione helper per tradurre l'indirizzo in coordinate
 async function geocodeAddress(address) {
@@ -168,7 +170,7 @@ exports.saveMuseum = async (museumData, userId) => {
     await User.findByIdAndUpdate(
       userId,
       { $push: { managed_museums: museumId } },
-      { new: true }
+      { returnDocument: 'after' }
     );
   }
 
@@ -176,7 +178,12 @@ exports.saveMuseum = async (museumData, userId) => {
 };
 
 exports.updateMuseum = async (museumId, updateData) => {
-  const updatedMuseum = await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
+  const updatedMuseum = await Museum.findById(museumId);
+
+  if (updatedMuseum && updatedMuseum.image && updatedMuseum.image !== updateData.image){
+    await deleteLocalFile(updatedMuseum.image);
+  }
+
   // Se il curatore ha modificato il prezzo, sincronizziamo la visita libera
   if (updateData.ticketPrice !== undefined) {
     const Visit = require("../models/visits");
@@ -193,14 +200,14 @@ exports.updateMuseum = async (museumId, updateData) => {
     updateData.longitude = coords.lon;
   }
 
-  return await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
+  return await Museum.findByIdAndUpdate(museumId, updateData, { returnDocument: 'after', runValidators: true });
 };
 
 exports.removeSectionFromMuseum = async (museumId, sectionId) => {
   return await Museum.findByIdAndUpdate(
     museumId,
     { $pull: { sections: sectionId } },
-    { new: true }
+    { returnDocument: 'after' }
   );
 };
 
@@ -213,6 +220,8 @@ exports.deleteMuseumById = async (museumId) => {
     error.statusCode = 404;
     throw error;
   }
+
+  if(museum?.image) await deleteLocalFile(museum.image);
 
   // eliminiamo tutte le sezioni (e relative opere) collegate a questo museo
   if (museum.sections && museum.sections.length > 0) {

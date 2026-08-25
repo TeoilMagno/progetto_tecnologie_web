@@ -145,13 +145,32 @@ function setFinalImage(targetId, finalUrl) {
   }
 }
 
-function clearImageWidget(targetId) {
-  document.getElementById(targetId).value = "";
-  document.getElementById(`${targetId}-file`).value = "";
+async function clearImageWidget(targetId) {
+  const hiddenInput = document.getElementById(targetId);
+  const imageUrl = hiddenInput.value;
+
+  // Se c'è un'immagine già caricata fisicamente sul nostro server, la eliminiamo
+  if (imageUrl && imageUrl.startsWith('/uploads/')) {
+    try {
+      await fetch(`${API_BASE_URL}/delete-image`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl: imageUrl })
+      });
+    } catch (error) {
+      console.error("Errore pulizia file:", error);
+    }
+  }
+
+  // Svuota i campi visivi
+  hiddenInput.value = "";
   
-  // Controlla se la barra URL esiste prima di svuotarla (utile per le sezioni uploadOnly)
+  const fileInput = document.getElementById(`${targetId}-file`);
+  if (fileInput) fileInput.value = "";
+  
   const urlInput = document.getElementById(`${targetId}-url-input`);
   if (urlInput) urlInput.value = "";
   
-  document.getElementById(`${targetId}-preview-container`).classList.add("d-none");
+  const previewContainer = document.getElementById(`${targetId}-preview-container`);
+  if (previewContainer) previewContainer.classList.add("d-none");
 }

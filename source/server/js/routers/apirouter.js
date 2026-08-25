@@ -52,6 +52,7 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage: storage });
+const { deleteLocalFile } = require('../utils/file-helper');
 
 const apiRouter = express.Router();
 
@@ -520,6 +521,20 @@ apiRouter.post("/download-external-image", auth.isCurator, async (req, res) => {
   } catch (error) {
     console.error("Errore download immagine:", error.message);
     res.status(500).json({ error: "Impossibile scaricare e salvare l'immagine. Usa l'upload manuale." });
+  }
+});
+
+// 4. Elimina fisicamente un'immagine dal disco (chiamato dal widget)
+apiRouter.delete("/delete-image", auth.isCurator, async (req, res) => {
+  try {
+    const { imageUrl } = req.body;
+    if (imageUrl) {
+      await deleteLocalFile(imageUrl);
+    }
+    res.json({ message: "File eliminato con successo" });
+  } catch (error) {
+    console.error("Errore eliminazione file orfano:", error);
+    res.status(500).json({ error: "Errore durante l'eliminazione" });
   }
 });
 

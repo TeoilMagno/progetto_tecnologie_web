@@ -1,6 +1,8 @@
 const Work = require('../models/works');
 const Visit = require('../models/visits');
 
+const { deleteLocalFile } = require('../utils/file-helper');
+
 exports.getAllWorks = async () => {
   try {
     return await Work.find();
@@ -33,6 +35,16 @@ exports.getWorksById = async (workIds) => {
 
 // Aggiorna un'opera esistente
 exports.updateWorkById = async (workId, updateData, museumId) => {
+  const oldWork = await Work.findOne({ 
+      _id: workId, 
+      museumId: museumId, 
+      $or: [{ adoptionId: null }, { adoptionId: { $exists: false } }] 
+    });
+  // Se l'immagine è cambiata, elimina quella vecchia
+  if (oldWork && oldWork.image && oldWork.image !== updateData.image) {
+    await deleteLocalFile(oldWork.image);
+  }
+
   const updatedWork = await Work.findOneAndUpdate(
     { 
       _id: workId, 
@@ -40,7 +52,7 @@ exports.updateWorkById = async (workId, updateData, museumId) => {
       $or: [{ adoptionId: null }, { adoptionId: { $exists: false } }] 
     }, 
     updateData, 
-    { new: true, runValidators: true }
+    { returnDocument: 'after', runValidators: true }
   );
 
   if (!updatedWork) {
@@ -53,6 +65,16 @@ exports.updateWorkById = async (workId, updateData, museumId) => {
 
 // Elimina un'opera
 exports.deleteWorkById = async (workId, museumId) => {
+  const workToDelete = await Work.findOne({
+    _id: workId,
+    museumId: museumId,
+    $or: [{ adoptionId: null }, { adoptionId: { $exists: false } }]
+  });
+
+  if (workToDelete && workToDelete.image) {
+    await deleteLocalFile(workToDelete.image);
+  }
+
   const deletedWork = await Work.findOneAndDelete({
     _id: workId,
     museumId: museumId,
