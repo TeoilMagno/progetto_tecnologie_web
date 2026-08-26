@@ -6,11 +6,12 @@ const Item = require('../models/items');
 
 // Inizializziamo il client usando la chiave segreta dal file .env
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const AImodel = "gemini-3.5-flash-lite";
 
 exports.generateContent = async (prompt) => {
   try {
     // Usiamo il modello "flash" che è velocissimo e gratuito per i test
-    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash-lite" });
+    const model = genAI.getGenerativeModel({ model: AImodel });
     
     // Invia il prompt a Google e aspetta la magia
     const result = await model.generateContent(prompt);
@@ -26,7 +27,7 @@ exports.generateContent = async (prompt) => {
 exports.generateAndSaveWorkDescriptions = async (workId, workName, userDescription) => {
   try {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash-lite",
+      model: AImodel,
       systemInstruction: ` 
           Sei un esperto curatore d'arte e storico. Genera descrizioni museali basate sugli appunti forniti. Scrivi 4 registri linguistici (simple, medium, professional, expert) declinati in 4 lunghezze (short, medium, long, exhaustive).
 
@@ -84,7 +85,7 @@ exports.generateAndSaveWorkDescriptions = async (workId, workName, userDescripti
 exports.generateAndSaveAuthorDescription = async (authorId, museumId, authorName, userContext) => {
   try {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash-lite",
+      model: AImodel,
       systemInstruction: `Sei uno storico dell'arte. 
           Crea schede anagrafiche e biografiche divulgative ma professionali. 
           Rispondi sempre e solo in formato JSON strutturato.
@@ -134,7 +135,7 @@ exports.generateAndSaveAuthorDescription = async (authorId, museumId, authorName
 exports.generateAndSaveStyleDescription = async (styleId, museumId, styleName, userContext) => {
   try {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash-lite",
+      model: AImodel,
       systemInstruction: `
         Sei uno storico dell'arte. 
         Spiega correnti artistiche in modo chiaro, affascinante e professionale. 
@@ -178,7 +179,7 @@ exports.generateAndSaveItemTargetAge = async (itemId, itemName, itemDescription)
   try {
     // Rendiamo anche questa funzione indipendente e strettamente JSON
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash-lite",
+      model: AImodel,
       systemInstruction: "Sei un analista di marketing per bookshop museali. Determina il target di età dei prodotti. Rispondi solo con un Array JSON di stringhe.",
       generationConfig: { responseMimeType: "application/json" }
     });
@@ -209,7 +210,7 @@ exports.mapRequest = async (prompt) => {
     
     // Usiamo il modello "flash" che è velocissimo e gratuito per i test
     const model = genAI.getGenerativeModel({
-      model: "gemini-3.5-flash-lite",
+      model: AImodel,
       systemInstruction: `
         Sei un assistente per un'audioguida museale.
         Il tuo unico compito è capire l'intento dell'utente e mapparlo a UNA ed una soltanto di queste azioni esatte: ${validActions.join(", ")}.
@@ -254,6 +255,61 @@ exports.mapRequest = async (prompt) => {
     
     // Estrae solo il testo pulito dalla risposta complessa di Google
     return aiResponse;
+  } catch (error) {
+    console.error("Errore fatale con Gemini API:", error);
+    throw error;
+  }
+};
+
+exports.suggestWorks = async (payload) => {
+  try {
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash", // Assicurati che AImodel punti a questo o al gemini-3.5-flash-lite
+      systemInstruction: `Sei un esperto curatore museale. Il tuo compito è suggerire le prossime opere da vedere per completare il tour.
+      Regole tassative:
+      1. Il visitatore ha ancora ${payload.remaining_time} minuti di tempo.
+      2. Si stima un tempo di ${payload.duration} minuti per osservare ogni opera.
+      3. Calcola quante opere il visitatore può ancora vedere senza superare il tempo rimanente. Restituisci MASSIMO quel numero di opere.
+      4. Scegli le opere più affini per autore o stile a quelle che il visitatore ha già visto.
+      5. Devi restituire ESCLUSIVAMENTE un JSON contenente l'array degli ID delle opere scelte.`,
+      
+      generationConfig: {
+        responseMimeType: "application/json",
+        // Schema corretto per Gemini
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            works: {
+              type: "ARRAY",
+              description: "Lista degli ID (stringhe) delle opere suggerite",
+              items: {
+                type: "STRING"
+              }
+            }
+          },
+          required: ["works"]
+        }
+      }
+    });
+
+    // Costruiamo il prompt con i dati convertiti in stringhe leggibili!
+    const prompt = `
+      Opere già visitate:
+      ${JSON.stringify(payload.seen, null, 2)}
+      
+      Opere disponibili per il suggerimento:
+      ${JSON.stringify(payload.available, null, 2)}
+    `;
+
+    // Invia il prompt a Google e aspetta la magia
+    const result = await model.generateContent(prompt);
+
+    // Parso la risposta in JSON
+    const aiResponse = JSON.parse(result.response.text());
+    
+    // L'output sarà un oggetto del tipo: { works: ["id_1", "id_2"] }
+    return aiResponse;
+    
   } catch (error) {
     console.error("Errore fatale con Gemini API:", error);
     throw error;

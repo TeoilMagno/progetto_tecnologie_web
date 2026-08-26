@@ -6,6 +6,7 @@ export default function NavigationControlBar({
   visitedWorks,
   onPrev,
   onNext,
+  onEndVisit,
   onStartVisit,
   playMode,
   setPlayMode,
@@ -76,7 +77,7 @@ export default function NavigationControlBar({
               </button>
             ) : (
               <button 
-                onClick={onNext} 
+                onClick={currentWorkIndex === visitedWorks.length - 1 ? onEndVisit : onNext}
                 className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[140px] px-4 md:px-5 py-2 rounded-full text-white text-xs md:text-sm font-semibold border-none cursor-pointer"
                 style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}
               >

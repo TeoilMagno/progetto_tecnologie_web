@@ -880,7 +880,7 @@ apiRouter.put("/styles/:id/data/:dataId/adopt", auth.isCurator, async (req, res)
   }
 });
 
-// ----------------------- ai ----------------------------
+// ----------------------- AI ----------------------------
 
 // Rotta per generare testi con l'IA (protetta per i soli curatori/admin)
 apiRouter.post("/ai/generate", auth.isCurator, async (req, res) => {
@@ -950,6 +950,19 @@ apiRouter.post("/ai/map-request", async (req,res) => {
 
     const mapped_request = await aiController.mapRequest(prompt);
     res.status(200).json(mapped_request);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+apiRouter.post("/ai/suggested-works", async (req,res) => {
+  try {
+      const { payloadForAI } = req.body;
+
+    if(!payloadForAI) return res.status(400).json({ error: "la richiesta è vuota"});
+
+    const suggested_works = await aiController.suggestWorks(payloadForAI);
+    res.status(200).json(suggest_works);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

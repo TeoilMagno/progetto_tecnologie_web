@@ -32,14 +32,19 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
   // Livello di dettaglio della descrizione
   const [expertiseLevel, setExpertiseLevel] = useState("medium");
+  const [currentLength, setCurrentLength] = useState("medium");
 
   //Domande per assistente vocale
   const [commandsMap, setCommandsMap] = useState(null);
 
+  //variabili temporali per suggerire opere extra
+  const [visitBeginTime, setVisitBeginTime] = useState(null);
+  const [visitEndTime, setVisitEndTime] = useState(null);
+  const [visitDurationTime, setVisitDurationTime] = useState(null);
+  const [maxDurationTime, setMaxDurationTime] = useState(null);
+
   const isSharedSession = Boolean(roomCode);
-  //lunghezza descrizione opera
-  const currentLength = "medium";
-  
+
   // Se non ci sono sezioni valide, attiviamo la modalità Fallback (Audioguida List Mode)
   const hasMap = sections && sections.length > 0;
 
@@ -76,7 +81,14 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         //setta il livello di difficoltà della visita
         if(userData)
           setExpertiseLevel(userData.preferences.expertiseLevel || 'medium');
+
+        //setta la lunghezza delle descrizioni delle opere
+        if(visitData.preferredLength)
+            setCurrentLength(visitData.preferredLength || "medium");
         
+        if(visitData.maxDuration)
+          setMaxDurationTime(visitData.maxDuration || null);
+
         // Controllo di sicurezza: ci assicuriamo che works sia un array
         const worksArray = Array.isArray(visitData.works) ? visitData.works : [];
         setVisitedWorks(worksArray);
@@ -214,16 +226,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       if (isSharedSession && isTeacher && socket) {
         socket.emit("change_artwork", { roomCode, artworkId: activeWork._id });
       }
-    } else {
-      const remainingWorks = allMuseumWorks.filter(w => !visitedWorks.some(vw => vw._id === w._id));
-      const shuffled = [...remainingWorks].sort(() => 0.5 - Math.random());
-      setSuggestedWorks(shuffled.slice(0, 3));
-      setShowEndModal(true);
-
-      // Se è l'insegnante ad aver finito, avvisa il server per far comparire il modale agli studenti
-      if (isSharedSession && isTeacher && socket) {
-        socket.emit("end_shared_visit", { roomCode });
-      }
     }
   };
 
@@ -254,6 +256,53 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     } else if (currentWorkIndex === 0) {
       setCurrentWorkIndex(-1);
       setSelectedSection(null);
+    }
+  };
+
+  const handleEndVisit = async () => {
+    // 1. Calcolo del tempo
+    const endTime = Date.now();
+    setVisitEndTime(endTime);
+    const elapsedMilliseconds = endTime - visitBeginTime;
+    const elapsedMinutes = Math.floor(elapsedMilliseconds / 1000 / 60);
+
+    // 2. Troviamo le opere rimanenti
+    const remainingWorks = allMuseumWorks.filter(w => !visitedWorks.some(vw => vw._id === w._id));
+
+    if (remainingWorks.length > 0) {
+      const READING_TIMES = {
+        short: 3 / 60,
+        medium: 15 / 60,
+        long: 1,
+        exhaustive: 4
+      };
+
+      const payloadForAI = {
+        seen: visitedWorks.map(w => ({ name: w.name, author: w.authorName, style: w.styleName })),
+        available: remainingWorks.map(w => ({ id: w._id, name: w.name, author: w.authorName, style: w.styleName })),
+        remaining_time: maxDuration - elapsedMinutes, // (Assicurati di avere maxDuration definita da qualche parte!)
+        duration: READING_TIMES[currentLength]
+      };
+
+      try {
+        // 3. Chiamata API (Ora l'await funziona perfettamente!)
+        const aiResponse = await fetch(`${API_BASE_URL}/ai/suggested-works`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ payloadForAI: payloadForAI }) // Assicurati che backend legga req.body.payloadForAI
+        });
+        
+        const suggestedWorksData = await aiResponse.json();
+        console.log("L'IA suggerisce queste opere:", suggestedWorksData);
+        
+        // TODO: Qui potrai aprire una modale di fine visita o navigare altrove!
+
+      } catch (error) {
+        alert("Non ci sono altre opere da vedere inerenti alla visita fatta. " + error.message);
+      }
+    } else {
+      // Se l'utente ha visto letteralmente tutto il museo
+      alert("Complimenti! Hai visto tutte le opere del museo.");
     }
   };
 
@@ -363,7 +412,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         visitedWorks={visitedWorks}
         onPrev={handlePrev}
         onNext={handleNext}
+        onEndVisit={handleEndVisit}
         onStartVisit={() => {
+          setVisitBeginTime(Date.now());
           if (visitedWorks.length > 0) {
             setCurrentWorkIndex(0);
             if (hasMap) {
@@ -467,6 +518,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           commandsMap={commandsMap}
           currentExpertise={expertiseLevel}
           setCurrentExpertise={setExpertiseLevel}
+          currentLength={currentLength}
+          setCurrentLength={setCurrentLength}
         />
       )}
 

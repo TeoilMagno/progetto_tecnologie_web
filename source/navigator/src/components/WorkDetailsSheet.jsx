@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import { Volume, VolumeX, Mic, X, Sparkles } from "lucide-react";
 import { API_BASE_URL } from "../config";
 
-export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, currentExpertise, setCurrentExpertise }) {
+export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, currentExpertise, setCurrentExpertise, currentLength, setCurrentLength }) {
   // --- LOGICA TRASCINAMENTO BOTTOM SHEET ---
   const [dragStartY, setDragStartY] = useState(null);
   const [dragCurrentY, setDragCurrentY] = useState(0);
-  const [currentLength, setCurrentLength] = useState("medium");
   const [isListening, setIsListening] = useState(false);
   const [showFunFact, setShowFunFact] = useState(false);
   
