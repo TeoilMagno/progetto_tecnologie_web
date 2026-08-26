@@ -206,6 +206,11 @@ async function checkUserRole() {
         return;
       }
 
+      if (user?.expertiseLevel) {
+        const expSelect = document.getElementById("visit-expertise-level");
+        if (expSelect) expSelect.value = user.expertiseLevel;
+      }
+
       // Se è un curatore, sblocchiamo le opzioni SOLO se gestisce questo specifico museo
       if (user?.role === "curator") {
         const museumsRes = await fetch(`${API_BASE_URL}/my-museums`);
@@ -614,6 +619,7 @@ async function submitVisit(isSavingAsDraft = false) {
 
   const publicCheckbox = document.getElementById("visit-public");
 
+  const expertiseLevel = document.getElementById("visit-expertise-level")?.value || 'medium';
   const prefLength = document.getElementById("visit-pref-length")?.value || 'medium';
   const maxDurInput = document.getElementById("available-minutes-input")?.value;
   const maxDurationValue = maxDurInput ? parseInt(maxDurInput) : 0;
@@ -653,6 +659,7 @@ async function submitVisit(isSavingAsDraft = false) {
     duration: durationNum,
     maxDuration: maxDurationValue,
     preferredLength: prefLength,
+    expertiseLevel,
     isDraft: isDraft,
     isPublic: isPublic,
     quiz: currentQuiz
@@ -765,6 +772,7 @@ async function autoSaveDraft() {
     return;
   }
 
+  const expertiseLevel = document.getElementById("visit-expertise-level")?.value || 'medium';
   const prefLength = document.getElementById("visit-pref-length")?.value || 'medium';
   const maxDurInput = document.getElementById("available-minutes-input")?.value;
   const maxDurationValue = maxDurInput ? parseInt(maxDurInput) : 0;
@@ -783,6 +791,7 @@ async function autoSaveDraft() {
     duration: durationNum,
     maxDuration: maxDurationValue,
     preferredLength: prefLength,
+    expertiseLevel,
     quiz: currentQuiz
   };
 

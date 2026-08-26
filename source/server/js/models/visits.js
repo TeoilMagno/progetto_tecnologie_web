@@ -19,13 +19,20 @@ const visitSchema = new mongoose.Schema({
     language: { type: String, default: 'it' },
     coverImage: { type: String }, // Immagine di anteprima per la card nel marketplace
     
-    // registro della visita -> calcolato dinamicamente alla creazione e durante l'esecuzione della visita
+    // lunghezza della visita -> calcolato dinamicamente alla creazione e durante l'esecuzione della visita
     preferredLength: {
         type: String,
         enum: ['short', 'medium', 'long', 'exhaustive'],
         default: 'medium'
     },
 
+    // registro della visita -> recuperato dai dati dello user ma puo' essere modificato a piacimento
+    expertiseLevel: {
+        type: String,
+        enum: ['simple', 'medium', 'professional', 'expert'],
+        default: 'medium'
+    },
+    
     // standard -> visita libera
     visitType: { 
         type: String, 

@@ -571,6 +571,7 @@ apiRouter.get("/current-user", (req, res) => {
         username: req.user.username || req.user.name,
         role: req.user.role,
         type: req.user.type || 'none',
+        expertiseLevel: req.user.preferences?.expertiseLevel || 'medium'
       });
     } else {
       res.json(null);
