@@ -164,13 +164,11 @@ exports.editVisitById = async (visitId, payload, user) => {
     delete payload.isPublic;
     delete payload.targetAudience;
     delete payload.accessibility;
-    delete payload.coverImage;
 
     payload.$unset = {
       price: 1,
       targetAudience: 1,
-      accessibility: 1,
-      coverImage: 1
+      accessibility: 1
     };
   }
 
@@ -184,7 +182,7 @@ exports.editVisitById = async (visitId, payload, user) => {
   const updatedVisit = await Visit.findOneAndUpdate(      
     query,
     payload,
-    { new: true }
+    { returnDocument: 'after' }
   );
 
   if (!updatedVisit) {
@@ -222,8 +220,8 @@ exports.deleteVisitById = async (visitId, user) => {
   }
 
   const visitToDelete = await Visit.findOne(query);
-  if (visitToDelete && visitToDelete.image) {
-    await deleteLocalFile(visitToDelete.image);
+  if (visitToDelete && visitToDelete.coverimage) {
+    await deleteLocalFile(visitToDelete.coverImage);
   }
 
   const deletedVisit = await Visit.findOneAndDelete(query);

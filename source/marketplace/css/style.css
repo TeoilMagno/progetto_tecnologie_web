@@ -775,3 +775,30 @@ body.artaround-theme::-webkit-scrollbar {
 .ts-wrapper.single .ts-control input {
   color: #ffffff ;
 }
+
+/* FORZA IL TEMA SCURO SUI TOM SELECT (Disattiva lo sfondo bianco di Bootstrap) */
+.ts-wrapper.form-select,
+.ts-wrapper.form-control,
+.ts-wrapper.glass-input {
+    background-color: transparent ;
+    background-image: none ; /* Toglie la doppia freccina di Bootstrap */
+    border: none ;
+    padding: 0 ;
+    box-shadow: none ;
+}
+
+/* Stile per la barra chiusa e a riposo */
+.ts-wrapper .ts-control {
+    background-color: rgba(255, 255, 255, 0.05) ;
+    color: #ffffff ;
+    border: 1px solid rgba(255, 255, 255, 0.1) ;
+    border-radius: 8px ;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+}
+
+/* Mantiene il testo bianco dell'opzione selezionata */
+.ts-wrapper.single .ts-control .item {
+    color: #ffffff ;
+}

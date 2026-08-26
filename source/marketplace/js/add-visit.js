@@ -6,6 +6,8 @@ let isCurrentVisitDraft = true;
 let allMuseumWorks = [];
 let allMuseumSections = [];
 let currentQuiz = [];
+let expertiseSelectInstance = null;
+let prefLengthSelectInstance = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
   // Inizializza il widget immagine
@@ -83,6 +85,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // Inizializza Tom Select per il Registro Linguistico
+  if (document.getElementById("visit-expertise-level")) {
+    expertiseSelectInstance = new TomSelect("#visit-expertise-level", {
+      create: false,
+      controlInput: null, // Rimuove la casella di testo per la ricerca interna (non serve per 4 opzioni)
+      sortField: false
+    });
+  }
+
+  // Inizializza Tom Select per il Ritmo della Visita
+  if (document.getElementById("visit-pref-length")) {
+    prefLengthSelectInstance = new TomSelect("#visit-pref-length", {
+      create: false,
+      controlInput: null,
+      sortField: false,
+      onChange: function() {
+        triggerDurationUpdate(); // Scatena il ricalcolo dei minuti quando l'utente sceglie una voce!
+      }
+    });
+  }
+
   // Gestione bozza
   if (editingVisitId) {
     try {
@@ -109,6 +132,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (draft.preferredLength) {
           const prefSelect = document.getElementById("visit-pref-length");
           if (prefSelect) prefSelect.value = draft.preferredLength;
+
+          if (prefLengthSelectInstance) prefLengthSelectInstance.setValue(draft.preferredLength, true);
         }
 
         // Ripristiniamo i minuti se erano stati impostati (> 0)
@@ -209,6 +234,8 @@ async function checkUserRole() {
       if (user?.expertiseLevel) {
         const expSelect = document.getElementById("visit-expertise-level");
         if (expSelect) expSelect.value = user.expertiseLevel;
+
+        if (expertiseSelectInstance) expertiseSelectInstance.setValue(user.expertiseLevel, true);
       }
 
       // Se è un curatore, sblocchiamo le opzioni SOLO se gestisce questo specifico museo
@@ -940,13 +967,17 @@ async function autoSelectLength() {
       const data = await response.json();
       
       // 1. Modifichiamo visivamente la tendina per selezionare la voce consigliata
-      const selectEl = document.getElementById("visit-pref-length");
-      if (selectEl) {
-        selectEl.value = data.recommendedLength;
+      if (prefLengthSelectInstance) {
+        prefLengthSelectInstance.setValue(data.recommendedLength, true);
         
-        // Aggiungiamo un piccolo effetto visivo per far notare il cambiamento
-        selectEl.classList.add("border-success", "text-success");
-        setTimeout(() => selectEl.classList.remove("border-success", "text-success"), 1500);
+        // Effetto visivo "glow verde" applicato direttamente al box di Tom Select
+        const tsControl = prefLengthSelectInstance.control;
+        tsControl.style.borderColor = "#10b981";
+        tsControl.style.color = "#10b981";
+        setTimeout(() => {
+          tsControl.style.borderColor = "";
+          tsControl.style.color = "";
+        }, 1500);
       }
       
       // 2. Scateniamo l'aggiornamento del calcolatore della durata (il badge azzurro)
