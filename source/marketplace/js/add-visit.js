@@ -151,8 +151,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("visit-public").checked = draft.isPublic || false;
 
         // Gestione immagine nel widget
-        if (draft.image) {
-          setFinalImage("visit-image", draft.image);
+        if (draft.coverImage) {
+          setFinalImage("visit-image", draft.coverImage);
         } else {
           clearImageWidget("visit-image");
         }
@@ -887,7 +887,7 @@ async function deleteVisit() {
       // Disattiviamo il timer di autosalvataggio per evitare che resusciti la bozza!
       clearTimeout(autoSaveTimeout); 
       
-      window.location.href = "/my-visits";
+      window.location.replace("/my-visits");
     } else {
       const data = await response.json();
       alert(data.error || "Errore durante l'eliminazione.");

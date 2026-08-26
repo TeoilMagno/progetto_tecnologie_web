@@ -4,7 +4,7 @@ function goBackToVisits() {
     window.history.back();
   } else {
     // Fallback sicuro se l'utente ha aperto il link in una nuova scheda
-    window.location.href = '/'; 
+    window.location.replace('/'); 
   }
 }
 
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!visitId) {
     alert("ID visita mancante nell'URL.");
-    window.location.href = "/my-visits";
+    window.location.replace("/my-visits");
     return;
   }
 
@@ -33,13 +33,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!response.ok) {
       if (response.status === 403) {
         alert("Questa visita è privata o richiede il login per essere visualizzata.");
-        window.location.href = '/403'; // O lo rimandi alla home
+        window.location.replace('/403'); // O lo rimandi alla home
         return;
       }
 
       if (response.status === 404) {
         alert("Visita non trovata.");
-        window.location.href = '/404'; 
+        window.location.replace('/404'); 
         return;
       }
 
@@ -94,8 +94,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (visit.description) {
-      document.getElementById("visit-description").innerText =
-        visit.description;
+      document.getElementById("visit-description-container").classList.remove('d-none');
+      document.getElementById("visit-description").innerText = visit.description;
     }
 
     // generiamo la timeline delle opere
@@ -194,5 +194,5 @@ function editVisit() {
   const visitId = urlParams.get("id");
   const museumId = document.getElementById("visit-museum-sub")?.dataset?.museumId || "";
   
-  window.location.href = `/create-visit?edit=${visitId}&museumId=${museumId}`;
+  window.location.replace(`/create-visit?edit=${visitId}&museumId=${museumId}`);
 }
