@@ -25,7 +25,7 @@ function initImageWidget(containerId, hiddenInputId, labelText, uploadOnly = fal
   }
 
   container.innerHTML = `
-    <label class="form-label small text-info fw-bold mb-1"><i class="bi bi-image me-2"></i>${labelText}</label>
+    <label class="form-label small text-secondary mb-1"><i class="bi bi-image me-1"></i>${labelText}</label>
     <div class="card custom-card bg-dark bg-opacity-25 border-secondary border-opacity-25 mb-3" style="border-radius: 12px; transition: all 0.3s ease;">
       
       <input type="hidden" id="${hiddenInputId}">
@@ -102,7 +102,7 @@ async function handleImageUpload(fileInput, targetId) {
 }
 
 async function searchWikimediaForWidget(targetId) {
-  const query = prompt("Cosa vuoi cercare su Wikimedia? (es. La Gioconda Leonardo)");
+  const query = await window.showCustomPrompt("Cerca su Wikimedia", "Es. La Gioconda Leonardo...");
   if (!query || query.trim() === "") return;
 
   const resultsContainer = document.getElementById(`${targetId}-wiki-results`);
