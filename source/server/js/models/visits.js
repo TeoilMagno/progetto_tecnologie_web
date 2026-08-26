@@ -15,6 +15,7 @@ const visitSchema = new mongoose.Schema({
     isDraft: { type: Boolean, default: true }, // Per gestire le bozze
     isPublic: { type: Boolean, default: false }, // true = pubblica sul marketplace, false = privata
     duration: { type: Number, default: 0 }, // Durata stimata in minuti
+    maxDuration: { type: Number, default: 0 }, // Tempo a disposizione per la visita (serve per i suggerimenti a fine visita); default 0 significa che non ha limiti di tempo
     language: { type: String, default: 'it' },
     coverImage: { type: String }, // Immagine di anteprima per la card nel marketplace
     

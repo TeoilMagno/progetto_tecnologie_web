@@ -111,6 +111,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (prefSelect) prefSelect.value = draft.preferredLength;
         }
 
+        // Ripristiniamo i minuti se erano stati impostati (> 0)
+        if (draft.maxDuration && draft.maxDuration > 0) {
+          const maxDurInput = document.getElementById("available-minutes-input");
+          if (maxDurInput) maxDurInput.value = draft.maxDuration;
+        }
+
         triggerDurationUpdate();
 
         // Popoliamo i campi
@@ -609,7 +615,9 @@ async function submitVisit(isSavingAsDraft = false) {
   const publicCheckbox = document.getElementById("visit-public");
 
   const prefLength = document.getElementById("visit-pref-length")?.value || 'medium';
-  
+  const maxDurInput = document.getElementById("available-minutes-input")?.value;
+  const maxDurationValue = maxDurInput ? parseInt(maxDurInput) : 0;
+
   // Recuperiamo il numero di minuti dal badge (es. "45 min" -> 45)
   const durationBadgeText = document.getElementById("tour-duration-badge")?.innerText || "0";
   const durationNum = parseInt(durationBadgeText) || 0;
@@ -643,6 +651,7 @@ async function submitVisit(isSavingAsDraft = false) {
     museumId: currentMuseumId,
     works: workIds,
     duration: durationNum,
+    maxDuration: maxDurationValue,
     preferredLength: prefLength,
     isDraft: isDraft,
     isPublic: isPublic,
@@ -756,8 +765,9 @@ async function autoSaveDraft() {
     return;
   }
 
-
   const prefLength = document.getElementById("visit-pref-length")?.value || 'medium';
+  const maxDurInput = document.getElementById("available-minutes-input")?.value;
+  const maxDurationValue = maxDurInput ? parseInt(maxDurInput) : 0;
   const durationBadgeText = document.getElementById("tour-duration-badge")?.innerText || "0";
   const durationNum = parseInt(durationBadgeText) || 0;
 
@@ -771,6 +781,7 @@ async function autoSaveDraft() {
     isPublic: false,
     isDraft: true, // È sempre una bozza
     duration: durationNum,
+    maxDuration: maxDurationValue,
     preferredLength: prefLength,
     quiz: currentQuiz
   };

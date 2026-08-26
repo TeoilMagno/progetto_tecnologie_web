@@ -39,6 +39,7 @@ exports.createVisit = async (visitPayload, user) => {
     isDraft,
     isPublic,
     duration,
+    maxDuration,
     language,
     preferredLength,
     targetAudience, 
@@ -55,6 +56,7 @@ exports.createVisit = async (visitPayload, user) => {
     creator: user._id, // Preso automaticamente dalla sessione
     works,
     duration,
+    maxDuration,
     preferredLength,
     language: language || "it",
   };
