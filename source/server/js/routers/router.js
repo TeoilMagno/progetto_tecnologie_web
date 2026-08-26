@@ -93,6 +93,11 @@ router.get('/admin-dashboard', auth.isAdminPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'admin-dashboard.html'));
 });
 
+// pagina del creatore di temi per i musei
+router.get('/create-theme', auth.isCuratorPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'create-theme.html'));
+});
+
 router.get('/prova-navigator', (req, res) => {
   console.log("ucciditi")
   res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'dist', 'index.html'));

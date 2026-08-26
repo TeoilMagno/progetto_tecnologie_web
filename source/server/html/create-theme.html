@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArtAround - Crea Tema</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/marketplace/css/style.css">
+  <link rel="stylesheet" href="/marketplace/css/forms-style.css">
+  <style>
+    /* Custom style for Creator Page */
+    .theme-builder-container {
+      margin-top: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .preview-viewport {
+      background: rgba(10, 10, 18, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      width: 50vw;
+      height: 80vh;
+      max-width: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+      margin: 0 auto;
+    }
+
+    .preview-scale-control {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      padding: 6px 16px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .preview-scale-control span {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-family: monospace;
+    }
+
+    /* Mockup Card adapting to 100% of parent width/height */
+    .navigator-mockup-card {
+      /* Theme custom variables with defaults */
+      --primary: #f59e0b;
+      --secondary: #3b82f6;
+      --accent: #10b981;
+      --bg-main: #0f172a;
+      --bg-overlay: 0.75;
+      --bg-card: #1e293b;
+      --bg-dark: #020617;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-on-dark: #ffffff;
+      --text-on-primary: #0f172a;
+      --radius: 16px;
+      --border-width: 1px;
+      --border-style: solid;
+      --border-color: rgba(51, 65, 85, 0.5);
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      --font-heading: system-ui, -apple-system, sans-serif;
+      --font-body: system-ui, -apple-system, sans-serif;
+      --bg-pattern: none;
+
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-main);
+      background-image: var(--bg-pattern);
+      border: var(--border-width) var(--border-style) var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      font-family: var(--font-body);
+      color: var(--text-main);
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Device inner padding and layout */
+    .mockup-device-body {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 1.5rem;
+    }
+
+    /* Mockup Background */
+    .mockup-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    .mockup-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .mockup-bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.1) 0%, rgba(15, 23, 42, 0.5) 30%, var(--bg-dark) 75%, var(--bg-dark) 100%);
+      opacity: var(--bg-overlay, 0.75);
+    }
+
+    /* Mockup Header */
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0.6rem;
+      background: rgba(15, 23, 42, 0.9);
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      border-radius: 9px;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(10px);
+    }
+    .mockup-logo-container {
+      width: 30px;
+      height: 30px;
+      background: white;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.2);
+    }
+    .mockup-logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .mockup-title {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    /* Mockup Main - Scrollable content */
+    .mockup-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 1.25rem;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    /* Webkit scrollbar for mockup-main */
+    .mockup-main::-webkit-scrollbar {
+      width: 6px;
+    }
+    .mockup-main::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
+    .mockup-main::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+    .mockup-main::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Mockup Hero */
+    .mockup-hero {
+      margin-bottom: 0.5rem;
+    }
+    .mockup-hero-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .mockup-hero-title .text-primary {
+      color: var(--primary);
+    }
+    .mockup-hero-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-w: 480px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* Mockup Cards list */
+    .mockup-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-width: 500px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .mockup-item-card {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      background-color: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: var(--border-width) var(--border-style) var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: background-color 0.2s ease;
+    }
+    .mockup-icon-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: white;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    .mockup-card-info {
+      text-align: left;
+    }
+    .mockup-card-title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+    .mockup-card-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    /* Mockup Bottom Nav */
+    .mockup-bottom-nav {
+      height: 50px;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(51, 65, 85, 0.4);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-radius: 10px;
+      margin-top: 1rem;
+      padding: 0 15px;
+    }
+    .mockup-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 500;
+    }
+    .mockup-nav-item i {
+      font-size: 18px;
+    }
+    .mockup-nav-item.active {
+      color: var(--primary);
+    }
+
+    /* Customize Panel Styles */
+    .customize-panel {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 1.5rem;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      color: #f8fafc;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .customize-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 1rem;
+    }
+
+    .btn-back-actions {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-back-actions:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      transform: translateX(-2px);
+    }
+
+    .customize-form {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    /* Webkit scrollbar for customize-form */
+    .customize-form::-webkit-scrollbar {
+      width: 6px;
+    }
+    .customize-form::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
+    .customize-form::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+    .customize-form::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .customize-section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* Form rows and groups */
+    .customize-field-group {
+      margin-bottom: 1rem;
+    }
+
+    .customize-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 0.35rem;
+      display: block;
+    }
+
+    .color-input-container {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .color-picker-wrapper {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .color-picker-input {
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      width: 48px;
+      height: 48px;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      background: none;
+    }
+
+    .hex-text-input {
+      background: rgba(15, 23, 42, 0.5) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      color: #f8fafc !important;
+      border-radius: 8px !important;
+      font-family: monospace;
+      font-size: 0.9rem !important;
+    }
+    .hex-text-input:focus {
+      border-color: #7a1dd0 !important;
+      box-shadow: 0 0 0 2px rgba(122, 29, 208, 0.25) !important;
+    }
+
+    /* Autocomplete dropdown positioning */
+    .autocomplete-container {
+      position: relative;
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      max-height: 150px;
+      overflow-y: auto;
+      display: none;
+      margin-top: 4px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .autocomplete-item {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .autocomplete-item:hover {
+      background: rgba(122, 29, 208, 0.2);
+      color: #ffffff;
+    }
+
+    /* Actions Button Styles with premium gradients and glowing shadows */
+    .btn-action-blue {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border-radius: 50px;
+      padding: 14px 28px;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-action-blue:hover {
+      background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
+      transform: translateY(-3px) scale(1.02);
+      color: #ffffff;
+    }
+    .btn-action-blue:active {
+      transform: translateY(-1px) scale(0.99);
+    }
+
+    .btn-action-purple {
+      background: linear-gradient(135deg, #4c1d95 0%, #7a1dd0 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border-radius: 50px;
+      padding: 14px 28px;
+      box-shadow: 0 4px 20px rgba(122, 29, 208, 0.4);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-action-purple:hover {
+      background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+      box-shadow: 0 8px 25px rgba(122, 29, 208, 0.6);
+      transform: translateY(-3px) scale(1.02);
+      color: #ffffff;
+    }
+    .btn-action-purple:active {
+      transform: translateY(-1px) scale(0.99);
+    }
+
+    .btn-action-green {
+      background: linear-gradient(135deg, #064e3b 0%, #10b981 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border-radius: 50px;
+      padding: 14px 28px;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-action-green:hover {
+      background: linear-gradient(135deg, #0f766e 0%, #34d399 100%);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+      transform: translateY(-3px) scale(1.02);
+      color: #ffffff;
+    }
+    .btn-action-green:active {
+      transform: translateY(-1px) scale(0.99);
+    }
+
+    /* Fullscreen Mode for Mockup Card */
+    .navigator-mockup-card.fullscreen-active {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 99999 !important;
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Red X Close Button for Fullscreen */
+    .fullscreen-close-btn {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100000;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: all 0.2s ease;
+    }
+    .fullscreen-close-btn:hover {
+      background: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+      transform: scale(1.05);
+    }
+
+    /* Show close button in fullscreen */
+    body.in-fullscreen .fullscreen-close-btn {
+      display: flex;
+    }
+    body.in-fullscreen {
+      overflow: hidden !important;
+    }
+  </style>
+</head>
+<body class="artaround-theme">
+
+  <header class="navbar site-header sticky-top px-3">
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <i class="bi bi-bank me-2 text-white"></i>
+        <span class="brand-text">ArtAround</span>
+        <span class="brand-subtitle ms-1 text-white opacity-75">Marketplace</span>
+      </a>
+    </div>
+    
+    <div class="d-flex align-items-center">
+      <div id="user-area" class="text-white small d-flex align-items-center gap-2"></div>
+    </div>
+  </header>
+
+  <div class="container-fluid theme-builder-container px-4 px-md-5">
+    <div class="row align-items-center mb-4">
+      <div class="col-md-8">
+        <h1 class="aura-title text-start mb-1">Crea Tema Personalizzato</h1>
+        <p class="text-secondary mb-0">Configura e visualizza in tempo reale le variabili di stile dell'applicazione Navigator.</p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="/" class="btn btn-glass btn-sm rounded-pill px-4">
+          <i class="bi bi-arrow-left me-1"></i> Torna alla Home
+        </a>
+      </div>
+    </div>
+
+    <div class="row g-4 justify-content-center align-items-center">
+      <!-- CANVAS DI PREVIEW -->
+      <div class="col-xl-9 col-lg-8">
+        <div class="preview-viewport">
+          <!-- The Mockup Card itself -->
+          <div class="navigator-mockup-card" id="mockupCard">
+            <!-- Simulated Device Background -->
+            <div class="mockup-bg">
+              <img id="mockupBgImage" src="/img1.jpg" alt="Sfondo">
+              <div class="mockup-bg-overlay"></div>
+            </div>
+
+            <!-- Simulated Device Body -->
+            <div class="mockup-device-body">
+              <!-- Mockup Header -->
+              <header class="mockup-header">
+                <div class="mockup-logo-container">
+                  <img id="mockupLogo" src="/assets/icons/default-logo.svg" alt="Logo">
+                </div>
+                <h1 class="mockup-title" id="mockupMuseumName">MET</h1>
+              </header>
+
+              <!-- Mockup Content -->
+              <main class="mockup-main">
+                <!-- Hero section -->
+                <div class="mockup-hero text-center">
+                  <h2 class="mockup-hero-title">
+                    <span class="text-primary">ArtAround</span> <span class="text-white">Navigator</span>
+                  </h2>
+                  <p class="mockup-hero-subtitle" id="mockupWelcomeMessage">
+                    Benvenuto in ArtAround. Esplora i capolavori del museo con guide audio interattive ed esperienze coinvolgenti.
+                  </p>
+                </div>
+
+                <!-- Vertical Cards Stack -->
+                <div class="mockup-cards-list">
+                  <div class="mockup-item-card">
+                    <div class="mockup-icon-box bg-warning bg-opacity-20 text-warning" style="background-color: var(--primary) !important; color: var(--text-on-primary) !important;">🧭</div>
+                    <div class="mockup-card-info">
+                      <h3 class="mockup-card-title">Explore Visits</h3>
+                      <p class="mockup-card-desc">Discover available visits and start your autonomous exploration</p>
+                    </div>
+                  </div>
+
+                  <div class="mockup-item-card">
+                    <div class="mockup-icon-box" style="background-color: #9333ea !important;">👥</div>
+                    <div class="mockup-card-info">
+                      <h3 class="mockup-card-title">Join a Session</h3>
+                      <p class="mockup-card-desc">Participate in a synchronized guided tour with the teacher</p>
+                    </div>
+                  </div>
+
+                  <div class="mockup-item-card">
+                    <div class="mockup-icon-box" style="background-color: #14b8a6 !important;">🗺️</div>
+                    <div class="mockup-card-info">
+                      <h3 class="mockup-card-title">Audio Guide Map</h3>
+                      <p class="mockup-card-desc">Explore the museum layout with interactive audio guidance</p>
+                    </div>
+                  </div>
+
+                  <div class="mockup-item-card">
+                    <div class="mockup-icon-box" style="background-color: #ef4444 !important;">➕</div>
+                    <div class="mockup-card-info">
+                      <h3 class="mockup-card-title">Create Visit</h3>
+                      <p class="mockup-card-desc">Build your own custom museum tour</p>
+                    </div>
+                  </div>
+
+                  <div class="mockup-item-card">
+                    <div class="mockup-icon-box" style="background-color: #06b6d4 !important;">👤</div>
+                    <div class="mockup-card-info">
+                      <h3 class="mockup-card-title">My Visits</h3>
+                      <p class="mockup-card-desc">View your saved visits and history</p>
+                    </div>
+                  </div>
+                </div>
+              </main>
+
+              <!-- Mockup Navigation Bottom Bar -->
+              <nav class="mockup-bottom-nav">
+                <div class="mockup-nav-item active">
+                  <i class="bi bi-house-door-fill"></i>
+                  <span>Home</span>
+                </div>
+                <div class="mockup-nav-item">
+                  <i class="bi bi-compass"></i>
+                  <span>Visits</span>
+                </div>
+                <div class="mockup-nav-item">
+                  <i class="bi bi-people"></i>
+                  <span>Join</span>
+                </div>
+                <div class="mockup-nav-item">
+                  <i class="bi bi-map"></i>
+                  <span>Free Visit-Map</span>
+                </div>
+                <div class="mockup-nav-item">
+                  <i class="bi bi-list"></i>
+                  <span>Menu</span>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTONI AZIONI & PERSONALIZZAZIONE (RIGHT) -->
+      <div class="col-xl-3 col-lg-4" id="sidebarColumn">
+        
+        <!-- MAIN ACTIONS PANEL -->
+        <div class="d-flex flex-column gap-3" id="mainActionsPanel">
+          <button class="btn btn-action-blue w-100 d-flex align-items-center justify-content-center gap-2" id="btnFullscreen">
+            <i class="bi bi-arrows-fullscreen"></i> Visualizza a schermo intero
+          </button>
+          <button class="btn btn-action-purple w-100 d-flex align-items-center justify-content-center gap-2" id="btnCustomize">
+            <i class="bi bi-pencil-fill"></i> Personalizza
+          </button>
+          <button class="btn btn-action-green w-100 d-flex align-items-center justify-content-center gap-2" id="btnDownloadConfig">
+            <i class="bi bi-download"></i> Scarica config
+          </button>
+        </div>
+
+        <!-- CUSTOMIZE THEME PANEL (HIDDEN BY DEFAULT) -->
+        <div class="customize-panel" id="customizePanel" style="display: none;">
+          <div class="customize-header">
+            <button class="btn-back-actions" id="btnBackToActions" title="Indietro">
+              <i class="bi bi-arrow-left"></i>
+            </button>
+            <h5 class="m-0 fw-bold text-white">Personalizza Tema</h5>
+          </div>
+
+          <div class="customize-form">
+            <!-- COLORS SECTION -->
+            <div class="customize-section-title">Colori Principali</div>
+            
+            <div class="customize-field-group">
+              <label class="customize-label">Colore Primario</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-primary">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-primary" maxlength="7">
+              </div>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Colore Secondario</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-secondary">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-secondary" maxlength="7">
+              </div>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Colore Accento</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-accent">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-accent" maxlength="7">
+              </div>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Sfondo Principale (Main)</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-bg-main">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-bg-main" maxlength="7">
+              </div>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Sfondo Card</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-bg-card">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-bg-card" maxlength="7">
+              </div>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Sfondo Scuro (Dark)</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-bg-dark">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-bg-dark" maxlength="7">
+              </div>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Testo Principale</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-text-main">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-text-main" maxlength="7">
+              </div>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Testo Disattivato/Muto</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-text-muted">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-text-muted" maxlength="7">
+              </div>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Testo su Sfondo Scuro</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-text-on-dark">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-text-on-dark" maxlength="7">
+              </div>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Testo su Colore Primario</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-text-on-primary">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-text-on-primary" maxlength="7">
+              </div>
+            </div>
+
+            <!-- STRUCTURE SECTION -->
+            <div class="customize-section-title">Struttura & Stile</div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Raggio d'angolo (Radius)</label>
+              <input type="text" class="form-control hex-text-input" id="input-radius" placeholder="e.g. 16px">
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Spessore Bordo</label>
+              <input type="text" class="form-control hex-text-input" id="input-border-width" placeholder="e.g. 1px">
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Stile Bordo (border-style)</label>
+              <select class="form-select hex-text-input text-white" id="input-border-style" style="background-color: rgba(15, 23, 42, 0.9) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important;">
+                <option value="solid">Solid</option>
+                <option value="dashed">Dashed</option>
+                <option value="dotted">Dotted</option>
+                <option value="ridge">Ridge</option>
+                <option value="groove">Groove</option>
+                <option value="double">Double</option>
+                <option value="none">None</option>
+              </select>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Colore Bordo</label>
+              <div class="color-input-container">
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker-input" id="picker-border-color">
+                </div>
+                <input type="text" class="form-control hex-text-input" id="text-border-color" maxlength="7">
+              </div>
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Ombra (Shadow)</label>
+              <input type="text" class="form-control hex-text-input" id="input-shadow" placeholder="e.g. 0 4px 6px ...">
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Opacità Overlay Sfondo (bg-overlay)</label>
+              <input type="text" class="form-control hex-text-input" id="input-bg-overlay" placeholder="e.g. 0.75">
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">Pattern di Sfondo (bg-pattern)</label>
+              <input type="text" class="form-control hex-text-input" id="input-bg-pattern" placeholder="e.g. url(...)">
+            </div>
+
+            <!-- TYPOGRAPHY SECTION -->
+            <div class="customize-section-title">Tipografia</div>
+
+            <div class="customize-field-group autocomplete-container">
+              <label class="customize-label">Font Intestazioni (Heading)</label>
+              <input type="text" class="form-control hex-text-input" id="input-font-heading" autocomplete="off">
+              <div class="autocomplete-dropdown" id="dropdown-font-heading"></div>
+            </div>
+
+            <div class="customize-field-group autocomplete-container">
+              <label class="customize-label">Font Corpo (Body)</label>
+              <input type="text" class="form-control hex-text-input" id="input-font-body" autocomplete="off">
+              <div class="autocomplete-dropdown" id="dropdown-font-body"></div>
+            </div>
+
+            <!-- GENERAL CONTENT SECTION -->
+            <div class="customize-section-title">Contenuti Generali</div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">URL Immagine di Sfondo</label>
+              <input type="text" class="form-control hex-text-input" id="input-backgroundImage" placeholder="e.g. /img1.jpg">
+            </div>
+
+            <div class="customize-field-group">
+              <label class="customize-label">URL Icona/Logo Museo</label>
+              <input type="text" class="form-control hex-text-input" id="input-iconUrl" placeholder="e.g. /assets/icons/default-logo.svg">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Close Button for Fullscreen -->
+  <button class="fullscreen-close-btn" id="btnCloseFullscreen" title="Chiudi schermo intero">
+    <i class="bi bi-x-lg"></i>
+  </button>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/marketplace/js/config.js"></script>
+  <script src="/marketplace/js/personal-area.js"></script>
+  <script>
+    let currentConfig = null;
+    const mockupCard = document.getElementById("mockupCard");
+
+    // Standard list of clean fonts for autocomplete
+    const fontsList = [
+      "system-ui", "-apple-system", "sans-serif", "serif", "monospace", 
+      "Cinzel", "Montserrat", "Playfair Display", "Inter", "Roboto", 
+      "Lora", "Merriweather", "Helvetica", "Arial", "Georgia", "Courier New"
+    ];
+
+    // Load active config and apply
+    async function loadThemeConfig() {
+      try {
+        const response = await fetch("/api/config/default");
+        if (response.ok) {
+          currentConfig = await response.json();
+          applyConfigToPreview(currentConfig);
+        } else {
+          console.error("Incapace di caricare la configurazione di default dal server.");
+        }
+      } catch (err) {
+        console.error("Errore durante il recupero della configurazione:", err);
+      }
+    }
+
+    function applyConfigToPreview(config) {
+      if (!config || !config.theme) return;
+      const theme = config.theme;
+
+      // Map config.json fields to the mockup CSS variables
+      const cssVariables = {
+        '--primary': theme.primary,
+        '--secondary': theme.secondary,
+        '--accent': theme.accent,
+        '--bg-main': theme['bg-main'],
+        '--bg-overlay': theme['bg-overlay'],
+        '--bg-card': theme['bg-card'],
+        '--bg-dark': theme['bg-dark'],
+        '--text-main': theme['text-main'],
+        '--text-muted': theme['text-muted'],
+        '--text-on-dark': theme['text-on-dark'],
+        '--text-on-primary': theme['text-on-primary'],
+        '--radius': theme.radius,
+        '--border-width': theme['border-width'],
+        '--border-style': theme['border-style'],
+        '--border-color': theme['border-color'],
+        '--shadow': theme.shadow,
+        '--font-heading': theme['font-heading'],
+        '--font-body': theme['font-body'],
+        '--bg-pattern': theme['bg-pattern']
+      };
+
+      Object.entries(cssVariables).forEach(([key, value]) => {
+        if (value) {
+          mockupCard.style.setProperty(key, value);
+        }
+      });
+
+      // Update text/content
+      document.getElementById("mockupMuseumName").textContent = config.name || "Default Museum";
+      document.getElementById("mockupWelcomeMessage").textContent = config.welcomeMessage || "";
+      
+      if (config.backgroundImage) {
+        // Fallback or absolute checks
+        let bgUrl = config.backgroundImage;
+        if (bgUrl.startsWith('/')) {
+          bgUrl = bgUrl; 
+        }
+        document.getElementById("mockupBgImage").src = bgUrl;
+      }
+      
+      if (config.iconUrl) {
+        document.getElementById("mockupLogo").src = config.iconUrl;
+      }
+    }
+
+    // Populate all customization inputs on first customization enter
+    function populateFormInputs(theme) {
+      if (!theme) return;
+      
+      const fields = [
+        { key: 'primary', varName: '--primary' },
+        { key: 'secondary', varName: '--secondary' },
+        { key: 'accent', varName: '--accent' },
+        { key: 'bg-main', varName: '--bg-main' },
+        { key: 'bg-card', varName: '--bg-card' },
+        { key: 'bg-dark', varName: '--bg-dark' },
+        { key: 'text-main', varName: '--text-main' },
+        { key: 'text-muted', varName: '--text-muted' },
+        { key: 'text-on-dark', varName: '--text-on-dark' },
+        { key: 'text-on-primary', varName: '--text-on-primary' },
+        { key: 'border-color', varName: '--border-color' }
+      ];
+
+      fields.forEach(field => {
+        const picker = document.getElementById('picker-' + field.key);
+        const text = document.getElementById('text-' + field.key);
+        const val = theme[field.key];
+        
+        if (val) {
+          if (picker) picker.value = val.startsWith('#') ? val : '#000000';
+          if (text) text.value = val;
+        }
+      });
+
+      document.getElementById('input-radius').value = theme.radius || '';
+      document.getElementById('input-border-width').value = theme['border-width'] || '';
+      document.getElementById('input-border-style').value = theme['border-style'] || 'solid';
+      document.getElementById('input-shadow').value = theme.shadow || '';
+      document.getElementById('input-bg-overlay').value = theme['bg-overlay'] || '';
+      document.getElementById('input-bg-pattern').value = theme['bg-pattern'] || '';
+      document.getElementById('input-font-heading').value = theme['font-heading'] || '';
+      document.getElementById('input-font-body').value = theme['font-body'] || '';
+
+      // Populate general fields outside the theme sub-object
+      if (currentConfig) {
+        document.getElementById('input-backgroundImage').value = currentConfig.backgroundImage || '';
+        document.getElementById('input-iconUrl').value = currentConfig.iconUrl || '';
+      }
+    }
+
+    // Dynamic autocomplete logic for font inputs
+    function setupFontAutocomplete(inputId, dropdownId, themeVar) {
+      const input = document.getElementById(inputId);
+      const dropdown = document.getElementById(dropdownId);
+
+      function filterOptions(query) {
+        dropdown.innerHTML = "";
+        const filtered = fontsList.filter(f => f.toLowerCase().includes(query.toLowerCase()));
+        
+        if (filtered.length === 0) {
+          dropdown.style.display = "none";
+          return;
+        }
+
+        filtered.forEach(font => {
+          const item = document.createElement("div");
+          item.className = "autocomplete-item";
+          item.textContent = font;
+          item.style.fontFamily = font;
+          item.addEventListener("click", () => {
+            input.value = font;
+            dropdown.style.display = "none";
+            mockupCard.style.setProperty(themeVar, font);
+            if (currentConfig && currentConfig.theme) {
+              const themeKey = themeVar.replace('--', '');
+              currentConfig.theme[themeKey] = font;
+            }
+          });
+          dropdown.appendChild(item);
+        });
+        
+        dropdown.style.display = "block";
+      }
+
+      input.addEventListener("input", (e) => {
+        filterOptions(e.target.value);
+        mockupCard.style.setProperty(themeVar, e.target.value);
+        if (currentConfig && currentConfig.theme) {
+          const themeKey = themeVar.replace('--', '');
+          currentConfig.theme[themeKey] = e.target.value;
+        }
+      });
+
+      input.addEventListener("focus", () => {
+        filterOptions(input.value);
+      });
+
+      document.addEventListener("click", (e) => {
+        if (e.target !== input && e.target !== dropdown) {
+          dropdown.style.display = "none";
+        }
+      });
+    }
+
+    // Setup color pickers and inputs sync
+    function setupInputSync() {
+      const colorFields = [
+        { key: 'primary', varName: '--primary' },
+        { key: 'secondary', varName: '--secondary' },
+        { key: 'accent', varName: '--accent' },
+        { key: 'bg-main', varName: '--bg-main' },
+        { key: 'bg-card', varName: '--bg-card' },
+        { key: 'bg-dark', varName: '--bg-dark' },
+        { key: 'text-main', varName: '--text-main' },
+        { key: 'text-muted', varName: '--text-muted' },
+        { key: 'text-on-dark', varName: '--text-on-dark' },
+        { key: 'text-on-primary', varName: '--text-on-primary' },
+        { key: 'border-color', varName: '--border-color' }
+      ];
+
+      colorFields.forEach(field => {
+        const picker = document.getElementById('picker-' + field.key);
+        const text = document.getElementById('text-' + field.key);
+
+        if (picker && text) {
+          picker.addEventListener('input', (e) => {
+            const val = e.target.value;
+            text.value = val;
+            mockupCard.style.setProperty(field.varName, val);
+            if (currentConfig && currentConfig.theme) {
+              currentConfig.theme[field.key] = val;
+            }
+          });
+
+          text.addEventListener('input', (e) => {
+            let val = e.target.value;
+            if (!val.startsWith('#') && val.length > 0) {
+              val = '#' + val;
+            }
+            if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+              picker.value = val;
+              mockupCard.style.setProperty(field.varName, val);
+              if (currentConfig && currentConfig.theme) {
+                currentConfig.theme[field.key] = val;
+              }
+            }
+          });
+        }
+      });
+
+      // Sync structural styles
+      const structures = [
+        { id: 'input-radius', varName: '--radius', key: 'radius' },
+        { id: 'input-border-width', varName: '--border-width', key: 'border-width' },
+        { id: 'input-border-style', varName: '--border-style', key: 'border-style' },
+        { id: 'input-shadow', varName: '--shadow', key: 'shadow' },
+        { id: 'input-bg-overlay', varName: '--bg-overlay', key: 'bg-overlay' },
+        { id: 'input-bg-pattern', varName: '--bg-pattern', key: 'bg-pattern' }
+      ];
+
+      structures.forEach(struct => {
+        const input = document.getElementById(struct.id);
+        if (input) {
+          input.addEventListener('input', (e) => {
+            const val = e.target.value;
+            mockupCard.style.setProperty(struct.varName, val);
+            if (currentConfig && currentConfig.theme) {
+              currentConfig.theme[struct.key] = val;
+            }
+          });
+        }
+      });
+
+      // Sync fonts autocomplete dropdowns
+      setupFontAutocomplete('input-font-heading', 'dropdown-font-heading', '--font-heading');
+      setupFontAutocomplete('input-font-body', 'dropdown-font-body', '--font-body');
+
+      // Sync general fields (background image & icon logo)
+      const bgInput = document.getElementById('input-backgroundImage');
+      if (bgInput) {
+        bgInput.addEventListener('input', (e) => {
+          const val = e.target.value;
+          document.getElementById("mockupBgImage").src = val;
+          if (currentConfig) {
+            currentConfig.backgroundImage = val;
+          }
+        });
+      }
+
+      const iconInput = document.getElementById('input-iconUrl');
+      if (iconInput) {
+        iconInput.addEventListener('input', (e) => {
+          const val = e.target.value;
+          document.getElementById("mockupLogo").src = val;
+          if (currentConfig) {
+            currentConfig.iconUrl = val;
+          }
+        });
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      // 1. Fetch current logged user for marketplace header
+      await fetchCurrentUser();
+      
+      // 2. Load theme configuration and populate preview
+      await loadThemeConfig();
+
+      // 3. Fullscreen toggle logic
+      const btnFullscreen = document.getElementById("btnFullscreen");
+      const btnCloseFullscreen = document.getElementById("btnCloseFullscreen");
+
+      btnFullscreen.addEventListener("click", () => {
+        mockupCard.classList.add("fullscreen-active");
+        document.body.classList.add("in-fullscreen");
+      });
+
+      btnCloseFullscreen.addEventListener("click", () => {
+        mockupCard.classList.remove("fullscreen-active");
+        document.body.classList.remove("in-fullscreen");
+      });
+
+      // 4. Customize Panel Toggle
+      const btnCustomize = document.getElementById("btnCustomize");
+      const btnBackToActions = document.getElementById("btnBackToActions");
+      const mainActionsPanel = document.getElementById("mainActionsPanel");
+      const customizePanel = document.getElementById("customizePanel");
+
+      btnCustomize.addEventListener("click", () => {
+        mainActionsPanel.style.display = "none";
+        customizePanel.style.display = "flex";
+        if (currentConfig && currentConfig.theme) {
+          populateFormInputs(currentConfig.theme);
+        }
+      });
+
+      btnBackToActions.addEventListener("click", () => {
+        customizePanel.style.display = "none";
+        mainActionsPanel.style.display = "flex";
+      });
+
+      // 5. Initialize Live inputs synchronizers
+      setupInputSync();
+
+      // 6. Download Config Logic (Green button)
+      const btnDownloadConfig = document.getElementById("btnDownloadConfig");
+      if (btnDownloadConfig) {
+        btnDownloadConfig.addEventListener("click", () => {
+          if (!currentConfig) return;
+          const blob = new Blob([JSON.stringify(currentConfig, null, 2)], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "config.json";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
