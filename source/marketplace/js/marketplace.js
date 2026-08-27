@@ -22,6 +22,13 @@ let isFetchingWorks = false;
 let renderedWorksCount = 0;
 const WORK_RENDER_CHUNK = 12;
 
+// Variabili Paginazione Items (Bookshop)
+let currentItemsPage = 1;
+let totalItemsPages = 1;
+let isFetchingItems = false;
+let renderedItemsCount = 0;
+const ITEMS_RENDER_CHUNK = 12;
+
 // Unico nodo sentinella condiviso per qualsiasi scroll infinito
 const globalSentinel = document.createElement("div");
 globalSentinel.id = "global-infinite-sentinel";
@@ -500,6 +507,80 @@ async function fetchAndRenderWorks(museumId, isLoadMore = false) {
     updateWorksSentinelVisibility();
   }
 }
+async function fetchAndRenderItems(museumId, isLoadMore = false) {
+  if (isFetchingItems) return;
+  isFetchingItems = true;
+  
+  const subContainer = document.getElementById("museum-display-area");
+  if (!subContainer) return;
+
+  if (isLoadMore) globalSentinel.classList.remove("d-none");
+
+  const params = new URLSearchParams();
+  params.append("page", currentItemsPage);
+  params.append("limit", 12); 
+  
+  try {
+    const response = await fetch(`${API_BASE_URL}/museums/${museumId}/items?${params.toString()}`);
+    if (!response.ok) throw new Error("Errore caricamento articoli");
+    
+    const data = await response.json();
+    
+    // Retrocompatibilità: se il backend non è ancora paginato e restituisce un array puro, lo supportiamo
+    const itemsArray = Array.isArray(data) ? data : (data.items || []);
+    totalItemsPages = data.totalPages || 1; 
+
+    if (isLoadMore) {
+      currentItems = [...currentItems, ...itemsArray];
+      const nextChunk = currentItems.slice(renderedItemsCount, renderedItemsCount + ITEMS_RENDER_CHUNK);
+      renderedItemsCount += nextChunk.length;
+      renderItemsList(nextChunk, true);
+    } else {
+      currentItems = itemsArray;
+      renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK, currentItems.length);
+      const initialChunk = currentItems.slice(0, renderedItemsCount);
+      renderItemsList(initialChunk, false);
+    }
+  } catch (error) {
+    console.error(error);
+    if (!isLoadMore) subContainer.innerHTML = `<div class="col-12 text-center text-danger small py-3">Errore: ${error.message}</div>`;
+  } finally {
+    isFetchingItems = false;
+    updateItemsSentinelVisibility();
+  }
+}
+
+let itemsObserver = null;
+function setupItemsInfiniteScroll(museumId) {
+  const sentinel = document.getElementById("global-infinite-sentinel");
+  if (!sentinel) return;
+
+  if (itemsObserver) itemsObserver.disconnect();
+
+  itemsObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+       if (renderedItemsCount < currentItems.length) {
+          const nextChunk = currentItems.slice(renderedItemsCount, renderedItemsCount + ITEMS_RENDER_CHUNK);
+          renderedItemsCount += nextChunk.length;
+          renderItemsList(nextChunk, true);
+          updateItemsSentinelVisibility();
+       } else if (!isFetchingItems && currentItemsPage < totalItemsPages) {
+          currentItemsPage++;
+          fetchAndRenderItems(museumId, true);
+       }
+    }
+  }, { rootMargin: '100px' });
+
+  itemsObserver.observe(sentinel);
+}
+
+function updateItemsSentinelVisibility() {
+  if (renderedItemsCount < currentItems.length || currentItemsPage < totalItemsPages) {
+    globalSentinel.classList.remove("d-none");
+  } else {
+    globalSentinel.classList.add("d-none");
+  }
+}
 
 let worksObserver = null;
 function setupWorksInfiniteScroll(museumId) {
@@ -578,11 +659,19 @@ async function loadMuseumSubView(view, museumId) {
         renderedWorksCount = 0;
         await fetchAndRenderWorks(museumId, false);
       } else {
-        const endpoint = `${API_BASE_URL}/museums/${museumId}/items`;
-        const response = await fetch(endpoint);
-        if (!response.ok) throw new Error("Errore nel caricamento dei dati");
-        currentItems = await response.json();
-        renderItemsList(currentItems); 
+        // --- MAGIA DELLA CACHE: Se li abbiamo già scaricati per questo museo, usiamo la RAM ---
+        if (currentItems && currentItems.length > 0 && (currentItems[0].museumId === museumId || currentItems[0].museumId?._id === museumId)) {
+           currentItemsPage = 1;
+           renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK, currentItems.length);
+           const cachedChunk = currentItems.slice(0, renderedItemsCount);
+           renderItemsList(cachedChunk, false);
+           updateItemsSentinelVisibility();
+           return;
+        }
+        
+        currentItemsPage = 1;
+        renderedItemsCount = 0;
+        await fetchAndRenderItems(museumId, false);
       }
     }
   } catch (error) {
@@ -733,54 +822,42 @@ function renderWorksList(works, append = false) {
   }
 }
 
-function renderItemsList(items, museumInfo) {
+function renderItemsList(items, append = false) {
   const container = document.getElementById("museum-display-area");
-  
   if(!container) return;
-  container.innerHTML = "";
 
-  if (items.length === 0) {
+  if (!append) container.innerHTML = "";
+
+  if (items.length === 0 && !append) {
     container.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessun articolo presente nel bookshop.</div>';
     return;
   }
 
   const isCurator = currentUser && currentUser.role === "curator";
+  let htmlString = "";
 
   items.forEach((item) => {
-    // Puliamo il nome da eventuali apici singoli che romperebbero la stringa onclick di JavaScript
     const safeName = item.name.replace(/'/g, "\\'");
 
-    container.innerHTML += `
+    htmlString += `
       <div class="col-12 col-lg-6">
         <div class="card custom-card h-100">
           <div class="row g-0 h-100">
             <div class="col-4">
-              <img src="${item.image}" class="img-fluid rounded-start h-100"
-                style="object-fit: cover; min-height: 180px" alt="${item.name}"/>
+              <img src="${item.image}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 180px" alt="${item.name}"/>
             </div>
             <div class="col-8">
               <div class="card-body d-flex flex-column h-100 py-3 px-3">
                 <div class="d-flex justify-content-between align-items-start">
                   <h5 class="card-title mb-1 text-truncate">${item.name}</h5>
                 </div>
-                <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8">
-                  ${item.description}
-                </p>
+                <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8">${item.description}</p>
                 <div class="d-flex justify-content-between align-items-end mt-auto pt-2 border-top border-secondary border-opacity-25">
                   <div class="fw-bold text-white fs-5">€ ${item.price.toFixed(2)}</div>
-                  
                   <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-gradient rounded-pill px-3" 
-                      onclick="addToCart({ id: '${item._id}', type: 'item', name: '${safeName}', price: ${item.price}, image: '${item.image || ''}' })">
-                      <i class="bi bi-cart-plus me-1"></i> Compra
-                    </button>
-
-                    ${isCurator ? `
-                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="openEditModal('${item._id}')">
-                      <i class="bi bi-pencil"></i>
-                    </button>` : ""}
+                    <button class="btn btn-sm btn-gradient rounded-pill px-3" onclick="addToCart({ id: '${item._id}', type: 'item', name: '${safeName}', price: ${item.price}, image: '${item.image || ''}' })"><i class="bi bi-cart-plus me-1"></i> Compra</button>
+                    ${isCurator ? `<button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="openEditModal('${item._id}')"><i class="bi bi-pencil"></i></button>` : ""}
                   </div>
-
                 </div>
               </div>
             </div>
@@ -788,6 +865,20 @@ function renderItemsList(items, museumInfo) {
         </div>
       </div>`;
   });
+
+  if (append) {
+    container.insertAdjacentHTML('beforeend', htmlString);
+  } else {
+    container.innerHTML = htmlString;
+  }
+
+  // Sposta la sentinella universale per le opere d'arte/bookshop
+  container.appendChild(globalSentinel);
+
+  if (currentMuseumId) {
+    setupItemsInfiniteScroll(currentMuseumId);
+    updateItemsSentinelVisibility();
+  }
 }
 
 // 5. LOGICA EDITOR
@@ -833,8 +924,7 @@ async function saveItem() {
     if (index !== -1) currentItems[index] = { ...currentItems[index], ...updatedData };
 
     editModalInstance.hide();
-    const museum = cachedMuseums.find((m) => m._id === currentMuseumId);
-    renderItemsList(currentItems, museum);
+    renderItemsList(currentItems, false); // Aggiorna a false per forzare il re-render pulito
     alert("Modifica salvata con successo!");
   } catch (error) {
     console.error(error);

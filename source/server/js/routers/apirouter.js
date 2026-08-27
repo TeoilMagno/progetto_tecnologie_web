@@ -121,17 +121,16 @@ apiRouter.delete("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (re
 // ritorna prodotti (items) di un museo specifico
 apiRouter.get("/museums/:id/items", async (req, res) => {
   try {
-    // Mongo gestisce automaticamente la conversione da stringa a ObjectId
+    const { page = 1, limit = 12, search } = req.query;
     const museumId = req.params.id;
 
-    const items = await itemController.getItemByMuseum(museumId);
+    // Assicurati che itemController sia importato in cima al file!
+    const response = await itemController.getMuseumItems(museumId, page, limit, search);
 
-    if (!items) return res.status(404).json({ error: "Opere non trovate" });
-
-    res.json(items);
+    res.json(response);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Errore recupero opere" });
+    console.error("Errore nel recupero degli articoli:", error);
+    res.status(500).json({ error: "Errore nel recupero degli articoli" });
   }
 });
 
