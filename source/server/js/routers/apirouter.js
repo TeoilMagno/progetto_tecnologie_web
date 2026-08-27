@@ -61,11 +61,17 @@ const apiRouter = express.Router();
 // ritorna tutti i musei del db
 apiRouter.get("/museums", async (req, res) => {
   try {
-    const museums = await museumController.getAllMuseums();
+    const {
+      search, tags, freeEntry, maxPrice, services, day,
+      lat, lon, maxDistance, page = 1, limit = 20
+    } = req.query;
 
-    if (!museums) return res.status(404).json({ error: "Musei non trovati" });
+    const response = await museumController.getMuseums(search, tags, freeEntry, maxPrice, services, day,
+      lat, lon, maxDistance, page, limit);
 
-    res.json(museums);
+    if (!response || !response.museums) return res.status(404).json({ error: "Nessun museo trovato" });
+
+    res.json(response);
   } catch (error) {
     res.status(500).json({ error: "Errore recupero musei" });
   }

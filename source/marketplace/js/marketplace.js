@@ -7,6 +7,14 @@ let currentMuseumId = null;
 let editModalInstance = null;
 let currentView = 'works';
 
+// Variabili Paginazione Musei
+let currentMuseumPage = 1;
+let totalMuseumPages = 1;
+let isFetchingMuseums = false;
+let museumObserver = null;
+let renderedMuseumsCount = 0;
+const RENDER_CHUNK = 4; // Quanti musei disegnare per ogni colpo di scroll
+
 // 1. INIZIALIZZAZIONE
 document.addEventListener("DOMContentLoaded", async () => {
   const modalEl = document.getElementById("editItemModal");
@@ -46,54 +54,68 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+function setupInfiniteScroll() {
+  const sentinel = document.getElementById("museums-loading-sentinel");
+  if (!sentinel) return;
+
+  if (museumObserver) museumObserver.disconnect();
+
+  // IntersectionObserver rileva quando la sentinella entra nello schermo
+  museumObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+       // 1. Abbiamo musei in cache NON ancora disegnati? Disegniamo il prossimo blocco!
+       if (renderedMuseumsCount < cachedMuseums.length) {
+          const nextChunk = cachedMuseums.slice(renderedMuseumsCount, renderedMuseumsCount + RENDER_CHUNK);
+          renderedMuseumsCount += nextChunk.length;
+          renderMuseumsList(nextChunk, "content-area", true);
+
+          updateSentinelVisibility();
+       }
+       // 2. Cache esaurita, ma ci sono altre pagine sul server? Facciamo la fetch API!
+       else if (!isFetchingMuseums && currentMuseumPage < totalMuseumPages) {
+          currentMuseumPage++;
+          applyMuseumFilters(true); 
+       }
+    }
+  }, { rootMargin: '100px' });
+  museumObserver.observe(sentinel);
+}
+
+function updateSentinelVisibility() {
+  const sentinel = document.getElementById("museums-loading-sentinel");
+  if (!sentinel) return;
+  
+  // Mostra la sentinella SE c'è ancora qualcosa da disegnare (in cache) O da scaricare (dal server)
+  if (renderedMuseumsCount < cachedMuseums.length || currentMuseumPage < totalMuseumPages) {
+    sentinel.classList.remove("d-none");
+  } else {
+    sentinel.classList.add("d-none");
+  }
+}
+
 // 3. LOGICA API (FETCH)
 
 async function getMuseums(isHistoryPop = false) {
   const container = document.getElementById("content-area");
-
-  // 1. SE IL CONTAINER NON ESISTE (es. siamo nella pagina I Miei Musei), FERMATI.
   if (!container) return;
 
   const title = document.getElementById("page-title");
   const backBtn = document.getElementById("back-btn");
+  currentMuseumId = null;
 
-  currentMuseumId = null; // Resetta l'ID del museo aperto
+  if (backBtn) backBtn.classList.add("d-none");
+  if (title) title.innerHTML = "Musei Disponibili";
 
-  // 2. CONTROLLA CHE GLI ELEMENTI ESISTANO PRIMA DI MODIFICARLI
-  if (backBtn) {
-    backBtn.classList.add("d-none");
-  }
+  // Disegna i filtri nella sidebar (se non ci sono già)
+  populateFilters('museums');
+  
+  // Innesca la prima chiamata API tramite la logica dei filtri!
+  await applyMuseumFilters(false);
+  
+  setupInfiniteScroll(); // Attiva il guardiano dello scroll in fondo
 
-  if (title) {
-    title.innerHTML = "Musei Disponibili";
-  }
-
-  container.innerHTML = `
-    <div class="col-12 text-center mt-5">
-      <div class="spinner-border text-light" role="status"></div>
-      <p class="mt-2 text-secondary">Caricamento...</p>
-    </div>`;
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/museums`);
-    if (!response.ok) throw new Error("Errore server");
-    cachedMuseums = await response.json();
-
-    // Genera l'interfaccia HTML dei filtri per i musei nella sidebar
-    populateFilters('museums');
-
-    // Inizializza i dati in background
-    initializeFiltersData(cachedMuseums);
-
-    // Renderizza passandogli esplicitamente l'id (per evitare conflitti)
-    renderMuseumsList(cachedMuseums, "content-area");
-
-    if (!isHistoryPop) {
-      history.pushState({ view: 'home' }, "", "/");
-    }
-  } catch (error) {
-    console.error(error);
-    container.innerHTML = `<div class="alert alert-danger bg-transparent text-danger border-danger">Errore caricamento dati. Il server è attivo?</div>`;
+  if (!isHistoryPop) {
+    history.pushState({ view: 'home' }, "", "/");
   }
 }
 
@@ -121,32 +143,40 @@ async function getMuseumItems(museumId, isHistoryPop = false) {
 }
 
 // 4. LOGICA RENDER
-function renderMuseumsList(museums, containerId = "content-area") {
-  // Ora usa il parametro dinamico invece della stringa fissa
+function renderMuseumsList(museums, containerId = "content-area", append = false) {
   const container = document.getElementById(containerId);
-
-  // Se il contenitore non esiste, si ferma senza crashare
   if (!container) return;
 
-  container.innerHTML = "";
+  // 1. FONDAMENTALE: Svuotiamo il contenitore SOLO se non stiamo aggiungendo in coda!
+  if (!append) {
+    container.innerHTML = "";
+  }
 
   // Capiamo se siamo nel marketplace (dove c'è content-area) o in I Miei Musei
   const isMarketplace = containerId === "content-area";
 
+  // 2. Messaggio se non ci sono risultati (e non stiamo scrollando)
+  if (museums.length === 0 && !append) {
+    container.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessun museo trovato con questi filtri.</div>';
+    return;
+  }
+
+  // 3. Costruiamo tutto il nuovo blocco HTML in memoria (più veloce)
+  let htmlString = ""; 
+
   museums.forEach((museum) => {
-    if (!museum) return; // Controllo di sicurezza che avevamo aggiunto
+    if (!museum) return;
 
     const tags = museum.tags || [];
     const tagsHtml = tags
         .map((tag) => `<span class="badge badge-tag">${tag}</span>`)
         .join("");
 
-    // Se siamo nel marketplace apriamo la scheda dinamicamente, altrimenti redirigiamo alla home passandogli l'ID!
     const clickAction = isMarketplace 
         ? `getMuseumItems('${museum._id}')` 
         : `window.location.href='/?museumId=${museum._id}'`;
 
-    container.innerHTML += `
+    htmlString += `
       <div class="col">
         <div class="card h-100 custom-card cursor-pointer" onclick="${clickAction}" style="cursor: pointer;">
           <img src="${museum.image}" class="card-img-top" alt="${museum.name}" style="height: 200px; object-fit: cover; opacity: 0.9;">
@@ -160,6 +190,15 @@ function renderMuseumsList(museums, containerId = "content-area") {
         <a href="/museums/${museum._id}/upload-map/"><div class="explore">Upload Map</div></a>
       </div>`;
   });
+
+  // 4. Inseriamo il blocco costruito nel DOM
+  if (append) {
+    // Aggiunge i nuovi elementi DOPO quelli già esistenti (Vero scroll infinito)
+    container.insertAdjacentHTML('beforeend', htmlString);
+  } else {
+    // Sostituisce l'HTML (usato quando filtri o avvii l'app)
+    container.innerHTML = htmlString;
+  }
 }
 
 function renderMuseumDashboard(museumInfo) {

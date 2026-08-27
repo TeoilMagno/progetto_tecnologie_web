@@ -5,6 +5,11 @@
 let userCoords = null;
 let museumCoordsMap = {}; // Cache coordinate: { "museumId": {lat, lon} }
 
+let pristineMuseumsCache = [];
+let pristineCurrentPage = 1;
+let pristineTotalPages = 1;
+let isEntireDbInCache = false;
+
 // 1. Inizializza i dati in background appena i musei sono caricati
 async function initializeFiltersData(museums) {
   const tagsSet = new Set();
@@ -51,10 +56,29 @@ function renderStyleFilters(tags) {
   }).join('');
 }
 
-// 3. APPLICA I FILTRI (Resa Async per supportare la ricerca della città)
-async function applyMuseumFilters() {
+// 3. APPLICA I FILTRI (Dialoga col Server Backend)
+async function applyMuseumFilters(isLoadMore = false) {
   if (currentMuseumId !== null) return; 
+  if (isFetchingMuseums) return;
 
+  const container = document.getElementById("content-area");
+  const sentinel = document.getElementById("museums-loading-sentinel");
+
+  // Se è una nuova ricerca (non uno scroll), svuota tutto e torna a pagina 1
+  if (!isLoadMore) {
+    currentMuseumPage = 1;
+    renderedMuseumsCount = 0;
+    if (container) container.innerHTML = `
+      <div class="col-12 text-center mt-5">
+        <div class="spinner-border text-light" role="status"></div>
+        <p class="mt-2 text-secondary">Ricerca musei in corso...</p>
+      </div>`;
+  }
+
+  isFetchingMuseums = true;
+  if (sentinel && isLoadMore) sentinel.classList.remove("d-none"); // Mostra il caricamento a fondo pagina
+
+  // Raccogli i valori dalla UI
   const locationInput = document.getElementById("filter-location-input")?.value.trim();
   const maxDistance = parseInt(document.getElementById("distance-slider")?.value || 500);
   const styleCheckboxes = document.querySelectorAll('.style-checkbox:checked');
@@ -64,81 +88,146 @@ async function applyMuseumFilters() {
   const serviceCheckboxes = document.querySelectorAll('.service-checkbox:checked');
   const selectedServices = Array.from(serviceCheckboxes).map(cb => cb.value);
   const selectedDay = document.getElementById("filter-day-select")?.value;
+  const search = document.getElementById("museum-search-input")?.value.trim() || ""; 
 
-  // A. Calcola le coordinate se l'utente ha scritto una città manualmente
-  if (locationInput) {
-    const coords = await geocodeAddress(locationInput);
+  // 1. Verifichiamo se c'è almeno un filtro attivo
+  const hasFilters = search !== "" || selectedStyles.length > 0 || freeEntryOnly || maxPrice < 50 || selectedServices.length > 0 || selectedDay !== "" || userCoords !== null;
+
+  // 2. INTERCETTAZIONE: Se azzeriamo i filtri e abbiamo la cache piena...
+  if (!hasFilters && !isLoadMore && pristineMuseumsCache.length > 0) {
+    cachedMuseums = [...pristineMuseumsCache]; 
+    currentMuseumPage = pristineCurrentPage;   
+    totalMuseumPages = pristineTotalPages;
     
-    if (coords && coords.lat !== null && coords.lon !== null) {
-      userCoords = { lat: coords.lat, lon: coords.lon };
-    } else {
-      alert("Città non trovata o servizio non disponibile! Riprova con un altro nome.");
-      return; // Interrompiamo la ricerca
-    }
+    // Disegniamo solo il primo blocco (gli altri appariranno scorrendo)
+    renderedMuseumsCount = Math.min(RENDER_CHUNK, cachedMuseums.length);
+    const initialChunk = cachedMuseums.slice(0, renderedMuseumsCount);
+    
+    renderMuseumsList(initialChunk, "content-area", false);
+    isFetchingMuseums = false;
+    updateSentinelVisibility();
+    return; // Stop! Nessuna chiamata API necessaria!
   }
 
-  // B. Filtra l'elenco dei musei
-  let filtered = cachedMuseums.filter(museum => {
-    const museumPrice = museum.ticketPrice || 0;
-    if (freeEntryOnly && museumPrice > 0) {
-      return false;
-    }
-    
-    if (!freeEntryOnly && maxPrice < 50 && museumPrice > maxPrice) {
-      return false;
-    }
-
-    if (selectedStyles.length > 0) {
-      if (!museum.tags || !selectedStyles.some(style => museum.tags.includes(style))) return false;
-    }
-
-    // Filtro Distanza (Migliorato)
-    if (userCoords) { 
-      const mCoords = museumCoordsMap[museum._id];
-      if (mCoords) {
-        const km = getDistanceFromLatLonInKm(userCoords.lat, userCoords.lon, mCoords.lat, mCoords.lon);
-        
-        // Salviamo la distanza nel museo per usarla dopo per l'ordinamento
-        museum.tempDistance = km;
-
-        // Se lo slider NON è al massimo, filtriamo chi è troppo lontano
-        if (maxDistance < 500 && km > maxDistance) {
-          return false; 
-        }
-      } else {
-        // Se l'utente cerca per zona, tagliamo fuori i musei senza coordinate
-        return false; 
+  // 3. ADAPTIVE FETCHING: Se abbiamo scaricato l'intero DB in RAM e stiamo applicando filtri...
+  // Filtriamo localmente invece di disturbare il server! (Prestazioni da urlo)
+  if (isEntireDbInCache && hasFilters && !isLoadMore) {
+    let localFiltered = pristineMuseumsCache.filter(museum => {
+      const mPrice = museum.ticketPrice || 0;
+      if (freeEntryOnly && mPrice > 0) return false;
+      if (!freeEntryOnly && maxPrice < 50 && mPrice > maxPrice) return false;
+      if (selectedStyles.length > 0 && (!museum.tags || !selectedStyles.some(s => museum.tags.includes(s)))) return false;
+      if (selectedServices.length > 0 && (!museum.services || !selectedServices.every(s => museum.services.includes(s)))) return false;
+      if (selectedDay && (!museum.schedule || !museum.schedule.some(s => s.day === selectedDay))) return false;
+      
+      if (search) {
+        const searchLower = search.toLowerCase();
+        const nameMatch = museum.name?.toLowerCase().includes(searchLower);
+        const addressMatch = museum.address?.toLowerCase().includes(searchLower);
+        if (!nameMatch && !addressMatch) return false;
       }
-    }
-
-    if (selectedServices.length > 0) {
-      if (!museum.services || !selectedServices.every(service => museum.services.includes(service))) {
+      
+      if (userCoords && museumCoordsMap[museum._id]) {
+        const mCoords = museumCoordsMap[museum._id];
+        const km = getDistanceFromLatLonInKm(userCoords.lat, userCoords.lon, mCoords.lat, mCoords.lon);
+        museum.tempDistance = km;
+        if (maxDistance < 500 && km > maxDistance) return false;
+      } else if (userCoords) {
         return false;
       }
-    }
+      return true;
+    });
 
-    // Filtro Giorno di apertura (Aggiornato per il nuovo modello schedule)
-    if (selectedDay && selectedDay !== "") {
-      // Se il museo non ha lo schedule, è sicuramente chiuso
-      if (!museum.schedule || museum.schedule.length === 0) return false;
-      
-      // Cerchiamo se il giorno richiesto è presente nell'array.
-      // Dato che salviamo solo i giorni aperti, se NON lo trova, il museo è chiuso!
-      const dayConfig = museum.schedule.find(s => s.day === selectedDay);
-      if (!dayConfig) {
-        return false; 
-      }
-    }
+    if (userCoords) localFiltered.sort((a, b) => (a.tempDistance || 0) - (b.tempDistance || 0));
 
-    return true;
-  });
+    cachedMuseums = localFiltered;
+    currentMuseumPage = 1;
+    // Disegna solo il primo chunk dei risultati filtrati localmente
+    const renderLimit = typeof RENDER_CHUNK !== 'undefined' ? RENDER_CHUNK : 3;
+    renderedMuseumsCount = Math.min(renderLimit, cachedMuseums.length);
+    const initialChunk = cachedMuseums.slice(0, renderedMuseumsCount);
 
-  // C. MAGIA: Se abbiamo le coordinate, ordiniamo i risultati dal più vicino!
-  if (userCoords) {
-    filtered.sort((a, b) => (a.tempDistance || 0) - (b.tempDistance || 0));
+    renderMuseumsList(initialChunk, "content-area", false);
+    isFetchingMuseums = false;
+    updateSentinelVisibility();
+    return; // STOP! Salta completamente la fetch API!
   }
 
-  renderMuseumsList(filtered);
+  // Geolocalizzazione se richiesta testualmente
+  if (locationInput && !isLoadMore && !userCoords) {
+    const coords = await geocodeAddress(locationInput);
+    if (coords && coords.lat !== null) {
+      userCoords = { lat: coords.lat, lon: coords.lon };
+    } else {
+      alert("Città non trovata. Riprova con un altro nome.");
+      isFetchingMuseums = false;
+      return;
+    }
+  }
+
+  // COSTRUZIONE URL API
+  const params = new URLSearchParams();
+  params.append("page", currentMuseumPage);
+  params.append("limit", 4); // Carica a blocchi di 12 (perfetto per righe da 3 o 4)
+  
+  if (search) params.append("search", search);
+  if (selectedStyles.length > 0) params.append("tags", selectedStyles.join(","));
+  if (freeEntryOnly) params.append("freeEntry", "true");
+  else if (maxPrice < 50) params.append("maxPrice", maxPrice);
+  if (selectedServices.length > 0) params.append("services", selectedServices.join(","));
+  if (selectedDay) params.append("day", selectedDay);
+  
+  if (userCoords) {
+    params.append("lat", userCoords.lat);
+    params.append("lon", userCoords.lon);
+    params.append("maxDistance", maxDistance);
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/museums?${params.toString()}`);
+    if (!response.ok) throw new Error("Errore server");
+    const data = await response.json();
+
+    totalMuseumPages = data.totalPages;
+
+    if (isLoadMore) {
+      cachedMuseums = [...cachedMuseums, ...data.museums];
+      
+      if (!hasFilters) {
+        pristineMuseumsCache = [...cachedMuseums];
+        pristineCurrentPage = currentMuseumPage;
+        if (pristineMuseumsCache.length >= data.total) isEntireDbInCache = true;
+      }
+      
+      // Disegna il blocco appena arrivato dal server
+      renderedMuseumsCount += data.museums.length;
+      renderMuseumsList(data.museums, "content-area", true);
+    } else {
+      cachedMuseums = data.museums;
+      
+      if (!hasFilters) {
+        pristineMuseumsCache = [...cachedMuseums];
+        pristineCurrentPage = currentMuseumPage;
+        pristineTotalPages = totalMuseumPages;
+        if (pristineMuseumsCache.length >= data.total) isEntireDbInCache = true;
+      }
+      
+      if (currentMuseumPage === 1 && !search && selectedStyles.length === 0) {
+        initializeFiltersData(cachedMuseums);
+      }
+      
+      // Disegna solo il primo blocco!
+      renderedMuseumsCount = Math.min(RENDER_CHUNK, cachedMuseums.length);
+      const initialChunk = cachedMuseums.slice(0, renderedMuseumsCount);
+      renderMuseumsList(initialChunk, "content-area", false);
+    }
+  } catch (error) {
+    console.error(error);
+    if (!isLoadMore && container) container.innerHTML = `<div class="alert alert-danger bg-transparent text-danger border-danger w-100">Errore di rete.</div>`;
+  } finally {
+    isFetchingMuseums = false;
+    updateSentinelVisibility();
+  }
 }
 
 function resetFilters() {
@@ -185,7 +274,8 @@ function resetFilters() {
   const daySelect = document.getElementById("filter-day-select");
   if (daySelect) daySelect.value = "";
 
-  renderMuseumsList(cachedMuseums);
+  // Lancia di nuovo la ricerca API a vuoto invece di renderizzare dati vecchi!
+  applyMuseumFilters(false);
 }
 
 // Formula matematica (Haversine) per calcolare i km
