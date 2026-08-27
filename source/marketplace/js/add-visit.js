@@ -219,8 +219,8 @@ async function checkUserRole() {
     if (response.ok) {
       const user = await response.json();
 
-      // Sblocchiamo il pannello del quiz se è una guida (o teacher/admin)
-      if (user?.type === "guide" || user?.type === "teacher" || user?.role === "admin") {
+      // Sblocchiamo il pannello del quiz se è un teacher/admin
+      if (user?.type === "teacher" || user?.role === "admin") {
         const quizArea = document.getElementById("quiz-creation-area");
         quizArea?.classList.remove("d-none");
       }

@@ -436,7 +436,7 @@ export default function JoinSession() {
                 <Presentation size={28} />
               </div>
               <div className="flex-1 text-left">
-                <h3 className="text-white font-bold text-lg mb-0.5 group-hover:text-purple-400 transition-colors">Insegnante / Guida</h3>
+                <h3 className="text-white font-bold text-lg mb-0.5 group-hover:text-purple-400 transition-colors">Insegnante</h3>
                 <p className="text-slate-400 text-xs leading-normal">Crea una stanza virtuale, genera un codice e guida i tuoi studenti.</p>
               </div>
             </div>
