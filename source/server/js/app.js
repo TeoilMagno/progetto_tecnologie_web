@@ -80,7 +80,11 @@ app.use('/api', apiRouter);
 
 // ─── Front-end ─────────────────────────────────────────────────────────────
 const sortablePath = path.join(__dirname, '..', '..', '..', 'node_modules', 'sortablejs');
+const tomSelectPath = path.join(__dirname, '..', '..', '..', 'node_modules', 'tom-select', 'dist');
+const iMaskPath = path.join(__dirname, '..', '..', '..', 'node_modules', 'imask', 'dist');
 app.use('/vendor/sortablejs', express.static(sortablePath));
+app.use('/vendor/tom-select', express.static(tomSelectPath));
+app.use('/vendor/imask', express.static(iMaskPath));
 
 // --- 4. LOGICA DI SOCKET.IO PER LA JOINT SESSION ---
 const activeSessions = {};
