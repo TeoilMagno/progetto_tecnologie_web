@@ -29,6 +29,57 @@ exports.uploadAllWorks = async (data) => {
   }
 };
 
+exports.getMuseumWorks = async (museumIdStr, search, author, technique, workstyle, page = 1, limit = 12, fetchMetadata) => {
+  try {
+    const mongoose = require("mongoose");
+    const museumObjectId = new mongoose.Types.ObjectId(museumIdStr);
+    
+    const query = { museumId: museumObjectId };
+
+    // Costruzione dinamica dei filtri
+    if (search) {
+      query.name = { $regex: search, $options: 'i' };
+    }
+    if (author) {
+      query.authorName = { $in: author.split(',') };
+    }
+    if (technique) {
+      query.technique = { $in: technique.split(',') };
+    }
+    if (workstyle) {
+      query.styleName = { $in: workstyle.split(',') };
+    }
+
+    // Paginazione e query con Tie-Breaker per lo scroll infinito
+    const Work = require("../models/works"); // Assicurati che il percorso sia corretto
+    const total = await Work.countDocuments(query);
+    const works = await Work.find(query)
+                            .sort({ createdAt: -1, _id: 1 }) // Tie-Breaker
+                            .skip((page - 1) * limit)
+                            .limit(Number(limit));
+
+    // Estrazione dei metadati unici per popolare i filtri nella sidebar
+    let metadata = null;
+    if (fetchMetadata === 'true') {
+       const uniqueAuthors = await Work.distinct("authorName", { museumId: museumObjectId, authorName: { $ne: null } });
+       const uniqueTechniques = await Work.distinct("technique", { museumId: museumObjectId, technique: { $ne: null } });
+       const uniqueStyles = await Work.distinct("styleName", { museumId: museumObjectId, styleName: { $ne: null } });
+       
+       metadata = { uniqueAuthors, uniqueTechniques, uniqueStyles };
+    }
+
+    return {
+      works,
+      total,
+      page: Number(page),
+      totalPages: Math.ceil(total / limit),
+      metadata
+    };
+  } catch (err) {
+    throw err;
+  }
+};
+
 exports.getWorksById = async (workIds) => {
   return await Work.find({ _id: { $in: workIds } });
 }

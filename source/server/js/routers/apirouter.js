@@ -310,16 +310,18 @@ apiRouter.delete("/sections/:sectionId/rooms/:roomId", [auth.isCurator, auth.isM
 // ottiene le opere di un museo
 apiRouter.get("/museums/:id/works", async (req, res) => {
   try {
-    const museumIdStr = req.params.id;
+    const { search, author, technique, workstyle, page = 1, limit = 12, fetchMetadata } = req.query;
+    const museumId = req.params.id;
 
-    let museumObjectId;
-    museumObjectId = new mongoose.Types.ObjectId(museumIdStr);
+    const response = await workController.getMuseumWorks(
+      museumId, search, author, technique, workstyle, page, limit, fetchMetadata
+    );
 
-    const directWorks = await Work.find({ museumId: museumObjectId });
+    if (!response || !response.works) {
+       return res.status(404).json({ error: "Nessuna opera trovata" });
+    }
 
-    const allWorks = Array.from(directWorks.values());
-
-    res.json(allWorks);
+    res.json(response);
   } catch (error) {
     console.error("Errore nel recupero delle opere:", error);
     res.status(500).json({ error: "Errore nel recupero delle opere" });

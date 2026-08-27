@@ -10,6 +10,18 @@ let pristineCurrentPage = 1;
 let pristineTotalPages = 1;
 let isEntireDbInCache = false;
 
+let pristineWorksCache = [];
+let pristineWorkPage = 1;
+let pristineTotalWorkPages = 1;
+let isEntireWorksDbInCache = false;
+
+function initializeWorkFiltersDataFromApi(metadata) {
+  if (!metadata) return;
+  renderDynamicCheckboxes("filter-author-list", metadata.uniqueAuthors.sort(), "author");
+  renderDynamicCheckboxes("filter-technique-list", metadata.uniqueTechniques.sort(), "technique");
+  renderDynamicCheckboxes("filter-workstyle-list", metadata.uniqueStyles.sort(), "workstyle");
+}
+
 // 1. Inizializza i dati in background appena i musei sono caricati
 async function initializeFiltersData(museums) {
   const tagsSet = new Set();
@@ -168,7 +180,7 @@ async function applyMuseumFilters(isLoadMore = false) {
   // COSTRUZIONE URL API
   const params = new URLSearchParams();
   params.append("page", currentMuseumPage);
-  params.append("limit", 4); // Carica a blocchi di 12 (perfetto per righe da 3 o 4)
+  params.append("limit", 16); // Carica a blocchi di 16 (perfetto per righe da 3 o 4)
   
   if (search) params.append("search", search);
   if (selectedStyles.length > 0) params.append("tags", selectedStyles.join(","));
@@ -488,39 +500,62 @@ function renderDynamicCheckboxes(containerId, items, prefix) {
 }
 
 // 2. Applica i filtri controllando le checkbox spuntate
-function applyWorkFilters() {
+async function applyWorkFilters() {
   const authorCbs = Array.from(document.querySelectorAll('.author-cb:checked')).map(cb => cb.value);
   const techniqueCbs = Array.from(document.querySelectorAll('.technique-cb:checked')).map(cb => cb.value);
   const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
+  const hasFilters = authorCbs.length > 0 || techniqueCbs.length > 0 || styleCbs.length > 0;
 
-  let filtered = currentWorks.filter(work => {
-    // USIAMO LA STESSA IDENTICA ESTRAZIONE!
-    const authorName = work.authorName || work.author?.name || (typeof work.author === 'string' && work.author.length !== 24 ? work.author : "");
-    const styleName = work.styleName || work.style?.name || (typeof work.style === 'string' && work.style.length !== 24 ? work.style : "");
-    const techniqueName = work.technique || "";
+  // 1. CACHE PULITA: Se azzeriamo i filtri e abbiamo la cache
+  if (!hasFilters && pristineWorksCache.length > 0) {
+    currentWorks = [...pristineWorksCache];
+    currentWorkPage = pristineWorkPage;
+    totalWorkPages = pristineTotalWorkPages;
 
-    if (authorCbs.length > 0 && !authorCbs.includes(authorName)) return false;
-    if (techniqueCbs.length > 0 && !techniqueCbs.includes(techniqueName)) return false;
-    if (styleCbs.length > 0 && !styleCbs.includes(styleName)) return false;
+    renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
+    const initialChunk = currentWorks.slice(0, renderedWorksCount);
+    renderWorksList(initialChunk, false);
+    updateWorksSentinelVisibility();
+    return;
+  }
 
-    return true;
-  });
+  // 2. ADAPTIVE FETCHING: Se tutto il DB delle opere è in cache, filtriamo localmente a zero latenza!
+  if (isEntireWorksDbInCache && hasFilters) {
+    let filtered = pristineWorksCache.filter(work => {
+      const authorName = work.authorName || "";
+      const styleName = work.styleName || "";
+      const techniqueName = work.technique || "";
 
-  renderWorksList(filtered);
+      if (authorCbs.length > 0 && !authorCbs.includes(authorName)) return false;
+      if (techniqueCbs.length > 0 && !techniqueCbs.includes(techniqueName)) return false;
+      if (styleCbs.length > 0 && !styleCbs.includes(styleName)) return false;
+      return true;
+    });
+
+    currentWorks = filtered;
+    renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
+    const initialChunk = currentWorks.slice(0, renderedWorksCount);
+    renderWorksList(initialChunk, false);
+    updateWorksSentinelVisibility();
+    return;
+  }
+
+  // 3. SEVER-SIDE FILTERING: Altrimenti chiediamo al server con i parametri di filtro
+  currentWorkPage = 1;
+  renderedWorksCount = 0;
+  await fetchAndRenderWorks(currentMuseumId, false);
 }
 
 // 3. Resetta filtri e input di ricerca
 function resetWorkFilters() {
   ['author', 'technique', 'workstyle'].forEach(prefix => {
-    // Svuota ricerca
     const searchInput = document.getElementById(`filter-${prefix}-search`);
     if (searchInput) searchInput.value = "";
-    // Deseleziona checkbox e mostra tutti
     document.querySelectorAll(`.${prefix}-cb`).forEach(cb => cb.checked = false);
     document.querySelectorAll(`.${prefix}-item`).forEach(item => item.style.display = "block");
   });
 
-  renderWorksList(currentWorks);
+  applyWorkFilters();
 }
 
 // 4. Associa le funzioni di ricerca (fuzzy search) ai 3 campi di input

@@ -13,7 +13,23 @@ let totalMuseumPages = 1;
 let isFetchingMuseums = false;
 let museumObserver = null;
 let renderedMuseumsCount = 0;
-const RENDER_CHUNK = 4; // Quanti musei disegnare per ogni colpo di scroll
+const RENDER_CHUNK = 16; // Quanti musei disegnare per ogni colpo di scroll
+
+// Variabili Paginazione Opere
+let currentWorkPage = 1;
+let totalWorkPages = 1;
+let isFetchingWorks = false;
+let renderedWorksCount = 0;
+const WORK_RENDER_CHUNK = 12;
+
+// Unico nodo sentinella condiviso per qualsiasi scroll infinito
+const globalSentinel = document.createElement("div");
+globalSentinel.id = "global-infinite-sentinel";
+globalSentinel.className = "col-12 text-center py-4 d-none w-100";
+globalSentinel.innerHTML = `
+  <div class="spinner-border text-light spinner-border-sm" role="status"></div>
+  <p class="text-secondary small mt-1">Caricamento altri elementi...</p>
+`;
 
 // 1. INIZIALIZZAZIONE
 document.addEventListener("DOMContentLoaded", async () => {
@@ -55,24 +71,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 function setupInfiniteScroll() {
-  const sentinel = document.getElementById("museums-loading-sentinel");
+  const sentinel = document.getElementById("global-infinite-sentinel");
   if (!sentinel) return;
 
   if (museumObserver) museumObserver.disconnect();
 
-  // IntersectionObserver rileva quando la sentinella entra nello schermo
   museumObserver = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
-       // 1. Abbiamo musei in cache NON ancora disegnati? Disegniamo il prossimo blocco!
        if (renderedMuseumsCount < cachedMuseums.length) {
           const nextChunk = cachedMuseums.slice(renderedMuseumsCount, renderedMuseumsCount + RENDER_CHUNK);
           renderedMuseumsCount += nextChunk.length;
           renderMuseumsList(nextChunk, "content-area", true);
-
           updateSentinelVisibility();
-       }
-       // 2. Cache esaurita, ma ci sono altre pagine sul server? Facciamo la fetch API!
-       else if (!isFetchingMuseums && currentMuseumPage < totalMuseumPages) {
+       } else if (!isFetchingMuseums && currentMuseumPage < totalMuseumPages) {
           currentMuseumPage++;
           applyMuseumFilters(true); 
        }
@@ -82,7 +93,7 @@ function setupInfiniteScroll() {
 }
 
 function updateSentinelVisibility() {
-  const sentinel = document.getElementById("museums-loading-sentinel");
+  const sentinel = document.getElementById("global-infinite-sentinel");
   if (!sentinel) return;
   
   // Mostra la sentinella SE c'è ancora qualcosa da disegnare (in cache) O da scaricare (dal server)
@@ -98,6 +109,8 @@ function updateSentinelVisibility() {
 async function getMuseums(isHistoryPop = false) {
   const container = document.getElementById("content-area");
   if (!container) return;
+
+  container.appendChild(globalSentinel);
 
   const title = document.getElementById("page-title");
   const backBtn = document.getElementById("back-btn");
@@ -122,6 +135,11 @@ async function getMuseums(isHistoryPop = false) {
 async function getMuseumItems(museumId, isHistoryPop = false) {
   const container = document.getElementById("content-area");
   currentMuseumId = museumId;
+
+  // Stacca la sentinella dai musei così non interferisce
+  if (globalSentinel.parentNode) {
+    globalSentinel.parentNode.removeChild(globalSentinel);
+  }
 
   container.innerHTML = `
     <div class="col-12 text-center mt-5">
@@ -191,13 +209,15 @@ function renderMuseumsList(museums, containerId = "content-area", append = false
       </div>`;
   });
 
-  // 4. Inseriamo il blocco costruito nel DOM
   if (append) {
-    // Aggiunge i nuovi elementi DOPO quelli già esistenti (Vero scroll infinito)
     container.insertAdjacentHTML('beforeend', htmlString);
   } else {
-    // Sostituisce l'HTML (usato quando filtri o avvii l'app)
     container.innerHTML = htmlString;
+  }
+  
+  // Riassicuriamoci che la sentinella resti in fondo al container dei musei
+  if (isMarketplace) {
+    container.appendChild(globalSentinel);
   }
 }
 
@@ -405,10 +425,123 @@ function switchMuseumView(view, museumId) {
   loadMuseumSubView(view, museumId); //
 }
 
+async function fetchAndRenderWorks(museumId, isLoadMore = false) {
+  if (isFetchingWorks) return;
+  isFetchingWorks = true;
+  
+  const subContainer = document.getElementById("museum-display-area");
+  if (!subContainer) return;
+
+  if (isLoadMore) {
+    globalSentinel.classList.remove("d-none");
+  }
+
+  // Raccogli filtri attivi se ci sono
+  const search = document.getElementById("filter-author-search")?.value.trim() || ""; // o input dedicati
+  const authorCbs = Array.from(document.querySelectorAll('.author-cb:checked')).map(cb => cb.value);
+  const techniqueCbs = Array.from(document.querySelectorAll('.technique-cb:checked')).map(cb => cb.value);
+  const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
+
+  const params = new URLSearchParams();
+  params.append("page", currentWorkPage);
+  params.append("limit", 12); // Scarica blocchi da 12 dal server
+  if (!isLoadMore) params.append("fetchMetadata", "true"); // Chiede i dati per la sidebar solo la prima volta
+  
+  if (authorCbs.length > 0) params.append("author", authorCbs.join(","));
+  if (techniqueCbs.length > 0) params.append("technique", techniqueCbs.join(","));
+  if (styleCbs.length > 0) params.append("workstyle", styleCbs.join(","));
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/museums/${museumId}/works?${params.toString()}`);
+    if (!response.ok) throw new Error("Errore caricamento opere");
+    const data = await response.json();
+
+    totalWorkPages = data.totalPages;
+
+    if (isLoadMore) {
+      currentWorks = [...currentWorks, ...data.works];
+      
+      // Salva nella cache pulita delle opere se non ci sono filtri
+      if (authorCbs.length === 0 && techniqueCbs.length === 0 && styleCbs.length === 0) {
+        pristineWorksCache = [...currentWorks];
+        pristineWorkPage = currentWorkPage;
+        if (pristineWorksCache.length >= data.total) isEntireWorksDbInCache = true;
+      }
+
+      const nextChunk = currentWorks.slice(renderedWorksCount, renderedWorksCount + WORK_RENDER_CHUNK);
+      renderedWorksCount += nextChunk.length;
+      renderWorksList(nextChunk, true);
+    } else {
+      currentWorks = data.works;
+      
+      if (authorCbs.length === 0 && techniqueCbs.length === 0 && styleCbs.length === 0) {
+        pristineWorksCache = [...currentWorks];
+        pristineWorkPage = currentWorkPage;
+        pristineTotalWorkPages = totalWorkPages;
+        if (pristineWorksCache.length >= data.total) isEntireWorksDbInCache = true;
+      }
+
+      // Se il server ha restituito i metadati per la sidebar, inizializziamoli!
+      if (data.metadata && typeof initializeWorkFiltersDataFromApi === 'function') {
+        initializeWorkFiltersDataFromApi(data.metadata);
+      }
+
+      renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
+      const initialChunk = currentWorks.slice(0, renderedWorksCount);
+      renderWorksList(initialChunk, false);
+    }
+
+    setupWorksInfiniteScroll(museumId);
+  } catch (error) {
+    console.error(error);
+    if (!isLoadMore) subContainer.innerHTML = `<div class="col-12 text-center text-danger small py-3">Errore: ${error.message}</div>`;
+  } finally {
+    isFetchingWorks = false;
+    updateWorksSentinelVisibility();
+  }
+}
+
+let worksObserver = null;
+function setupWorksInfiniteScroll(museumId) {
+  const sentinel = document.getElementById("global-infinite-sentinel");
+  if (!sentinel) return;
+
+  if (worksObserver) worksObserver.disconnect();
+
+  worksObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+       if (renderedWorksCount < currentWorks.length) {
+          const nextChunk = currentWorks.slice(renderedWorksCount, renderedWorksCount + WORK_RENDER_CHUNK);
+          renderedWorksCount += nextChunk.length;
+          renderWorksList(nextChunk, true);
+          updateWorksSentinelVisibility();
+       } else if (!isFetchingWorks && currentWorkPage < totalWorkPages) {
+          currentWorkPage++;
+          fetchAndRenderWorks(museumId, true);
+       }
+    }
+  }, { rootMargin: '100px' });
+
+  worksObserver.observe(sentinel);
+}
+
+function updateWorksSentinelVisibility() {
+  if (renderedWorksCount < currentWorks.length || currentWorkPage < totalWorkPages) {
+    globalSentinel.classList.remove("d-none");
+  } else {
+    globalSentinel.classList.add("d-none");
+  }
+}
+
 // Si occupa di fare la fetch corretta in base al tab selezionato
 async function loadMuseumSubView(view, museumId) {
   const subContainer = document.getElementById("museum-display-area");
   if (!subContainer) return;
+
+  // Stacchiamo temporaneamente la sentinella mentre puliamo il subContainer
+  if (globalSentinel.parentNode) {
+    globalSentinel.parentNode.removeChild(globalSentinel);
+  }
 
   subContainer.innerHTML = `
     <div class="col-12 text-center py-4">
@@ -427,22 +560,29 @@ async function loadMuseumSubView(view, museumId) {
       currentVisits = museumVisits;
       renderVisitsListForMuseum(currentVisits);
     } else {
-      // Scegliamo l'endpoint corretto (opere o articoli di vendita)
-      const endpoint = view === 'works' 
-        ? `${API_BASE_URL}/museums/${museumId}/works` 
-        : `${API_BASE_URL}/museums/${museumId}/items`;
-
-      const response = await fetch(endpoint);
-      if (!response.ok) throw new Error("Errore nel caricamento dei dati");
-      const data = await response.json();
-
+      // Scegliamo l'endpoint corretto
       if (view === 'works') {
-        currentWorks = data;
-        initializeWorkFiltersData(currentWorks);
-        renderWorksList(currentWorks); // Rendering per le Opere
+        // --- MAGIA DELLA CACHE DEI TAB ---
+        // Se abbiamo già scaricato le opere per questo museo e l'array non è vuoto, usiamole al volo!
+        if (currentWorks && currentWorks.length > 0 && currentWorks[0].museumId === museumId) {
+           currentWorkPage = 1;
+           renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
+           const cachedChunk = currentWorks.slice(0, renderedWorksCount);
+           renderWorksList(cachedChunk, false);
+           updateWorksSentinelVisibility();
+           return; // STOP! Nessun fetch, visualizzazione istantanea!
+        }
+        
+        // Altrimenti procedi col fetch normale
+        currentWorkPage = 1;
+        renderedWorksCount = 0;
+        await fetchAndRenderWorks(museumId, false);
       } else {
-        currentItems = data; // Conserviamo gli articoli per l'editor
-        renderItemsList(currentItems); // Il tuo vecchio rendering per gli Articoli (in vendita)
+        const endpoint = `${API_BASE_URL}/museums/${museumId}/items`;
+        const response = await fetch(endpoint);
+        if (!response.ok) throw new Error("Errore nel caricamento dei dati");
+        currentItems = await response.json();
+        renderItemsList(currentItems); 
       }
     }
   } catch (error) {
@@ -526,24 +666,24 @@ function renderVisitsListForMuseum(visits) {
   });
 }
 
-function renderWorksList(works) {
+function renderWorksList(works, append = false) {
   const subContainer = document.getElementById("museum-display-area");
   if (!subContainer) return;
 
-  subContainer.innerHTML = "";
+  if (!append) {
+    subContainer.innerHTML = "";
+  } 
 
-  if (works.length === 0) {
+  if (works.length === 0 && !append) {
     subContainer.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessuna opera d\'arte esposta in questo museo.</div>';
     return;
   }
 
+  let htmlString = "";
   works.forEach((work) => {
-    // Estraiamo la prima descrizione disponibile nell'array, se presente
-    // TODO: da cambiare quando i works saranno uniformati
-    const primaryDesc = work.description.medium ? work.description.medium.short
-      : work.description[0].description
+    const primaryDesc = work.description?.medium?.short || work.description?.[0]?.description || work.description || "";
 
-    subContainer.innerHTML += `
+    htmlString += `
       <div class="col-12 col-lg-6">
         <div class="card custom-card h-100">
           <div class="row g-0 h-100">
@@ -556,8 +696,8 @@ function renderWorksList(works) {
                 <h5 class="card-title mb-1 text-truncate text-info">${work.name}</h5>
                 
                 <p class="small text-secondary mb-2">
-                  <i class="bi bi-person-fill me-1"></i> ${work.authorName} <br>
-                  <i class="bi bi-calendar3 me-1"></i> ${work.year} &bull; ${work.styleName}
+                  <i class="bi bi-person-fill me-1"></i> ${work.authorName || 'Autore ignoto'} <br>
+                  <i class="bi bi-calendar3 me-1"></i> ${work.year || ''} &bull; ${work.styleName || ''}
                 </p>
                 
                 <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8">
@@ -569,6 +709,28 @@ function renderWorksList(works) {
         </div>
       </div>`;
   });
+
+  // Aggiungiamo la sentinella direttamente in fondo alla stringa HTML delle opere
+  htmlString += `
+    <div id="works-loading-sentinel" class="col-12 text-center py-4 d-none w-100">
+      <div class="spinner-border text-light spinner-border-sm" role="status"></div>
+      <p class="text-secondary small mt-1">Caricamento altre opere...</p>
+    </div>
+  `;
+
+  if (append) {
+    subContainer.insertAdjacentHTML('beforeend', htmlString);
+  } else {
+    subContainer.innerHTML = htmlString;
+  }
+
+  // Sposta magicamente la sentinella universale in fondo al contenitore delle opere
+  subContainer.appendChild(globalSentinel);
+
+  if (currentMuseumId) {
+    setupWorksInfiniteScroll(currentMuseumId);
+    updateWorksSentinelVisibility();
+  }
 }
 
 function renderItemsList(items, museumInfo) {
