@@ -45,6 +45,9 @@ async function getMyVisits() {
 
     // 3. Ordina usando il nuovo campo temporaneo
     cachedVisits.sort((a, b) => b.sortDate - a.sortDate);
+    
+    window.populateFilters('my-visits');
+
     renderVisitsList(cachedVisits, "managed-visits-area");
   } catch (error) {
     console.error(error);

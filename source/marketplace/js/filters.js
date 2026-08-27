@@ -198,7 +198,6 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 }
 
 // Collega gli eventi 
-// Collega gli eventi 
 function attachMuseumFilterEvents() {
   // 3. Ricerca interna tra le checkbox degli stili
   const styleSearch = document.getElementById("filter-style-search");
@@ -562,4 +561,187 @@ function attachVisitFilterEvents() {
       }
     });
   }
+}
+
+// ==========================================
+// MODULO FILTRI LE MIE VISITE (My Visits)
+// ==========================================
+// ATTENZIONE: questo modulo presuppone che getMyVisits() (in visits-ui.js)
+// salvi l'elenco grezzo delle visite in una variabile globale chiamata
+// "allMyVisits" e che esista una funzione "renderManagedVisitsList(list)"
+// che disegna le card dentro #managed-visits-area. Se in visits-ui.js i nomi
+// sono diversi, sostituiscili qui sotto (sono usati in 3 punti in tutto).
+
+let filterMyTypeInstance = null;
+let filterMyDateDirInstance = null;
+let filterMySearchInstance = null;
+
+function attachMyVisitsFilterEvents() {
+  // Inizializza IMask per la data (DD/MM/YYYY)
+  const dateInput = document.getElementById("filter-my-date");
+  if (dateInput) {
+    const dateMask = IMask(dateInput, {
+      mask: Date,
+      pattern: 'd/`m/`Y',
+      lazy: false,
+      blocks: {
+        d: { mask: IMask.MaskedRange, from: 1, to: 31, maxLength: 2, placeholderChar: 'd' },
+        m: { mask: IMask.MaskedRange, from: 1, to: 12, maxLength: 2, placeholderChar: 'm' },
+        Y: { mask: IMask.MaskedRange, from: 1900, to: 9999, placeholderChar: 'y' }
+      },
+      format: date => {
+        let day = date.getDate().toString().padStart(2, '0');
+        let month = (date.getMonth() + 1).toString().padStart(2, '0');
+        let year = date.getFullYear();
+        return [day, month, year].join('/');
+      },
+      parse: str => {
+        const parts = str.split('/');
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+      }
+    });
+
+    // Filtra solo quando l'utente ha scritto l'intera data o ha svuotato il campo
+    dateMask.on('complete', applyMyVisitsFilters);
+    dateMask.on('accept', () => {
+      if (dateMask.value === '') applyMyVisitsFilters();
+    });
+  }
+
+  // Inizializza Tom Select
+  if (document.getElementById("filter-my-type")) {
+    filterMyTypeInstance = new TomSelect("#filter-my-type", { create: false, controlInput: null, sortField: false, onChange: applyMyVisitsFilters });
+  }
+  if (document.getElementById("filter-my-date-dir")) {
+    filterMyDateDirInstance = new TomSelect("#filter-my-date-dir", { create: false, controlInput: null, sortField: false, onChange: applyMyVisitsFilters });
+  }
+
+  // Gestione etichetta interruttore ordinamento
+  const sortToggle = document.getElementById("filter-my-sort-toggle");
+  const sortLabel = document.getElementById("sort-toggle-label");
+  if (sortToggle && sortLabel) {
+    sortToggle.addEventListener("change", (e) => {
+      sortLabel.innerText = e.target.checked ? "Più recenti prima" : "Meno recenti prima";
+      applyMyVisitsFilters();
+    });
+  }
+
+  // Inizializza Tom Select per la ricerca testuale
+  if (document.getElementById("filter-my-search")) {
+    // Estrae tutti i titoli e musei dalle visite caricate
+    const optionsSet = new Set();
+    cachedVisits.forEach(v => {
+      if (v.title) optionsSet.add(v.title);
+      if (v.museumId && v.museumId.name) optionsSet.add(v.museumId.name);
+    });
+    
+    filterMySearchInstance = new TomSelect("#filter-my-search", {
+      options: Array.from(optionsSet).map(opt => ({ value: opt, text: opt })),
+      create: true, // Permette di digitare testo libero non in lista
+      createOnBlur: true,
+      sortField: { field: "text", direction: "asc" },
+      onChange: applyMyVisitsFilters
+    });
+  }
+}
+
+function applyMyVisitsFilters() {
+  const searchQuery = filterMySearchInstance ? (filterMySearchInstance.getValue() || "").toLowerCase().trim() : "";
+  const typeFilter = document.getElementById("filter-my-type")?.value || "all";
+  
+  // Data target e direzione
+  // Data target e direzione
+  const dateInput = document.getElementById("filter-my-date")?.value;
+  const dateDir = document.getElementById("filter-my-date-dir")?.value || "after";
+  
+  let targetDate = null;
+  if (dateInput && dateInput.length === 10) {
+    // Separa GG, MM, AAAA e lo rimonta per farlo digerire a Javascript
+    const [d, m, y] = dateInput.split('/');
+    targetDate = new Date(`${y}-${m}-${d}T00:00:00`).getTime();
+  }
+
+  // Stato toggle
+  const sortNewestFirst = document.getElementById("filter-my-sort-toggle")?.checked ?? true;
+
+  let filtered = cachedVisits.filter(visit => {
+    if (!visit) return false;
+
+    // 1. Ricerca Fuzzy Search su Titolo o Museo
+    if (searchQuery !== "") {
+      const titleMatch = fuzzySearch(searchQuery, visit.title || "");
+      const museumMatch = fuzzySearch(searchQuery, visit.museumId?.name || "");
+      if (!titleMatch && !museumMatch) return false;
+    }
+
+    // 2. Filtro Data f
+    if (targetDate) {
+      const visitDate = new Date(visit.sortDate || visit.updatedAt || visit.createdAt || 0).getTime();
+      if (dateDir === "after" && visitDate < targetDate) return false;
+      if (dateDir === "before" && visitDate > targetDate) return false;
+    }
+
+    // 3. Tipologia
+    const creatorId = visit.creator?._id || visit.creator;
+    const isPurchased = currentUser && creatorId && (creatorId.toString() !== currentUser._id.toString());
+
+    if (typeFilter === "created" && isPurchased) return false;
+    if (typeFilter === "purchased" && !isPurchased) return false;
+    if (typeFilter === "drafts" && !visit.isDraft) return false;
+    if (typeFilter === "public" && (isPurchased || !visit.isPublic || visit.isDraft)) return false;
+    if (typeFilter === "private" && (isPurchased || visit.isPublic || visit.isDraft)) return false;
+
+    return true;
+  });
+
+  // 4. Ordinamento da switch
+  filtered.sort((a, b) => {
+    return sortNewestFirst ? b.sortDate - a.sortDate : a.sortDate - b.sortDate;
+  });
+
+  renderVisitsList(filtered, "managed-visits-area");
+
+  // --- AGGIUNTO: Aggiorna dinamicamente le opzioni del search (opzioni rimanenti) ---
+  if (filterMySearchInstance) {
+    const currentVal = filterMySearchInstance.getValue();
+    const newOptions = new Set();
+    
+    // Raccoglie i nomi solo dalle visite sopravvissute ai filtri
+    filtered.forEach(v => {
+      if (v.title) newOptions.add(v.title);
+      if (v.museumId && v.museumId.name) newOptions.add(v.museumId.name);
+    });
+
+    // Aggiorna le opzioni in silenzio per non scatenare un loop infinito
+    filterMySearchInstance.clearOptions();
+    Array.from(newOptions).forEach(opt => filterMySearchInstance.addOption({ value: opt, text: opt }));
+    
+    // Mantiene il valore cercato attualmente per non farlo sparire dal box
+    if (currentVal && !newOptions.has(currentVal)) {
+      filterMySearchInstance.addOption({ value: currentVal, text: currentVal });
+    }
+    
+    filterMySearchInstance.refreshOptions(false);
+  }
+}
+
+function resetMyVisitsFilters() {
+  const dateInput = document.getElementById("filter-my-date");
+  const sortToggle = document.getElementById("filter-my-sort-toggle");
+  const sortLabel = document.getElementById("sort-toggle-label");
+
+  if (dateInput) dateInput.value = "";
+  
+  // Resetta i menu a tendina in modo silenzioso (true = silent)
+  if (filterMySearchInstance) filterMySearchInstance.setValue("", true);
+  if (filterMyTypeInstance) filterMyTypeInstance.setValue("all", true);
+  if (filterMyDateDirInstance) filterMyDateDirInstance.setValue("after", true);
+
+  if (sortToggle && sortLabel) {
+    sortToggle.checked = true;
+    sortLabel.innerText = "Più recenti prima";
+  }
+
+  // Ricalcola tutto con i filtri puliti (ripristinerà anche le opzioni della barra di ricerca)
+  applyMyVisitsFilters();
 }

@@ -780,25 +780,64 @@ body.artaround-theme::-webkit-scrollbar {
 .ts-wrapper.form-select,
 .ts-wrapper.form-control,
 .ts-wrapper.glass-input {
-    background-color: transparent ;
-    background-image: none ; /* Toglie la doppia freccina di Bootstrap */
-    border: none ;
-    padding: 0 ;
-    box-shadow: none ;
+  background-color: transparent ;
+  background-image: none ; /* Toglie la doppia freccina di Bootstrap */
+  border: none ;
+  padding: 0 ;
+  box-shadow: none ;
 }
 
 /* Stile per la barra chiusa e a riposo */
 .ts-wrapper .ts-control {
-    background-color: rgba(255, 255, 255, 0.05) ;
-    color: #ffffff ;
-    border: 1px solid rgba(255, 255, 255, 0.1) ;
-    border-radius: 8px ;
-    min-height: 38px;
-    display: flex;
-    align-items: center;
+  background-color: rgba(255, 255, 255, 0.05) ;
+  color: #ffffff ;
+  border: 1px solid rgba(255, 255, 255, 0.1) ;
+  border-radius: 8px ;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
 }
 
 /* Mantiene il testo bianco dell'opzione selezionata */
 .ts-wrapper.single .ts-control .item {
-    color: #ffffff ;
+  color: #ffffff ;
+}
+
+/* 1. Annulla l'effetto "scatola" anche durante il click e il focus */
+.glass-panel .ts-wrapper.focus .ts-control,
+.glass-panel .ts-wrapper.dropdown-active .ts-control,
+.glass-panel .ts-wrapper .ts-control {
+  background-color: transparent ;
+  border: none ;
+  box-shadow: none ;
+  padding-left: 0 ;
+  padding-right: 20px ; /* Lascia un piccolo margine per la freccetta */
+}
+
+/* Forza il cursore a "manina" sull'intera area del menu */
+.ts-wrapper.single .ts-control {
+    cursor: pointer ;
+}
+
+/* 2. Disegna una piccola freccina lineare (chevron) personalizzata per Tom Select */
+.ts-wrapper.single .ts-control::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    /* Crea la freccia lineare sfruttando due bordi di un quadrato vuoto */
+    border: solid rgba(255, 255, 255, 0.6);
+    border-width: 0 1.5px 1.5px 0;
+    display: inline-block;
+    padding: 3.5px;
+    /* La ruota di 45 gradi verso il basso */
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none; /* Lascia passare il click al contenitore */
+    transition: transform 0.2s ease;
+    cursor: pointer ;
+}
+
+/* 3. Capovolge la freccina quando il menu si apre */
+.ts-wrapper.single.dropdown-active .ts-control::after {
+    transform: translateY(-30%) rotate(-135deg);
 }
