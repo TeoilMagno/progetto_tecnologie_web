@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   email:           { type: String, unique: true, sparse: true }, // sparse: true perché gli utenti OAuth potrebbero non averla
   password:        { type: Buffer }, 
   salt:            { type: Buffer },
-  name:            { type: String }, // usato dal login Google/Facebook
+  name:            { type: String }, // usato dal login Google/Git
   role: {
     type: String,
     enum: ['curator', 'visitor', 'admin'],
@@ -31,12 +31,10 @@ const userSchema = new mongoose.Schema({
   // Visite acquistate (per visitatori)
   purchased_visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visit' }],
   preferences: {
-    favorite_styles:  [String],
-    visit_history:    [mongoose.Schema.Types.ObjectId],
-    expertiseLevel: { 
+    expertiseLevel: {
       type: String, 
       enum: ['simple', 'medium', 'professional', 'expert'],
-      default: 'medium' 
+      default: 'medium'
     },
     interactionsCount: { // Contatore per capire quando fare il "salto" di livello
       simpler_requests: { type: Number, default: 0 },

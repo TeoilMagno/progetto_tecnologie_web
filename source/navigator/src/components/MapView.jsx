@@ -87,7 +87,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         setCommandsMap(dictionary);
 
         //setta il livello di difficoltà della visita
-        if(userData)
+        if(userData.preferences.expertiseLevel)
           setExpertiseLevel(userData.preferences.expertiseLevel || 'medium');
 
         //setta la lunghezza delle descrizioni delle opere

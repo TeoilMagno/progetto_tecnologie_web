@@ -6,8 +6,14 @@ const quizReportSchema = new mongoose.Schema({
   roomCode: { type: String, required: true },
   date: { type: Date, default: Date.now },
   results: [{
-    studentName: String,
-    score: Number,
+    studentName:{
+      type: String,
+      required: true
+    } ,
+    score: {
+      type: Number,
+      required: true
+    },
     answers: [{
       qIndex: Number,
       selectedOption: Number,
