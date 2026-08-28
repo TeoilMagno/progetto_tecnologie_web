@@ -264,7 +264,7 @@ exports.mapRequest = async (prompt) => {
 exports.suggestWorks = async (payload) => {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash", // Assicurati che AImodel punti a questo o al gemini-3.5-flash-lite
+      model: AImodel,
       systemInstruction: `Sei un esperto curatore museale. Il tuo compito è suggerire le prossime opere da vedere per completare il tour.
       Regole tassative:
       1. Il visitatore ha ancora ${payload.remaining_time} minuti di tempo.

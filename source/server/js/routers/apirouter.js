@@ -962,7 +962,7 @@ apiRouter.post("/ai/suggested-works", async (req,res) => {
     if(!payloadForAI) return res.status(400).json({ error: "la richiesta è vuota"});
 
     const suggested_works = await aiController.suggestWorks(payloadForAI);
-    res.status(200).json(suggest_works);
+    res.status(200).json(suggested_works);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

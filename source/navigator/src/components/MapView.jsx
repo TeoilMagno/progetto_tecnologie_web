@@ -280,24 +280,39 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       const payloadForAI = {
         seen: visitedWorks.map(w => ({ name: w.name, author: w.authorName, style: w.styleName })),
         available: remainingWorks.map(w => ({ id: w._id, name: w.name, author: w.authorName, style: w.styleName })),
-        remaining_time: maxDuration - elapsedMinutes, // (Assicurati di avere maxDuration definita da qualche parte!)
+        remaining_time: maxDurationTime - elapsedMinutes,
         duration: READING_TIMES[currentLength]
       };
 
       try {
-        // 3. Chiamata API (Ora l'await funziona perfettamente!)
+        //Chiamata API ad AI per richiedere delle opere da visionare inerti alla visita volta
         const aiResponse = await fetch(`${API_BASE_URL}/ai/suggested-works`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ payloadForAI: payloadForAI }) // Assicurati che backend legga req.body.payloadForAI
         });
+
+        if (!aiResponse.ok) {
+          throw new Error(suggestedWorksData.error || "Il server ha risposto con un errore");
+        }
         
         const suggestedWorksData = await aiResponse.json();
-        console.log("L'IA suggerisce queste opere:", suggestedWorksData);
-        
-        // TODO: Qui potrai aprire una modale di fine visita o navigare altrove!
 
-      } catch (error) {
+        const recomendedIds = suggestedWorksData.works;
+
+        const finalSuggestedWorks = remainingWorks.filter(work => 
+          recomendedIds.includes(work._id.toString())
+        );
+        
+        if(finalSuggestedWorks.length > 0) {
+          console.log("Opere complete suggerite:", finalSuggestedWorks);
+          //operazione di spread per aggiungere il lavori suggeriti a visitedWorks in modo da riutilizzare gli altri componenti
+          setVisitedWorks(prevWorks => [...prevWorks, ...finalSuggestedWorks]);
+          alert(`Dato che hai ancora ${maxDurationTime - elapsedMinutes} minuti prima della conclusione della visita, suggeriamo di visionare altre ${finalSuggestedWorks.length} opere inerenti alla visita eseguita. Premi "Prossima" per continuare!`);
+        } else {
+          alert('Siamo spiacenti, ma non abbiamo altre opere di cui consigliare la visione');
+        }
+      } catch (error) { //c'è stato qualche problema con la richiesta all'AI
         alert("Non ci sono altre opere da vedere inerenti alla visita fatta. " + error.message);
       }
     } else {
