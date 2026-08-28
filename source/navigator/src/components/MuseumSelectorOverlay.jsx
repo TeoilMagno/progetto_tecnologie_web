@@ -49,7 +49,7 @@ export default function MuseumSelectorOverlay({ onSelect }) {
   const filteredMuseums = museums.filter(m => fuzzySearch(searchQuery, m.name));
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/museums`)
+    fetch(`${API_BASE_URL}/museums-list`)
       .then((res) => {
         if (!res.ok) {
           throw new Error('Errore nel caricamento dei musei');

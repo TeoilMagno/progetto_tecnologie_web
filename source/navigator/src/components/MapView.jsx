@@ -4,11 +4,13 @@ import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2, Compass,
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { useSocket } from "../context/SocketContext";
+import { Activity } from "react";
 import SectionLayer from "./SectionLayer";
 import RoomLayer from "./RoomLayer";
 import WorkDetailsSheet from "./WorkDetailsSheet";
 import NavigationControlBar from "./NavigationControlBar";
 import RoomQRCode from "./RoomQRCode";
+import TeacherDashboard from "./TeacherDashboard";
 
 export default function MapView({ visitId, roomCode, isTeacher }) {
   const navigate = useNavigate();
@@ -29,6 +31,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [suggestedWorks, setSuggestedWorks] = useState([]);
   const [visitQuiz, setVisitQuiz] = useState([]);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showTeacherDashboard, setShowTeacherDashboard] = useState(false);
+  const [classStatus, setClassStatus] = useState({});
+  const [interactionFeed, setInteractionFeed] = useState([]);
 
   // Livello di dettaglio della descrizione
   const [expertiseLevel, setExpertiseLevel] = useState("medium");
@@ -39,6 +44,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const isSharedSession = Boolean(roomCode);
   //lunghezza descrizione opera
   const currentLength = "medium";
+
+  const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
   
   // Se non ci sono sezioni valide, attiviamo la modalità Fallback (Audioguida List Mode)
   const hasMap = sections && sections.length > 0;
@@ -104,11 +111,11 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
               setSections([]); // Attiverà il fallback
             }
 
-            const worksResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/works`, { credentials: 'include' });
-            if (worksResponse.ok) {
-              const worksData = await worksResponse.json();
-              setAllMuseumWorks(Array.isArray(worksData) ? worksData : []);
-            }
+            // const worksResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/works`, { credentials: 'include' });
+            // if (worksResponse.ok) {
+            //   const worksData = await worksResponse.json();
+            //   setAllMuseumWorks(Array.isArray(worksData) ? worksData : []);
+            // }
           } catch (e) {
             console.warn("Errore nel caricamento dei dati mappa/opere del museo. Fallback attivato.", e);
             setSections([]);
@@ -156,6 +163,27 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     return null;
   };
 
+  // --- ASCOLTO EVENTI INSEGNANTE (DASHBOARD) ---
+  useEffect(() => {
+    if (isSharedSession && isTeacher && socket) {
+      socket.on("teacher_dashboard_update", (payload) => {
+        if (payload.type === 'interaction') {
+          setInteractionFeed(prev => [payload.data, ...prev].slice(0, 50)); // Tieni in memoria le ultime 50 interazioni
+        } else if (payload.type === 'status') {
+          setClassStatus(prev => ({
+            ...prev,
+            [payload.data.socketId]: payload.data
+          }));
+        }
+      });
+
+      return () => {
+        socket.off("teacher_dashboard_update");
+      };
+    }
+  }, [isSharedSession, isTeacher, socket]);
+
+  // Ascolto eventi studente
   useEffect(() => {
     if (isSharedSession && !isTeacher && socket) {
       socket.on("change_artwork", (data) => {
@@ -180,14 +208,62 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         navigate("/my-visits"); 
       });
 
+      const studentName = localStorage.getItem('student_name') || 'Studente';
+      
+      const sendStatus = (statusOverride) => {
+        socket.emit('student_status_update', {
+          roomCode,
+          studentName,
+          currentArtworkId: currentWork?._id,
+          status: statusOverride || 'active'
+        });
+      };
+
+      // 1. Invia stato attivo iniziale
+      sendStatus('active');
+
+      // 2. Gestori per la perdita di focus (cambio app, schermo spento, cambio tab)
+      const handleVisibilityChange = () => {
+        sendStatus(document.hidden ? 'away' : 'active');
+      };
+
+      const handleBlur = () => {
+        sendStatus('away'); // Ha cliccato fuori dalla finestra o abbassato la tendina delle notifiche
+      };
+
+      const handleFocus = () => {
+        sendStatus('active'); // È tornato sull'app
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      window.addEventListener("blur", handleBlur);
+      window.addEventListener("focus", handleFocus);
+
       return () => {
         socket.off("change_artwork");
         socket.off("quiz_started");
         socket.off("visit_ended");
-        socket.off("room_closed")
+        socket.off("room_closed");
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        window.removeEventListener("blur", handleBlur);
+        window.removeEventListener("focus", handleFocus);
       };
     }
   }, [isSharedSession, isTeacher, visitedWorks, socket, navigate, roomCode, hasMap]);
+
+  // --- SEGNALA USCITA DALLA MAPPA (Cambio pagina nel Navigator) ---
+  useEffect(() => {
+    if (isSharedSession && !isTeacher && socket && roomCode) {
+      return () => {
+        // Questa funzione di cleanup scatta solo quando lo studente esce definitivamente dalla MapView
+        socket.emit('student_status_update', {
+          roomCode,
+          studentName: localStorage.getItem('student_name') || 'Studente',
+          status: 'away' 
+        });
+      };
+    }
+  }, [isSharedSession, isTeacher, socket, roomCode]);
 
   const handleNext = () => {
     if (currentWorkIndex < visitedWorks.length - 1) {
@@ -278,8 +354,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     );
   }
 
-  const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
-
   return (
     // 1. fixed inset-0 blocca lo schermo ed evita lo scorrimento dell'intera pagina
     <div className="fixed inset-0 flex flex-col bg-[#09090b] text-white overflow-hidden">
@@ -291,6 +365,15 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       >
         <LogOut size={16} /> Esci
       </button>
+
+      {isSharedSession && isTeacher && (
+        <button 
+          onClick={() => setShowTeacherDashboard(true)} 
+          className="absolute top-4 left-4 z-[9999] flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 border border-purple-400/50 rounded-full text-white text-sm font-bold transition-colors shadow-lg cursor-pointer animate-pulse"
+        >
+          <Activity size={16} /> Radar Classe
+        </button>
+      )}
 
       {/* 3. Mappa o Fallback (Prende tutto lo spazio rimanente con flex-1) */}
       <div className="w-full h-full relative overflow-hidden">
@@ -500,6 +583,15 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           </div>
         </div>
       )}
+
+      <TeacherDashboard 
+        isOpen={showTeacherDashboard} 
+        onClose={() => setShowTeacherDashboard(false)} 
+        roomCode={roomCode} 
+        classStatus={classStatus} 
+        interactionFeed={interactionFeed}
+        totalWorks={visitedWorks.length}
+      />
     </div>
   );
 }

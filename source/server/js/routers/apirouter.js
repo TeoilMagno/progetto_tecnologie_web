@@ -77,6 +77,19 @@ apiRouter.get("/museums", async (req, res) => {
   }
 });
 
+// Ritorna SOLO id e nome di tutti i musei (Ottimizzato per i menu a tendina)
+apiRouter.get("/museums-list", async (req, res) => {
+  try {
+    // Il secondo parametro di find() seleziona i campi da restituire. 
+    // sort({ name: 1 }) li mette in ordine alfabetico
+    const museumsList = await Museum.find({}, '_id name').sort({ name: 1 });
+    res.status(200).json(museumsList);
+  } catch (error) {
+    console.error("Errore recupero lista musei:", error);
+    res.status(500).json({ error: "Errore recupero lista musei" });
+  }
+});
+
 // Aggiorna i dati generali di un museo
 apiRouter.put("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
   try {

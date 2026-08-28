@@ -2,14 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QrCode, GraduationCap, Presentation, Users, Loader2, AlertCircle, RefreshCw, Sparkles, ArrowLeft, ArrowRight, Play, Send, Camera, CameraOff, CheckCircle2 } from 'lucide-react';
 import QrScanner from 'qr-scanner';
-// Vite: importa l'URL del worker già bundlato dalla libreria (necessario per farlo funzionare col bundler)
-import QrScannerWorkerPath from 'qr-scanner/qr-scanner-worker.min.js?url';
 import { API_BASE_URL } from '../config';
 import { useSocket } from '../context/SocketContext';
 import LoginModal from '../components/LoginModal';
 import RoomQRCode from '../components/RoomQRCode';
-
-QrScanner.WORKER_PATH = QrScannerWorkerPath;
 
 export default function JoinSession() {
   const { socket } = useSocket();
