@@ -211,8 +211,6 @@ function renderMuseumsList(museums, containerId = "content-area", append = false
             <div>${tagsHtml}</div>
           </div>
         </div>
-        <a href="/navigator/museum/${museum._id}"><div class="explore">Navigate museum</div></a>
-        <a href="/museums/${museum._id}/upload-map/"><div class="explore">Upload Map</div></a>
       </div>`;
   });
 
@@ -304,6 +302,9 @@ function renderMuseumDashboard(museumInfo) {
           <button id="edit-stock-btn" class="btn-create-visit ms-2 d-none" onclick="openBookshopManager('${museumInfo._id}')">        
             <i class="bi bi-shop me-1"></i> Bookshop
           </button>
+          <a href="/museums/${museumInfo._id}/upload-map/" id="upload-map-btn" class="btn-create-visit ms-2 d-none">
+            <i class="bi bi-map-fill me-1"></i> Mappa
+          </a>
         </div>
       </div>
     `;
@@ -358,12 +359,10 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
   if (currentUser.role === 'admin') {
     const editBtn = document.getElementById("edit-museum-btn");
     const editBshopBtn = document.getElementById("edit-stock-btn");
-    if (editBtn) {
-      editBtn.classList.remove("d-none");
-    }
-    if (editBshopBtn) {
-      editBshopBtn.classList.remove("d-none");
-    }
+    const uploadMapBtn = document.getElementById("upload-map-btn");
+    if (editBtn) editBtn.classList.remove("d-none");
+    if (editBshopBtn) editBshopBtn.classList.remove("d-none");
+    if (uploadMapBtn) uploadMapBtn.classList.remove("d-none");
     return; // Ci fermiamo qui, l'admin ha già i permessi
   }
 

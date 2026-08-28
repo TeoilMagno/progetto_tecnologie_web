@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ArtAround - Welcome</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+    <!-- Usa lo stesso CSS del marketplace per mantenere il tema scuro coerente -->
+    <link rel="stylesheet" href="/marketplace/css/style.css" />
+  </head>
+  <body class="artaround-theme d-flex align-items-center justify-content-center vh-100">
+    <div class="container text-center">
+      <h1 class="display-3 fw-bold mb-3 text-white"><i class="bi bi-bank me-3"></i>ArtAround</h1>
+      <p class="lead text-secondary mb-5">Scegli come vuoi esplorare l'arte oggi.</p>
+      
+      <div class="row justify-content-center g-4 max-w-800 mx-auto">
+        <!-- Card Marketplace -->
+        <div class="col-md-5">
+          <a href="/marketplace" class="text-decoration-none">
+            <div class="card custom-card h-100 py-5 cursor-pointer hover-scale">
+              <div class="card-body">
+                <i class="bi bi-shop display-1 text-info mb-3"></i>
+                <h3 class="card-title text-white">Marketplace</h3>
+                <p class="card-text text-secondary small mt-2">Esplora musei, prenota visite guidate e acquista articoli dai bookshop.</p>
+              </div>
+            </div>
+          </a>
+        </div>
+        
+        <!-- Card Navigator -->
+        <div class="col-md-5">
+          <a href="/navigator" class="text-decoration-none">
+            <div class="card custom-card h-100 py-5 cursor-pointer hover-scale">
+              <div class="card-body">
+                <i class="bi bi-compass display-1 text-warning mb-3"></i>
+                <h3 class="card-title text-white">Navigator</h3>
+                <p class="card-text text-secondary small mt-2">Orientati all'interno dei musei e trova le opere esposte con la mappa interattiva.</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .hover-scale { transition: transform 0.2s ease-in-out; }
+      .hover-scale:hover { transform: scale(1.05); }
+      .max-w-800 { max-width: 800px; }
+    </style>
+  </body>
+</html>

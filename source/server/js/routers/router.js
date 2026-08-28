@@ -13,8 +13,13 @@ const auth = require("../middleware/roles");
 
 const router = express.Router();
 
-// ottiene l'index.html per il caricamento della home
+// ottiene l'home.html per il caricamento della home
 router.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname,'..','..','html','home.html'));
+});
+
+// ottiene il marketplace
+router.get('/marketplace', (req, res) => {
   res.sendFile(path.join(__dirname,'..','..','html','index.html'));
 });
 
