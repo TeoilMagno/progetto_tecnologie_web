@@ -1,33 +1,4 @@
-// Stato globale
-let cachedMuseums = [];
-let currentItems = [];
-let currentWorks = [];
-let currentVisits = [];
-let currentMuseumId = null;
-let editModalInstance = null;
-let currentView = 'works';
-
-// Variabili Paginazione Musei
-let currentMuseumPage = 1;
-let totalMuseumPages = 1;
-let isFetchingMuseums = false;
-let museumObserver = null;
-let renderedMuseumsCount = 0;
-const RENDER_CHUNK = 16; // Quanti musei disegnare per ogni colpo di scroll
-
-// Variabili Paginazione Opere
-let currentWorkPage = 1;
-let totalWorkPages = 1;
-let isFetchingWorks = false;
-let renderedWorksCount = 0;
-const WORK_RENDER_CHUNK = 12;
-
-// Variabili Paginazione Items (Bookshop)
-let currentItemsPage = 1;
-let totalItemsPages = 1;
-let isFetchingItems = false;
-let renderedItemsCount = 0;
-const ITEMS_RENDER_CHUNK = 12;
+// le varie variabili globali sono in config.js
 
 // Unico nodo sentinella condiviso per qualsiasi scroll infinito
 const globalSentinel = document.createElement("div");
@@ -40,12 +11,6 @@ globalSentinel.innerHTML = `
 
 // 1. INIZIALIZZAZIONE
 document.addEventListener("DOMContentLoaded", async () => {
-  const modalEl = document.getElementById("editItemModal");
-  if (modalEl) {
-    editModalInstance = new bootstrap.Modal(modalEl);
-  }
-
-  // Gestione del tasto indietro del browser
   // Gestione del tasto indietro del browser
   window.addEventListener('popstate', (event) => {
     // Se torniamo alla home (stato nullo o senza view definita)
@@ -368,28 +333,30 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
 
   // logica normale per i curatori
   try {
-    // recuperiamo l'elenco dei musei gestiti dal curatore
-    const response = await fetch(`${API_BASE_URL}/my-museums`);
+    // Se non abbiamo la cache, scarichiamo SOLO _id e name (fetching selettivo)
+    if (!myManagedMuseumsCache) {
+      const response = await fetch(`${API_BASE_URL}/my-museums?fields=_id,name`);
+      if (response.ok) {
+        myManagedMuseumsCache = await response.json();
+      } else {
+        return;
+      }
+    }
     
-    if (response.ok) {
-      const managedMuseums = await response.json();
-      
-      // controlliamo se l'ID del museo aperto è nell'array restituito
-      const isManaged = managedMuseums.some(museum => {
-         return (museum._id && museum._id === currentMuseumId) || museum === currentMuseumId;
-      });
+    // Controlliamo la cache
+    const isManaged = myManagedMuseumsCache.some(museum => {
+       return (museum._id && museum._id === currentMuseumId) || museum === currentMuseumId;
+    });
+    // mostriamo il bottone
+    if (isManaged) {
+      const editBtn = document.getElementById("edit-museum-btn");
+      const editBshopBtn = document.getElementById("edit-stock-btn");
 
-      // mostriamo il bottone
-      if (isManaged) {
-        const editBtn = document.getElementById("edit-museum-btn");
-        const editBshopBtn = document.getElementById("edit-stock-btn");
-
-        if (editBtn) {
-          editBtn.classList.remove("d-none");
-        }
-        if (editBshopBtn) {
-          editBshopBtn.classList.remove("d-none");
-        }
+      if (editBtn) {
+        editBtn.classList.remove("d-none");
+      }
+      if (editBshopBtn) {
+        editBshopBtn.classList.remove("d-none");
       }
     }
   } catch (error) {
@@ -525,9 +492,8 @@ async function fetchAndRenderItems(museumId, isLoadMore = false) {
     
     const data = await response.json();
     
-    // Retrocompatibilità: se il backend non è ancora paginato e restituisce un array puro, lo supportiamo
-    const itemsArray = Array.isArray(data) ? data : (data.items || []);
-    totalItemsPages = data.totalPages || 1; 
+    const itemsArray = data.items || [];
+    totalItemsPages = data.totalPages || 1;
 
     if (isLoadMore) {
       currentItems = [...currentItems, ...itemsArray];
@@ -832,7 +798,6 @@ function renderItemsList(items, append = false) {
     return;
   }
 
-  const isCurator = currentUser && currentUser.role === "curator";
   let htmlString = "";
 
   items.forEach((item) => {
@@ -855,7 +820,6 @@ function renderItemsList(items, append = false) {
                   <div class="fw-bold text-white fs-5">€ ${item.price.toFixed(2)}</div>
                   <div class="d-flex gap-2">
                     <button class="btn btn-sm btn-gradient rounded-pill px-3" onclick="addToCart({ id: '${item._id}', type: 'item', name: '${safeName}', price: ${item.price}, image: '${item.image || ''}' })"><i class="bi bi-cart-plus me-1"></i> Compra</button>
-                    ${isCurator ? `<button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="openEditModal('${item._id}')"><i class="bi bi-pencil"></i></button>` : ""}
                   </div>
                 </div>
               </div>
@@ -880,71 +844,25 @@ function renderItemsList(items, append = false) {
   }
 }
 
-// 5. LOGICA EDITOR
-
-function openEditModal(itemId) {
-  const item = currentItems.find((i) => i._id === itemId);
-  if (!item) { console.error("Item non trovato:", itemId); return; }
-
-  document.getElementById("itemId").value = item._id;
-  document.getElementById("itemName").value = item.name;
-  document.getElementById("itemPrice").value = item.price;
-  document.getElementById("itemDescription").value = item.description;
-  document.getElementById("itemDuration").value = item.duration || "1min";
-  document.getElementById("itemTone").value = item.tone || "medio";
-
-  editModalInstance.show();
-}
-
-async function saveItem() {
-  const id = document.getElementById("itemId").value;
-  const updatedData = {
-    name: document.getElementById("itemName").value,
-    price: parseFloat(document.getElementById("itemPrice").value),
-    description: document.getElementById("itemDescription").value,
-    duration: document.getElementById("itemDuration").value,
-    tone: document.getElementById("itemTone").value,
-  };
-
-  const saveBtn = document.querySelector("#editItemModal .btn-primary");
-  const originalText = saveBtn.innerText;
-  saveBtn.innerText = "Salvataggio...";
-  saveBtn.disabled = true;
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/items/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData),
-    });
-    if (!response.ok) throw new Error("Errore nel salvataggio");
-
-    const index = currentItems.findIndex((i) => i._id === id);
-    if (index !== -1) currentItems[index] = { ...currentItems[index], ...updatedData };
-
-    editModalInstance.hide();
-    renderItemsList(currentItems, false); // Aggiorna a false per forzare il re-render pulito
-    alert("Modifica salvata con successo!");
-  } catch (error) {
-    console.error(error);
-    alert("Errore durante il salvataggio: " + error.message);
-  } finally {
-    saveBtn.innerText = originalText;
-    saveBtn.disabled = false;
-  }
-}
-
-async function loadManagedMuseums() {
+async function loadManagedMuseums(isLoadMore = false) {
   const container = document.getElementById("managed-museums-area");
   if (!container) return;
 
-  container.innerHTML = `<div class="col-12 text-center mt-5"><div class="spinner-border text-info"></div></div>`;
+  // Mostriamo il caricamento solo al primo giro
+  if (!isLoadMore) {
+    container.innerHTML = `<div class="col-12 text-center mt-5"><div class="spinner-border text-info"></div></div>`;
+    myMuseumsAdminPage = 1;
+  }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/my-museums`);
-    const managedMuseums = await response.json();
+    const response = await fetch(`${API_BASE_URL}/my-museums?page=${myMuseumsAdminPage}&limit=${RENDER_CHUNK}`);
+    const data = await response.json();
 
-    if (managedMuseums.length === 0) {
+    const isPaginated = !Array.isArray(data);
+    const managedMuseums = isPaginated ? data.museums : data;
+    const totalPages = isPaginated ? data.totalPages : 1;
+
+    if (managedMuseums.length === 0 && !isLoadMore) {
       container.innerHTML = `
                 <div class="col-12 text-center py-5">
                     <p class="text-secondary">Non hai ancora musei assegnati.</p>
@@ -953,138 +871,39 @@ async function loadManagedMuseums() {
       return;
     }
 
-    // Riutilizziamo la tua funzione di rendering esistente!
-    renderMuseumsList(managedMuseums, "managed-museums-area");
-  } catch (error) {
-    container.innerHTML = `<div class="alert alert-danger">Errore nel caricamento dei tuoi musei.</div>`;
-  }
-}
-let currentBookshopMuseumId = null;
+    renderMuseumsList(managedMuseums, "managed-museums-area", isLoadMore);
 
-// Apre il modal e scarica gli items
-async function openBookshopManager(museumId) {
-  currentBookshopMuseumId = museumId;
-  const modal = new bootstrap.Modal(document.getElementById('bookshopManagerModal'));
-  modal.show();
-  
-  await loadBookshopItems();
-}
-
-// Scarica e renderizza la lista degli oggetti
-async function loadBookshopItems() {
-  const container = document.getElementById("bookshop-items-list");
-  container.innerHTML = `<div class="text-center text-secondary my-3"><span class="spinner-border spinner-border-sm"></span> Caricamento articoli...</div>`;
-  
-  try {
-    const res = await fetch(`${API_BASE_URL}/museums/${currentBookshopMuseumId}/items`);
-    const items = await res.json();
-    
-    if (items.length === 0) {
-      container.innerHTML = `<div class="alert alert-dark text-center">Nessun articolo presente nel bookshop.</div>`;
-      return;
-    }
-
-    container.innerHTML = items.map(item => `
-      <div class="list-group-item bg-dark border-secondary text-white d-flex justify-content-between align-items-center">
-        <div>
-          <h6 class="mb-0">${item.name || item.title}</h6>
-          <small class="text-secondary">Prezzo: €${item.price} | Categoria: ${item.category || 'N/D'} | In magazzino: <strong class="text-warning" id="stock-val-${item._id}">${item.quantity}</strong></small>
-        </div>
-        <div class="d-flex gap-2">
-          <input type="number" id="add-qty-${item._id}" class="form-control form-control-sm" style="width: 70px;" min="1" placeholder="+ Q.tà">
-          <button class="btn btn-sm btn-outline-success" onclick="addStock('${item._id}')">Aggiungi</button>
-        </div>
-      </div>
-    `).join('');
-  } catch (error) {
-    container.innerHTML = `<div class="alert alert-danger">Errore nel caricamento degli articoli.</div>`;
-  }
-}
-
-// Chiamata API per aggiungere pezzi in magazzino
-async function addStock(itemId) {
-  const input = document.getElementById(`add-qty-${itemId}`);
-  const quantityToAdd = input.value;
-
-  if (!quantityToAdd || quantityToAdd <= 0) {
-    alert("Inserisci una quantità valida da aggiungere.");
-    return;
-  }
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/items/${itemId}/add-stock`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantityToAdd })
-    });
-    
-    if (res.ok) {
-      const data = await res.json();
-      // Aggiorniamo visivamente il numero senza ricaricare tutto
-      document.getElementById(`stock-val-${itemId}`).innerText = data.item.quantity;
-      input.value = ''; // Svuotiamo l'input
-    } else {
-      alert("Errore durante l'aggiunta dello stock.");
+    // Se stiamo gestendo dati paginati (admin), attiviamo lo scroll infinito
+    if (isPaginated) {
+      container.appendChild(globalSentinel);
+      setupManagedMuseumsObserver(totalPages);
+      
+      // Nascondiamo la sentinella se abbiamo raggiunto l'ultima pagina
+      if (myMuseumsAdminPage >= totalPages) {
+        globalSentinel.classList.add("d-none");
+      } else {
+        globalSentinel.classList.remove("d-none");
+      }
     }
   } catch (error) {
-    console.error(error);
+    if (!isLoadMore) container.innerHTML = `<div class="alert alert-danger">Errore nel caricamento dei tuoi musei.</div>`;
   }
 }
 
-// --- Gestione Nuovo Articolo ---
+function setupManagedMuseumsObserver(totalPages) {
+  if (!globalSentinel) return;
+  if (managedMuseumObserver) managedMuseumObserver.disconnect();
 
-function toggleNewItemForm() {
-  document.getElementById("new-item-form-container").classList.toggle("d-none");
-}
-
-document.getElementById("new-item-form")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  
-  const newItemData = {
-    name: document.getElementById("new-item-name").value,
-    price: parseFloat(document.getElementById("new-item-price").value),
-    quantity: parseInt(document.getElementById("new-item-qty").value),
-    category: document.getElementById("new-item-category").value,
-    image: document.getElementById("new-item-image").value,       // <-- Nuovo campo catturato
-    description: document.getElementById("new-item-description").value // <-- Nuovo campo catturato
-  };
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/museums/${currentBookshopMuseumId}/items`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newItemData)
-    });
-    
-    if (res.ok) {
-      const data = await res.json();
-
-      e.target.reset(); // Svuota il form
-      toggleNewItemForm(); // Nasconde il form
-      await loadBookshopItems(); // Ricarica la lista per mostrare il nuovo nato
-
-      fetch(`${API_BASE_URL}/ai/generate-item-targetage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          itemId: data.item._id, 
-          itemName: newItemData.name,
-          itemDescription: newItemData.description
-        })
-      })
-      .then(res => res.json())
-      .then(aiResponse => {
-        console.log("Risposta IA ricevuta:", aiResponse);
-        loadBookshopItems(); 
-      })
-      .catch(err => console.error("Errore di rete nella chiamata IA:", err));
-
-    } else {
-      // Estraiamo il messaggio di errore reale dal server (se Mongoose si arrabbia ancora)
-      const errorData = await res.json();
-      alert("Errore durante la creazione dell'articolo: " + (errorData.error || "Controlla i dati."));
+  managedMuseumObserver = new IntersectionObserver((entries) => {
+    // Impediamo doppie chiamate controllando isFetchingMuseums
+    if (entries[0].isIntersecting && !isFetchingMuseums) {
+       if (myMuseumsAdminPage < totalPages) {
+          isFetchingMuseums = true;
+          myMuseumsAdminPage++;
+          loadManagedMuseums(true).finally(() => { isFetchingMuseums = false; });
+       }
     }
-  } catch (error) {
-    console.error(error);
-  }
-});
+  }, { rootMargin: '100px' });
+
+  managedMuseumObserver.observe(globalSentinel);
+}

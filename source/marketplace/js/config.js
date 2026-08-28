@@ -3,6 +3,59 @@
 // e 'https://www.tuosito.com' in produzione!
 const API_BASE_URL = window.location.origin + "/api";
 
+// ==========================================
+// STORE.JS - STATO GLOBALE DELL'APPLICAZIONE
+// ==========================================
+
+// Cache Musei e Coordinate
+let cachedMuseums = [];
+let myManagedMuseumsCache = null;
+let userCoords = null;
+let museumCoordsMap = {}; 
+let myMuseumsAdminPage = 1;
+
+// Cache Pristine (DB Completo)
+let pristineMuseumsCache = [];
+let pristineCurrentPage = 1;
+let pristineTotalPages = 1;
+let isEntireDbInCache = false;
+
+let pristineWorksCache = [];
+let pristineWorkPage = 1;
+let pristineTotalWorkPages = 1;
+let isEntireWorksDbInCache = false;
+
+// Elementi correnti aperti
+let currentItems = [];
+let currentWorks = [];
+let currentVisits = [];
+let currentMuseumId = null;
+let editModalInstance = null; // Se serviva in marketplace
+let currentView = 'works';
+
+// Variabili Paginazione Musei
+let currentMuseumPage = 1;
+let totalMuseumPages = 1;
+let isFetchingMuseums = false;
+let museumObserver = null;
+let renderedMuseumsCount = 0;
+let managedMuseumObserver = null;
+const RENDER_CHUNK = 16; 
+
+// Variabili Paginazione Opere
+let currentWorkPage = 1;
+let totalWorkPages = 1;
+let isFetchingWorks = false;
+let renderedWorksCount = 0;
+const WORK_RENDER_CHUNK = 12;
+
+// Variabili Paginazione Items (Bookshop)
+let currentItemsPage = 1;
+let totalItemsPages = 1;
+let isFetchingItems = false;
+let renderedItemsCount = 0;
+const ITEMS_RENDER_CHUNK = 12;
+
 async function geocodeAddress(address) {
   try {
     // Usiamo encodeURIComponent per gestire spazi e virgole nell'indirizzo

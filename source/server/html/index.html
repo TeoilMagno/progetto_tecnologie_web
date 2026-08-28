@@ -63,64 +63,6 @@
       </div>
     </div>
 
-    <div class="modal fade" id="editItemModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content glass-modal">
-          <div class="modal-header border-bottom-custom">
-            <h5 class="modal-title fw-bold">Modifica Opera</h5>
-            <button type="button" class="btn-close custom-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="editForm">
-              <input type="hidden" id="itemId" />
-              <div class="row mb-3">
-                <div class="col-md-8">
-                  <label for="itemName" class="form-label text-secondary small">Titolo</label>
-                  <input type="text" class="form-control glass-input" id="itemName" />
-                </div>
-                <div class="col-md-4">
-                  <label for="itemPrice" class="form-label text-secondary small">Prezzo</label>
-                  <input type="number" step="0.01" class="form-control glass-input" id="itemPrice" />
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="itemDescription" class="form-label text-secondary small">Descrizione</label>
-                <textarea class="form-control glass-input" id="itemDescription" rows="4"></textarea>
-              </div>
-              <h6 class="metadata-title pb-2 mb-3 mt-4 text-secondary text-uppercase small">
-                Metadati
-              </h6>
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label text-secondary small">Durata</label>
-                  <select class="form-select glass-input" id="itemDuration">
-                    <option value="1min">1 Minuto</option>
-                    <option value="3s">3 Secondi</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label text-secondary small">Tono</label>
-                  <select class="form-select glass-input" id="itemTone">
-                    <option value="medio">Medio</option>
-                    <option value="infantile">Infantil<button class="btn text-white position-relative me-3" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
-  <i class="bi bi-cart3 fs-4"></i>
-  <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
-    0
-  </span>
-</button>e</option>
-                  </select>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer border-top-custom">
-            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Annulla</button>
-            <button type="button" class="btn btn-gradient" onclick="saveItem()">Salva Modifiche</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Modal Gestione Bookshop -->
     <div class="modal fade" id="bookshopManagerModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg">
@@ -221,5 +163,6 @@
     <script src="/marketplace/js/sidebar.js"></script>
     <script src="/marketplace/js/cart.js"></script>
     <script src="/marketplace/js/search-bar.js"></script>
+    <script src="/marketplace/js/bookshop-manager.js"></script>
   </body>
 </html>

@@ -57,15 +57,6 @@ exports.getMuseumItems = async (museumIdStr, page = 1, limit = 12, search = "") 
   }
 };
 
-exports.getItemByMuseum = async (museumId) => {
-  try {
-    return await Item.find({ museumId: museumId });
-  }
-  catch (err) {
-    throw err;
-  }
-}
-
 exports.modifyItemById = async (itemId, updateData) => {
   try {
     return await Item.findByIdAndUpdate(itemId, updateData, {new: true});

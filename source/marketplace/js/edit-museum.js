@@ -1,4 +1,3 @@
-let currentMuseumId = null;
 let currentMuseumData = null;
 let museumSections = [];
 let workModalInstance = null;
@@ -40,9 +39,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadMuseumDetails() {
   try {
-    const res = await fetch(`${API_BASE_URL}/museums`);
-    const museums = await res.json();
-    currentMuseumData = museums.museums.find((m) => m._id === currentMuseumId);
+    const res = await fetch(`${API_BASE_URL}/museums/${currentMuseumId}`);
+    currentMuseumData = await res.json();
 
     if (!currentMuseumData) { alert("Museo non trovato."); return; }
 
@@ -527,26 +525,31 @@ async function saveWorkFromModal() {
 
   try {
     const authorId = workData.author;
-    const authorDataId = document.getElementById("work-author-data-id").value;
+    const authorDataInput = document.getElementById("work-author-data-id");
+    const authorDataId = authorDataInput.value;
+    const originalAuthorDataId = authorDataInput.dataset.original || "";
     
-    // Se l'utente ha selezionato un autore e una specifica card, eseguiamo l'adozione al volo
-    if (authorId && authorDataId) {
+    // Eseguiamo l'adozione SOLO se c'è un ID valido e l'utente ha CAMBIATO la selezione 
+    // (evitiamo put inutili e 500 se il museo aveva già adottato questa scheda)
+    if (authorId && authorDataId && authorDataId !== originalAuthorDataId) {
       await fetch(`${API_BASE_URL}/authors/${authorId}/data/${authorDataId}/adopt`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ museumId: currentMuseumId })
-      });
+      }).catch(e => console.error("Errore adozione autore ignorato:", e));
     }
 
-    const styleId = workData.style; // (Preso dall'hidden input)
-    const styleDataId = document.getElementById("work-style-data-id").value;
+    const styleDataInput = document.getElementById("work-style-data-id");
+    const styleId = workData.style; 
+    const styleDataId = styleDataInput.value;
+    const originalStyleDataId = styleDataInput.dataset.original || "";
     
-    if (styleId && styleDataId) {
+    if (styleId && styleDataId && styleDataId !== originalStyleDataId) {
       await fetch(`${API_BASE_URL}/styles/${styleId}/data/${styleDataId}/adopt`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ museumId: currentMuseumId })
-      });
+      }).catch(e => console.error("Errore adozione stile ignorato:", e));
     }
 
     let res;
@@ -617,7 +620,7 @@ async function deleteWork(sectionId, workId) {
 
   try {
     const res = await fetch(`${API_BASE_URL}/works/${workId}`, {
-      method: "DELETE", headers: { "Content-Type": "application/json" },
+      method: "DELETE", 
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sectionId: sectionId, museumId: currentMuseumId })
     });
@@ -628,7 +631,6 @@ async function deleteWork(sectionId, workId) {
 // ------------------- SALVA E ELIMINA MUSEO -------------------
 
 async function saveAllMuseumChanges() {
-  const tagsString = document.getElementById("museum-tags").value;
   const updatedMuseum = getMuseumFormData();
 
   try {
@@ -707,13 +709,12 @@ async function confirmDeleteMuseum() {
       if (activeImports.length > 0) {
         const isConfirmed = await window.showCustomConfirm(
           "Eliminazione museo",
-          "Attenzione! Hai ${activeImports.length} opere in prestito da altri musei.\n\nVuoi restituirle tutte automaticamente prima di eliminare il museo? (Se annulli, l'eliminazione verrà interrotta)."
+          `Attenzione! Hai ${activeImports.length} opere in prestito da altri musei.\n\nVuoi restituirle tutte automaticamente prima di eliminare il museo? (Se annulli, l'eliminazione verrà interrotta).`
         );
-        if(!isConfirmed) return;
-
-        if (!wantsToReturn) {
+        
+        if(!isConfirmed) {
           deleteMuseumModalInstance.hide();
-          return; // Interrompiamo tutto
+          return; 
         }
 
         // Restituiamo le opere una per una
@@ -778,11 +779,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Chiamata API al Backend
-async function fetchAuthors(query) {
-  const resultsContainer = document.getElementById("author-search-results");
-  
+async function fetchAuthors(query) {  
   try {
-    const res = await fetch(`/api/authors/search?q=${encodeURIComponent(query)}`);
+    const res = await fetch(`${API_BASE_URL}/authors/search?q=${encodeURIComponent(query)}`);
     if (!res.ok) throw new Error("Errore nella ricerca");
     
     const authors = await res.json();
@@ -858,7 +857,9 @@ async function selectAuthor(authorId, authorName) {
       });
 
       // Impostiamo il campo nascosto con l'ID della descrizione già in uso (se esiste)
-      document.getElementById("work-author-data-id").value = preselectedDataId;
+      const authorDataInput = document.getElementById("work-author-data-id");
+      authorDataInput.value = preselectedDataId;
+      authorDataInput.dataset.original = preselectedDataId;
 
       author.data.forEach((d, index) => {
         const adoptionCount = d.museumId ? d.museumId.length : 0;
@@ -1003,7 +1004,7 @@ async function saveAuthorData() {
       res = await fetch(`${API_BASE_URL}/authors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newName, data: payloadData })
+        body: JSON.stringify({ name: newName, data: [payloadData] })
       });
       if (!res.ok) throw new Error("Errore durante la creazione dell'autore");
       finalAuthor = await res.json();
@@ -1137,7 +1138,9 @@ async function selectStyle(styleId, styleName) {
       });
 
       // Salviamo l'id nel form nascosto (che avevamo inserito nell'html prima)
-      document.getElementById("work-style-data-id").value = preselectedDataId;
+      const styleDataInput = document.getElementById("work-style-data-id");
+      styleDataInput.value = preselectedDataId;
+      styleDataInput.dataset.original = preselectedDataId;
 
       style.data.forEach((d, index) => {
         const adoptionCount = d.museumId ? d.museumId.length : 0;
@@ -1242,7 +1245,7 @@ async function saveStyleData() {
       res = await fetch(`${API_BASE_URL}/styles`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newName, data: payloadData })
+        body: JSON.stringify({ name: newName, data: [payloadData] })
       });
       if (!res.ok) throw new Error("Errore durante la creazione dello stile");
       finalStyle = await res.json();
@@ -1276,10 +1279,7 @@ async function saveStyleData() {
 
       selectStyle(finalStyle._id, finalStyle.name || newName);
       
-      // Ipotetica istanza della modale
-      if (typeof styleDataModalInstance !== 'undefined') {
-        styleDataModalInstance.hide();
-      }
+      styleDataModalInstance.hide();
     }
   } catch (error) {
     alert(error.message);
@@ -1491,23 +1491,6 @@ function editStyleData(dataId) {
   document.getElementById("btn-ai-style").classList.remove("d-none");
   document.getElementById("styleDataModalLabel").innerText = "Modifica Definizione";
   styleDataModalInstance.show();
-}
-
-// 1. Genera testo specifico Opera (una singola cella)
-async function generateSpecificTextWithAI() {
-  const aud = document.getElementById("tm-audience").value, len = document.getElementById("tm-length").value;
-  const textarea = document.getElementById("tm-textarea");
-  if (!tmCurrentWork) return;
-
-  const baseContext = document.getElementById("work-description")?.value || "Basati sulle tue conoscenze storiche.";
-  const prompt = `Scrivi la descrizione per l'opera "${tmCurrentWork.name}". Contesto: ${baseContext}. Registro linguistico: ${aud}. Lunghezza: ${len}. Restituisci SOLO ed ESCLUSIVAMENTE il testo finale, senza markdown.`;
-
-  textarea.value = "Generazione in corso...";
-  try {
-    const res = await fetch(`${API_BASE_URL}/ai/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
-    if (res.ok) textarea.value = (await res.json()).text;
-    else textarea.value = "Errore API.";
-  } catch (e) { textarea.value = "Errore di connessione."; }
 }
 
 // 2. Genera e riempie tutti i campi dell'Autore

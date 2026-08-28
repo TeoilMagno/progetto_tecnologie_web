@@ -2,19 +2,6 @@
 // MODULO FILTRI AVANZATI (Booking Style)
 // ==========================================
 
-let userCoords = null;
-let museumCoordsMap = {}; // Cache coordinate: { "museumId": {lat, lon} }
-
-let pristineMuseumsCache = [];
-let pristineCurrentPage = 1;
-let pristineTotalPages = 1;
-let isEntireDbInCache = false;
-
-let pristineWorksCache = [];
-let pristineWorkPage = 1;
-let pristineTotalWorkPages = 1;
-let isEntireWorksDbInCache = false;
-
 function initializeWorkFiltersDataFromApi(metadata) {
   if (!metadata) return;
   renderDynamicCheckboxes("filter-author-list", metadata.uniqueAuthors.sort(), "author");

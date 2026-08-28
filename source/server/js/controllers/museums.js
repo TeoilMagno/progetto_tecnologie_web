@@ -55,7 +55,7 @@ exports.getAllMuseums = async () => {
 };
 
 // funzione getMuseums scalabile
-exports.getMuseums = async (search, tags, freeEntry, maxPrice, services, day, lat, lon, maxDistance, page = 1, limit = 20) => {
+exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=null, services=null, day=null, lat=null, lon=null, maxDistance=null, page = 1, limit = 20) => {
   // 2. Costruiamo dinamicamente la query di MongoDB
   const query = {};
 
@@ -161,115 +161,47 @@ exports.uploadAllMuseums = async (data) => {
 };
 
 exports.saveMuseum = async (museumData, userId) => {
-  const { name, address, contact_email, contact_phone, image, tags, ticketPrice, sections, schedule, services, accessibility } = museumData;
+  const { name, address, contact_email, contact_phone, image, tags, ticketPrice, schedule, services, accessibility } = museumData;
 
-  // validazione modello
+  // 1. Validazione del modello solo con i dati base
   const museumToValidate = new Museum({
-    name,
-    address,
-    contact_email,
-    contact_phone,
-    image,
+    name, address, contact_email, contact_phone, image,
     tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags,
     ticketPrice: typeof ticketPrice === 'number' ? ticketPrice : 0,
-    schedule,
-    services,
-    accessibility
+    schedule, services, accessibility
   });
   
   await museumToValidate.validate();
 
-  // conversione indirizzo a coordinate tramite OpenStreetMap
+  // 2. Conversione indirizzo a coordinate tramite OpenStreetMap
   const coords = await geocodeAddress(museumData.address);
   museumToValidate.latitude = coords.lat;
   museumToValidate.longitude = coords.lon;
 
-  // Validazione di tutte le sezioni e opere
-  if (sections && sections.length > 0) {
-    for (const s of sections) {
-
-      const sectionToValidate = new Section({
-        name: s.name,
-        image: s.image,
-        museumId: new (require('mongoose')).Types.ObjectId() 
-      });
-      await sectionToValidate.validate();
-
-      if (s.works && s.works.length > 0) {
-        for (const w of s.works) {
-          const workToValidate = new Work({
-              ...w, 
-              museumId: new (require('mongoose')).Types.ObjectId(), // ID fittizio
-          });
-          await workToValidate.validate();
-        }
-      }
-    }
-  }
-
-  // salvataggio reale (eseguito solo se la validazione sopra ha avuto successo)
-  // Salviamo il museo per ottenere l'ID reale
+  // 3. Salvataggio reale del museo
   const museumResult = await museumToValidate.save();
   const museumId = museumResult._id;
-  let savedSectionIds = [];
-  let allSavedWorkIds = [];
 
-  if (sections && sections.length > 0) {
-    for (const s of sections) {
-      let workIds = [];
+  // 4. Creiamo la visita libera associata (con array opere vuoto, verranno aggiunte dopo)
+  const standardVisit = new (require("../models/visits"))({
+    title: "Visita libera",
+    description: "Ingresso base con accesso a tutte le opere in esposizione.",
+    museumId: museumResult._id,
+    creator: userId, 
+    price: museumResult.ticketPrice, 
+    isDraft: false, 
+    isPublic: true, 
+    visitType: 'standard', 
+    targetAudience: ['all'], 
+    accessibility: museumResult.accessibility || ['none'], 
+    works: [] // L'array parte vuoto
+  });
+  await standardVisit.save();
 
-      // Salviamo le opere
-      if (s.works && s.works.length > 0) {
-        const worksToInsert = s.works.map(work => ({
-            ...work,               
-            museumId: museumId     // sovrascriviamo il museumId reale
-        }));
-        const savedWorks = await Work.insertMany(worksToInsert);
-        workIds = savedWorks.map(w => w._id);
-
-        allSavedWorkIds.push(...workIds);
-      }
-
-      // Salviamo la sezione
-      const newSection = new Section({
-        name: s.name,
-        image: s.image,
-        works: workIds.map(id => ({ workId: id })),
-        museumId: museumId
-      });
-      
-      const savedSection = await newSection.save();
-      savedSectionIds.push(savedSection._id);
-    }
-
-    // aggiorniamo il museo con gli ID delle sezioni
-    museumResult.sections = savedSectionIds;
-    await museumResult.save();
-  }
-
-  // creiamo la visita libera associata
-    const standardVisit = new Visit({
-      title: "Visita libera",
-      description: "Ingresso base con accesso a tutte le opere in esposizione.",
-      museumId: museumResult._id, // Colleghiamo al nuovo museo
-      creator: userId, 
-      price: museumResult.ticketPrice, 
-      isDraft: false, 
-      isPublic: true, // Visibile a tutti da subito
-      visitType: 'standard', 
-      targetAudience: ['all'], 
-      accessibility: museumResult.accessibility || ['none'], // Ereditiamo dal museo
-      works: allSavedWorkIds
-    });
-
-    await standardVisit.save();
-
+  // 5. Assegniamo il museo al curatore
   if (userId) {
-    await User.findByIdAndUpdate(
-      userId,
-      { $push: { managed_museums: museumId } },
-      { returnDocument: 'after' }
-    );
+    const { User } = require("../models/users");
+    await User.findByIdAndUpdate(userId, { $push: { managed_museums: museumId } });
   }
 
   return museumId;

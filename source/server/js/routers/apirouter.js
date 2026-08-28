@@ -117,6 +117,23 @@ apiRouter.put("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (req, 
   }
 });
 
+// Recupera un museo
+apiRouter.get("/museums/:id", async (req, res) => {
+  try {
+    const museumId = req.params.id;
+    const museum = await Museum.findById(museumId);
+
+    if (!museum) {
+      return res.status(404).json({ error: "Museo non trovato" });
+    }
+
+    res.json(museum);
+  } catch (error) {
+    console.error("Errore recupero museo:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Elimina un museo
 apiRouter.delete("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
   try {
@@ -634,7 +651,7 @@ apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
   try {
     // Se è Admin, restituiamo TUTTI i musei del DB
     if (req.user.role === "admin") {
-      const allMuseums = await museumController.getAllMuseums();
+      const allMuseums = await museumController.getMuseums();
       return res.json(allMuseums);
     }
 
