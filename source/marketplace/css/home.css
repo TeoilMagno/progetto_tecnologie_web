@@ -1,0 +1,90 @@
+
+/* Background Animato */
+.animated-bg {
+  background: linear-gradient(-45deg, #0b0f19, #1a1625, #0f1c2e, #181124);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Testo con gradiente */
+.title-gradient {
+  background: linear-gradient(to right, #a855f7, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0px 10px 30px rgba(168, 85, 247, 0.3);
+}
+
+/* Glassmorphism di base */
+.glass-card {
+  background: rgba(20, 20, 30, 0.4) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-wrapper {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* Stile specifico Marketplace (Azzurro/Viola) */
+.card-marketplace {
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+.card-marketplace:hover {
+  transform: translateY(-10px);
+  border-color: rgba(59, 130, 246, 0.8) !important;
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+}
+.bg-marketplace {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+}
+
+/* Stile specifico Navigator (Arancio/Rosa) */
+.card-navigator {
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+}
+.card-navigator:hover {
+  transform: translateY(-10px);
+  border-color: rgba(249, 115, 22, 0.8) !important;
+  box-shadow: 0 20px 40px rgba(249, 115, 22, 0.2);
+}
+.bg-navigator {
+  background: linear-gradient(135deg, #f97316, #ec4899);
+}
+
+/* Decorative Blobs */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 0;
+  opacity: 0.4;
+}
+.blob-1 {
+  top: -10%; left: -10%;
+  width: 50vw; height: 50vw;
+  background: #3b82f6;
+  animation: float 20s infinite alternate ease-in-out;
+}
+.blob-2 {
+  bottom: -10%; right: -10%;
+  width: 40vw; height: 40vw;
+  background: #ec4899;
+  animation: float 15s infinite alternate-reverse ease-in-out;
+}
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(50px, 50px) scale(1.1); }
+}
