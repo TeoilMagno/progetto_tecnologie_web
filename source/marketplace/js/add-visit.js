@@ -1,6 +1,5 @@
 // Stato globale della visita in creazione
 let currentVisitCart = []; // Array che conterrà gli ID (o gli oggetti) delle opere
-let currentMuseumId = null;
 let editingVisitId = null;
 let isCurrentVisitDraft = true;
 let allMuseumWorks = [];
@@ -67,21 +66,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         searchInput.focus();
       } else {
         searchInput.value = "";
-        // Se la barra viene chiusa, mostriamo di nuovo tutto il catalogo
-        if (currentMuseumCatalog.length > 0) renderCatalog(currentMuseumCatalog);
+        // Usa l'array corretto
+        if (allMuseumWorks.length > 0) renderCatalog(allMuseumWorks); 
       }
     });
 
     searchInput.addEventListener("input", (e) => {
-      const query = e.target.value;
-      if (!currentMuseumId || currentMuseumCatalog.length === 0) return; 
+      const query = e.target.value.toLowerCase().trim();
+      // Usiamo l'array corretto (allMuseumWorks)
+      if (!currentMuseumId || allMuseumWorks.length === 0) return; 
       
-      // Filtriamo usando la fuzzySearch condivisa (Cerca per nome opera o nome autore)
-      const filtered = currentMuseumCatalog.filter(work => 
-        fuzzySearch(query, work.name) || 
-        (work.author && fuzzySearch(query, work.author))
+      const filtered = allMuseumWorks.filter(work => 
+        fuzzySearch(query, work.name || "") || 
+        (work.author && fuzzySearch(query, work.author || ""))
       );
-      renderCatalog(filtered);
+      renderCatalog(filtered); // Ora passeremo i risultati filtrati
     });
   }
 
@@ -357,8 +356,12 @@ async function loadMuseumWorks(museumId) {
 
   try {
     // 1. Fetch works
+    // 1. Fetch works
     const worksRes = await fetch(`${API_BASE_URL}/museums/${museumId}/works`);
-    allMuseumWorks = await worksRes.json();
+    const data = await worksRes.json();
+    
+    // Estraiamo l'array delle opere dall'oggetto paginato (con fallback di sicurezza se il DB risponde col vecchio formato)
+    allMuseumWorks = data.works || (Array.isArray(data) ? data : []);
 
     // 2. Fetch sections
     try {
@@ -378,12 +381,12 @@ async function loadMuseumWorks(museumId) {
   }
 }
 
-function renderCatalog() {
+function renderCatalog(worksToRender = allMuseumWorks) {
   const catalogArea = document.getElementById("works-catalog-area");
   if (!catalogArea) return;
 
-  if (allMuseumWorks.length === 0) {
-    catalogArea.innerHTML = `<p class="text-secondary col-12">Questo museo non ha ancora opere disponibili.</p>`;
+  if (worksToRender.length === 0) {
+    catalogArea.innerHTML = `<p class="text-secondary col-12 mt-3">Nessuna opera trovata.</p>`;
     return;
   }
 
@@ -406,7 +409,7 @@ function renderCatalog() {
   // Raggruppa le opere per Sezione e poi per Stanza
   const groups = {}; // { sectionName: { sectionImage, rooms: { roomName: [works...] } } }
 
-  allMuseumWorks.forEach(work => {
+  worksToRender.forEach(work => {
     const roomInfo = roomMap[work.roomId];
     const secName = roomInfo ? roomInfo.sectionName : "Opere non collocate";
     const secImg = roomInfo ? roomInfo.sectionImage : "/img/fallback-section.jpg";
@@ -527,7 +530,7 @@ async function showMuseumSelector() {
   `;
 
   try {
-    const res = await fetch(`${API_BASE_URL}/museums`);
+    const res = await fetch(`${API_BASE_URL}/museums-list`);
     const museums = await res.json();
 
     // Ora Tom Select troverà il tag e lo trasformerà!
