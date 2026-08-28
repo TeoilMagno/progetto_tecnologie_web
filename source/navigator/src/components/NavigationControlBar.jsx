@@ -10,8 +10,6 @@ export default function NavigationControlBar({
   onStartVisit,
   playMode,
   setPlayMode,
-  inputMode,
-  setInputMode,
   onSpeak,
   isSharedSession,
   isTeacher,
@@ -58,8 +56,8 @@ export default function NavigationControlBar({
           </div>
         ) : (
           <>
-            <button 
-              onClick={onPrev} 
+            <button
+              onClick={onPrev}
               className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[120px] px-3 md:px-4 py-2 border border-white/20 rounded-full text-white hover:bg-white/10 text-xs md:text-sm transition-colors disabled:opacity-50 cursor-pointer"
               disabled={currentWorkIndex < 0}
             >
@@ -94,37 +92,19 @@ export default function NavigationControlBar({
         <div className="flex overflow-hidden rounded-full border border-white/15 w-full md:w-auto">
           <button 
             type="button" 
-            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${playMode === 'read' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
-            onClick={() => setPlayMode('read')}
+            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${playMode === false ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
+            onClick={() => setPlayMode(false)}
           >
             <BookOpen size={14} /> Leggi
           </button>
           <button 
             type="button" 
-            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${playMode === 'listen' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
-            onClick={() => onSpeak(`Descrizione opera: ${currentWork?.description?.[expertiseLevel]?.[currentLength]}`)}
+            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${playMode === true ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
+            onClick={() => setPlayMode(true)}
           >
             <Volume2 size={14} /> Ascolta
           </button>
         </div>
-
-        <div className="flex overflow-hidden rounded-full border border-white/15 w-full md:w-auto">
-          <button 
-            type="button" 
-            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${inputMode === 'write' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
-            onClick={() => setInputMode('write')}
-          >
-            <Keyboard size={14} /> Scrivi
-          </button>
-          <button 
-            type="button" 
-            className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors ${inputMode === 'speak' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'} cursor-pointer`}
-            onClick={() => setInputMode('speak')}
-          >
-            <Mic size={14} /> Parla
-          </button>
-        </div>
-      </div>
 
       {isSharedSession && isTeacher && (
           <button 
@@ -136,6 +116,7 @@ export default function NavigationControlBar({
           </button>
         )}
 
+      </div>
     </div>
   );
 }

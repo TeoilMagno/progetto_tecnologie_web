@@ -25,8 +25,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
   const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);
   const [detailsWork, setDetailsWork] = useState(null);
-  const [playMode, setPlayMode] = useState("read"); 
-  const [inputMode, setInputMode] = useState("write"); 
+  // playMode: usato per la sintesi vocale
+  const [playMode, setPlayMode] = useState(false); 
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
   const [visitQuiz, setVisitQuiz] = useState([]);
@@ -154,14 +154,14 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const speakText = (textToRead) => {
     window.speechSynthesis.cancel();
     if (!textToRead) {
-      setPlayMode("read");
+      setPlayMode(false);
       return;
     }
-    setPlayMode("listen");
+    setPlayMode(true);
     const utterance = new SpeechSynthesisUtterance(textToRead);
     utterance.lang = "it-IT";
     utterance.rate = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
-    utterance.onend = () => setPlayMode("read");
+    utterance.onend = () => setPlayMode(false);
     window.speechSynthesis.speak(utterance);
   };
 
@@ -529,8 +529,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         }}
         playMode={playMode}
         setPlayMode={setPlayMode}
-        inputMode={inputMode}
-        setInputMode={setInputMode}
         onSpeak={speakText}
         isSharedSession={isSharedSession}
         isTeacher={isTeacher}
@@ -619,6 +617,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           setCurrentExpertise={setExpertiseLevel}
           currentLength={currentLength}
           setCurrentLength={setCurrentLength}
+          playMode={playMode}
         />
       )}
 

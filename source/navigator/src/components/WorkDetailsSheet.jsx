@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Volume, VolumeX, Mic, X, Sparkles } from "lucide-react";
 import { API_BASE_URL } from "../config";
 
-export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, currentExpertise, setCurrentExpertise, currentLength, setCurrentLength }) {
+export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, currentExpertise, setCurrentExpertise, currentLength, setCurrentLength, playMode }) {
   // --- LOGICA TRASCINAMENTO BOTTOM SHEET ---
   const [dragStartY, setDragStartY] = useState(null);
   const [dragCurrentY, setDragCurrentY] = useState(0);
@@ -44,7 +44,8 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, 
 
       if (textToSpeak) {
         setCurrentLength(nextLength);
-        onSpeak(textToSpeak);
+        if(playMode)
+          onSpeak(textToSpeak);
       } else {
         onSpeak("Mi dispiace, ma non ho ulteriori dettagli scritti per quest'opera.");
       }
@@ -59,7 +60,8 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, 
 
       if (textToSpeak) {
         setCurrentLength(prevLength);
-        onSpeak(textToSpeak);
+        if(playMode)
+          onSpeak(textToSpeak);
       } else {
         onSpeak("Non ci sono versioni più brevi di questa descrizione.");
       }
@@ -74,7 +76,8 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, 
 
       if (textToSpeak) {
         setCurrentExpertise(nextExpertise);
-        onSpeak(textToSpeak);
+        if(playMode)
+          onSpeak(textToSpeak);
       } else {
         onSpeak("Mi dispiace, ma non ho una spiegazione più tecnica per quest'opera a questa lunghezza.");
       }
@@ -89,7 +92,8 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, 
 
       if (textToSpeak) {
         setCurrentExpertise(prevExpertise);
-        onSpeak(textToSpeak);
+        if(playMode)
+          onSpeak(textToSpeak);
       } else {
         onSpeak("Non riesco a semplificare ulteriormente questa spiegazione.");
       }
@@ -99,7 +103,8 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, 
   const handleFunFact = () => {
     if(work.funFact) {
       setShowFunFact(true);
-      onSpeak(`ecco una curiosità su quest'opera: ${work.funFact}`);
+      if(playMode)
+        onSpeak(`ecco una curiosità su quest'opera: ${work.funFact}`);
     } else {
       onSpeak(`mi dispiace ma non ho curiosità interessanti riguardanti quest'opera`);
     }
