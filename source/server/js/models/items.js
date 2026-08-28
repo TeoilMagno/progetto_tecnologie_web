@@ -31,20 +31,21 @@ const itemSchema = new Schema({
 
   quantity: {
     type: Number,
+    default: 0,
     required: true
   },
 
-  category: { 
-    type: String, 
+  category: {
+    type: String,
     enum: ['book', 'gadget', 'jewelry', 'stationery', 'clothing', 'other'], // stationary -> cancelleria
     default: 'other'
   },
 
-  targetAge: [{ 
-    type: [String], 
-    enum: ['0-3','4-7','8-12','teens','adults','all'],
-    default: ['all'] // es. ['0-3', '4-7', 'adults', 'all']
-  }]
+  targetAge: {
+    type: String,
+    enum: ['kids','teens','adults','all'],
+    default: 'all'
+  }
 });
 
 

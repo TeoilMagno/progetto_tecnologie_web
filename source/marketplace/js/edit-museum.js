@@ -42,7 +42,7 @@ async function loadMuseumDetails() {
   try {
     const res = await fetch(`${API_BASE_URL}/museums`);
     const museums = await res.json();
-    currentMuseumData = museums.find((m) => m._id === currentMuseumId);
+    currentMuseumData = museums.museums.find((m) => m._id === currentMuseumId);
 
     if (!currentMuseumData) { alert("Museo non trovato."); return; }
 

@@ -13,10 +13,22 @@ const authorSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Museum'
     }],
-    bio: { type: String }, // Biografia scritta dal curatore
-    bd: { type: String },  // Birth and Death 
-    studies: { type: String }, // Formazione/Studi
-    mainWorks: { type: String }
+    bio: {
+      type: String,
+      required: true
+    }, // Biografia scritta dal curatore
+    bd: {
+      type: String,
+      required: true
+    },  // Birth and Death 
+    studies: {
+      type: String,
+      required: true
+    }, // Formazione/Studi
+    mainWorks: {
+      type: String,
+      required: true
+    }
   }]
 });
 

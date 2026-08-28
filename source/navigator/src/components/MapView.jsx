@@ -37,13 +37,19 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
   // Livello di dettaglio della descrizione
   const [expertiseLevel, setExpertiseLevel] = useState("medium");
+  const [currentLength, setCurrentLength] = useState("medium");
 
   //Domande per assistente vocale
   const [commandsMap, setCommandsMap] = useState(null);
 
+  //variabili temporali per suggerire opere extra
+  const [visitBeginTime, setVisitBeginTime] = useState(null);
+  const [visitEndTime, setVisitEndTime] = useState(null);
+  const [visitDurationTime, setVisitDurationTime] = useState(null);
+  const [maxDurationTime, setMaxDurationTime] = useState(null);
+
   const isSharedSession = Boolean(roomCode);
-  //lunghezza descrizione opera
-  const currentLength = "medium";
+
 
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
   
@@ -81,9 +87,16 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         setCommandsMap(dictionary);
 
         //setta il livello di difficoltà della visita
-        if(userData)
-          setExpertiseLevel(userData.expertiseLevel);
+        if(userData.preferences.expertiseLevel)
+          setExpertiseLevel(userData.preferences.expertiseLevel || 'medium');
+
+        //setta la lunghezza delle descrizioni delle opere
+        if(visitData.preferredLength)
+            setCurrentLength(visitData.preferredLength || "medium");
         
+        if(visitData.maxDuration)
+          setMaxDurationTime(visitData.maxDuration || null);
+
         // Controllo di sicurezza: ci assicuriamo che works sia un array
         const worksArray = Array.isArray(visitData.works) ? visitData.works : [];
         setVisitedWorks(worksArray);
@@ -290,16 +303,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       if (isSharedSession && isTeacher && socket) {
         socket.emit("change_artwork", { roomCode, artworkId: activeWork._id });
       }
-    } else {
-      const remainingWorks = allMuseumWorks.filter(w => !visitedWorks.some(vw => vw._id === w._id));
-      const shuffled = [...remainingWorks].sort(() => 0.5 - Math.random());
-      setSuggestedWorks(shuffled.slice(0, 3));
-      setShowEndModal(true);
-
-      // Se è l'insegnante ad aver finito, avvisa il server per far comparire il modale agli studenti
-      if (isSharedSession && isTeacher && socket) {
-        socket.emit("end_shared_visit", { roomCode });
-      }
     }
   };
 
@@ -330,6 +333,68 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     } else if (currentWorkIndex === 0) {
       setCurrentWorkIndex(-1);
       setSelectedSection(null);
+    }
+  };
+
+  const handleEndVisit = async () => {
+    // 1. Calcolo del tempo
+    const endTime = Date.now();
+    setVisitEndTime(endTime);
+    const elapsedMilliseconds = endTime - visitBeginTime;
+    const elapsedMinutes = Math.floor(elapsedMilliseconds / 1000 / 60);
+
+    // 2. Troviamo le opere rimanenti
+    const remainingWorks = allMuseumWorks.filter(w => !visitedWorks.some(vw => vw._id === w._id));
+
+    if (remainingWorks.length > 0) {
+      const READING_TIMES = {
+        short: 3 / 60,
+        medium: 15 / 60,
+        long: 1,
+        exhaustive: 4
+      };
+
+      const payloadForAI = {
+        seen: visitedWorks.map(w => ({ name: w.name, author: w.authorName, style: w.styleName })),
+        available: remainingWorks.map(w => ({ id: w._id, name: w.name, author: w.authorName, style: w.styleName })),
+        remaining_time: maxDurationTime - elapsedMinutes,
+        duration: READING_TIMES[currentLength]
+      };
+
+      try {
+        //Chiamata API ad AI per richiedere delle opere da visionare inerti alla visita volta
+        const aiResponse = await fetch(`${API_BASE_URL}/ai/suggested-works`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ payloadForAI: payloadForAI }) // Assicurati che backend legga req.body.payloadForAI
+        });
+
+        if (!aiResponse.ok) {
+          throw new Error(suggestedWorksData.error || "Il server ha risposto con un errore");
+        }
+        
+        const suggestedWorksData = await aiResponse.json();
+
+        const recomendedIds = suggestedWorksData.works;
+
+        const finalSuggestedWorks = remainingWorks.filter(work => 
+          recomendedIds.includes(work._id.toString())
+        );
+        
+        if(finalSuggestedWorks.length > 0) {
+          console.log("Opere complete suggerite:", finalSuggestedWorks);
+          //operazione di spread per aggiungere il lavori suggeriti a visitedWorks in modo da riutilizzare gli altri componenti
+          setVisitedWorks(prevWorks => [...prevWorks, ...finalSuggestedWorks]);
+          alert(`Dato che hai ancora ${maxDurationTime - elapsedMinutes} minuti prima della conclusione della visita, suggeriamo di visionare altre ${finalSuggestedWorks.length} opere inerenti alla visita eseguita. Premi "Prossima" per continuare!`);
+        } else {
+          alert('Siamo spiacenti, ma non abbiamo altre opere di cui consigliare la visione');
+        }
+      } catch (error) { //c'è stato qualche problema con la richiesta all'AI
+        alert("Non ci sono altre opere da vedere inerenti alla visita fatta. " + error.message);
+      }
+    } else {
+      // Se l'utente ha visto letteralmente tutto il museo
+      alert("Complimenti! Hai visto tutte le opere del museo.");
     }
   };
 
@@ -446,7 +511,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         visitedWorks={visitedWorks}
         onPrev={handlePrev}
         onNext={handleNext}
+        onEndVisit={handleEndVisit}
         onStartVisit={() => {
+          setVisitBeginTime(Date.now());
           if (visitedWorks.length > 0) {
             setCurrentWorkIndex(0);
             if (hasMap) {
@@ -548,7 +615,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           onClose={() => setDetailsWork(null)}
           onSpeak={speakText}
           commandsMap={commandsMap}
-          expertiseLevel={expertiseLevel}
+          currentExpertise={expertiseLevel}
+          setCurrentExpertise={setExpertiseLevel}
+          currentLength={currentLength}
+          setCurrentLength={setCurrentLength}
         />
       )}
 

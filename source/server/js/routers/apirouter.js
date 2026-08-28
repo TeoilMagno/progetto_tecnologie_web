@@ -9,7 +9,7 @@ const fs = require('fs').promises;
 const path = require("path");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const axios = require("axios");
+// const axios = require("axios");
 const crypto = require("crypto");
 
 // Models
@@ -511,19 +511,20 @@ apiRouter.get("/search-wikimedia", auth.isCurator, async (req, res) => {
     const query = req.query.q;
     if (!query) return res.status(400).json({ error: "Testo di ricerca mancante" });
 
-    // Interroga le API di Wikimedia Commons
     const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=url&format=json`;
     
-    // AGGIUNTA LA MAGIA: User-Agent anche per la ricerca!
-    const response = await axios.get(url, {
+    const response = await fetch(url, {
+      method: 'GET', // Opzionale, è il default
       headers: {
         'User-Agent': 'ArtAround (progetto universitario)'
       }
     });
     
-    const pages = response.data.query?.pages || {};
+    // CORREZIONE: Con fetch dobbiamo parsare il JSON esplicitamente
+    const data = await response.json(); 
     
-    // Estraiamo solo gli URL originali delle immagini trovate
+    const pages = data.query?.pages || {};
+    
     const imageUrls = Object.values(pages)
       .map(page => page.imageinfo?.[0]?.url)
       .filter(url => url != null);
@@ -541,23 +542,26 @@ apiRouter.post("/download-external-image", auth.isCurator, async (req, res) => {
     const { url } = req.body;
     if (!url) return res.status(400).json({ error: "URL mancante" });
 
-    const response = await axios({ 
-      url, 
-      responseType: 'arraybuffer',
-      headers: {
-        'User-Agent': 'ArtAround (progetto universitario)'
-      }
+    // CORREZIONE: Per scaricare file serve una GET. Tolto responseType.
+    const response = await fetch(url, {
+      method: 'GET', 
+      headers: { 'User-Agent': 'ArtAround (progetto universitario)' }
     });
     
-    // Ricaviamo l'estensione (es. .jpg, .png)
-    const contentType = response.headers['content-type'];
+    if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
+    
+    // CORREZIONE: In fetch gli header si leggono con il metodo .get()
+    const contentType = response.headers.get('content-type');
     const ext = contentType ? '.' + contentType.split('/')[1] : '.jpg';
     
     const filename = `ext-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${ext}`;
     const filePath = path.join(__dirname, '..', '..', '..', 'uploads', filename);
 
-    // Scrive il file sul disco del server
-    await fs.writeFile(filePath, response.data);
+    // CORREZIONE: Estraiamo l'arrayBuffer e lo convertiamo in Buffer per Node.js
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    await fs.writeFile(filePath, buffer);
 
     res.json({ url: `/uploads/${filename}` });
   } catch (error) {
@@ -1032,7 +1036,7 @@ apiRouter.put("/styles/:id/data/:dataId/adopt", auth.isCurator, async (req, res)
   }
 });
 
-// ----------------------- ai ----------------------------
+// ----------------------- AI ----------------------------
 
 // Rotta per generare testi con l'IA (protetta per i soli curatori/admin)
 apiRouter.post("/ai/generate", auth.isCurator, async (req, res) => {
@@ -1102,6 +1106,19 @@ apiRouter.post("/ai/map-request", async (req,res) => {
 
     const mapped_request = await aiController.mapRequest(prompt);
     res.status(200).json(mapped_request);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+apiRouter.post("/ai/suggested-works", async (req,res) => {
+  try {
+      const { payloadForAI } = req.body;
+
+    if(!payloadForAI) return res.status(400).json({ error: "la richiesta è vuota"});
+
+    const suggested_works = await aiController.suggestWorks(payloadForAI);
+    res.status(200).json(suggested_works);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

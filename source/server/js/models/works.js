@@ -13,7 +13,11 @@ const workSchema = new Schema({
     ref: 'Author',
     required: true
   },
-  authorName: { type: String },
+
+  authorName: {
+    type: String,
+    required: true
+  },
 
   technique: { // tecnica es. dipinto a olio, scultura, ecc
     type: String,
@@ -22,9 +26,14 @@ const workSchema = new Schema({
 
   style: { // riferimento al movimento/stile es. Barocco, Cubismo
     type: Schema.Types.ObjectId,
-    ref: 'Style'
+    ref: 'Style',
+    required: true
   },
-  styleName: { type: String },
+
+  styleName: {
+    type: String,
+    required: true
+  },
 
   year: {
     type: String,
@@ -63,16 +72,18 @@ const workSchema = new Schema({
     }
   },
 
-  funFact: { type: String }, // Curiosità 
+  funFact: { type: String }, // Curiosità
   paraphrase: { type: String }, // Parafrasi o spiegazione semplificata dell'opera
   
   museumId: {
     type: Schema.Types.ObjectId,
-    ref: 'Museum'
+    ref: 'Museum',
+    required: true
   },
 
   roomId: {
-    type: Schema.Types.ObjectId
+    type: Schema.Types.ObjectId,
+    required: true
   },
 
   adoptionId: {

@@ -16,7 +16,6 @@ const visitSchema = new mongoose.Schema({
     isPublic: { type: Boolean, default: false }, // true = pubblica sul marketplace, false = privata
     duration: { type: Number, default: 0 }, // Durata stimata in minuti
     maxDuration: { type: Number, default: 0 }, // Tempo a disposizione per la visita (serve per i suggerimenti a fine visita); default 0 significa che non ha limiti di tempo
-    language: { type: String, default: 'it' },
     coverImage: { type: String }, // Immagine di anteprima per la card nel marketplace
     
     // lunghezza della visita -> calcolato dinamicamente alla creazione e durante l'esecuzione della visita
@@ -34,25 +33,24 @@ const visitSchema = new mongoose.Schema({
     },
     
     // standard -> visita libera
-    visitType: { 
-        type: String, 
-        enum: ['standard', 'custom'], 
+    visitType: {
+        type: String,
+        enum: ['standard', 'custom'],
         default: 'custom' // Tutte le visite create dagli utenti saranno 'custom'
     },
 
-    targetAudience: { 
-      type: [String], 
+    targetAudience: {
+      type: [String],
       enum: ['kids', 'families', 'adults', 'schools', 'all']
     },
 
-    accessibility: [{ 
-        type: String, 
+    accessibility: [{
+        type: String,
         enum: [
-            'wheelchair_accessible', 
-            'blind_friendly', 
-            'deaf_friendly', 
-            'dsa_friendly', 
-            'sensory_friendly', 
+            'wheelchair_accessible',
+            'blind_friendly',
+            'deaf_friendly',
+            'dsa_friendly',
             'none'
         ]
     }],

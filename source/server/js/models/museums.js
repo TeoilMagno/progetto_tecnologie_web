@@ -2,6 +2,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const servicesSchema = new Schema({
+  services: {
+    type: String,
+    enum: ['bathrooms','cafe','restaurant','bookshop','cloakroom','info_desk','elevator','ramp','seating_area','first_aid','parking']
+  }
+});
+
 const museumSchema = new Schema({
   name: {
     type: String,
@@ -36,6 +43,7 @@ const museumSchema = new Schema({
   sections: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Section',
+    required: true
   }],
 
   image: {
@@ -51,18 +59,17 @@ const museumSchema = new Schema({
   ticketPrice: { type: Number, default: 0 },
 
   // I servizi offerti a livello generale (piu' facile da filtrare di facilities)
-  services: [{ 
-    type: String, 
-    enum: ['bathrooms', 'cafe', 'cloakroom', 'accessibility_ramp', 'wifi'] 
+  services: [{
+    type: servicesSchema,
   }],
 
   // Mappatura geometrica dei servizi sulla mappa SVG (Simile alle opere nelle sezioni)
   // Se un servizio non e' fisico, i relativi campi saranno impostati a null
   facilities: [{
-    roomId: { type: Schema.Types.ObjectId }, 
-    serviceType: { 
-      type: String, 
-      enum: ['bathrooms','cafe','restaurant','bookshop','cloakroom','info_desk','elevator','ramp','seating_area','first_aid','parking']},
+    roomId: { type: Schema.Types.ObjectId },
+    serviceType: {
+      type: servicesSchema,
+    },
     x: { type: Number },
     y: { type: Number },
     inSection: {
@@ -72,8 +79,8 @@ const museumSchema = new Schema({
     }
   }],
 
-  accessibility: [{ 
-    type: String, 
+  accessibility: [{
+    type: String,
     enum: [
       'wheelchair_accessible', 
       'blind_friendly', 

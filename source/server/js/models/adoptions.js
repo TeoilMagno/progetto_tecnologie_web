@@ -45,13 +45,15 @@ const adoptionSchema = new Schema({
 
   // dobbiamo sapere da dove proviene l'opera
   fromRoomId: {
-    type: mongoose.Schema.Types.ObjectId
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
   },
   toRoomId: {
-    type: mongoose.Schema.Types.ObjectId
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
   },
 
-  status: { 
+  status: {
     type: String, 
     enum: ['pending', 'completed', 'accepted', 'refused', 'active' ],
     //pending: è stata fatta richiesta al curatore che possiede l'opera

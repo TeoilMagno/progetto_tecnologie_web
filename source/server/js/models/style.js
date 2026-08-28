@@ -12,7 +12,10 @@ const styleSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Museum'
     }],
-    description: { type: String } // La definizione dello stile secondo il curatore
+    description: {
+      type: String,
+      required: true
+    } // La definizione dello stile secondo il curatore
   }]
 });
 
