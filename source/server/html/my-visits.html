@@ -7,6 +7,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+    <link href="/vendor/tom-select/css/tom-select.css" rel="stylesheet">
     <link rel="stylesheet" href="/marketplace/css/visits.css" />
     <link rel="stylesheet" href="/marketplace/css/style.css" />
   </head>
@@ -25,12 +26,19 @@
       </div>
       
       <div class="d-flex align-items-center">
+        <!-- Bottone Filtri -->
+        <button class="btn text-white me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar">
+          <i class="bi bi-funnel fs-5"></i>
+        </button>
+
+        <!-- Bottone Carrello -->
         <button class="btn text-white position-relative me-3" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
           <i class="bi bi-cart3 fs-4"></i>
           <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
             0
           </span>
         </button>
+
         <div id="user-area" class="text-white small d-flex align-items-center gap-2"></div>
       </div>
     </header>
@@ -62,8 +70,40 @@
       </div>
     </div>
 
+    <!-- Pannello Laterale Filtri (Spostato qui) -->
+    <div class="offcanvas offcanvas-start glass-modal text-white pt-3 px-3" tabindex="-1" id="filterSidebar" aria-labelledby="filterSidebarLabel" style="background-color: #121216 !important; width: 300px;">
+    </div>
+
+    <!-- Pannello Laterale Carrello (Mancante) -->
+    <div class="offcanvas offcanvas-end glass-modal text-white" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel" style="background-color: #121216 !important;">
+      <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+        <h5 class="offcanvas-title fw-bold" id="cartOffcanvasLabel"><i class="bi bi-cart3 me-2 text-info"></i>Il tuo Carrello</h5>
+        <button type="button" class="btn-close custom-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <div id="cart-items-list" class="flex-grow-1 overflow-auto pe-1">
+          <!-- Gli elementi del carrello verranno iniettati qui da cart.js -->
+        </div>
+        <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-secondary small fw-bold uppercase">Totale:</span>
+            <span class="fs-5 text-info fw-bold" id="cart-total">€ 0.00</span>
+          </div>
+          <button class="btn btn-gradient w-100 py-2" onclick="goToCheckout()">
+            Procedi all'acquisto <i class="bi bi-arrow-right ms-1"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/tom-select/js/tom-select.complete.min.js"></script>
+    <script src="/vendor/imask/imask.js"></script>
     <script src="/marketplace/js/config.js"></script>
+    <script src="/marketplace/js/cart.js"></script>
+    <script src="/marketplace/js/search-bar.js"></script>
+    <script src="/marketplace/js/filters.js"></script>
+    <script src="/marketplace/js/sidebar.js"></script>
     <script src="/marketplace/js/visits-ui.js"></script>
     <script src="/marketplace/js/personal-area.js"></script>
     <script>

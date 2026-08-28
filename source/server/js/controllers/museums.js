@@ -6,6 +6,8 @@ const Visit = require("../models/visits");
 const Author = require("../models/author");
 const Style = require("../models/style");
 
+const { deleteLocalFile } = require("../utils/file-helper");
+
 // va riscritta anche se c'e' gia' in config.js
 // Funzione helper per tradurre l'indirizzo in coordinate
 async function geocodeAddress(address) {
@@ -33,6 +35,16 @@ async function geocodeAddress(address) {
   return { lat: null, lon: null };
 }
 
+// AGGIUNTA: Formula di Haversine in fondo al file
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  if (!lat1 || !lon1 || !lat2 || !lon2) return 9999;
+  const R = 6371; // Raggio della Terra in km
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+}
+
 // utilizzato da admin
 exports.getAllMuseums = async () => {
   try {
@@ -41,6 +53,94 @@ exports.getAllMuseums = async () => {
     throw err;
   }
 };
+
+// funzione getMuseums scalabile
+exports.getMuseums = async (search, tags, freeEntry, maxPrice, services, day, lat, lon, maxDistance, page = 1, limit = 20) => {
+  // 2. Costruiamo dinamicamente la query di MongoDB
+  const query = {};
+
+  // Ricerca Testuale (Nome o Indirizzo)
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { address: { $regex: search, $options: 'i' } }
+    ];
+  }
+
+  // Filtro Stili / Tag (Match se il museo ne contiene almeno uno tra quelli scelti)
+  if (tags) {
+    const tagsArray = tags.split(',');
+    query.tags = { $in: tagsArray };
+  }
+
+  // Prezzo (Gratis o con un tetto massimo)
+  if (freeEntry === 'true') {
+    // Per coprire i casi in cui il prezzo è 0, null o non specificato
+    query.$or = [{ ticketPrice: 0 }, { ticketPrice: null }, { ticketPrice: { $exists: false } }];
+  } else if (maxPrice && parseInt(maxPrice) < 50) {
+    query.ticketPrice = { $lte: parseInt(maxPrice) };
+  }
+
+  // Servizi (Il museo deve averli TUTTI quelli spuntati)
+  if (services) {
+    const servicesArray = services.split(',');
+    query.services = { $all: servicesArray };
+  }
+
+  // Giorni di apertura (Cerca dentro l'array di oggetti schedule)
+  if (day) {
+    query.schedule = { $elemMatch: { day: day } };
+  }
+
+  let museums = [];
+    let total = 0;
+
+    // 3. Logica di Distanza (Geolocalizzazione)
+    if (lat && lon) {
+      /* 
+         APPROCCIO IBRIDO SICURO: Per non forzarti a ristrutturare il database 
+         inserendo indici geospaziali 2dsphere (che richiedono un formato GeoJSON rigido),
+         usiamo una query classica e poi calcoliamo la distanza sui risultati in memoria.
+         (Su qualche migliaio di musei è fulmineo).
+      */
+      const allFiltered = await Museum.find(query); // Mongoose model (es. Museum)
+      const userLat = parseFloat(lat);
+      const userLon = parseFloat(lon);
+      const maxDist = parseInt(maxDistance) || 500;
+
+      // Calcola distanza, filtra e ordina dal più vicino
+      const sorted = allFiltered.map(m => {
+        const d = getDistanceFromLatLonInKm(userLat, userLon, m.latitude, m.longitude);
+        return { ...m.toObject(), tempDistance: d };
+      })
+      .filter(m => maxDist >= 500 || m.tempDistance <= maxDist)
+      .sort((a, b) => (a.tempDistance || 0) - (b.tempDistance || 0));
+
+      // Paginazione "manuale" sull'array ordinato
+      total = sorted.length;
+      const startIndex = (page - 1) * limit;
+      museums = sorted.slice(startIndex, startIndex + Number(limit));
+
+    } else {
+      /*
+         APPROCCIO SCALABILE PURO: Se non c'è il GPS attivo, deleghiamo la paginazione 
+         direttamente a MongoDB (altamente scalabile, regge milioni di record).
+      */
+      total = await Museum.countDocuments(query);
+      museums = await Museum.find(query)
+                            .sort({ createdAt: -1, _id: 1 }) // AGGIUNTO IL TIE-BREAKER!
+                            .skip((page - 1) * limit)
+                            .limit(Number(limit));
+    }
+
+    // 4. Risposta al frontend con metadati per l'infinite scroll
+    return({
+      museums,
+      total,
+      page: Number(page),
+      totalPages: Math.ceil(total / limit)
+    });
+}
 
 exports.uploadAllMuseums = async (data) => {
   try {
@@ -168,7 +268,7 @@ exports.saveMuseum = async (museumData, userId) => {
     await User.findByIdAndUpdate(
       userId,
       { $push: { managed_museums: museumId } },
-      { new: true }
+      { returnDocument: 'after' }
     );
   }
 
@@ -176,7 +276,12 @@ exports.saveMuseum = async (museumData, userId) => {
 };
 
 exports.updateMuseum = async (museumId, updateData) => {
-  const updatedMuseum = await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
+  const updatedMuseum = await Museum.findById(museumId);
+
+  if (updatedMuseum && updatedMuseum.image && updatedMuseum.image !== updateData.image){
+    await deleteLocalFile(updatedMuseum.image);
+  }
+
   // Se il curatore ha modificato il prezzo, sincronizziamo la visita libera
   if (updateData.ticketPrice !== undefined) {
     const Visit = require("../models/visits");
@@ -193,14 +298,14 @@ exports.updateMuseum = async (museumId, updateData) => {
     updateData.longitude = coords.lon;
   }
 
-  return await Museum.findByIdAndUpdate(museumId, updateData, { new: true, runValidators: true });
+  return await Museum.findByIdAndUpdate(museumId, updateData, { returnDocument: 'after', runValidators: true });
 };
 
 exports.removeSectionFromMuseum = async (museumId, sectionId) => {
   return await Museum.findByIdAndUpdate(
     museumId,
     { $pull: { sections: sectionId } },
-    { new: true }
+    { returnDocument: 'after' }
   );
 };
 
@@ -213,6 +318,8 @@ exports.deleteMuseumById = async (museumId) => {
     error.statusCode = 404;
     throw error;
   }
+
+  if(museum?.image) await deleteLocalFile(museum.image);
 
   // eliminiamo tutte le sezioni (e relative opere) collegate a questo museo
   if (museum.sections && museum.sections.length > 0) {

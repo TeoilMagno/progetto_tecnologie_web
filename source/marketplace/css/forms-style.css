@@ -90,3 +90,27 @@
 .divider-top {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* --- Stile personalizzato per gli input di tipo number (Prezzo, ecc.) --- */
+
+input[type="number"].glass-input {
+    /* Forza il browser a usare l'interfaccia nativa in modalità dark */
+    color-scheme: dark; 
+}
+
+/* Personalizzazione per Chrome, Safari e Edge */
+input[type="number"].glass-input::-webkit-inner-spin-button,
+input[type="number"].glass-input::-webkit-outer-spin-button {
+    /* Rende le freccette semi-trasparenti per un effetto "vetro" */
+    opacity: 0.4; 
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+    /* Opzionale: se le vuoi colorare col tuo verde/azzurro puoi usare un filtro */
+    /* filter: sepia(1) hue-rotate(180deg) saturate(100%); */
+}
+
+input[type="number"].glass-input::-webkit-inner-spin-button:hover,
+input[type="number"].glass-input::-webkit-outer-spin-button:hover {
+    /* Si illuminano quando l'utente ci passa sopra col mouse */
+    opacity: 1; 
+}

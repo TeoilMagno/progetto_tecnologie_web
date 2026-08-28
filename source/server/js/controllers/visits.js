@@ -1,6 +1,8 @@
 const Visit = require("../models/visits");
 const Work = require("../models/works");
+const { User } = require("../models/users")
 const { calculateVisitDuration, recommendLengthForTime } = require('../utils/visitCalculator')
+const { deleteLocalFile } = require("../utils/file-helper");
 
 exports.getAllVisits = async () => {
   try {
@@ -38,8 +40,10 @@ exports.createVisit = async (visitPayload, user) => {
     isDraft,
     isPublic,
     duration,
+    maxDuration,
     language,
     preferredLength,
+    expertiseLevel,
     targetAudience, 
     accessibility,  
     coverImage,
@@ -54,7 +58,9 @@ exports.createVisit = async (visitPayload, user) => {
     creator: user._id, // Preso automaticamente dalla sessione
     works,
     duration,
+    maxDuration,
     preferredLength,
+    expertiseLevel,
     language: language || "it",
   };
 
@@ -79,9 +85,17 @@ exports.createVisit = async (visitPayload, user) => {
     visitData.isPublic = false; // Sempre privata, non va sul marketplace
   }
 
-  console.log("PAYLOAD PULITO PRIMA DEL SALVATAGGIO:", visitData);
   const newVisit = new Visit(visitData);
-  return await newVisit.save();
+  const savedVisit = await newVisit.save();
+
+  // AGGIUNTO: Aggiorniamo le preferenze globali dell'utente se ha cambiato il registro
+  if (visitPayload.expertiseLevel && user._id && user.preferences.expertiseLevel !== visitPayload.expertiseLevel) {
+    await User.findByIdAndUpdate(user._id, { 
+      $set: { 'preferences.expertiseLevel': visitPayload.expertiseLevel } 
+    });
+  }
+
+  return savedVisit;
 };
 
 exports.getVisits = async (userId) => {
@@ -148,30 +162,40 @@ exports.editVisitById = async (visitId, payload, user) => {
     // così Mongoose non li salverà mai, anche se l'utente ha provato a inviarli!
     delete payload.price;
     delete payload.isPublic;
-    delete payload.isDraft;
     delete payload.targetAudience;
     delete payload.accessibility;
-    delete payload.coverImage;
 
     payload.$unset = {
       price: 1,
       targetAudience: 1,
-      accessibility: 1,
-      coverImage: 1
+      accessibility: 1
     };
+  }
+
+  // Pulizia immagine
+  const oldVisit = await Visit.findOne(query);
+  if (oldVisit && oldVisit.image && oldVisit.image !== updateData.image) {
+    await deleteLocalFile(oldVisit.image);
   }
   
   // Troviamo e aggiorniamo SOLO se l'ID corrisponde e il creatore è l'utente corrente
   const updatedVisit = await Visit.findOneAndUpdate(      
     query,
     payload,
-    { new: true }
+    { returnDocument: 'after' }
   );
 
   if (!updatedVisit) {
     const error = new Error("Visita non trovata nel database o non sei autorizzato a modificarla");
     error.statusCode = 403;
     throw error;
+  }
+
+  // AGGIUNTO: Aggiorniamo le preferenze globali dell'utente
+  if (payload.expertiseLevel && user._id && user.preferences.expertiseLevel !== payload.expertiseLevel) {
+    await User.findByIdAndUpdate(user._id, { 
+      $set: { 'preferences.expertiseLevel': payload.expertiseLevel } 
+    });
   }
   
   return updatedVisit;
@@ -193,6 +217,11 @@ exports.deleteVisitById = async (visitId, user) => {
   // Se NON è admin, limitiamo l'eliminazione alla sole visite create dall'utente
   if (user.role !== 'admin') {
     query.creator = user._id;
+  }
+
+  const visitToDelete = await Visit.findOne(query);
+  if (visitToDelete && visitToDelete.coverimage) {
+    await deleteLocalFile(visitToDelete.coverImage);
   }
 
   const deletedVisit = await Visit.findOneAndDelete(query);

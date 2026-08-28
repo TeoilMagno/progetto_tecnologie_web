@@ -8,6 +8,9 @@ const express = require("express");
 const fs = require('fs').promises;
 const path = require("path");
 const mongoose = require("mongoose");
+const multer = require("multer");
+// const axios = require("axios");
+const crypto = require("crypto");
 
 // Models
 const { User } = require("../models/users");
@@ -34,6 +37,23 @@ const aiController = require("../controllers/ai");
 // Middleware
 const auth = require("../middleware/roles");
 
+// Gestione immagini
+// 1. Configurazione Multer per i caricamenti locali
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const dir = path.join(__dirname, '..', '..', '..', 'uploads');
+    // Crea la cartella se non esiste
+    await fs.mkdir(dir, { recursive: true }).catch(console.error);
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage: storage });
+const { deleteLocalFile } = require('../utils/file-helper');
+
 const apiRouter = express.Router();
 
 //--------------- museums -----------------------
@@ -41,13 +61,32 @@ const apiRouter = express.Router();
 // ritorna tutti i musei del db
 apiRouter.get("/museums", async (req, res) => {
   try {
-    const museums = await museumController.getAllMuseums();
+    const {
+      search, tags, freeEntry, maxPrice, services, day,
+      lat, lon, maxDistance, page = 1, limit = 20
+    } = req.query;
 
-    if (!museums) return res.status(404).json({ error: "Musei non trovati" });
+    const response = await museumController.getMuseums(search, tags, freeEntry, maxPrice, services, day,
+      lat, lon, maxDistance, page, limit);
 
-    res.json(museums);
+    if (!response || !response.museums) return res.status(404).json({ error: "Nessun museo trovato" });
+
+    res.json(response);
   } catch (error) {
     res.status(500).json({ error: "Errore recupero musei" });
+  }
+});
+
+// Ritorna SOLO id e nome di tutti i musei (Ottimizzato per i menu a tendina)
+apiRouter.get("/museums-list", async (req, res) => {
+  try {
+    // Il secondo parametro di find() seleziona i campi da restituire. 
+    // sort({ name: 1 }) li mette in ordine alfabetico
+    const museumsList = await Museum.find({}, '_id name').sort({ name: 1 });
+    res.status(200).json(museumsList);
+  } catch (error) {
+    console.error("Errore recupero lista musei:", error);
+    res.status(500).json({ error: "Errore recupero lista musei" });
   }
 });
 
@@ -95,17 +134,16 @@ apiRouter.delete("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (re
 // ritorna prodotti (items) di un museo specifico
 apiRouter.get("/museums/:id/items", async (req, res) => {
   try {
-    // Mongo gestisce automaticamente la conversione da stringa a ObjectId
+    const { page = 1, limit = 12, search } = req.query;
     const museumId = req.params.id;
 
-    const items = await itemController.getItemByMuseum(museumId);
+    // Assicurati che itemController sia importato in cima al file!
+    const response = await itemController.getMuseumItems(museumId, page, limit, search);
 
-    if (!items) return res.status(404).json({ error: "Opere non trovate" });
-
-    res.json(items);
+    res.json(response);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Errore recupero opere" });
+    console.error("Errore nel recupero degli articoli:", error);
+    res.status(500).json({ error: "Errore nel recupero degli articoli" });
   }
 });
 
@@ -284,16 +322,18 @@ apiRouter.delete("/sections/:sectionId/rooms/:roomId", [auth.isCurator, auth.isM
 // ottiene le opere di un museo
 apiRouter.get("/museums/:id/works", async (req, res) => {
   try {
-    const museumIdStr = req.params.id;
+    const { search, author, technique, workstyle, page = 1, limit = 12, fetchMetadata } = req.query;
+    const museumId = req.params.id;
 
-    let museumObjectId;
-    museumObjectId = new mongoose.Types.ObjectId(museumIdStr);
+    const response = await workController.getMuseumWorks(
+      museumId, search, author, technique, workstyle, page, limit, fetchMetadata
+    );
 
-    const directWorks = await Work.find({ museumId: museumObjectId });
+    if (!response || !response.works) {
+       return res.status(404).json({ error: "Nessuna opera trovata" });
+    }
 
-    const allWorks = Array.from(directWorks.values());
-
-    res.json(allWorks);
+    res.json(response);
   } catch (error) {
     console.error("Errore nel recupero delle opere:", error);
     res.status(500).json({ error: "Errore nel recupero delle opere" });
@@ -330,6 +370,28 @@ apiRouter.delete("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, 
     res.json({ message: "Opera eliminata con successo" });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Rotta esclusiva per il Drag & Drop delle opere
+apiRouter.put("/works/:id/move", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
+  try {
+    const workId = req.params.id;
+    const { museumId, oldSectionId, newSectionId, newRoomId } = req.body;
+
+    // 1. Aggiorna la stanza nell'opera tramite il controller (grazie al fix di prima, l'immagine è salva!)
+    await workController.updateWorkById(workId, { roomId: newRoomId }, museumId);
+
+    // 2. Se l'opera è stata trascinata in un'altra SEZIONE, spostiamo il suo ID nei rispettivi array
+    if (oldSectionId !== newSectionId) {
+      await sectionController.removeWorkFromSection(oldSectionId, workId);
+      await sectionController.addWorkToSection(newSectionId, workId);
+    }
+
+    res.json({ message: "Opera spostata con successo" });
+  } catch (error) {
+    console.error("Errore spostamento opera:", error);
+    res.status(500).json({ error: "Impossibile spostare l'opera" });
   }
 });
 
@@ -429,6 +491,99 @@ apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
   }
 });
 
+// ------------- immagini ------------------------
+
+// 1. Upload File Locale
+apiRouter.post("/upload-image", auth.isCurator, upload.single('image'), (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "Nessun file caricato" });
+    // Restituisce il percorso relativo per il frontend
+    const imageUrl = `/uploads/${req.file.filename}`;
+    res.json({ url: imageUrl });
+  } catch (error) {
+    res.status(500).json({ error: "Errore durante l'upload" });
+  }
+});
+
+// 2. Cerca Immagini su Wikimedia Commons
+apiRouter.get("/search-wikimedia", auth.isCurator, async (req, res) => {
+  try {
+    const query = req.query.q;
+    if (!query) return res.status(400).json({ error: "Testo di ricerca mancante" });
+
+    const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=url&format=json`;
+    
+    const response = await fetch(url, {
+      method: 'GET', // Opzionale, è il default
+      headers: {
+        'User-Agent': 'ArtAround (progetto universitario)'
+      }
+    });
+    
+    // CORREZIONE: Con fetch dobbiamo parsare il JSON esplicitamente
+    const data = await response.json(); 
+    
+    const pages = data.query?.pages || {};
+    
+    const imageUrls = Object.values(pages)
+      .map(page => page.imageinfo?.[0]?.url)
+      .filter(url => url != null);
+
+    res.json(imageUrls);
+  } catch (error) {
+    console.error("Errore Wikimedia:", error.message);
+    res.status(500).json({ error: "Errore ricerca su Wikimedia" });
+  }
+});
+
+// 3. Proxy Download: Scarica un URL esterno e lo salva in locale (Risolve il problema dei link rotti!)
+apiRouter.post("/download-external-image", auth.isCurator, async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) return res.status(400).json({ error: "URL mancante" });
+
+    // CORREZIONE: Per scaricare file serve una GET. Tolto responseType.
+    const response = await fetch(url, {
+      method: 'GET', 
+      headers: { 'User-Agent': 'ArtAround (progetto universitario)' }
+    });
+    
+    if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
+    
+    // CORREZIONE: In fetch gli header si leggono con il metodo .get()
+    const contentType = response.headers.get('content-type');
+    const ext = contentType ? '.' + contentType.split('/')[1] : '.jpg';
+    
+    const filename = `ext-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${ext}`;
+    const filePath = path.join(__dirname, '..', '..', '..', 'uploads', filename);
+
+    // CORREZIONE: Estraiamo l'arrayBuffer e lo convertiamo in Buffer per Node.js
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    await fs.writeFile(filePath, buffer);
+
+    res.json({ url: `/uploads/${filename}` });
+  } catch (error) {
+    console.error("Errore download immagine:", error.message);
+    res.status(500).json({ error: "Impossibile scaricare e salvare l'immagine. Usa l'upload manuale." });
+  }
+});
+
+// 4. Elimina fisicamente un'immagine dal disco (chiamato dal widget)
+apiRouter.delete("/delete-image", auth.isCurator, async (req, res) => {
+  try {
+    const { imageUrl } = req.body;
+    if (imageUrl) {
+      await deleteLocalFile(imageUrl);
+    }
+    res.json({ message: "File eliminato con successo" });
+  } catch (error) {
+    console.error("Errore eliminazione file orfano:", error);
+    res.status(500).json({ error: "Errore durante l'eliminazione" });
+  }
+});
+
 //------------------ user ------------------------
 
 // restituisce l'utente loggato, o null se non autenticato
@@ -440,6 +595,7 @@ apiRouter.get("/current-user", (req, res) => {
         username: req.user.username || req.user.name,
         role: req.user.role,
         type: req.user.type || 'none',
+        expertiseLevel: req.user.preferences?.expertiseLevel || 'medium'
       });
     } else {
       res.json(null);

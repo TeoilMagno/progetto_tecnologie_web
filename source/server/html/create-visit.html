@@ -6,11 +6,12 @@
     <title>ArtAround - Crea Visita</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <link href="/vendor/tom-select/css/tom-select.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="/marketplace/css/style.css" />
     <link rel="stylesheet" href="/marketplace/css/visits.css" />
     <link rel="stylesheet" href="/marketplace/css/search-bar.css" />
+    <link rel="stylesheet" href="/marketplace/css/forms-style.css" />
   </head>
   <body class="artaround-theme">
     
@@ -44,7 +45,7 @@
         
         <div class="col-12 col-lg-8">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="h4">Catalogo Opere</h3>
+            <h3 class="h4 text-white fw-bold mb-0">Catalogo Opere</h3>
             <span class="text-secondary" id="current-museum-name">Seleziona un museo...</span>
           </div>
 
@@ -57,13 +58,25 @@
         </div> 
 
         <!-- Card Stima Durata (Da inserire sopra o sotto il carrello delle opere in create-visit.html) -->
+        <!--
         <div class="card custom-card glass-panel mb-4 border-info border-opacity-50">
           <div class="card-body">
             <h6 class="card-title text-info mb-3"><i class="bi bi-stopwatch me-2"></i>Stima della Visita</h6>
             
+            <div class="mb-3 border-top border-secondary border-opacity-25 pt-3 mt-3">
+              <label class="form-label small text-secondary"><i class="bi bi-translate me-1"></i>Registro Linguistico</label>
+              <select id="visit-expertise-level" class="form-select glass-input text-white">
+                <option value="simple">Semplice (Bambini / Principianti)</option>
+                <option value="medium" selected>Medio (Divulgativo)</option>
+                <option value="professional">Professionale (Appassionati)</option>
+                <option value="expert">Esperto (Storici dell'arte)</option>
+              </select>
+              <small class="text-secondary mt-1 d-block" style="font-size: 0.7rem;">Questa scelta aggiornerà le tue preferenze globali.</small>
+            </div>
+
             <div class="mb-3">
-              <label class="form-label small text-secondary">Ritmo e Approfondimento</label>
-              <select id="visit-pref-length" class="form-select glass-input text-white" onchange="triggerDurationUpdate()">
+              <label class="form-label small text-secondary"><i class="bi bi-speedometer2 me-1"></i>Ritmo e Approfondimento</label>
+              <select id="visit-pref-length" class="form-select glass-input text-white">
                 <option value="short">Scorrevole (Opere spiegate in sintesi)</option>
                 <option value="medium" selected>Medio (Esperienza standard)</option>
                 <option value="long">Approfondito (Dettagli storici)</option>
@@ -71,9 +84,9 @@
               </select>
             </div>
 
-            <!-- Sezione Alternativa: Calcolo inverso -->
+            <!-- Sezione Alternativa: Calcolo inverso --> <!--
             <div class="mb-3 border-top border-secondary border-opacity-25 pt-3 mt-3">
-              <label class="form-label small text-info fw-bold">Oppure... hai i minuti contati?</label>
+              <label class="form-label small text-info fw-bold"><i class="bi bi-hourglass-split me-1"></i>Oppure... hai i minuti contati?</label>
               <div class="input-group input-group-sm mb-1">
                 <input type="number" id="available-minutes-input" class="form-control glass-input text-white" placeholder="Es. 45" min="1">
                 <button class="btn btn-outline-info" type="button" onclick="autoSelectLength()">Calcola Ritmo</button>
@@ -87,11 +100,12 @@
             </div>
           </div>
         </div>
+        -->
 
         <div class="col-12 col-lg-4">
           <div class="card custom-card sticky-top" style="top: 80px">
             <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25 pt-3 pb-2">
-              <h5 class="mb-0"><i class="bi bi-map me-2"></i>La tua Visita</h5>
+              <h5 class="text-white fw-bold mb-0"><i class="bi bi-map me-2"></i>La tua Visita</h5>
               <p class="small text-secondary mb-0 mt-1">
                 Trascina l'icona <i class="bi bi-list"></i> per riordinare.
               </p>
@@ -107,6 +121,47 @@
             </div>
 
             <div class="card-footer bg-transparent border-top border-secondary border-opacity-25 p-3">
+              <!-- Configurazione Percorso -->
+              <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                <p class="small text-info fw-bold mb-3"><i class="bi bi-sliders me-1"></i>Configurazione Percorso</p>
+                
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <label class="form-label text-secondary mb-1" style="font-size: 0.75rem;"><i class="bi bi-translate me-1"></i>Registro</label>
+                    <select id="visit-expertise-level" class="form-select form-select-sm glass-input text-white">
+                      <option value="simple">Semplice (Principianti)</option>
+                      <option value="medium" selected>Medio (Divulgativo)</option>
+                      <option value="professional">Pro (Appassionati)</option>
+                      <option value="expert">Esperto (Storici)</option>
+                    </select>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label text-secondary mb-1" style="font-size: 0.75rem;"><i class="bi bi-speedometer2 me-1"></i>Ritmo</label>
+                    <select id="visit-pref-length" class="form-select form-select-sm glass-input text-white">
+                      <option value="short">Scorrevole (Sintesi)</option>
+                      <option value="medium" selected>Medio (Standard)</option>
+                      <option value="long">Approfondito (Dettagli)</option>
+                      <option value="exhaustive">Esaustivo (Critico)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Minuti contati -->
+                <div class="mb-3">
+                  <label for="available-minutes-input" class="form-label text-secondary mb-1" style="font-size: 0.75rem;"><i class="bi bi-hourglass-split me-1"></i>Hai i minuti contati? (Opzionale)</label>
+                  <div class="input-group input-group-sm">
+                    <input type="number" id="available-minutes-input" class="form-control glass-input text-white" placeholder="Es. 45 min..." min="1">
+                    <button class="btn btn-outline-info" type="button" onclick="autoSelectLength()">Adatta Ritmo</button>
+                  </div>
+                </div>
+
+                <!-- Badge Tempo Stimato (dentro la modale) -->
+                <div class="d-flex justify-content-between align-items-center mb-3 p-2 rounded" style="background: rgba(0, 204, 255, 0.05); border: 1px solid rgba(0, 204, 255, 0.2);">
+                  <span class="small text-info fw-bold"><i class="bi bi-stopwatch me-1"></i>Tempo Stimato:</span>
+                  <span class="badge bg-info text-dark fs-6" id="tour-duration-badge">0 min</span>
+                </div>
+              </div>
+
               <button
                 id="save-visit-btn"
                 class="btn btn-gradient w-100 disabled"
@@ -127,17 +182,21 @@
         <div class="modal-content glass-modal text-white">
           
           <div class="modal-header border-bottom-custom">
-            <h5 class="modal-title" id="saveVisitModalLabel">Dettagli della Visita</h5>
+            <h5 class="modal-title text-white fw-bold" id="saveVisitModalLabel">Dettagli della Visita</h5>
             <button type="button" class="btn-close custom-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           
           <div class="modal-body">
             <div class="mb-3">
-              <label for="visit-title" class="form-label">Titolo della visita <span class="text-danger">*</span></label>
+              <label for="visit-title" class="form-label small text-secondary"><i class="bi bi-fonts me-1"></i>Titolo della visita <span class="text-danger">*</span></label>
               <input type="text" class="form-control glass-input" id="visit-title" placeholder="Es. I capolavori del Rinascimento" required>
             </div>
+            
+            <!-- Widget Immagine -->
+            <div class="mb-3" id="edit-visit-image-widget"></div>
+
             <div class="mb-3">
-              <label for="visit-desc" class="form-label">Descrizione</label>
+              <label for="visit-desc" class="form-label small text-secondary"><i class="bi bi-card-text me-1"></i>Descrizione</label>
               <textarea class="form-control glass-input" id="visit-desc" rows="3" placeholder="Aggiungi una breve descrizione della tua esperienza..."></textarea>
             </div>
             
@@ -149,7 +208,7 @@
                 </div>
                 <div id="curator-details-area" class="d-none">
                   <div class="mb-3">
-                    <label for="visit-price" class="form-label">Prezzo del tour (€)</label>
+                    <label for="visit-price" class="form-label small text-secondary"><i class="bi bi-ticket-perforated me-1"></i>Prezzo del tour (€)</label>
                     <input type="number" step="0.01" min="0" class="form-control glass-input" id="visit-price" placeholder="0.00">
                   </div>
           
@@ -203,13 +262,13 @@
                 </div>
             </div>
 
-            <!-- Sezione Quiz (nascosta di default, si sblocca solo se type è guide, teacher o admin) -->
+            <!-- Sezione Quiz (nascosta di default, si sblocca solo se type è teacher o admin) -->
             <div id="quiz-creation-area" class="col-12 mt-3 d-none">
               <div class="border-top border-secondary border-opacity-25 pt-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                  <p class="small text-white mb-0"><i class="bi bi-ui-radios me-1"></i>Quiz di Fine Visita</p>
+                  <p class="small text-white mb-0"><i class="bi bi-ui-radios me-1"></i>Quiz di fine visita</p>
                   <button type="button" class="btn btn-sm btn-outline-info py-0 px-2" style="font-size: 0.75rem;" onclick="addQuizQuestion()">
-                    <i class="bi bi-plus-lg me-1"></i> Aggiungi Domanda
+                    <i class="bi bi-plus-lg me-1"></i> Aggiungi domanda
                   </button>
                 </div>
                 <p class="text-secondary mb-3" style="font-size: 0.75rem;">Aggiungi domande a risposta multipla per gli studenti al termine del percorso.</p>
@@ -224,17 +283,17 @@
           <div class="modal-footer border-top-custom p-3 flex-column gap-2">
             <!-- Tasto per salvare la bozza -->
             <button id="save-draft-btn" class="btn btn-outline-info w-100 m-0" onclick="submitVisit(true)">
-              <i class="bi bi-pencil-square me-1"></i> Salva Bozza
+              <i class="bi bi-pencil-square me-1"></i> Salva bozza
             </button>
             
             <!-- Tasto per il salvataggio definitivo -->
             <button id="confirm-save-visit-btn" class="btn btn-gradient w-100 m-0" onclick="submitVisit(false)">
-              Salva Definitivo
+              Salva definitivamente
             </button>
             
             <!-- Tasto per l'eliminazione -->
             <button id="delete-visit-btn" class="btn btn-outline-danger w-100 m-0 d-none" onclick="deleteVisit()">
-              <i class="bi bi-trash me-1"></i> Elimina Bozza
+              <i class="bi bi-trash me-1"></i> Elimina bozza
             </button>
           </div>
 
@@ -243,10 +302,11 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script src="/vendor/tom-select/js/tom-select.complete.min.js"></script>
     <script src="/marketplace/js/config.js"></script>
     <script src="/vendor/sortablejs/Sortable.min.js"></script>
     <script src="/marketplace/js/search-bar.js"></script>
+    <script src="/marketplace/js/image-manager.js"></script>
     <script src="/marketplace/js/add-visit.js"></script>
   </body>
 </html>

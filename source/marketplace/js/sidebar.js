@@ -269,10 +269,57 @@ window.populateFilters = function(context) {
         </div>
       </div>
 
-      <button class="btn btn-outline-secondary w-100 mt-2" onclick="resetVisitFilters()">
-        <i class="bi bi-arrow-counterclockwise me-1"></i> Resetta Filtri
-      </button>
-  `}
+      <button class="btn btn-gradient w-100 mt-3" onclick="applyVisitFilters()" data-bs-dismiss="offcanvas">Applica Filtri</button>
+      <button class="btn btn-link text-secondary w-100 mt-2 text-decoration-none small" onclick="resetVisitFilters()">Resetta</button>` 
+  } else if (context === 'my-visits') {
+    html = `
+        <!-- Filtri Le Mie Visite -->
+        <div class="mb-4">
+          <label class="text-uppercase text-secondary small fw-bold mb-3">Ricerca Testuale</label>
+          <div class="glass-panel p-2 rounded border border-secondary border-opacity-25">
+            <select id="filter-my-search" class="form-select border-0 text-white small px-1" placeholder="Titolo o museo...">
+              <option value=""></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-section mb-4">
+          <h6 class="text-uppercase text-secondary small fw-bold mb-3">Tipologia / Stato</h6>
+          <div class="glass-panel p-2 rounded border border-secondary border-opacity-25">
+            <select id="filter-my-type" class="form-select bg-transparent text-white border-0 small px-1 shadow-none" onchange="applyMyVisitsFilters()">
+              <option value="all" selected>Tutte le visite</option>
+              <option value="created">Le mie (Create)</option>
+              <option value="purchased">Acquistate</option>
+              <option value="drafts">Bozze</option>
+              <option value="public">Pubbliche (Marketplace)</option>
+              <option value="private">Private</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-section mb-4">
+          <h6 class="text-uppercase text-secondary small fw-bold mb-3">Filtra per Data</h6>
+          <div class="glass-panel p-2 rounded border border-secondary border-opacity-25">
+            <input type="text" id="filter-my-date" class="form-control bg-transparent text-white border-bottom border-secondary border-opacity-25 mb-2 border-top-0 border-start-0 border-end-0 rounded-0 px-1 small shadow-none" placeholder="GG/MM/AAAA">
+            <select id="filter-my-date-dir" class="form-select bg-transparent text-white border-0 small px-1 shadow-none" onchange="applyMyVisitsFilters()">
+              <option value="after" selected>Da questa data in poi</option>
+              <option value="before">Prima di questa data</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-section mb-4">
+          <h6 class="text-uppercase text-secondary small fw-bold mb-3">Ordinamento</h6>
+          <div class="form-check form-switch">
+            <input class="form-check-input cursor-pointer" type="checkbox" id="filter-my-sort-toggle" checked onchange="applyMyVisitsFilters()">
+            <label class="form-check-label text-white small cursor-pointer" for="filter-my-sort-toggle" id="sort-toggle-label">Più recenti prima</label>
+          </div>
+        </div>
+
+        <button class="btn btn-gradient w-100 mt-2" onclick="applyMyVisitsFilters()" data-bs-dismiss="offcanvas">Applica Filtri</button>
+        <button class="btn btn-link text-secondary w-100 mt-2 text-decoration-none small" onclick="resetMyVisitsFilters()">Resetta</button>
+      `;
+  }
 
   container.innerHTML = html;
 
@@ -280,4 +327,6 @@ window.populateFilters = function(context) {
   if (context === 'museums') attachMuseumFilterEvents();
   else if (context === 'items' ) attachItemFilterEvents();
   else if(context === 'works') attachWorkFilterEvents();
+  else if (context === 'visits') attachVisitFilterEvents();
+  else if(context === 'my-visits') attachMyVisitsFilterEvents();
 };

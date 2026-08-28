@@ -8,6 +8,8 @@ appunti_progetto.txt
 *.pem
 dist/
 
+uploads/
+
 # Logs
 logs
 *.log

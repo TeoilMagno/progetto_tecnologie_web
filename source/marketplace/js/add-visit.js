@@ -6,8 +6,13 @@ let isCurrentVisitDraft = true;
 let allMuseumWorks = [];
 let allMuseumSections = [];
 let currentQuiz = [];
+let expertiseSelectInstance = null;
+let prefLengthSelectInstance = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // Inizializza il widget immagine
+  initImageWidget("edit-visit-image-widget", "visit-image", "Scegli un'immagine di copertina per la visita");
+
   // inizializza il drag & drop
   const cartListElement = document.getElementById("visit-cart-list");
 
@@ -80,6 +85,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // Inizializza Tom Select per il Registro Linguistico
+  if (document.getElementById("visit-expertise-level")) {
+    expertiseSelectInstance = new TomSelect("#visit-expertise-level", {
+      create: false,
+      controlInput: null, // Rimuove la casella di testo per la ricerca interna (non serve per 4 opzioni)
+      sortField: false
+    });
+  }
+
+  // Inizializza Tom Select per il Ritmo della Visita
+  if (document.getElementById("visit-pref-length")) {
+    prefLengthSelectInstance = new TomSelect("#visit-pref-length", {
+      create: false,
+      controlInput: null,
+      sortField: false,
+      onChange: function() {
+        triggerDurationUpdate(); // Scatena il ricalcolo dei minuti quando l'utente sceglie una voce!
+      }
+    });
+  }
+
   // Gestione bozza
   if (editingVisitId) {
     try {
@@ -106,6 +132,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (draft.preferredLength) {
           const prefSelect = document.getElementById("visit-pref-length");
           if (prefSelect) prefSelect.value = draft.preferredLength;
+
+          if (prefLengthSelectInstance) prefLengthSelectInstance.setValue(draft.preferredLength, true);
+        }
+
+        // Ripristiniamo i minuti se erano stati impostati (> 0)
+        if (draft.maxDuration && draft.maxDuration > 0) {
+          const maxDurInput = document.getElementById("available-minutes-input");
+          if (maxDurInput) maxDurInput.value = draft.maxDuration;
         }
 
         triggerDurationUpdate();
@@ -115,6 +149,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("visit-desc").value = draft.description || "";
         document.getElementById("visit-price").value = draft.price || "";
         document.getElementById("visit-public").checked = draft.isPublic || false;
+
+        // Gestione immagine nel widget
+        if (draft.coverImage) {
+          setFinalImage("visit-image", draft.coverImage);
+        } else {
+          clearImageWidget("visit-image");
+        }
 
         toggleCuratorDetails();
 
@@ -178,8 +219,8 @@ async function checkUserRole() {
     if (response.ok) {
       const user = await response.json();
 
-      // Sblocchiamo il pannello del quiz se è una guida (o teacher/admin)
-      if (user?.type === "guide" || user?.type === "teacher" || user?.role === "admin") {
+      // Sblocchiamo il pannello del quiz se è un teacher/admin
+      if (user?.type === "teacher" || user?.role === "admin") {
         const quizArea = document.getElementById("quiz-creation-area");
         quizArea?.classList.remove("d-none");
       }
@@ -188,6 +229,13 @@ async function checkUserRole() {
       if (user?.role === "admin") {
         document.getElementById("curator-options-area").classList.remove("d-none");
         return;
+      }
+
+      if (user?.expertiseLevel) {
+        const expSelect = document.getElementById("visit-expertise-level");
+        if (expSelect) expSelect.value = user.expertiseLevel;
+
+        if (expertiseSelectInstance) expertiseSelectInstance.setValue(user.expertiseLevel, true);
       }
 
       // Se è un curatore, sblocchiamo le opzioni SOLO se gestisce questo specifico museo
@@ -591,14 +639,18 @@ async function submitVisit(isSavingAsDraft = false) {
   }
 
   const description = document.getElementById("visit-desc")?.value || "";
+  const imageUrl = document.getElementById("visit-image")?.value || "";
   const priceInput = document.getElementById("visit-price");
   const price =
     priceInput && priceInput.value ? parseFloat(priceInput.value) : 0;
 
   const publicCheckbox = document.getElementById("visit-public");
 
+  const expertiseLevel = document.getElementById("visit-expertise-level")?.value || 'medium';
   const prefLength = document.getElementById("visit-pref-length")?.value || 'medium';
-  
+  const maxDurInput = document.getElementById("available-minutes-input")?.value;
+  const maxDurationValue = maxDurInput ? parseInt(maxDurInput) : 0;
+
   // Recuperiamo il numero di minuti dal badge (es. "45 min" -> 45)
   const durationBadgeText = document.getElementById("tour-duration-badge")?.innerText || "0";
   const durationNum = parseInt(durationBadgeText) || 0;
@@ -628,10 +680,13 @@ async function submitVisit(isSavingAsDraft = false) {
   const payload = {
     title: titleInput.value.trim(),
     description: description,
+    coverImage: imageUrl,
     museumId: currentMuseumId,
     works: workIds,
     duration: durationNum,
+    maxDuration: maxDurationValue,
     preferredLength: prefLength,
+    expertiseLevel,
     isDraft: isDraft,
     isPublic: isPublic,
     quiz: currentQuiz
@@ -734,8 +789,9 @@ async function autoSaveDraft() {
   // Se non c'è un museo, non possiamo collegare la visita a nulla
   if (!currentMuseumId) return;
 
-  const titleInput = document.getElementById("visit-title")?.value.trim();
-  const descInput = document.getElementById("visit-desc")?.value.trim();
+  const titleInput = document.getElementById("visit-title")?.value.trim() || "Bozza in corso...";
+  const descInput = document.getElementById("visit-desc")?.value.trim() || "";
+  const imageUrl = document.getElementById("visit-image")?.value || "";
   const price = parseFloat(document.getElementById("visit-price")?.value) || 0;
 
   // CONDIZIONE: Se il carrello è vuoto E non ha scritto né titolo né descrizione, FERMATI.
@@ -743,21 +799,26 @@ async function autoSaveDraft() {
     return;
   }
 
-
+  const expertiseLevel = document.getElementById("visit-expertise-level")?.value || 'medium';
   const prefLength = document.getElementById("visit-pref-length")?.value || 'medium';
+  const maxDurInput = document.getElementById("available-minutes-input")?.value;
+  const maxDurationValue = maxDurInput ? parseInt(maxDurInput) : 0;
   const durationBadgeText = document.getElementById("tour-duration-badge")?.innerText || "0";
   const durationNum = parseInt(durationBadgeText) || 0;
 
   const payload = {
-    title: titleInput || "Bozza in corso...", // Fallback essenziale se non ha ancora aperto la modale
-    description: descInput || "",
+    title: titleInput, 
+    description: descInput,
+    coverImage: imageUrl,
     museumId: currentMuseumId,
     works: currentVisitCart.map((work) => work.id),
     price: price,
     isPublic: false,
     isDraft: true, // È sempre una bozza
     duration: durationNum,
+    maxDuration: maxDurationValue,
     preferredLength: prefLength,
+    expertiseLevel,
     quiz: currentQuiz
   };
 
@@ -826,7 +887,7 @@ async function deleteVisit() {
       // Disattiviamo il timer di autosalvataggio per evitare che resusciti la bozza!
       clearTimeout(autoSaveTimeout); 
       
-      window.location.href = "/my-visits";
+      window.location.replace("/my-visits");
     } else {
       const data = await response.json();
       alert(data.error || "Errore durante l'eliminazione.");
@@ -906,13 +967,17 @@ async function autoSelectLength() {
       const data = await response.json();
       
       // 1. Modifichiamo visivamente la tendina per selezionare la voce consigliata
-      const selectEl = document.getElementById("visit-pref-length");
-      if (selectEl) {
-        selectEl.value = data.recommendedLength;
+      if (prefLengthSelectInstance) {
+        prefLengthSelectInstance.setValue(data.recommendedLength, true);
         
-        // Aggiungiamo un piccolo effetto visivo per far notare il cambiamento
-        selectEl.classList.add("border-success", "text-success");
-        setTimeout(() => selectEl.classList.remove("border-success", "text-success"), 1500);
+        // Effetto visivo "glow verde" applicato direttamente al box di Tom Select
+        const tsControl = prefLengthSelectInstance.control;
+        tsControl.style.borderColor = "#10b981";
+        tsControl.style.color = "#10b981";
+        setTimeout(() => {
+          tsControl.style.borderColor = "";
+          tsControl.style.color = "";
+        }, 1500);
       }
       
       // 2. Scateniamo l'aggiornamento del calcolatore della durata (il badge azzurro)

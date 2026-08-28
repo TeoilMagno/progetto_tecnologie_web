@@ -5,6 +5,23 @@
 let userCoords = null;
 let museumCoordsMap = {}; // Cache coordinate: { "museumId": {lat, lon} }
 
+let pristineMuseumsCache = [];
+let pristineCurrentPage = 1;
+let pristineTotalPages = 1;
+let isEntireDbInCache = false;
+
+let pristineWorksCache = [];
+let pristineWorkPage = 1;
+let pristineTotalWorkPages = 1;
+let isEntireWorksDbInCache = false;
+
+function initializeWorkFiltersDataFromApi(metadata) {
+  if (!metadata) return;
+  renderDynamicCheckboxes("filter-author-list", metadata.uniqueAuthors.sort(), "author");
+  renderDynamicCheckboxes("filter-technique-list", metadata.uniqueTechniques.sort(), "technique");
+  renderDynamicCheckboxes("filter-workstyle-list", metadata.uniqueStyles.sort(), "workstyle");
+}
+
 // 1. Inizializza i dati in background appena i musei sono caricati
 async function initializeFiltersData(museums) {
   const tagsSet = new Set();
@@ -51,10 +68,29 @@ function renderStyleFilters(tags) {
   }).join('');
 }
 
-// 3. APPLICA I FILTRI (Resa Async per supportare la ricerca della città)
-async function applyMuseumFilters() {
+// 3. APPLICA I FILTRI (Dialoga col Server Backend)
+async function applyMuseumFilters(isLoadMore = false) {
   if (currentMuseumId !== null) return; 
+  if (isFetchingMuseums) return;
 
+  const container = document.getElementById("content-area");
+  const sentinel = document.getElementById("museums-loading-sentinel");
+
+  // Se è una nuova ricerca (non uno scroll), svuota tutto e torna a pagina 1
+  if (!isLoadMore) {
+    currentMuseumPage = 1;
+    renderedMuseumsCount = 0;
+    if (container) container.innerHTML = `
+      <div class="col-12 text-center mt-5">
+        <div class="spinner-border text-light" role="status"></div>
+        <p class="mt-2 text-secondary">Ricerca musei in corso...</p>
+      </div>`;
+  }
+
+  isFetchingMuseums = true;
+  if (sentinel && isLoadMore) sentinel.classList.remove("d-none"); // Mostra il caricamento a fondo pagina
+
+  // Raccogli i valori dalla UI
   const locationInput = document.getElementById("filter-location-input")?.value.trim();
   const maxDistance = parseInt(document.getElementById("distance-slider")?.value || 500);
   const styleCheckboxes = document.querySelectorAll('.style-checkbox:checked');
@@ -64,81 +100,146 @@ async function applyMuseumFilters() {
   const serviceCheckboxes = document.querySelectorAll('.service-checkbox:checked');
   const selectedServices = Array.from(serviceCheckboxes).map(cb => cb.value);
   const selectedDay = document.getElementById("filter-day-select")?.value;
+  const search = document.getElementById("museum-search-input")?.value.trim() || ""; 
 
-  // A. Calcola le coordinate se l'utente ha scritto una città manualmente
-  if (locationInput) {
-    const coords = await geocodeAddress(locationInput);
+  // 1. Verifichiamo se c'è almeno un filtro attivo
+  const hasFilters = search !== "" || selectedStyles.length > 0 || freeEntryOnly || maxPrice < 50 || selectedServices.length > 0 || selectedDay !== "" || userCoords !== null;
+
+  // 2. INTERCETTAZIONE: Se azzeriamo i filtri e abbiamo la cache piena...
+  if (!hasFilters && !isLoadMore && pristineMuseumsCache.length > 0) {
+    cachedMuseums = [...pristineMuseumsCache]; 
+    currentMuseumPage = pristineCurrentPage;   
+    totalMuseumPages = pristineTotalPages;
     
-    if (coords && coords.lat !== null && coords.lon !== null) {
-      userCoords = { lat: coords.lat, lon: coords.lon };
-    } else {
-      alert("Città non trovata o servizio non disponibile! Riprova con un altro nome.");
-      return; // Interrompiamo la ricerca
-    }
+    // Disegniamo solo il primo blocco (gli altri appariranno scorrendo)
+    renderedMuseumsCount = Math.min(RENDER_CHUNK, cachedMuseums.length);
+    const initialChunk = cachedMuseums.slice(0, renderedMuseumsCount);
+    
+    renderMuseumsList(initialChunk, "content-area", false);
+    isFetchingMuseums = false;
+    updateSentinelVisibility();
+    return; // Stop! Nessuna chiamata API necessaria!
   }
 
-  // B. Filtra l'elenco dei musei
-  let filtered = cachedMuseums.filter(museum => {
-    const museumPrice = museum.ticketPrice || 0;
-    if (freeEntryOnly && museumPrice > 0) {
-      return false;
-    }
-    
-    if (!freeEntryOnly && maxPrice < 50 && museumPrice > maxPrice) {
-      return false;
-    }
-
-    if (selectedStyles.length > 0) {
-      if (!museum.tags || !selectedStyles.some(style => museum.tags.includes(style))) return false;
-    }
-
-    // Filtro Distanza (Migliorato)
-    if (userCoords) { 
-      const mCoords = museumCoordsMap[museum._id];
-      if (mCoords) {
-        const km = getDistanceFromLatLonInKm(userCoords.lat, userCoords.lon, mCoords.lat, mCoords.lon);
-        
-        // Salviamo la distanza nel museo per usarla dopo per l'ordinamento
-        museum.tempDistance = km;
-
-        // Se lo slider NON è al massimo, filtriamo chi è troppo lontano
-        if (maxDistance < 500 && km > maxDistance) {
-          return false; 
-        }
-      } else {
-        // Se l'utente cerca per zona, tagliamo fuori i musei senza coordinate
-        return false; 
+  // 3. ADAPTIVE FETCHING: Se abbiamo scaricato l'intero DB in RAM e stiamo applicando filtri...
+  // Filtriamo localmente invece di disturbare il server! (Prestazioni da urlo)
+  if (isEntireDbInCache && hasFilters && !isLoadMore) {
+    let localFiltered = pristineMuseumsCache.filter(museum => {
+      const mPrice = museum.ticketPrice || 0;
+      if (freeEntryOnly && mPrice > 0) return false;
+      if (!freeEntryOnly && maxPrice < 50 && mPrice > maxPrice) return false;
+      if (selectedStyles.length > 0 && (!museum.tags || !selectedStyles.some(s => museum.tags.includes(s)))) return false;
+      if (selectedServices.length > 0 && (!museum.services || !selectedServices.every(s => museum.services.includes(s)))) return false;
+      if (selectedDay && (!museum.schedule || !museum.schedule.some(s => s.day === selectedDay))) return false;
+      
+      if (search) {
+        const searchLower = search.toLowerCase();
+        const nameMatch = museum.name?.toLowerCase().includes(searchLower);
+        const addressMatch = museum.address?.toLowerCase().includes(searchLower);
+        if (!nameMatch && !addressMatch) return false;
       }
-    }
-
-    if (selectedServices.length > 0) {
-      if (!museum.services || !selectedServices.every(service => museum.services.includes(service))) {
+      
+      if (userCoords && museumCoordsMap[museum._id]) {
+        const mCoords = museumCoordsMap[museum._id];
+        const km = getDistanceFromLatLonInKm(userCoords.lat, userCoords.lon, mCoords.lat, mCoords.lon);
+        museum.tempDistance = km;
+        if (maxDistance < 500 && km > maxDistance) return false;
+      } else if (userCoords) {
         return false;
       }
-    }
+      return true;
+    });
 
-    // Filtro Giorno di apertura (Aggiornato per il nuovo modello schedule)
-    if (selectedDay && selectedDay !== "") {
-      // Se il museo non ha lo schedule, è sicuramente chiuso
-      if (!museum.schedule || museum.schedule.length === 0) return false;
-      
-      // Cerchiamo se il giorno richiesto è presente nell'array.
-      // Dato che salviamo solo i giorni aperti, se NON lo trova, il museo è chiuso!
-      const dayConfig = museum.schedule.find(s => s.day === selectedDay);
-      if (!dayConfig) {
-        return false; 
-      }
-    }
+    if (userCoords) localFiltered.sort((a, b) => (a.tempDistance || 0) - (b.tempDistance || 0));
 
-    return true;
-  });
+    cachedMuseums = localFiltered;
+    currentMuseumPage = 1;
+    // Disegna solo il primo chunk dei risultati filtrati localmente
+    const renderLimit = typeof RENDER_CHUNK !== 'undefined' ? RENDER_CHUNK : 3;
+    renderedMuseumsCount = Math.min(renderLimit, cachedMuseums.length);
+    const initialChunk = cachedMuseums.slice(0, renderedMuseumsCount);
 
-  // C. MAGIA: Se abbiamo le coordinate, ordiniamo i risultati dal più vicino!
-  if (userCoords) {
-    filtered.sort((a, b) => (a.tempDistance || 0) - (b.tempDistance || 0));
+    renderMuseumsList(initialChunk, "content-area", false);
+    isFetchingMuseums = false;
+    updateSentinelVisibility();
+    return; // STOP! Salta completamente la fetch API!
   }
 
-  renderMuseumsList(filtered);
+  // Geolocalizzazione se richiesta testualmente
+  if (locationInput && !isLoadMore && !userCoords) {
+    const coords = await geocodeAddress(locationInput);
+    if (coords && coords.lat !== null) {
+      userCoords = { lat: coords.lat, lon: coords.lon };
+    } else {
+      alert("Città non trovata. Riprova con un altro nome.");
+      isFetchingMuseums = false;
+      return;
+    }
+  }
+
+  // COSTRUZIONE URL API
+  const params = new URLSearchParams();
+  params.append("page", currentMuseumPage);
+  params.append("limit", 16); // Carica a blocchi di 16 (perfetto per righe da 3 o 4)
+  
+  if (search) params.append("search", search);
+  if (selectedStyles.length > 0) params.append("tags", selectedStyles.join(","));
+  if (freeEntryOnly) params.append("freeEntry", "true");
+  else if (maxPrice < 50) params.append("maxPrice", maxPrice);
+  if (selectedServices.length > 0) params.append("services", selectedServices.join(","));
+  if (selectedDay) params.append("day", selectedDay);
+  
+  if (userCoords) {
+    params.append("lat", userCoords.lat);
+    params.append("lon", userCoords.lon);
+    params.append("maxDistance", maxDistance);
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/museums?${params.toString()}`);
+    if (!response.ok) throw new Error("Errore server");
+    const data = await response.json();
+
+    totalMuseumPages = data.totalPages;
+
+    if (isLoadMore) {
+      cachedMuseums = [...cachedMuseums, ...data.museums];
+      
+      if (!hasFilters) {
+        pristineMuseumsCache = [...cachedMuseums];
+        pristineCurrentPage = currentMuseumPage;
+        if (pristineMuseumsCache.length >= data.total) isEntireDbInCache = true;
+      }
+      
+      // Disegna il blocco appena arrivato dal server
+      renderedMuseumsCount += data.museums.length;
+      renderMuseumsList(data.museums, "content-area", true);
+    } else {
+      cachedMuseums = data.museums;
+      
+      if (!hasFilters) {
+        pristineMuseumsCache = [...cachedMuseums];
+        pristineCurrentPage = currentMuseumPage;
+        pristineTotalPages = totalMuseumPages;
+        if (pristineMuseumsCache.length >= data.total) isEntireDbInCache = true;
+      }
+      
+      if (currentMuseumPage === 1 && !search && selectedStyles.length === 0) {
+        initializeFiltersData(cachedMuseums);
+      }
+      
+      // Disegna solo il primo blocco!
+      renderedMuseumsCount = Math.min(RENDER_CHUNK, cachedMuseums.length);
+      const initialChunk = cachedMuseums.slice(0, renderedMuseumsCount);
+      renderMuseumsList(initialChunk, "content-area", false);
+    }
+  } catch (error) {
+    console.error(error);
+    if (!isLoadMore && container) container.innerHTML = `<div class="alert alert-danger bg-transparent text-danger border-danger w-100">Errore di rete.</div>`;
+  } finally {
+    isFetchingMuseums = false;
+    updateSentinelVisibility();
+  }
 }
 
 function resetFilters() {
@@ -185,7 +286,8 @@ function resetFilters() {
   const daySelect = document.getElementById("filter-day-select");
   if (daySelect) daySelect.value = "";
 
-  renderMuseumsList(cachedMuseums);
+  // Lancia di nuovo la ricerca API a vuoto invece di renderizzare dati vecchi!
+  applyMuseumFilters(false);
 }
 
 // Formula matematica (Haversine) per calcolare i km
@@ -197,7 +299,6 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
 }
 
-// Collega gli eventi 
 // Collega gli eventi 
 function attachMuseumFilterEvents() {
   // 3. Ricerca interna tra le checkbox degli stili
@@ -399,39 +500,62 @@ function renderDynamicCheckboxes(containerId, items, prefix) {
 }
 
 // 2. Applica i filtri controllando le checkbox spuntate
-function applyWorkFilters() {
+async function applyWorkFilters() {
   const authorCbs = Array.from(document.querySelectorAll('.author-cb:checked')).map(cb => cb.value);
   const techniqueCbs = Array.from(document.querySelectorAll('.technique-cb:checked')).map(cb => cb.value);
   const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
+  const hasFilters = authorCbs.length > 0 || techniqueCbs.length > 0 || styleCbs.length > 0;
 
-  let filtered = currentWorks.filter(work => {
-    // USIAMO LA STESSA IDENTICA ESTRAZIONE!
-    const authorName = work.authorName || work.author?.name || (typeof work.author === 'string' && work.author.length !== 24 ? work.author : "");
-    const styleName = work.styleName || work.style?.name || (typeof work.style === 'string' && work.style.length !== 24 ? work.style : "");
-    const techniqueName = work.technique || "";
+  // 1. CACHE PULITA: Se azzeriamo i filtri e abbiamo la cache
+  if (!hasFilters && pristineWorksCache.length > 0) {
+    currentWorks = [...pristineWorksCache];
+    currentWorkPage = pristineWorkPage;
+    totalWorkPages = pristineTotalWorkPages;
 
-    if (authorCbs.length > 0 && !authorCbs.includes(authorName)) return false;
-    if (techniqueCbs.length > 0 && !techniqueCbs.includes(techniqueName)) return false;
-    if (styleCbs.length > 0 && !styleCbs.includes(styleName)) return false;
+    renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
+    const initialChunk = currentWorks.slice(0, renderedWorksCount);
+    renderWorksList(initialChunk, false);
+    updateWorksSentinelVisibility();
+    return;
+  }
 
-    return true;
-  });
+  // 2. ADAPTIVE FETCHING: Se tutto il DB delle opere è in cache, filtriamo localmente a zero latenza!
+  if (isEntireWorksDbInCache && hasFilters) {
+    let filtered = pristineWorksCache.filter(work => {
+      const authorName = work.authorName || "";
+      const styleName = work.styleName || "";
+      const techniqueName = work.technique || "";
 
-  renderWorksList(filtered);
+      if (authorCbs.length > 0 && !authorCbs.includes(authorName)) return false;
+      if (techniqueCbs.length > 0 && !techniqueCbs.includes(techniqueName)) return false;
+      if (styleCbs.length > 0 && !styleCbs.includes(styleName)) return false;
+      return true;
+    });
+
+    currentWorks = filtered;
+    renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
+    const initialChunk = currentWorks.slice(0, renderedWorksCount);
+    renderWorksList(initialChunk, false);
+    updateWorksSentinelVisibility();
+    return;
+  }
+
+  // 3. SEVER-SIDE FILTERING: Altrimenti chiediamo al server con i parametri di filtro
+  currentWorkPage = 1;
+  renderedWorksCount = 0;
+  await fetchAndRenderWorks(currentMuseumId, false);
 }
 
 // 3. Resetta filtri e input di ricerca
 function resetWorkFilters() {
   ['author', 'technique', 'workstyle'].forEach(prefix => {
-    // Svuota ricerca
     const searchInput = document.getElementById(`filter-${prefix}-search`);
     if (searchInput) searchInput.value = "";
-    // Deseleziona checkbox e mostra tutti
     document.querySelectorAll(`.${prefix}-cb`).forEach(cb => cb.checked = false);
     document.querySelectorAll(`.${prefix}-item`).forEach(item => item.style.display = "block");
   });
 
-  renderWorksList(currentWorks);
+  applyWorkFilters();
 }
 
 // 4. Associa le funzioni di ricerca (fuzzy search) ai 3 campi di input
@@ -562,4 +686,187 @@ function attachVisitFilterEvents() {
       }
     });
   }
+}
+
+// ==========================================
+// MODULO FILTRI LE MIE VISITE (My Visits)
+// ==========================================
+// ATTENZIONE: questo modulo presuppone che getMyVisits() (in visits-ui.js)
+// salvi l'elenco grezzo delle visite in una variabile globale chiamata
+// "allMyVisits" e che esista una funzione "renderManagedVisitsList(list)"
+// che disegna le card dentro #managed-visits-area. Se in visits-ui.js i nomi
+// sono diversi, sostituiscili qui sotto (sono usati in 3 punti in tutto).
+
+let filterMyTypeInstance = null;
+let filterMyDateDirInstance = null;
+let filterMySearchInstance = null;
+
+function attachMyVisitsFilterEvents() {
+  // Inizializza IMask per la data (DD/MM/YYYY)
+  const dateInput = document.getElementById("filter-my-date");
+  if (dateInput) {
+    const dateMask = IMask(dateInput, {
+      mask: Date,
+      pattern: 'd/`m/`Y',
+      lazy: false,
+      blocks: {
+        d: { mask: IMask.MaskedRange, from: 1, to: 31, maxLength: 2, placeholderChar: 'd' },
+        m: { mask: IMask.MaskedRange, from: 1, to: 12, maxLength: 2, placeholderChar: 'm' },
+        Y: { mask: IMask.MaskedRange, from: 1900, to: 9999, placeholderChar: 'y' }
+      },
+      format: date => {
+        let day = date.getDate().toString().padStart(2, '0');
+        let month = (date.getMonth() + 1).toString().padStart(2, '0');
+        let year = date.getFullYear();
+        return [day, month, year].join('/');
+      },
+      parse: str => {
+        const parts = str.split('/');
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+      }
+    });
+
+    // Filtra solo quando l'utente ha scritto l'intera data o ha svuotato il campo
+    dateMask.on('complete', applyMyVisitsFilters);
+    dateMask.on('accept', () => {
+      if (dateMask.value === '') applyMyVisitsFilters();
+    });
+  }
+
+  // Inizializza Tom Select
+  if (document.getElementById("filter-my-type")) {
+    filterMyTypeInstance = new TomSelect("#filter-my-type", { create: false, controlInput: null, sortField: false, onChange: applyMyVisitsFilters });
+  }
+  if (document.getElementById("filter-my-date-dir")) {
+    filterMyDateDirInstance = new TomSelect("#filter-my-date-dir", { create: false, controlInput: null, sortField: false, onChange: applyMyVisitsFilters });
+  }
+
+  // Gestione etichetta interruttore ordinamento
+  const sortToggle = document.getElementById("filter-my-sort-toggle");
+  const sortLabel = document.getElementById("sort-toggle-label");
+  if (sortToggle && sortLabel) {
+    sortToggle.addEventListener("change", (e) => {
+      sortLabel.innerText = e.target.checked ? "Più recenti prima" : "Meno recenti prima";
+      applyMyVisitsFilters();
+    });
+  }
+
+  // Inizializza Tom Select per la ricerca testuale
+  if (document.getElementById("filter-my-search")) {
+    // Estrae tutti i titoli e musei dalle visite caricate
+    const optionsSet = new Set();
+    cachedVisits.forEach(v => {
+      if (v.title) optionsSet.add(v.title);
+      if (v.museumId && v.museumId.name) optionsSet.add(v.museumId.name);
+    });
+    
+    filterMySearchInstance = new TomSelect("#filter-my-search", {
+      options: Array.from(optionsSet).map(opt => ({ value: opt, text: opt })),
+      create: true, // Permette di digitare testo libero non in lista
+      createOnBlur: true,
+      sortField: { field: "text", direction: "asc" },
+      onChange: applyMyVisitsFilters
+    });
+  }
+}
+
+function applyMyVisitsFilters() {
+  const searchQuery = filterMySearchInstance ? (filterMySearchInstance.getValue() || "").toLowerCase().trim() : "";
+  const typeFilter = document.getElementById("filter-my-type")?.value || "all";
+  
+  // Data target e direzione
+  // Data target e direzione
+  const dateInput = document.getElementById("filter-my-date")?.value;
+  const dateDir = document.getElementById("filter-my-date-dir")?.value || "after";
+  
+  let targetDate = null;
+  if (dateInput && dateInput.length === 10) {
+    // Separa GG, MM, AAAA e lo rimonta per farlo digerire a Javascript
+    const [d, m, y] = dateInput.split('/');
+    targetDate = new Date(`${y}-${m}-${d}T00:00:00`).getTime();
+  }
+
+  // Stato toggle
+  const sortNewestFirst = document.getElementById("filter-my-sort-toggle")?.checked ?? true;
+
+  let filtered = cachedVisits.filter(visit => {
+    if (!visit) return false;
+
+    // 1. Ricerca Fuzzy Search su Titolo o Museo
+    if (searchQuery !== "") {
+      const titleMatch = fuzzySearch(searchQuery, visit.title || "");
+      const museumMatch = fuzzySearch(searchQuery, visit.museumId?.name || "");
+      if (!titleMatch && !museumMatch) return false;
+    }
+
+    // 2. Filtro Data f
+    if (targetDate) {
+      const visitDate = new Date(visit.sortDate || visit.updatedAt || visit.createdAt || 0).getTime();
+      if (dateDir === "after" && visitDate < targetDate) return false;
+      if (dateDir === "before" && visitDate > targetDate) return false;
+    }
+
+    // 3. Tipologia
+    const creatorId = visit.creator?._id || visit.creator;
+    const isPurchased = currentUser && creatorId && (creatorId.toString() !== currentUser._id.toString());
+
+    if (typeFilter === "created" && isPurchased) return false;
+    if (typeFilter === "purchased" && !isPurchased) return false;
+    if (typeFilter === "drafts" && !visit.isDraft) return false;
+    if (typeFilter === "public" && (isPurchased || !visit.isPublic || visit.isDraft)) return false;
+    if (typeFilter === "private" && (isPurchased || visit.isPublic || visit.isDraft)) return false;
+
+    return true;
+  });
+
+  // 4. Ordinamento da switch
+  filtered.sort((a, b) => {
+    return sortNewestFirst ? b.sortDate - a.sortDate : a.sortDate - b.sortDate;
+  });
+
+  renderVisitsList(filtered, "managed-visits-area");
+
+  // --- AGGIUNTO: Aggiorna dinamicamente le opzioni del search (opzioni rimanenti) ---
+  if (filterMySearchInstance) {
+    const currentVal = filterMySearchInstance.getValue();
+    const newOptions = new Set();
+    
+    // Raccoglie i nomi solo dalle visite sopravvissute ai filtri
+    filtered.forEach(v => {
+      if (v.title) newOptions.add(v.title);
+      if (v.museumId && v.museumId.name) newOptions.add(v.museumId.name);
+    });
+
+    // Aggiorna le opzioni in silenzio per non scatenare un loop infinito
+    filterMySearchInstance.clearOptions();
+    Array.from(newOptions).forEach(opt => filterMySearchInstance.addOption({ value: opt, text: opt }));
+    
+    // Mantiene il valore cercato attualmente per non farlo sparire dal box
+    if (currentVal && !newOptions.has(currentVal)) {
+      filterMySearchInstance.addOption({ value: currentVal, text: currentVal });
+    }
+    
+    filterMySearchInstance.refreshOptions(false);
+  }
+}
+
+function resetMyVisitsFilters() {
+  const dateInput = document.getElementById("filter-my-date");
+  const sortToggle = document.getElementById("filter-my-sort-toggle");
+  const sortLabel = document.getElementById("sort-toggle-label");
+
+  if (dateInput) dateInput.value = "";
+  
+  // Resetta i menu a tendina in modo silenzioso (true = silent)
+  if (filterMySearchInstance) filterMySearchInstance.setValue("", true);
+  if (filterMyTypeInstance) filterMyTypeInstance.setValue("all", true);
+  if (filterMyDateDirInstance) filterMyDateDirInstance.setValue("after", true);
+
+  if (sortToggle && sortLabel) {
+    sortToggle.checked = true;
+    sortLabel.innerText = "Più recenti prima";
+  }
+
+  // Ricalcola tutto con i filtri puliti (ripristinerà anche le opzioni della barra di ricerca)
+  applyMyVisitsFilters();
 }

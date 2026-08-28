@@ -51,13 +51,13 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/marketplace", express.static(path.join(__dirname, '..', '..', 'marketplace')));
 app.use("/navigator",   express.static(path.join(__dirname, '..', '..', 'navigator', 'dist')));
+app.use("/uploads",     express.static(path.join(__dirname, '..', '..', 'uploads')));
 
 // ─── Sessione e Passport ───────────────────────────────────────────────────
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  // Aggiungiamo lo store persistente su MongoDB!
   store: MongoStore.create({
     // Assicurati che questo URI sia uguale a quello che usi in db.js per connetterti
     mongoUrl: process.env.DB_URI, 
@@ -80,7 +80,11 @@ app.use('/api', apiRouter);
 
 // ─── Front-end ─────────────────────────────────────────────────────────────
 const sortablePath = path.join(__dirname, '..', '..', '..', 'node_modules', 'sortablejs');
+const tomSelectPath = path.join(__dirname, '..', '..', '..', 'node_modules', 'tom-select', 'dist');
+const iMaskPath = path.join(__dirname, '..', '..', '..', 'node_modules', 'imask', 'dist');
 app.use('/vendor/sortablejs', express.static(sortablePath));
+app.use('/vendor/tom-select', express.static(tomSelectPath));
+app.use('/vendor/imask', express.static(iMaskPath));
 
 // --- 4. LOGICA DI SOCKET.IO PER LA JOINT SESSION ---
 const activeSessions = {};
@@ -166,11 +170,43 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Slave (Studente) interagisce (es. chiede un livello più basso)
-  socket.on('student_interaction', ({ roomCode, type, details }) => {
-    if (activeSessions[roomCode]) {
-      const teacherId = activeSessions[roomCode].teacherSocketId;
-      io.to(teacherId).emit('student_activity', { studentId: socket.id, type, details });
+  // --- MONITORAGGIO DOCENTE ---
+
+  // 1. Lo studente fa una domanda all'IA (testo o voce)
+  socket.on('student_interaction', ({ roomCode, studentName, interactionType, query }) => {
+    if (!roomCode) return;
+    const room = roomCode.toUpperCase();
+    
+    if (activeSessions[room] && activeSessions[room].teacherSocketId) {
+      io.to(activeSessions[room].teacherSocketId).emit('teacher_dashboard_update', {
+        type: 'interaction',
+        data: {
+          id: Date.now().toString(), // ID univoco per la notifica
+          studentName,
+          interactionType, // es. 'voice', 'text'
+          query,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      });
+    }
+  });
+
+  // 2. Ping periodico o cambio opera dello studente (per la griglia)
+  socket.on('student_status_update', ({ roomCode, studentName, currentArtworkId, status }) => {
+    if (!roomCode) return;
+    const room = roomCode.toUpperCase();
+    
+    if (activeSessions[room] && activeSessions[room].teacherSocketId) {
+      io.to(activeSessions[room].teacherSocketId).emit('teacher_dashboard_update', {
+        type: 'status',
+        data: {
+          socketId: socket.id,
+          studentName,
+          currentArtworkId,
+          status, // es. 'active', 'lagging'
+          lastSeen: Date.now()
+        }
+      });
     }
   });
 
@@ -240,9 +276,27 @@ io.on('connection', (socket) => {
     }
   });
 
+  // OPZIONALE: Qui potremmo cercare se il socket.id era uno studente o un prof e pulire activeSessions
   socket.on('disconnect', () => {
-    console.log(`Client disconnesso: ${socket.id}`);
-    // OPZIONALE: Qui potremmo cercare se il socket.id era uno studente o un prof e pulire activeSessions
+    // Cerca in tutte le stanze se il socket disconnesso appartiene a uno studente
+    for (const roomCode in activeSessions) {
+      const session = activeSessions[roomCode];
+      const studentIndex = session.students.findIndex(s => s.id === socket.id);
+
+      if (studentIndex !== -1 && session.teacherSocketId) {
+        // Avvisa il prof che lo studente ha perso la connessione di netto
+        io.to(session.teacherSocketId).emit('teacher_dashboard_update', {
+          type: 'status',
+          data: {
+            socketId: socket.id,
+            studentName: session.students[studentIndex].name,
+            status: 'offline', // Stato inequivocabile di disconnessione
+            lastSeen: Date.now()
+          }
+        });
+        break; // Trovato e segnalato, usciamo dal ciclo
+      }
+    }
   });
 });
 

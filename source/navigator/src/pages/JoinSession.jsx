@@ -2,14 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QrCode, GraduationCap, Presentation, Users, Loader2, AlertCircle, RefreshCw, Sparkles, ArrowLeft, ArrowRight, Play, Send, Camera, CameraOff, CheckCircle2 } from 'lucide-react';
 import QrScanner from 'qr-scanner';
-// Vite: importa l'URL del worker già bundlato dalla libreria (necessario per farlo funzionare col bundler)
-import QrScannerWorkerPath from 'qr-scanner/qr-scanner-worker.min.js?url';
 import { API_BASE_URL } from '../config';
 import { useSocket } from '../context/SocketContext';
 import LoginModal from '../components/LoginModal';
 import RoomQRCode from '../components/RoomQRCode';
-
-QrScanner.WORKER_PATH = QrScannerWorkerPath;
 
 export default function JoinSession() {
   const { socket } = useSocket();
@@ -17,7 +13,7 @@ export default function JoinSession() {
 
   const [currentUser, setCurrentUser] = useState(null);
   const [studentName, setStudentName] = useState(
-    localStorage.getItem('student_name') || currentUser?.name || ''
+    localStorage.getItem('student_name') || ''
   );
   const [loading, setLoading] = useState(true);
   const [userType, setUserType] = useState('none'); // 'student' | 'teacher' | 'none'
@@ -114,6 +110,13 @@ export default function JoinSession() {
       localStorage.setItem('student_name', studentName);
     }
   }, [studentName]);
+
+  // --- 2.5 Auto-compilazione del nome se l'utente è loggato ---
+  useEffect(() => {
+    if (currentUser && currentUser.username) {
+      setStudentName(currentUser.username);
+    }
+  }, [currentUser]);
 
   // 3. Fetch visite insegnante protetto (usa l'ID utente come dipendenza fissa)
   useEffect(() => {
@@ -429,7 +432,7 @@ export default function JoinSession() {
                 <Presentation size={28} />
               </div>
               <div className="flex-1 text-left">
-                <h3 className="text-white font-bold text-lg mb-0.5 group-hover:text-purple-400 transition-colors">Insegnante / Guida</h3>
+                <h3 className="text-white font-bold text-lg mb-0.5 group-hover:text-purple-400 transition-colors">Insegnante</h3>
                 <p className="text-slate-400 text-xs leading-normal">Crea una stanza virtuale, genera un codice e guida i tuoi studenti.</p>
               </div>
             </div>
@@ -450,12 +453,21 @@ export default function JoinSession() {
 
             {/* Input Nome Studente */}
             <div className="w-full bg-[#1e293b]/40 backdrop-blur-md border border-slate-800 rounded-2xl p-5 mb-4">
-              <label className="block text-left text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-                Come ti chiami?
-              </label>
+              <div className="flex items-center justify-between mb-2 ml-1">
+                <label className="block text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Come ti chiami?
+                </label>
+                {/* Mostra un badge se l'utente è loggato */}
+                {currentUser && currentUser.username && (
+                  <span className="text-[10px] text-amber-500 font-bold bg-amber-500/10 px-2 py-0.5 rounded-full">
+                    Account Collegato
+                  </span>
+                )}
+              </div>
               <input
                 type="text"
-                placeholder="Il tuo nome"
+                // Se cancella il testo, il placeholder gli suggerisce il suo username (o "Il tuo nome" se è ospite)
+                placeholder={currentUser?.username || "Il tuo nome"}
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
                 className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition-all"

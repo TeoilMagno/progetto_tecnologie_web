@@ -7,6 +7,37 @@ let currentMuseumId = null;
 let editModalInstance = null;
 let currentView = 'works';
 
+// Variabili Paginazione Musei
+let currentMuseumPage = 1;
+let totalMuseumPages = 1;
+let isFetchingMuseums = false;
+let museumObserver = null;
+let renderedMuseumsCount = 0;
+const RENDER_CHUNK = 16; // Quanti musei disegnare per ogni colpo di scroll
+
+// Variabili Paginazione Opere
+let currentWorkPage = 1;
+let totalWorkPages = 1;
+let isFetchingWorks = false;
+let renderedWorksCount = 0;
+const WORK_RENDER_CHUNK = 12;
+
+// Variabili Paginazione Items (Bookshop)
+let currentItemsPage = 1;
+let totalItemsPages = 1;
+let isFetchingItems = false;
+let renderedItemsCount = 0;
+const ITEMS_RENDER_CHUNK = 12;
+
+// Unico nodo sentinella condiviso per qualsiasi scroll infinito
+const globalSentinel = document.createElement("div");
+globalSentinel.id = "global-infinite-sentinel";
+globalSentinel.className = "col-12 text-center py-4 d-none w-100";
+globalSentinel.innerHTML = `
+  <div class="spinner-border text-light spinner-border-sm" role="status"></div>
+  <p class="text-secondary small mt-1">Caricamento altri elementi...</p>
+`;
+
 // 1. INIZIALIZZAZIONE
 document.addEventListener("DOMContentLoaded", async () => {
   const modalEl = document.getElementById("editItemModal");
@@ -46,60 +77,76 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+function setupInfiniteScroll() {
+  const sentinel = document.getElementById("global-infinite-sentinel");
+  if (!sentinel) return;
+
+  if (museumObserver) museumObserver.disconnect();
+
+  museumObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+       if (renderedMuseumsCount < cachedMuseums.length) {
+          const nextChunk = cachedMuseums.slice(renderedMuseumsCount, renderedMuseumsCount + RENDER_CHUNK);
+          renderedMuseumsCount += nextChunk.length;
+          renderMuseumsList(nextChunk, "content-area", true);
+          updateSentinelVisibility();
+       } else if (!isFetchingMuseums && currentMuseumPage < totalMuseumPages) {
+          currentMuseumPage++;
+          applyMuseumFilters(true); 
+       }
+    }
+  }, { rootMargin: '100px' });
+  museumObserver.observe(sentinel);
+}
+
+function updateSentinelVisibility() {
+  const sentinel = document.getElementById("global-infinite-sentinel");
+  if (!sentinel) return;
+  
+  // Mostra la sentinella SE c'è ancora qualcosa da disegnare (in cache) O da scaricare (dal server)
+  if (renderedMuseumsCount < cachedMuseums.length || currentMuseumPage < totalMuseumPages) {
+    sentinel.classList.remove("d-none");
+  } else {
+    sentinel.classList.add("d-none");
+  }
+}
+
 // 3. LOGICA API (FETCH)
 
 async function getMuseums(isHistoryPop = false) {
   const container = document.getElementById("content-area");
-
-  // 1. SE IL CONTAINER NON ESISTE (es. siamo nella pagina I Miei Musei), FERMATI.
   if (!container) return;
+
+  container.appendChild(globalSentinel);
 
   const title = document.getElementById("page-title");
   const backBtn = document.getElementById("back-btn");
+  currentMuseumId = null;
 
-  currentMuseumId = null; // Resetta l'ID del museo aperto
+  if (backBtn) backBtn.classList.add("d-none");
+  if (title) title.innerHTML = "Musei Disponibili";
 
-  // 2. CONTROLLA CHE GLI ELEMENTI ESISTANO PRIMA DI MODIFICARLI
-  if (backBtn) {
-    backBtn.classList.add("d-none");
-  }
+  // Disegna i filtri nella sidebar (se non ci sono già)
+  populateFilters('museums');
+  
+  // Innesca la prima chiamata API tramite la logica dei filtri!
+  await applyMuseumFilters(false);
+  
+  setupInfiniteScroll(); // Attiva il guardiano dello scroll in fondo
 
-  if (title) {
-    title.innerHTML = "Musei Disponibili";
-  }
-
-  container.innerHTML = `
-    <div class="col-12 text-center mt-5">
-      <div class="spinner-border text-light" role="status"></div>
-      <p class="mt-2 text-secondary">Caricamento...</p>
-    </div>`;
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/museums`);
-    if (!response.ok) throw new Error("Errore server");
-    cachedMuseums = await response.json();
-
-    // Genera l'interfaccia HTML dei filtri per i musei nella sidebar
-    populateFilters('museums');
-
-    // Inizializza i dati in background
-    initializeFiltersData(cachedMuseums);
-
-    // Renderizza passandogli esplicitamente l'id (per evitare conflitti)
-    renderMuseumsList(cachedMuseums, "content-area");
-
-    if (!isHistoryPop) {
-      history.pushState({ view: 'home' }, "", "/");
-    }
-  } catch (error) {
-    console.error(error);
-    container.innerHTML = `<div class="alert alert-danger bg-transparent text-danger border-danger">Errore caricamento dati. Il server è attivo?</div>`;
+  if (!isHistoryPop) {
+    history.pushState({ view: 'home' }, "", "/");
   }
 }
 
 async function getMuseumItems(museumId, isHistoryPop = false) {
   const container = document.getElementById("content-area");
   currentMuseumId = museumId;
+
+  // Stacca la sentinella dai musei così non interferisce
+  if (globalSentinel.parentNode) {
+    globalSentinel.parentNode.removeChild(globalSentinel);
+  }
 
   container.innerHTML = `
     <div class="col-12 text-center mt-5">
@@ -121,32 +168,40 @@ async function getMuseumItems(museumId, isHistoryPop = false) {
 }
 
 // 4. LOGICA RENDER
-function renderMuseumsList(museums, containerId = "content-area") {
-  // Ora usa il parametro dinamico invece della stringa fissa
+function renderMuseumsList(museums, containerId = "content-area", append = false) {
   const container = document.getElementById(containerId);
-
-  // Se il contenitore non esiste, si ferma senza crashare
   if (!container) return;
 
-  container.innerHTML = "";
+  // 1. FONDAMENTALE: Svuotiamo il contenitore SOLO se non stiamo aggiungendo in coda!
+  if (!append) {
+    container.innerHTML = "";
+  }
 
   // Capiamo se siamo nel marketplace (dove c'è content-area) o in I Miei Musei
   const isMarketplace = containerId === "content-area";
 
+  // 2. Messaggio se non ci sono risultati (e non stiamo scrollando)
+  if (museums.length === 0 && !append) {
+    container.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessun museo trovato con questi filtri.</div>';
+    return;
+  }
+
+  // 3. Costruiamo tutto il nuovo blocco HTML in memoria (più veloce)
+  let htmlString = ""; 
+
   museums.forEach((museum) => {
-    if (!museum) return; // Controllo di sicurezza che avevamo aggiunto
+    if (!museum) return;
 
     const tags = museum.tags || [];
     const tagsHtml = tags
         .map((tag) => `<span class="badge badge-tag">${tag}</span>`)
         .join("");
 
-    // Se siamo nel marketplace apriamo la scheda dinamicamente, altrimenti redirigiamo alla home passandogli l'ID!
     const clickAction = isMarketplace 
         ? `getMuseumItems('${museum._id}')` 
         : `window.location.href='/?museumId=${museum._id}'`;
 
-    container.innerHTML += `
+    htmlString += `
       <div class="col">
         <div class="card h-100 custom-card cursor-pointer" onclick="${clickAction}" style="cursor: pointer;">
           <img src="${museum.image}" class="card-img-top" alt="${museum.name}" style="height: 200px; object-fit: cover; opacity: 0.9;">
@@ -160,6 +215,17 @@ function renderMuseumsList(museums, containerId = "content-area") {
         <a href="/museums/${museum._id}/upload-map/"><div class="explore">Upload Map</div></a>
       </div>`;
   });
+
+  if (append) {
+    container.insertAdjacentHTML('beforeend', htmlString);
+  } else {
+    container.innerHTML = htmlString;
+  }
+  
+  // Riassicuriamoci che la sentinella resti in fondo al container dei musei
+  if (isMarketplace) {
+    container.appendChild(globalSentinel);
+  }
 }
 
 function renderMuseumDashboard(museumInfo) {
@@ -366,10 +432,197 @@ function switchMuseumView(view, museumId) {
   loadMuseumSubView(view, museumId); //
 }
 
+async function fetchAndRenderWorks(museumId, isLoadMore = false) {
+  if (isFetchingWorks) return;
+  isFetchingWorks = true;
+  
+  const subContainer = document.getElementById("museum-display-area");
+  if (!subContainer) return;
+
+  if (isLoadMore) {
+    globalSentinel.classList.remove("d-none");
+  }
+
+  // Raccogli filtri attivi se ci sono
+  const search = document.getElementById("filter-author-search")?.value.trim() || ""; // o input dedicati
+  const authorCbs = Array.from(document.querySelectorAll('.author-cb:checked')).map(cb => cb.value);
+  const techniqueCbs = Array.from(document.querySelectorAll('.technique-cb:checked')).map(cb => cb.value);
+  const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
+
+  const params = new URLSearchParams();
+  params.append("page", currentWorkPage);
+  params.append("limit", 12); // Scarica blocchi da 12 dal server
+  if (!isLoadMore) params.append("fetchMetadata", "true"); // Chiede i dati per la sidebar solo la prima volta
+  
+  if (authorCbs.length > 0) params.append("author", authorCbs.join(","));
+  if (techniqueCbs.length > 0) params.append("technique", techniqueCbs.join(","));
+  if (styleCbs.length > 0) params.append("workstyle", styleCbs.join(","));
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/museums/${museumId}/works?${params.toString()}`);
+    if (!response.ok) throw new Error("Errore caricamento opere");
+    const data = await response.json();
+
+    totalWorkPages = data.totalPages;
+
+    if (isLoadMore) {
+      currentWorks = [...currentWorks, ...data.works];
+      
+      // Salva nella cache pulita delle opere se non ci sono filtri
+      if (authorCbs.length === 0 && techniqueCbs.length === 0 && styleCbs.length === 0) {
+        pristineWorksCache = [...currentWorks];
+        pristineWorkPage = currentWorkPage;
+        if (pristineWorksCache.length >= data.total) isEntireWorksDbInCache = true;
+      }
+
+      const nextChunk = currentWorks.slice(renderedWorksCount, renderedWorksCount + WORK_RENDER_CHUNK);
+      renderedWorksCount += nextChunk.length;
+      renderWorksList(nextChunk, true);
+    } else {
+      currentWorks = data.works;
+      
+      if (authorCbs.length === 0 && techniqueCbs.length === 0 && styleCbs.length === 0) {
+        pristineWorksCache = [...currentWorks];
+        pristineWorkPage = currentWorkPage;
+        pristineTotalWorkPages = totalWorkPages;
+        if (pristineWorksCache.length >= data.total) isEntireWorksDbInCache = true;
+      }
+
+      // Se il server ha restituito i metadati per la sidebar, inizializziamoli!
+      if (data.metadata && typeof initializeWorkFiltersDataFromApi === 'function') {
+        initializeWorkFiltersDataFromApi(data.metadata);
+      }
+
+      renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
+      const initialChunk = currentWorks.slice(0, renderedWorksCount);
+      renderWorksList(initialChunk, false);
+    }
+
+    setupWorksInfiniteScroll(museumId);
+  } catch (error) {
+    console.error(error);
+    if (!isLoadMore) subContainer.innerHTML = `<div class="col-12 text-center text-danger small py-3">Errore: ${error.message}</div>`;
+  } finally {
+    isFetchingWorks = false;
+    updateWorksSentinelVisibility();
+  }
+}
+async function fetchAndRenderItems(museumId, isLoadMore = false) {
+  if (isFetchingItems) return;
+  isFetchingItems = true;
+  
+  const subContainer = document.getElementById("museum-display-area");
+  if (!subContainer) return;
+
+  if (isLoadMore) globalSentinel.classList.remove("d-none");
+
+  const params = new URLSearchParams();
+  params.append("page", currentItemsPage);
+  params.append("limit", 12); 
+  
+  try {
+    const response = await fetch(`${API_BASE_URL}/museums/${museumId}/items?${params.toString()}`);
+    if (!response.ok) throw new Error("Errore caricamento articoli");
+    
+    const data = await response.json();
+    
+    // Retrocompatibilità: se il backend non è ancora paginato e restituisce un array puro, lo supportiamo
+    const itemsArray = Array.isArray(data) ? data : (data.items || []);
+    totalItemsPages = data.totalPages || 1; 
+
+    if (isLoadMore) {
+      currentItems = [...currentItems, ...itemsArray];
+      const nextChunk = currentItems.slice(renderedItemsCount, renderedItemsCount + ITEMS_RENDER_CHUNK);
+      renderedItemsCount += nextChunk.length;
+      renderItemsList(nextChunk, true);
+    } else {
+      currentItems = itemsArray;
+      renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK, currentItems.length);
+      const initialChunk = currentItems.slice(0, renderedItemsCount);
+      renderItemsList(initialChunk, false);
+    }
+  } catch (error) {
+    console.error(error);
+    if (!isLoadMore) subContainer.innerHTML = `<div class="col-12 text-center text-danger small py-3">Errore: ${error.message}</div>`;
+  } finally {
+    isFetchingItems = false;
+    updateItemsSentinelVisibility();
+  }
+}
+
+let itemsObserver = null;
+function setupItemsInfiniteScroll(museumId) {
+  const sentinel = document.getElementById("global-infinite-sentinel");
+  if (!sentinel) return;
+
+  if (itemsObserver) itemsObserver.disconnect();
+
+  itemsObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+       if (renderedItemsCount < currentItems.length) {
+          const nextChunk = currentItems.slice(renderedItemsCount, renderedItemsCount + ITEMS_RENDER_CHUNK);
+          renderedItemsCount += nextChunk.length;
+          renderItemsList(nextChunk, true);
+          updateItemsSentinelVisibility();
+       } else if (!isFetchingItems && currentItemsPage < totalItemsPages) {
+          currentItemsPage++;
+          fetchAndRenderItems(museumId, true);
+       }
+    }
+  }, { rootMargin: '100px' });
+
+  itemsObserver.observe(sentinel);
+}
+
+function updateItemsSentinelVisibility() {
+  if (renderedItemsCount < currentItems.length || currentItemsPage < totalItemsPages) {
+    globalSentinel.classList.remove("d-none");
+  } else {
+    globalSentinel.classList.add("d-none");
+  }
+}
+
+let worksObserver = null;
+function setupWorksInfiniteScroll(museumId) {
+  const sentinel = document.getElementById("global-infinite-sentinel");
+  if (!sentinel) return;
+
+  if (worksObserver) worksObserver.disconnect();
+
+  worksObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+       if (renderedWorksCount < currentWorks.length) {
+          const nextChunk = currentWorks.slice(renderedWorksCount, renderedWorksCount + WORK_RENDER_CHUNK);
+          renderedWorksCount += nextChunk.length;
+          renderWorksList(nextChunk, true);
+          updateWorksSentinelVisibility();
+       } else if (!isFetchingWorks && currentWorkPage < totalWorkPages) {
+          currentWorkPage++;
+          fetchAndRenderWorks(museumId, true);
+       }
+    }
+  }, { rootMargin: '100px' });
+
+  worksObserver.observe(sentinel);
+}
+
+function updateWorksSentinelVisibility() {
+  if (renderedWorksCount < currentWorks.length || currentWorkPage < totalWorkPages) {
+    globalSentinel.classList.remove("d-none");
+  } else {
+    globalSentinel.classList.add("d-none");
+  }
+}
+
 // Si occupa di fare la fetch corretta in base al tab selezionato
 async function loadMuseumSubView(view, museumId) {
   const subContainer = document.getElementById("museum-display-area");
   if (!subContainer) return;
+
+  // Stacchiamo temporaneamente la sentinella mentre puliamo il subContainer
+  if (globalSentinel.parentNode) {
+    globalSentinel.parentNode.removeChild(globalSentinel);
+  }
 
   subContainer.innerHTML = `
     <div class="col-12 text-center py-4">
@@ -388,22 +641,37 @@ async function loadMuseumSubView(view, museumId) {
       currentVisits = museumVisits;
       renderVisitsListForMuseum(currentVisits);
     } else {
-      // Scegliamo l'endpoint corretto (opere o articoli di vendita)
-      const endpoint = view === 'works' 
-        ? `${API_BASE_URL}/museums/${museumId}/works` 
-        : `${API_BASE_URL}/museums/${museumId}/items`;
-
-      const response = await fetch(endpoint);
-      if (!response.ok) throw new Error("Errore nel caricamento dei dati");
-      const data = await response.json();
-
+      // Scegliamo l'endpoint corretto
       if (view === 'works') {
-        currentWorks = data;
-        initializeWorkFiltersData(currentWorks);
-        renderWorksList(currentWorks); // Rendering per le Opere
+        // --- MAGIA DELLA CACHE DEI TAB ---
+        // Se abbiamo già scaricato le opere per questo museo e l'array non è vuoto, usiamole al volo!
+        if (currentWorks && currentWorks.length > 0 && currentWorks[0].museumId === museumId) {
+           currentWorkPage = 1;
+           renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
+           const cachedChunk = currentWorks.slice(0, renderedWorksCount);
+           renderWorksList(cachedChunk, false);
+           updateWorksSentinelVisibility();
+           return; // STOP! Nessun fetch, visualizzazione istantanea!
+        }
+        
+        // Altrimenti procedi col fetch normale
+        currentWorkPage = 1;
+        renderedWorksCount = 0;
+        await fetchAndRenderWorks(museumId, false);
       } else {
-        currentItems = data; // Conserviamo gli articoli per l'editor
-        renderItemsList(currentItems); // Il tuo vecchio rendering per gli Articoli (in vendita)
+        // --- MAGIA DELLA CACHE: Se li abbiamo già scaricati per questo museo, usiamo la RAM ---
+        if (currentItems && currentItems.length > 0 && (currentItems[0].museumId === museumId || currentItems[0].museumId?._id === museumId)) {
+           currentItemsPage = 1;
+           renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK, currentItems.length);
+           const cachedChunk = currentItems.slice(0, renderedItemsCount);
+           renderItemsList(cachedChunk, false);
+           updateItemsSentinelVisibility();
+           return;
+        }
+        
+        currentItemsPage = 1;
+        renderedItemsCount = 0;
+        await fetchAndRenderItems(museumId, false);
       }
     }
   } catch (error) {
@@ -487,24 +755,24 @@ function renderVisitsListForMuseum(visits) {
   });
 }
 
-function renderWorksList(works) {
+function renderWorksList(works, append = false) {
   const subContainer = document.getElementById("museum-display-area");
   if (!subContainer) return;
 
-  subContainer.innerHTML = "";
+  if (!append) {
+    subContainer.innerHTML = "";
+  } 
 
-  if (works.length === 0) {
+  if (works.length === 0 && !append) {
     subContainer.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessuna opera d\'arte esposta in questo museo.</div>';
     return;
   }
 
+  let htmlString = "";
   works.forEach((work) => {
-    // Estraiamo la prima descrizione disponibile nell'array, se presente
-    // TODO: da cambiare quando i works saranno uniformati
-    const primaryDesc = work.description.medium ? work.description.medium.short
-      : work.description[0].description
+    const primaryDesc = work.description?.medium?.short || work.description?.[0]?.description || work.description || "";
 
-    subContainer.innerHTML += `
+    htmlString += `
       <div class="col-12 col-lg-6">
         <div class="card custom-card h-100">
           <div class="row g-0 h-100">
@@ -517,8 +785,8 @@ function renderWorksList(works) {
                 <h5 class="card-title mb-1 text-truncate text-info">${work.name}</h5>
                 
                 <p class="small text-secondary mb-2">
-                  <i class="bi bi-person-fill me-1"></i> ${work.authorName} <br>
-                  <i class="bi bi-calendar3 me-1"></i> ${work.year} &bull; ${work.styleName}
+                  <i class="bi bi-person-fill me-1"></i> ${work.authorName || 'Autore ignoto'} <br>
+                  <i class="bi bi-calendar3 me-1"></i> ${work.year || ''} &bull; ${work.styleName || ''}
                 </p>
                 
                 <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8">
@@ -530,56 +798,66 @@ function renderWorksList(works) {
         </div>
       </div>`;
   });
+
+  // Aggiungiamo la sentinella direttamente in fondo alla stringa HTML delle opere
+  htmlString += `
+    <div id="works-loading-sentinel" class="col-12 text-center py-4 d-none w-100">
+      <div class="spinner-border text-light spinner-border-sm" role="status"></div>
+      <p class="text-secondary small mt-1">Caricamento altre opere...</p>
+    </div>
+  `;
+
+  if (append) {
+    subContainer.insertAdjacentHTML('beforeend', htmlString);
+  } else {
+    subContainer.innerHTML = htmlString;
+  }
+
+  // Sposta magicamente la sentinella universale in fondo al contenitore delle opere
+  subContainer.appendChild(globalSentinel);
+
+  if (currentMuseumId) {
+    setupWorksInfiniteScroll(currentMuseumId);
+    updateWorksSentinelVisibility();
+  }
 }
 
-function renderItemsList(items, museumInfo) {
+function renderItemsList(items, append = false) {
   const container = document.getElementById("museum-display-area");
-  
   if(!container) return;
-  container.innerHTML = "";
 
-  if (items.length === 0) {
+  if (!append) container.innerHTML = "";
+
+  if (items.length === 0 && !append) {
     container.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessun articolo presente nel bookshop.</div>';
     return;
   }
 
   const isCurator = currentUser && currentUser.role === "curator";
+  let htmlString = "";
 
   items.forEach((item) => {
-    // Puliamo il nome da eventuali apici singoli che romperebbero la stringa onclick di JavaScript
     const safeName = item.name.replace(/'/g, "\\'");
 
-    container.innerHTML += `
+    htmlString += `
       <div class="col-12 col-lg-6">
         <div class="card custom-card h-100">
           <div class="row g-0 h-100">
             <div class="col-4">
-              <img src="${item.image}" class="img-fluid rounded-start h-100"
-                style="object-fit: cover; min-height: 180px" alt="${item.name}"/>
+              <img src="${item.image}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 180px" alt="${item.name}"/>
             </div>
             <div class="col-8">
               <div class="card-body d-flex flex-column h-100 py-3 px-3">
                 <div class="d-flex justify-content-between align-items-start">
                   <h5 class="card-title mb-1 text-truncate">${item.name}</h5>
                 </div>
-                <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8">
-                  ${item.description}
-                </p>
+                <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8">${item.description}</p>
                 <div class="d-flex justify-content-between align-items-end mt-auto pt-2 border-top border-secondary border-opacity-25">
                   <div class="fw-bold text-white fs-5">€ ${item.price.toFixed(2)}</div>
-                  
                   <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-gradient rounded-pill px-3" 
-                      onclick="addToCart({ id: '${item._id}', type: 'item', name: '${safeName}', price: ${item.price}, image: '${item.image || ''}' })">
-                      <i class="bi bi-cart-plus me-1"></i> Compra
-                    </button>
-
-                    ${isCurator ? `
-                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="openEditModal('${item._id}')">
-                      <i class="bi bi-pencil"></i>
-                    </button>` : ""}
+                    <button class="btn btn-sm btn-gradient rounded-pill px-3" onclick="addToCart({ id: '${item._id}', type: 'item', name: '${safeName}', price: ${item.price}, image: '${item.image || ''}' })"><i class="bi bi-cart-plus me-1"></i> Compra</button>
+                    ${isCurator ? `<button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="openEditModal('${item._id}')"><i class="bi bi-pencil"></i></button>` : ""}
                   </div>
-
                 </div>
               </div>
             </div>
@@ -587,6 +865,20 @@ function renderItemsList(items, museumInfo) {
         </div>
       </div>`;
   });
+
+  if (append) {
+    container.insertAdjacentHTML('beforeend', htmlString);
+  } else {
+    container.innerHTML = htmlString;
+  }
+
+  // Sposta la sentinella universale per le opere d'arte/bookshop
+  container.appendChild(globalSentinel);
+
+  if (currentMuseumId) {
+    setupItemsInfiniteScroll(currentMuseumId);
+    updateItemsSentinelVisibility();
+  }
 }
 
 // 5. LOGICA EDITOR
@@ -632,8 +924,7 @@ async function saveItem() {
     if (index !== -1) currentItems[index] = { ...currentItems[index], ...updatedData };
 
     editModalInstance.hide();
-    const museum = cachedMuseums.find((m) => m._id === currentMuseumId);
-    renderItemsList(currentItems, museum);
+    renderItemsList(currentItems, false); // Aggiorna a false per forzare il re-render pulito
     alert("Modifica salvata con successo!");
   } catch (error) {
     console.error(error);

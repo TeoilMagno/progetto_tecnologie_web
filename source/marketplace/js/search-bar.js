@@ -64,11 +64,10 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if (currentMuseumId === null) {
       // 1. Modalità Home: Ricerca Musei (per nome o città)
-      const filteredMuseums = cachedMuseums.filter(museum => 
-        fuzzySearch(query, museum.name) || 
-        (museum.address && fuzzySearch(query, museum.address))
-      );
-      renderMuseumsList(filteredMuseums);
+      clearTimeout(window.searchTimeout);
+      window.searchTimeout = setTimeout(() => {
+         applyMuseumFilters(false);
+      }, 400);
       
     } else if (currentView === 'works') {
       // 2. Modalità Museo: Ricerca Opere (per titolo o autore)

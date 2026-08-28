@@ -2,6 +2,7 @@ const Section = require('../models/sections');
 const Work = require('../models/works');
 
 const { getWorksById, deleteWorkById } = require('./works');
+const { deleteLocalFile } = require('../utils/file-helper')
 
 exports.getAllSections = async () => {
   try {
@@ -52,7 +53,7 @@ exports.addWorkToSection = async (sectionId, workId) => {
   const updatedSection = await Section.findByIdAndUpdate(
     sectionId, 
     { $push: { works: { workId: workId } } }, 
-    { new: true, useFindAndModify: false } 
+    { returnDocument: 'after', useFindAndModify: false } 
   );
 
   if (!updatedSection) throw new Error("Sezione non trovata");
@@ -74,10 +75,15 @@ exports.getWorksBySection = async (sectionId) => {
 
 // Aggiorna i dati base di una sezione
 exports.updateSectionById = async (sectionId, updateData, museumId) => {
+  const oldSection = await Section.findOne({ _id: sectionId, museumId: museumId });
+  if (oldSection && oldSection.image && oldSection.image !== updateData.image) {
+    await deleteLocalFile(oldSection.image);
+  }
+
   const updatedSection = await Section.findOneAndUpdate(
     { _id: sectionId, museumId: museumId},
     updateData, 
-    { new: true, runValidators: true }
+    { returnDocument: 'after', runValidators: true }
   );
 }
 
@@ -109,7 +115,7 @@ exports.uploadMap = async (mapData) => {
         }
       },
       {
-        new: true,
+        returnDocument: 'after',
         runValidators: true
       }
     );
@@ -129,7 +135,7 @@ exports.removeWorkFromSection = async (sectionId, workId) => {
   return await Section.findByIdAndUpdate(
     sectionId,
     { $pull: { works: { workId: workId } } },
-    { new: true }
+    { returnDocument: 'after' }
   );
 };
 
@@ -140,6 +146,10 @@ exports.deleteSectionById = async (sectionId, museumId) => {
     const error = new Error("Sezione non trovata o non sei autorizzato a eliminarla");
     error.statusCode = 403;
     throw error;
+  }
+
+  if(section && section.image) {
+    await deleteLocalFile(section.image);
   }
 
   if (section.works && section.works.length > 0) {
