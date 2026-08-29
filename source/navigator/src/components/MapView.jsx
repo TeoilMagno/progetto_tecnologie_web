@@ -50,7 +50,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
   const isSharedSession = Boolean(roomCode);
 
-
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
   
   // Se non ci sono sezioni valide, attiviamo la modalità Fallback (Audioguida List Mode)
@@ -537,6 +536,12 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         currentLength={currentLength}
         expertiseLevel={expertiseLevel}
         onShowJoinModal={() => setShowJoinModal(true)}
+        hasMap={hasMap}
+        commandsMap={commandsMap}
+        setCurrentLength={setCurrentLength}
+        setCurrentExpertise={setExpertiseLevel}
+        socket={socket}
+        roomCode={roomCode}
       />
 
       {/* Modali e Bottom Sheet */}
@@ -619,6 +624,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           setCurrentExpertise={setExpertiseLevel}
           currentLength={currentLength}
           setCurrentLength={setCurrentLength}
+          socket={socket}
+          roomCode={roomCode}
+          isSharedSession={isSharedSession}
+          isTeacher={isTeacher}
         />
       )}
 

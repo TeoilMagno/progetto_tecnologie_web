@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Volume, VolumeX, Mic, X, Sparkles } from "lucide-react";
 import { API_BASE_URL } from "../config";
 
-export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, currentExpertise, setCurrentExpertise, currentLength, setCurrentLength }) {
+export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, currentExpertise, setCurrentExpertise, currentLength, setCurrentLength, socket, roomCode, isSharedSession, isTeacher }) {
   // --- LOGICA TRASCINAMENTO BOTTOM SHEET ---
   const [dragStartY, setDragStartY] = useState(null);
   const [dragCurrentY, setDragCurrentY] = useState(0);
@@ -130,6 +130,15 @@ export default function WorkDetailsSheet({ work, onClose, onSpeak, commandsMap, 
       // Estraiamo il testo, lo mettiamo in minuscolo e togliamo gli spazi ai lati
       const transcript = event.results[0][0].transcript.toLowerCase().trim();
       console.log("Hai detto:", transcript); // debug
+
+      if (isSharedSession && !isTeacher && socket && roomCode) {
+        socket.emit('student_interaction', {
+          roomCode,
+          studentName: localStorage.getItem('student_name') || 'Studente',
+          interactionType: 'voice',
+          query: transcript
+        });
+      }
 
       // --- MAPPATURA ESATTA DEI COMANDI (Fase 1) ---
       // rimozione eventuale punto finale che a volte l'API aggiunge

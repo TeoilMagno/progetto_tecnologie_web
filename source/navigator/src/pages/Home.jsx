@@ -59,7 +59,7 @@ const Home = () => {
       color: "bg-pink-500",
       glow: "shadow-[0_0_15px_rgba(236,72,153,0.3)]",
       isExternal: true, // <-- Flag speciale per i link fuori dal Navigator
-      path: BASE_URL
+      path: `${BASE_URL}/marketplace`
     }
   ];
 
