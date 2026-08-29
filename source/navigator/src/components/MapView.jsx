@@ -34,6 +34,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [showTeacherDashboard, setShowTeacherDashboard] = useState(false);
   const [classStatus, setClassStatus] = useState({});
   const [interactionFeed, setInteractionFeed] = useState([]);
+  const [isSuggestingWorks, setIsSuggestingWorks] = useState(false);
 
   // Livello di dettaglio della descrizione
   const [expertiseLevel, setExpertiseLevel] = useState("medium");
@@ -201,8 +202,26 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       socket.on("change_artwork", (data) => {
         if (!data || !data.artworkId) return;
         const index = visitedWorks.findIndex(w => w._id === data.artworkId);
+
+        // Se lo studente non ha l'opera (perché l'insegnante ha accettato i suggerimenti IA), 
+        // la peschiamo da allMuseumWorks e gliela aggiungiamo in tempo reale!
+        if (index === -1 && allMuseumWorks.length > 0) {
+          const newWork = allMuseumWorks.find(w => w._id === data.artworkId);
+          if (newWork) {
+            setVisitedWorks(prev => {
+              const updated = [...prev, newWork];
+              setCurrentWorkIndex(updated.length - 1);
+              setShowEndModal(false); // Chiude il modale di fine visita
+              if (hasMap) selectSectionForWork(newWork);
+              return updated;
+            });
+            return;
+          }
+        }
+
         if (index != -1) {
           setCurrentWorkIndex(index);
+          showEndModal(false);
           if (hasMap) selectSectionForWork(visitedWorks[index]);
         }
       });
@@ -336,6 +355,14 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   };
 
   const handleEndVisit = async () => {
+    // Apriamo subito la schermata finale!
+    setShowEndModal(true);
+    setSuggestedWorks([]);
+    
+    if (isSharedSession && isTeacher && socket) {
+      socket.emit("end_shared_visit", { roomCode });
+    }
+
     // 1. Calcolo del tempo
     const endTime = Date.now();
     setVisitEndTime(endTime);
@@ -345,7 +372,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     // 2. Troviamo le opere rimanenti
     const remainingWorks = allMuseumWorks.filter(w => !visitedWorks.some(vw => vw._id === w._id));
 
-    if (remainingWorks.length > 0) {
+    if (remainingWorks.length > 0 && remainingTime > 0 && maxDurationTime) {
+      setIsSuggestingWorks(true);
       const READING_TIMES = {
         short: 3 / 60,
         medium: 15 / 60,
@@ -365,7 +393,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         const aiResponse = await fetch(`${API_BASE_URL}/ai/suggested-works`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ payloadForAI: payloadForAI }) // Assicurati che backend legga req.body.payloadForAI
+          body: JSON.stringify({ payloadForAI }) // Assicurati che backend legga req.body.payloadForAI
         });
 
         if (!aiResponse.ok) {
@@ -547,69 +575,101 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       {/* Modali e Bottom Sheet */}
       {showEndModal && (
         <div className="fixed inset-0 bg-black/85 z-[10000] flex items-center justify-center p-4">
-          <div className="w-full max-w-[560px] bg-[#121218] border border-white/10 rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.8)] text-white text-center">
+          <div className="w-full max-w-[560px] bg-[#121218] border border-white/10 rounded-3xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.8)] text-white text-center flex flex-col max-h-[90vh]">
             
-            <h3 className="flex items-center justify-center gap-2 text-cyan-400 text-xl font-extrabold mb-3">
+            <h3 className="flex items-center justify-center gap-2 text-cyan-400 text-xl font-extrabold mb-5 shrink-0">
               <CheckCircle2 className="text-green-500" size={24} /> Visita completata!
             </h3>
             
-            {/* LOGICA INSEGNANTE: Sceglie cosa fare */}
-            {isSharedSession && isTeacher ? (
-              <>
-                <p className="text-slate-400 text-sm mb-6">
-                  Hai guidato i tuoi studenti attraverso tutte le opere. Vuoi avviare il quiz di verifica o terminare la sessione?
-                </p>
-                <div className="flex flex-col gap-3">
-                  {visitQuiz && visitQuiz.length > 0 && (
+            <div className="overflow-y-auto custom-scrollbar flex-1 px-1 pb-2">
+              
+              {/* BOX INTELLIGENZA ARTIFICIALE (Sopra ai controlli base) */}
+              {isSuggestingWorks ? (
+                 <div className="bg-slate-800/40 border border-slate-700 rounded-2xl p-5 mb-6 flex flex-col items-center animate-fadeIn">
+                    <Loader2 size={28} className="animate-spin text-amber-500 mb-3" />
+                    <p className="text-sm font-semibold text-white mb-1">Elaborazione in corso</p>
+                    <p className="text-xs text-slate-400">L'IA sta calcolando il tempo rimanente e analizzando i tuoi gusti...</p>
+                 </div>
+              ) : suggestedWorks.length > 0 ? (
+                 <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 mb-6 text-left relative overflow-hidden animate-fadeIn">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <Sparkles size={64} />
+                    </div>
+                    <h4 className="text-amber-400 font-bold mb-1 flex items-center gap-2 relative z-10">
+                       <Sparkles size={16} /> Ti avanza del tempo!
+                    </h4>
+                    <p className="text-xs text-slate-300 mb-4 relative z-10">
+                      L'IA ha notato che hai ancora minuti a disposizione. Ti suggeriamo <strong>{suggestedWorks.length} opere extra</strong> basate sulle tue preferenze.
+                    </p>
+                    <button
+                       onClick={() => {
+                          setVisitedWorks(prev => [...prev, ...suggestedWorks]);
+                          setShowEndModal(false);
+                       }}
+                       className="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-slate-900 font-bold py-2.5 rounded-xl transition-all text-sm relative z-10 cursor-pointer"
+                    >
+                       Aggiungi opere e continua
+                    </button>
+                 </div>
+              ) : null}
+
+              {/* LOGICA INSEGNANTE: Sceglie cosa fare */}
+              {isSharedSession && isTeacher ? (
+                <>
+                  <p className="text-slate-400 text-sm mb-4">
+                    Hai guidato i tuoi studenti attraverso le opere. Vuoi avviare il quiz di verifica o terminare?
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    {visitQuiz && visitQuiz.length > 0 && (
+                      <button 
+                        onClick={() => {
+                           socket.emit('start_quiz', { roomCode, quizData: visitQuiz });
+                           navigate(`/quiz?roomCode=${roomCode}&role=teacher`, { state: { quizData: visitQuiz, visitId: visitId } });
+                        }} 
+                        className="w-full px-6 py-3.5 bg-purple-600 hover:bg-purple-500 rounded-xl text-white font-bold transition-colors shadow-lg cursor-pointer"
+                      >
+                        Lancia quiz finale
+                      </button>
+                    )}
                     <button 
                       onClick={() => {
-                         socket.emit('start_quiz', { roomCode, quizData: visitQuiz });
-                         navigate(`/quiz?roomCode=${roomCode}&role=teacher`, { state: { quizData: visitQuiz, visitId: visitId } });
-                      }} 
-                      className="w-full px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-xl text-white font-bold transition-colors shadow-lg cursor-pointer"
+                        socket.emit('close_room', { roomCode });
+                        navigate("/my-visits");
+                      }}
+                      className="w-full px-6 py-3 border border-white/20 rounded-xl text-white hover:bg-white/10 transition-colors font-medium cursor-pointer"
                     >
-                      Lancia quiz finale
+                      Termina sessione definitivamente
                     </button>
-                  )}
-                  <button 
-                    onClick={() => {
-                      // Chiude la stanza per tutti
-                      socket.emit('close_room', { roomCode });
-                      navigate("/my-visits");
-                    }}
-                    className="w-full px-6 py-3 border border-white/20 rounded-xl text-white hover:bg-white/10 transition-colors font-medium cursor-pointer"
-                  >
-                    Termina sessione definitivamente
-                  </button>
-                </div>
-              </>
-            ) : isSharedSession && !isTeacher ? (
-              /* LOGICA STUDENTE: Attende il comando del prof */
-              <>
-                <p className="text-slate-400 text-sm mb-6">
-                  Il percorso guidato è terminato. Resta in attesa, l'insegnante potrebbe avviare un quiz a breve!
-                </p>
-                <div className="flex justify-center">
-                  <div className="flex items-center gap-2 text-amber-500 bg-amber-500/10 px-4 py-2 rounded-lg text-sm">
-                    <Loader2 size={16} className="animate-spin" /> In attesa dell'insegnante...
                   </div>
-                </div>
-              </>
-            ) : (
-              /* LOGICA VISITATORE NORMALE (Navigazione Libera) */
-              <>
-                <p className="text-slate-400 text-sm mb-6">
-                  Hai visitato tutte le opere d'arte presenti in questa visita. Cosa desideri fare ora?
-                </p>
-                <button 
-                  onClick={() => navigate("/my-visits")} 
-                  className="px-6 py-2.5 border border-white/20 rounded-full text-white hover:bg-white/10 transition-colors text-sm font-medium cursor-pointer"
-                >
-                  Termina visita
-                </button>
-              </>
-            )}
-            
+                </>
+              ) : isSharedSession && !isTeacher ? (
+                /* LOGICA STUDENTE: Attende il comando del prof */
+                <>
+                  <p className="text-slate-400 text-sm mb-6">
+                    Il percorso è terminato. Resta in attesa, l'insegnante potrebbe avviare un quiz!
+                  </p>
+                  <div className="flex justify-center">
+                    <div className="flex items-center gap-2 text-amber-500 bg-amber-500/10 px-4 py-2 rounded-lg text-sm">
+                      <Loader2 size={16} className="animate-spin" /> In attesa dell'insegnante...
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* LOGICA VISITATORE NORMALE (Navigazione Libera) */
+                <>
+                  <p className="text-slate-400 text-sm mb-4">
+                    Cosa desideri fare ora?
+                  </p>
+                  <button 
+                    onClick={() => navigate("/my-visits")} 
+                    className="w-full px-6 py-3 bg-cyan-600 hover:bg-cyan-500 active:scale-[0.98] rounded-xl text-white transition-all font-bold cursor-pointer"
+                  >
+                    Termina visita
+                  </button>
+                </>
+              )}
+
+            </div>
           </div>
         </div>
       )}
