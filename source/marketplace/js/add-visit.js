@@ -66,21 +66,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         searchInput.focus();
       } else {
         searchInput.value = "";
-        // Usa l'array corretto
-        if (allMuseumWorks.length > 0) renderCatalog(allMuseumWorks); 
+        currentWorkPage = 1;
+        fetchCatalogChunk(currentMuseumId, false);
       }
     });
 
     searchInput.addEventListener("input", (e) => {
-      const query = e.target.value.toLowerCase().trim();
-      // Usiamo l'array corretto (allMuseumWorks)
-      if (!currentMuseumId || allMuseumWorks.length === 0) return; 
-      
-      const filtered = allMuseumWorks.filter(work => 
-        fuzzySearch(query, work.name || "") || 
-        (work.author && fuzzySearch(query, work.author || ""))
-      );
-      renderCatalog(filtered); // Ora passeremo i risultati filtrati
+      if (!currentMuseumId) return;
+      currentWorkPage = 1; 
+      fetchCatalogChunk(currentMuseumId, false);
     });
   }
 
@@ -210,7 +204,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// controlla se lo user e' un curatore o un visitatore
 // controlla se lo user gestisce il museo attuale per sbloccare la pubblicazione
 async function checkUserRole() {
   try {
@@ -350,168 +343,186 @@ function updateQuizQuestion(qIndex, field, value, optIndex = null) {
 
 async function loadMuseumWorks(museumId) {
   const catalogArea = document.getElementById("works-catalog-area");
-  const museumNameLabel = document.getElementById("current-museum-name");
-
-  catalogArea.innerHTML = `<div class="col-12 text-center mt-4"><div class="spinner-border text-info"></div></div>`;
+  catalogArea.innerHTML = ""; 
 
   try {
-    // 1. Fetch works
-    // 1. Fetch works
-    const worksRes = await fetch(`${API_BASE_URL}/museums/${museumId}/works`);
-    const data = await worksRes.json();
-    
-    // Estraiamo l'array delle opere dall'oggetto paginato (con fallback di sicurezza se il DB risponde col vecchio formato)
-    allMuseumWorks = data.works || (Array.isArray(data) ? data : []);
-
-    // 2. Fetch sections
-    try {
-      const sectionsRes = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`);
-      allMuseumSections = await sectionsRes.json();
-    } catch (e) {
-      console.warn("Impossibile caricare le sezioni per il raggruppamento:", e);
-      allMuseumSections = [];
-    }
-
-    museumNameLabel.innerText = "Catalogo caricato";
-
-    renderCatalog();
-  } catch (error) {
-    console.error("Dettaglio errore intercettato:", error);
-    catalogArea.innerHTML = `<p class="text-danger">Errore nel caricamento delle opere.</p>`;
+    const sectionsRes = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`);
+    allMuseumSections = await sectionsRes.json();
+  } catch (e) { 
+    allMuseumSections = []; 
   }
+
+  document.getElementById("current-museum-name").innerText = "Catalogo in caricamento...";
+
+  // Reset variabili globali per la nuova vista
+  currentWorkPage = 1;
+  pristineWorksCache = [];
+  isEntireWorksDbInCache = false;
+  allMuseumWorks = [];
+
+  // Posizioniamo la sentinella fuori dalla griglia per non farla distruggere dai re-render
+  catalogArea.parentNode.appendChild(globalSentinel);
+
+  await fetchCatalogChunk(museumId, false);
+  setupCatalogInfiniteScroll(museumId);
 }
 
-function renderCatalog(worksToRender = allMuseumWorks) {
-  const catalogArea = document.getElementById("works-catalog-area");
-  if (!catalogArea) return;
+async function fetchCatalogChunk(museumId, isLoadMore = false) {
+  if (isFetchingWorks) return;
+  isFetchingWorks = true;
 
-  if (worksToRender.length === 0) {
-    catalogArea.innerHTML = `<p class="text-secondary col-12 mt-3">Nessuna opera trovata.</p>`;
+  const searchInput = document.getElementById("catalog-search-input")?.value.trim().toLowerCase() || "";
+  const hasFilters = searchInput !== "";
+
+  // 1. Filtraggio Locale Ultra-Veloce (Se il DB del museo è interamente in RAM)
+  if (isEntireWorksDbInCache && hasFilters && !isLoadMore) {
+    const filtered = pristineWorksCache.filter(work =>
+      fuzzySearch(searchInput, work.name || "") ||
+      (work.authorName && fuzzySearch(searchInput, work.authorName || ""))
+    );
+    renderCatalog(filtered, false);
+    isFetchingWorks = false;
+    updateCatalogSentinel();
     return;
   }
 
-  // Costruisci mappa roomId -> { roomName, sectionName, sectionImage }
+  // 2. Fetch dal Server
+  if (isLoadMore) globalSentinel.classList.remove("d-none");
+
+  const params = new URLSearchParams();
+  params.append("page", currentWorkPage);
+  params.append("limit", WORK_RENDER_CHUNK || 12);
+  if (searchInput) params.append("search", searchInput);
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/museums/${museumId}/works?${params.toString()}`);
+    const data = await res.json();
+    const fetchedWorks = data.works || [];
+    totalWorkPages = data.totalPages || 1;
+
+    if (isLoadMore) {
+      allMuseumWorks = [...allMuseumWorks, ...fetchedWorks];
+      if (!hasFilters) pristineWorksCache = [...allMuseumWorks];
+      renderCatalog(fetchedWorks, true); // Appendiamo solo il nuovo blocco
+    } else {
+      allMuseumWorks = fetchedWorks;
+      if (!hasFilters) pristineWorksCache = [...allMuseumWorks];
+      renderCatalog(allMuseumWorks, false); // Rirenderizziamo da zero
+    }
+
+    if (!hasFilters && pristineWorksCache.length >= data.total) {
+      isEntireWorksDbInCache = true;
+    }
+
+    const changeBtn = editingVisitId ? "" : `<a href="/create-visit" class="ms-2 badge bg-secondary text-decoration-none">Cambia Museo</a>`;
+    document.getElementById("current-museum-name").innerHTML = `Catalogo caricato ${changeBtn}`;
+  } catch (error) {
+    console.error("Errore fetch opere:", error);
+  } finally {
+    isFetchingWorks = false;
+    updateCatalogSentinel();
+  }
+}
+
+function renderCatalog(worksToRender = allMuseumWorks, append = false) {
+  const catalogArea = document.getElementById("works-catalog-area");
+  if (!catalogArea) return;
+
+  if (!append) catalogArea.innerHTML = "";
+
+  if (worksToRender.length === 0 && !append) {
+    catalogArea.innerHTML = `<p class="text-secondary col-12 mt-3">Nessuna opera trovata in questo catalogo.</p>`;
+    return;
+  }
+
+  // Mappa Stanze/Sezioni veloce
   const roomMap = {};
   allMuseumSections.forEach(section => {
     const secName = section.name;
     const secImg = section.image || "/img/fallback-section.jpg";
     if (section.rooms) {
       section.rooms.forEach(room => {
-        roomMap[room._id] = {
-          roomName: room.name,
-          sectionName: secName,
-          sectionImage: secImg
-        };
+        roomMap[room._id] = { roomName: room.name, sectionName: secName, sectionImage: secImg, sectionId: section._id };
       });
     }
   });
-
-  // Raggruppa le opere per Sezione e poi per Stanza
-  const groups = {}; // { sectionName: { sectionImage, rooms: { roomName: [works...] } } }
 
   worksToRender.forEach(work => {
     const roomInfo = roomMap[work.roomId];
     const secName = roomInfo ? roomInfo.sectionName : "Opere non collocate";
     const secImg = roomInfo ? roomInfo.sectionImage : "/img/fallback-section.jpg";
     const roomName = roomInfo ? roomInfo.roomName : "Senza stanza";
+    const secId = roomInfo ? roomInfo.sectionId : "unassigned";
 
-    if (!groups[secName]) {
-      groups[secName] = {
-        sectionImage: secImg,
-        rooms: {}
-      };
-    }
+    // Generazione ID sicuri per il DOM
+    const safeSecId = `sec-${secId}`;
+    const safeRoomId = `room-${secId}-${roomName.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
-    if (!groups[secName].rooms[roomName]) {
-      groups[secName].rooms[roomName] = [];
-    }
-
-    groups[secName].rooms[roomName].push(work);
-  });
-
-  catalogArea.innerHTML = "";
-
-  // Renderizza ogni gruppo di sezione
-  Object.keys(groups).forEach(secName => {
-    const group = groups[secName];
-    const roomKeys = Object.keys(group.rooms);
-    
-    let sectionHtml = `
-      <div class="col-12 mb-4">
+    // Crea la Sezione se non esiste
+    let sectionContainer = document.getElementById(safeSecId);
+    if (!sectionContainer) {
+      sectionContainer = document.createElement("div");
+      sectionContainer.id = safeSecId;
+      sectionContainer.className = "col-12 mb-4";
+      sectionContainer.innerHTML = `
         <div class="glass-panel p-3 position-relative overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
           <h4 class="text-info mb-3 border-bottom border-secondary border-opacity-25 pb-2" style="font-size: 1.15rem;">
             <i class="bi bi-tag-fill me-2"></i>${secName}
           </h4>
-          
-          <!-- Foto della sezione in basso a destra, fusa con lo sfondo -->
           <div style="position: absolute; bottom: 10px; right: 10px; width: 80px; height: 80px; opacity: 0.15; pointer-events: none; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-            <img src="${group.sectionImage}" style="width: 100%; height: 100%; object-fit: cover;">
+            <img src="${secImg}" style="width: 100%; height: 100%; object-fit: cover;">
           </div>
-
-          <div class="row g-3">
-    `;
-
-    roomKeys.forEach(roomName => {
-      const worksInRoom = group.rooms[roomName];
-      sectionHtml += `
-        <div class="col-12 mb-1">
-          <h5 class="text-secondary small mb-2" style="font-size: 0.8rem;"><i class="bi bi-door-open me-1"></i> Stanza: ${roomName}</h5>
-          <div class="row row-cols-1 row-cols-md-2 g-2">
-      `;
-
-      worksInRoom.forEach(work => {
-        const workImage = work.image || "/img/fallback-work.jpg";
-        const workAuthor = work.author || "Autore sconosciuto";
-        const isAdded = currentVisitCart.some(item => item.id === work._id);
-
-        let buttonHtml = "";
-        if (isAdded) {
-          buttonHtml = `
-            <button class="btn btn-sm btn-success mt-auto w-100" disabled style="background-color: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #10b981;">
-              <i class="bi bi-check-lg"></i> Già aggiunto
-            </button>
-          `;
-        } else {
-          buttonHtml = `
-            <button class="btn btn-sm btn-outline-light mt-auto w-100" onclick="addToVisit('${work._id}', '${work.name.replace(/'/g, "\\'")}')">
-              <i class="bi bi-plus"></i> Aggiungi alla visita
-            </button>
-          `;
-        }
-
-        sectionHtml += `
-          <div class="col">
-            <div class="card custom-card h-100" style="background: rgba(255,255,255,0.01); border-color: rgba(255,255,255,0.05);">
-              <div class="row g-0 h-100">
-                <div class="col-4">
-                  <img src="${workImage}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 100px; width: 100%;">
-                </div>
-                <div class="col-8">
-                  <div class="card-body p-2 d-flex flex-column h-100">
-                    <h6 class="card-title mb-1 text-truncate" style="font-size: 0.85rem; color: #fff;">${work.name}</h6>
-                    <p class="small text-secondary mb-2" style="font-size: 0.72rem;">${workAuthor}</p>
-                    ${buttonHtml}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-
-      sectionHtml += `
-          </div>
+          <div class="row g-3" id="rooms-container-${safeSecId}"></div>
         </div>
       `;
-    });
+      catalogArea.appendChild(sectionContainer);
+    }
 
-    sectionHtml += `
+    // Crea la Stanza se non esiste
+    let roomContainer = document.getElementById(safeRoomId);
+    if (!roomContainer) {
+      roomContainer = document.createElement("div");
+      roomContainer.id = safeRoomId;
+      roomContainer.className = "col-12 mb-1";
+      roomContainer.innerHTML = `
+        <h5 class="text-secondary small mb-2" style="font-size: 0.8rem;"><i class="bi bi-door-open me-1"></i> Stanza: ${roomName}</h5>
+        <div class="row row-cols-1 row-cols-md-2 g-2" id="works-container-${safeRoomId}"></div>
+      `;
+      document.getElementById(`rooms-container-${safeSecId}`).appendChild(roomContainer);
+    }
+
+    // Inserisce la Card dell'Opera
+    const workImage = work.image || "/img/fallback-work.jpg";
+    const workAuthor = work.authorName || work.author?.name || work.author || "Autore sconosciuto";
+    const isAdded = currentVisitCart.some(item => item.id === work._id);
+
+    let buttonHtml = isAdded 
+      ? `<button class="btn btn-sm btn-success mt-auto w-100" disabled style="background-color: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #10b981;"><i class="bi bi-check-lg"></i> Già aggiunto</button>`
+      : `<button class="btn btn-sm btn-outline-light mt-auto w-100" id="btn-add-${work._id}" onclick="addToVisit('${work._id}', '${work.name.replace(/'/g, "\\'")}')"><i class="bi bi-plus"></i> Aggiungi alla visita</button>`;
+
+    const workHtml = `
+      <div class="col" id="work-card-${work._id}">
+        <div class="card custom-card h-100" style="background: rgba(255,255,255,0.01); border-color: rgba(255,255,255,0.05);">
+          <div class="row g-0 h-100">
+            <div class="col-4">
+              <img src="${workImage}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 100px; width: 100%;">
+            </div>
+            <div class="col-8">
+              <div class="card-body p-2 d-flex flex-column h-100">
+                <h6 class="card-title mb-1 text-truncate" style="font-size: 0.85rem; color: #fff;">${work.name}</h6>
+                <p class="small text-secondary mb-2" style="font-size: 0.72rem;">${workAuthor}</p>
+                <div id="btn-container-${work._id}" class="mt-auto w-100">${buttonHtml}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     `;
-
-    catalogArea.innerHTML += sectionHtml;
+    
+    // Evita duplicati se la fetch ha intersecato record esistenti
+    if (!document.getElementById(`work-card-${work._id}`)) {
+      document.getElementById(`works-container-${safeRoomId}`).insertAdjacentHTML("beforeend", workHtml);
+    }
   });
 }
 
@@ -539,6 +550,7 @@ async function showMuseumSelector() {
       labelField: 'name',
       searchField: ['name', 'address'],
       options: museums,
+      dropdownParent: 'body',
       render: {
         option: function(data, escape) {
           return `
@@ -565,12 +577,15 @@ async function showMuseumSelector() {
 }
 
 function addToVisit(workId, workName) {
-  if (currentVisitCart.some((work) => work.id === workId)) {
-    alert("Quest'opera è già nella tua visita!");
-    return;
-  }
+  if (currentVisitCart.some((work) => work.id === workId)) return;
   currentVisitCart.push({ id: workId, name: workName });
   renderVisitCart();
+
+  // Cambia il bottone localmente senza ricaricare il catalogo
+  const btnContainer = document.getElementById(`btn-container-${workId}`);
+  if (btnContainer) {
+    btnContainer.innerHTML = `<button class="btn btn-sm btn-success mt-auto w-100" disabled style="background-color: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #10b981;"><i class="bi bi-check-lg"></i> Già aggiunto</button>`;
+  }
 
   triggerAutoSave();
   triggerDurationUpdate();
@@ -616,10 +631,6 @@ function renderVisitCart() {
             </li>
         `;
   });
-
-  if (typeof renderCatalog === "function" && allMuseumWorks.length > 0) {
-    renderCatalog();
-  }
 }
 
 // Aggiunto il parametro isSavingAsDraft (di default false)
@@ -1040,5 +1051,30 @@ function handleTargetSelection(clickedCheckbox) {
         targetAll.checked = true;
       }
     }
+  }
+}
+
+function setupCatalogInfiniteScroll(museumId) {
+  if (!globalSentinel) return;
+  if (catalogObserver) catalogObserver.disconnect();
+
+  catalogObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !isFetchingWorks) {
+      if (currentWorkPage < totalWorkPages) {
+        currentWorkPage++;
+        fetchCatalogChunk(museumId, true);
+      }
+    }
+  }, { rootMargin: '100px' });
+
+  catalogObserver.observe(globalSentinel);
+}
+
+function updateCatalogSentinel() {
+  if (!globalSentinel) return;
+  if (currentWorkPage < totalWorkPages) {
+    globalSentinel.classList.remove("d-none");
+  } else {
+    globalSentinel.classList.add("d-none");
   }
 }

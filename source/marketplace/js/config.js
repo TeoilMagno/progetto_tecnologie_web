@@ -47,6 +47,7 @@ let currentWorkPage = 1;
 let totalWorkPages = 1;
 let isFetchingWorks = false;
 let renderedWorksCount = 0;
+let catalogObserver = null;
 const WORK_RENDER_CHUNK = 12;
 
 // Variabili Paginazione Items (Bookshop)
@@ -55,6 +56,15 @@ let totalItemsPages = 1;
 let isFetchingItems = false;
 let renderedItemsCount = 0;
 const ITEMS_RENDER_CHUNK = 12;
+
+// Aggiungi in cima a store.js se non c'è già
+const globalSentinel = document.createElement("div");
+globalSentinel.id = "global-infinite-sentinel";
+globalSentinel.className = "col-12 text-center py-4 d-none w-100";
+globalSentinel.innerHTML = `
+  <div class="spinner-border text-light spinner-border-sm" role="status"></div>
+  <p class="text-secondary small mt-1">Caricamento altri elementi...</p>
+`;
 
 async function geocodeAddress(address) {
   try {
