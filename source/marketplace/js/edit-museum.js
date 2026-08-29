@@ -40,7 +40,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function loadMuseumDetails() {
   try {
     const res = await fetch(`${API_BASE_URL}/museums/${currentMuseumId}`);
-    currentMuseumData = await res.json();
+    currentMuseumData = await res.json();// Aggiungi in cima a store.js se non c'è già
+const globalSentinel = document.createElement("div");
+globalSentinel.id = "global-infinite-sentinel";
+globalSentinel.className = "col-12 text-center py-4 d-none w-100";
+globalSentinel.innerHTML = `
+  <div class="spinner-border text-light spinner-border-sm" role="status"></div>
+  <p class="text-secondary small mt-1">Caricamento altri elementi...</p>
+`;
 
     if (!currentMuseumData) { alert("Museo non trovato."); return; }
 

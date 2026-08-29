@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   buildScheduleForm();
 
-  initImageWidget("museum-image-widget", "museum-image", "Immagine di Copertina del Museo");
+  initImageWidget("edit-museum-image-widget", "museum-image", "Immagine di Copertina del Museo");
 });
 
 async function museumHandleSave(event) {
