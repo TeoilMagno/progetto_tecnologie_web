@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ZoomIn, ZoomOut, Maximize, MapPin, AlertCircle } from 'lucide-react';
-import mappaIncompleta from '../assets/mappa-incompleta.svg';
+import mappaIncompleta from '../assets/mappa-completa.svg';
 
 export default function FreeVisitMap({ selectedMuseum }) {
   // Stati per la mappa (Zoom & Pan)

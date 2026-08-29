@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { useSocket } from "../context/SocketContext";
 import { Activity } from "react";
-import SectionLayer from "./SectionLayer";
-import RoomLayer from "./RoomLayer";
+import HighlyOptimizedMapView from "./HighlyOptimizedMapView";
+import GlobalMapView from "./GlobalMapView";
 import WorkDetailsSheet from "./WorkDetailsSheet";
 import NavigationControlBar from "./NavigationControlBar";
 import RoomQRCode from "./RoomQRCode";
@@ -48,8 +48,11 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [visitDurationTime, setVisitDurationTime] = useState(null);
   const [maxDurationTime, setMaxDurationTime] = useState(null);
 
-  const isSharedSession = Boolean(roomCode);
+  //usati per visualizzazione mappa
+  const [svgMapString, setSvgMapString] = useState(null);
+  const [activeSectionId, setActiveSectionId] = useState(null); // null = mappa intera
 
+  const isSharedSession = Boolean(roomCode);
 
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
   
@@ -68,6 +71,19 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       role: isTeacher ? 'teacher' : 'student'
     });
   }, [roomCode, isTeacher, socket]);
+
+  useEffect(() => {
+    const fetchMap = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/museum-map-svg`);
+        const textData = await response.text();
+        setSvgMapString(textData);
+      } catch (error) {
+        console.error("Errore caricamento mappa SVG:", error);
+      }
+    };
+    fetchMap();
+  }, []);
 
   useEffect(() => {
     const fetchVisitData = async () => {
@@ -166,12 +182,13 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   };
 
   const selectSectionForWork = (work) => {
-    if (!work || !work.roomId || !hasMap) return null;
-    const section = sections.find(s => s.rooms && s.rooms.some(r => r._id === work.roomId));
+    if (!work || !hasMap) return null;
+    const section = sections.find(s => 
+      s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === work._id)
+    );
     if (section) {
       setSelectedSection(section);
-      const room = section.rooms.find(r => r._id === work.roomId);
-      return { section, room };
+      return { section };
     }
     return null;
   };
@@ -277,6 +294,23 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       };
     }
   }, [isSharedSession, isTeacher, socket, roomCode]);
+
+  // SINCRONIZZAZIONE AUTOMATICA TELECAMERA
+  useEffect(() => {
+    if (currentWorkIndex >= 0 && visitedWorks.length > 0 && hasMap) {
+      const activeWork = visitedWorks[currentWorkIndex];
+      
+      // Troviamo la sezione che contiene quest'opera
+      const targetSection = sections.find(sec => 
+        sec.works && sec.works.some(sw => (sw.workId?._id || sw.workId) === activeWork._id)
+      );
+
+      // Se cambia sezione, effettuiamo lo zoom
+      if (targetSection && targetSection._id !== selectedSection?._id) {
+        setSelectedSection(targetSection);
+      }
+    }
+  }, [currentWorkIndex, visitedWorks, sections, hasMap]);
 
   const handleNext = () => {
     if (currentWorkIndex < visitedWorks.length - 1) {
@@ -441,27 +475,22 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       )}
 
       {/* 3. Mappa o Fallback (Prende tutto lo spazio rimanente con flex-1) */}
-      <div className="w-full h-full relative overflow-hidden">
-        {hasMap ? (
-          <TransformWrapper initialScale={0.8} minScale={0.4} maxScale={2.5} centerOnInit={true} panning={{ velocityDisabled: true }}>
-            {/* Sostituito 100vw con 100% per eliminare la barra di scorrimento orizzontale! */}
-            <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
-              <svg viewBox="0 0 2000 2000" style={{ width: "2000px", height: "2000px" }}>
-                {!selectedSection && <g><SectionLayer sections={sections} onSelect={setSelectedSection} /></g>}
-                {selectedSection && (
-                  <g>
-                    <RoomLayer 
-                      onBack={() => setSelectedSection(null)} 
-                      section={selectedSection} 
-                      visitedWorks={visitedWorks}
-                      activeWorkId={currentWork?._id}
-                      onWorkClick={(work) => setDetailsWork(work)}
-                    />
-                  </g>
-                )}
-              </svg>
-            </TransformComponent>
-          </TransformWrapper>
+      <div className="w-full h-full relative overflow-hidden flex-1">
+        {hasMap && svgMapString ? (
+          <HighlyOptimizedMapView 
+            svgString={svgMapString}
+            activeSection={selectedSection}
+            sections={sections}
+            onSelectSection={(section) => setSelectedSection(section)}
+            onBack={() => setSelectedSection(null)}
+            works={visitedWorks}
+            activeWorkId={currentWork?._id}
+            onWorkClick={(work) => setDetailsWork(work)}
+          />
+        ) : hasMap && !svgMapString ? (
+          <div className="w-full h-full flex items-center justify-center text-white">
+              <Loader2 className="animate-spin text-cyan-400 mr-2" size={24} /> Caricamento planimetria...
+          </div>
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-slate-950">
             {currentWorkIndex < 0 ? (
