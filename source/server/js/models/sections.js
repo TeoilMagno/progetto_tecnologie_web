@@ -2,78 +2,32 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// 1. Schema per la forma svg (riutilizzabile sia per Sezioni che per Stanze)
-const shapeSchema = new Schema({
-  type: {
-    type: String,
-    required: true,
-    enum: ['polygon', 'polyline', 'path'] //per ora si accettano questi 3 valori
-  },
-
-  points: {
-    type: String, //usato da polygon e polyline
-  },
-
-  d: {
-    type: String  // Utilizzato da path
-  }
-}, { _id: false }); // Disabilitiamo l'_id qui perché è solo un sotto-oggetto geometrico
-
 const roomSchema = new Schema({
-  name: {
-    type: String,
-    required: true
-  },
-
-  shape: {
-    type: shapeSchema, //usa shapeSchema definito sopra
-    required: true
-  }
+  name: { type: String, required: true },
+  svgId: { type: String } // Es. "room-162" (utile in futuro se vuoi farle cliccare)
 });
 
 const sectionSchema = new Schema({
-  name: {
-    type: String,
-    required: true
+  name: { type: String, required: true },
+  color: { type: String }, 
+  
+  svgGroupId: { type: String, required: true }, // Es. "section-greca"
+  viewBox: { 
+    x: { type: Number, required: true },
+    y: { type: Number, required: true },
+    width: { type: Number, required: true },
+    height: { type: Number, required: true }
   },
 
-  color: {
-    type: String,
-  },
-
-  shape: {
-    type: shapeSchema,  //usa shapeSchema definito sopra
-  },
-
-  rooms: [roomSchema], //array di stanze, usato per la rappresentazione specifica della sezione con svg
-
-  image: {
-    type: String,
-    required: true
-  },
-
-  works: [
-    {
-      workId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Work'
-      },
-
-      x: {
-        type: Number
-      },
-
-      y: {
-        type: Number
-      }
-    }
-  ],
-
-  museumId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Museum',
-    required: true
-  }
+  rooms: [roomSchema],
+  image: { type: String, required: true },
+  museumId: { type: Schema.Types.ObjectId, ref: 'Museum', required: true },
+  
+  works: [{
+    workId: { type: Schema.Types.ObjectId, ref: 'Work' },
+    x: { type: Number },
+    y: { type: Number }
+  }]
 });
 
 const Section = mongoose.model('Section', sectionSchema);

@@ -171,7 +171,8 @@ export default function NavigationControlBar({
       
       {/* RIGA 1: Navigazione Principale */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0 w-full">
-        {/* Sinistra */}
+        
+        {/* Sinistra: Dettagli Opera */}
         <div className="w-full md:w-[320px] flex flex-col items-center md:items-start text-center md:text-left">
           {currentWorkIndex >= 0 ? (
             <>
@@ -189,20 +190,33 @@ export default function NavigationControlBar({
           )}
         </div>
 
-        {/* Centro */}
+        {/* Centro: Pulsanti Avanti/Indietro */}
         <div className="flex items-center justify-center gap-2 w-full md:w-auto">
           {/* Se è studente in sessione, non mostriamo i comandi di navigazione per liberare spazio */}
           {isSharedSession && !isTeacher ? null : (
             <>
-              <button onClick={onPrev} disabled={currentWorkIndex < 0} className="flex-1 md:flex-none md:min-w-[120px] px-3 py-2 border border-white/20 rounded-full text-white hover:bg-white/10 text-xs md:text-sm transition-colors disabled:opacity-50 flex items-center justify-center gap-1">
+              <button 
+                onClick={onPrev} 
+                disabled={currentWorkIndex < 0} 
+                className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[120px] px-3 md:px-4 py-2 border border-white/20 rounded-full text-white hover:bg-white/10 text-xs md:text-sm transition-colors disabled:opacity-50 cursor-pointer"
+              >
                 <ChevronLeft size={16} /> <span className="hidden sm:inline">Precedente</span>
               </button>
               {currentWorkIndex === -1 ? (
-                <button onClick={onStartVisit} disabled={visitedWorks.length === 0} className="flex-1 md:flex-none md:min-w-[140px] px-4 py-2 rounded-full text-white text-xs md:text-sm font-semibold flex items-center justify-center gap-1" style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}>
+                <button 
+                  onClick={onStartVisit} 
+                  disabled={visitedWorks.length === 0} 
+                  className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[140px] px-4 md:px-5 py-2 rounded-full text-white text-xs md:text-sm font-semibold border-none cursor-pointer" 
+                  style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}
+                >
                   Inizia Visita <Play size={16} className="fill-white" />
                 </button>
               ) : (
-                <button onClick={currentWorkIndex === visitedWorks.length - 1 ? onEndVisit : onNext} className="flex-1 md:flex-none md:min-w-[140px] px-4 py-2 rounded-full text-white text-xs md:text-sm font-semibold flex items-center justify-center gap-1" style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}>
+                <button 
+                  onClick={currentWorkIndex === visitedWorks.length - 1 ? onEndVisit : onNext} 
+                  className="flex items-center justify-center gap-1 flex-1 md:flex-none md:min-w-[140px] px-4 md:px-5 py-2 rounded-full text-white text-xs md:text-sm font-semibold border-none cursor-pointer" 
+                  style={{ background: "linear-gradient(90deg, #00ccff, #7a1dd0)" }}
+                >
                   {currentWorkIndex === visitedWorks.length - 1 ? "Fine" : "Prossima"} <ChevronRight size={16} />
                 </button>
               )}
@@ -210,41 +224,67 @@ export default function NavigationControlBar({
           )}
         </div>
 
-        {/* Destra */}
+        {/* Destra: Toggles vari */}
         <div className="flex items-center justify-center gap-2 md:gap-4 w-full md:w-auto">
+          
+          {/* Toggle Leggi/Ascolta (Logica Booleana) */}
           <div className="flex overflow-hidden rounded-full border border-white/15 w-full md:w-auto">
-            <button onClick={() => setPlayMode('read')} className={`flex-1 flex justify-center items-center gap-1.5 px-3 py-1.5 text-xs font-semibold ${playMode === 'read' ? 'bg-cyan-400 text-slate-900' : 'text-slate-400 hover:text-white'}`}>
+            <button 
+              type="button" 
+              className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors cursor-pointer ${playMode === false ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
+              onClick={() => setPlayMode(false)}
+            >
               <BookOpen size={14} /> Leggi
             </button>
-            <button onClick={() => onSpeak(currentWork?.description?.[expertiseLevel]?.[currentLength])} className={`flex-1 flex justify-center items-center gap-1.5 px-3 py-1.5 text-xs font-semibold ${playMode === 'listen' ? 'bg-cyan-400 text-slate-900' : 'text-slate-400 hover:text-white'}`}>
+            <button 
+              type="button" 
+              className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors cursor-pointer ${playMode === true ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
+              onClick={() => {
+                setPlayMode(true);
+                if (currentWork) onSpeak(currentWork?.description?.[expertiseLevel]?.[currentLength]);
+              }}
+            >
               <Volume2 size={14} /> Ascolta
             </button>
           </div>
 
+          {/* Toggle Scrivi/Parla (solo in Fallback) */}
           {!hasMap && currentWorkIndex >= 0 && (
             <div className="flex overflow-hidden rounded-full border border-white/15 w-full md:w-auto">
-              <button onClick={() => setInputMode('write')} className={`flex-1 flex justify-center items-center gap-1.5 px-3 py-1.5 text-xs font-semibold ${inputMode === 'write' ? 'bg-cyan-400 text-slate-900' : 'text-slate-400 hover:text-white'}`}>
+              <button 
+                type="button" 
+                onClick={() => setInputMode('write')} 
+                className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors cursor-pointer ${inputMode === 'write' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
+              >
                 <Keyboard size={14} /> Scrivi
               </button>
-              <button onClick={() => setInputMode('speak')} className={`flex-1 flex justify-center items-center gap-1.5 px-3 py-1.5 text-xs font-semibold ${inputMode === 'speak' ? 'bg-cyan-400 text-slate-900' : 'text-slate-400 hover:text-white'}`}>
+              <button 
+                type="button" 
+                onClick={() => setInputMode('speak')} 
+                className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors cursor-pointer ${inputMode === 'speak' ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
+              >
                 <Mic size={14} /> Parla
               </button>
             </div>
           )}
           
+          {/* Bottone QR Code per l'insegnante */}
           {isSharedSession && isTeacher && (
-            <button onClick={onShowJoinModal} className="p-2 bg-purple-600/20 text-purple-400 border border-purple-500/30 rounded-full hover:bg-purple-600/40 transition-colors">
+            <button 
+              onClick={onShowJoinModal} 
+              className="p-2 md:p-3 bg-purple-600/20 text-purple-400 border border-purple-500/30 rounded-full hover:bg-purple-600/40 transition-colors cursor-pointer"
+            >
               <QrCode size={18} />
             </button>
           )}
         </div>
       </div>
 
-      {/* RIGA 2: Tasti Interazione (Solo se NON c'è la mappa e la visita è iniziata) */}
+      {/* RIGA 2: Tasti Interazione IA (Solo in modalità Fallback) */}
       {!hasMap && currentWorkIndex >= 0 && (
         <div className="w-full flex flex-col md:flex-row gap-3 pt-3 border-t border-white/10 animate-fadeIn">
           
-          {/* Tasti di controllo manuale AI */}
+          {/* Tasti controllo lunghezza/dettaglio */}
           <div className="flex gap-2 justify-center w-full md:w-1/2">
             <button onClick={handleLessDesc} className="flex-1 flex items-center justify-center gap-1 bg-slate-800 hover:bg-slate-700 text-xs py-2 rounded-lg text-slate-300 transition-colors cursor-pointer">
               <Minus size={12} /> Corta
@@ -258,9 +298,12 @@ export default function NavigationControlBar({
             <button onClick={handleHigherExper} className="flex-1 flex items-center justify-center gap-1 bg-slate-800 hover:bg-slate-700 text-xs py-2 rounded-lg text-slate-300 transition-colors cursor-pointer">
               <Plus size={12} /> Esperta
             </button>
+            <button onClick={handleFunFact} className="flex-1 flex items-center justify-center gap-1 bg-amber-500/20 hover:bg-amber-500/30 text-xs py-2 rounded-lg text-amber-400 transition-colors cursor-pointer">
+              <Sparkles size={12} /> Curiosità
+            </button>
           </div>
 
-          {/* Campo Input o Microfono */}
+          {/* Campo Input IA (Testo o Microfono) */}
           <div className="flex items-center gap-2 w-full md:w-1/2">
             {inputMode === 'write' ? (
               <div className="flex w-full relative">
@@ -268,7 +311,7 @@ export default function NavigationControlBar({
                   type="text" 
                   value={textCommand}
                   onChange={e => setTextCommand(e.target.value)}
-                  placeholder="Chiedi qualcosa..." 
+                  placeholder="Chiedi qualcosa all'IA..." 
                   className="w-full bg-slate-900 border border-slate-700 rounded-full pl-4 pr-10 py-2 text-xs text-white focus:border-cyan-500 outline-none"
                   onKeyDown={(e) => { if(e.key === 'Enter') { processCommand(textCommand); setTextCommand(''); } }}
                 />
@@ -279,11 +322,10 @@ export default function NavigationControlBar({
             ) : (
               <button onClick={startListening} className={`w-full flex items-center justify-center gap-2 py-2 rounded-full font-bold text-xs transition-all cursor-pointer ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/30'}`}>
                 {isProcessingAI ? <Loader2 size={16} className="animate-spin text-cyan-400" /> : <Mic size={16} />} 
-                {isListening ? 'In ascolto...' : isProcessingAI ? 'Elaborazione...' : 'Premi e parla'}
+                {isListening ? 'In ascolto...' : isProcessingAI ? 'Elaborazione...' : 'Premi e parla con l\'IA'}
               </button>
             )}
           </div>
-
         </div>
       )}
 

@@ -520,6 +520,21 @@ apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
   }
 });
 
+apiRouter.get("/museum-map-svg", async (req, res) => {
+  try {
+    // Supponiamo che tu abbia salvato mappa-completa.svg nella cartella 'public' o 'assets' del backend
+    const svgPath = path.join(__dirname, '..', '..', '..', 'navigator', 'src', 'assets', 'mappa-prova.svg')
+    // Leggiamo il file come semplice testo (utf-8)
+    const svgString = await fs.readFile(svgPath, 'utf8');
+    
+    // Lo spediamo al frontend!
+    res.status(200).send(svgString);
+  } catch (error) {
+    console.error("Errore lettura mappa SVG:", error);
+    res.status(500).json({ error: "Impossibile caricare la mappa" });
+  }
+});
+
 // ------------- immagini ------------------------
 
 // 1. Upload File Locale
