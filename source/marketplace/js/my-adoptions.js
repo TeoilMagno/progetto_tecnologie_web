@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <img src="${escape(data.image || '/img/fallback-work.jpg')}" style="width:30px; height:30px; object-fit:cover; border-radius:4px;" class="me-3">
             <div>
               <div class="fw-bold text-white">${escape(data.name)}</div>
-              <div class="small text-secondary">${escape(data.author || 'Ignoto')}</div>
+              <div class="small text-secondary">${escape(data.authorName || 'Unknown')}</div>
             </div>
           </div>`;
       }
@@ -298,7 +298,7 @@ async function openNewAdoptionModal() {
 
   try {
     // 1. Musei totali per la fonte
-    const allMuseumsRes = await fetch(`${API_BASE_URL}/museums`);
+    const allMuseumsRes = await fetch(`${API_BASE_URL}/museums-list`);
     const allMuseums = await allMuseumsRes.json();
     sourceTs.addOptions(allMuseums);
     sourceTs.control_input.placeholder = "Cerca un museo...";
@@ -325,7 +325,7 @@ async function onSourceMuseumChange(museumId) {
   workTs.control_input.placeholder = "Caricamento opere...";
 
   try {
-    const res = await fetch(`${API_BASE_URL}/museums/${museumId}/works`);
+    const res = await fetch(`${API_BASE_URL}/museums/${museumId}/works-list`);
     const works = await res.json();
     
     if(works.length > 0) {
@@ -378,11 +378,11 @@ async function onTargetMuseumChange(museumId) {
 async function submitAdoptionRequest() {
   const workId = document.getElementById("work-select").value;
   const toMuseumId = document.getElementById("target-museum-select").value;
-  const targetRoomId = document.getElementById("target-room-select").value;
+  const toRoomId = document.getElementById("target-room-select").value;
   const beginDateStr = document.getElementById("begin-date-input").value;
   const endDateStr = document.getElementById("end-date-input").value;
 
-  if (!workId || !toMuseumId || !targetRoomId || !beginDateStr || !endDateStr) {
+  if (!workId || !toMuseumId || !toRoomId || !beginDateStr || !endDateStr) {
     alert("Tutti i campi sono obbligatori!");
     return;
   }
@@ -413,7 +413,7 @@ async function submitAdoptionRequest() {
     return;
   }
 
-  if (endDateNr <= beginDate) {
+  if (endDateNr <= beginDateNr) {
     alert("Errore: La data di fine prestito deve essere successiva alla data di inizio.");
     return;
   }
@@ -433,7 +433,7 @@ async function submitAdoptionRequest() {
     const res = await fetch(`${API_BASE_URL}/adoptions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ workId, toMuseumId, targetRoomId, beginDate, endDate })
+      body: JSON.stringify({ workId, toMuseumId, toRoomId, beginDate, endDate })
     });
 
     if (res.ok) {

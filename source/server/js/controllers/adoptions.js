@@ -2,6 +2,7 @@ const Adoption = require('../models/adoptions');
 const Work = require('../models/works');
 const Museum = require('../models/museums');
 const { User } = require('../models/users');
+const Section = require('../models/sections');
 const Visit = require('../models/visits');
 
 exports.getAllAdoptions = async () => {
@@ -42,9 +43,8 @@ exports.getWorkByAdoption = async (adoptionId) => {
 
 // Un museo richiede in adozione un'opera (status: pending)
 exports.createAdoptionRequest = async (data, requestingUser) => {
-  const { workId, toMuseumId, beginDate, endDate, targetRoomId } = data;
+  const { workId, toMuseumId, toRoomId, beginDate, endDate } = data;
 
-  // controllo di sicurezza: L'utente loggato deve essere il proprietario del museo richiedente (toMuseumId)
   if (requestingUser.role !== 'admin') {
     const isOwnerOfTarget = requestingUser.managed_museums.some(
       (mId) => mId.toString() === toMuseumId.toString()
@@ -75,8 +75,10 @@ exports.createAdoptionRequest = async (data, requestingUser) => {
   const work = await Work.findById(workId);
   if (!work) throw new Error("Opera non trovata");
 
-  const fromMuseumId = work.museumId; 
-  if (!fromMuseumId) throw new Error("L'opera non appartiene a nessun museo");
+  // La provenienza dell'opera NON deve mai arrivare dal client:
+  // la ricaviamo dal documento Work, che è la fonte di verità su dove si trova l'opera ora.
+  const fromMuseumId = work.museumId;
+  const fromRoomId = work.roomId;
 
   // Identifichiamo il curatore proprietario dell'opera
   const ownerUser = await User.findOne({ managed_museums: fromMuseumId });
@@ -98,8 +100,8 @@ exports.createAdoptionRequest = async (data, requestingUser) => {
     beginDate,
     endDate,
     workId,
-    originalRoomId: work.roomId || null, 
-    targetRoomId: targetRoomId || null,
+    fromRoomId, 
+    toRoomId,
     status: 'pending' 
   });
 
@@ -134,17 +136,7 @@ exports.respondToAdoption = async (adoptionId, status, targetRoomId, user) => {
   }
 
   adoption.status = status; 
-  if (targetRoomId) adoption.targetRoomId = targetRoomId;
-  
-  // SE ACCETTATA: L'opera è in transito. Salviamo la stanza originale ma NON la spostiamo ancora.
-  if (status === 'accepted') {
-    const work = await Work.findById(adoption.workId);
-    if (work) {
-      // Usiamo il roomId attuale dell'opera, oppure se per qualche motivo è null, 
-      // proviamo a vedere se l'adozione aveva già un originalRoomId, altrimenti salviamo null ma lo tracciamo
-      adoption.originalRoomId = work.roomId || adoption.originalRoomId || null;
-    }
-  }
+  if (targetRoomId) adoption.toRoomId = targetRoomId;
   
   await adoption.save(); 
   return adoption;
@@ -175,12 +167,12 @@ exports.completeAdoption = async (adoptionId, user) => {
   // RIPRISTINO DELL'OPERA: Torna al museo originario
   const work = await Work.findById(adoption.workId); 
   if (work) { 
+    work.museumId = adoption.fromMuseumId;
     // Se originalRoomId è salvato lo usiamo, altrimenti cerchiamo la prima stanza disponibile nel museo originario
-    if (adoption.originalRoomId) {
-      work.roomId = adoption.originalRoomId;
+    if (adoption.fromRoomId) {
+      work.roomId = adoption.fromRoomId;
     } else {
       // Fallback di sicurezza: cerca la prima sezione e la prima stanza del museo originario
-      const Section = require('../models/sections');
       const firstSection = await Section.findOne({ museumId: adoption.fromMuseumId });
       if (firstSection && firstSection.rooms && firstSection.rooms.length > 0) {
         work.roomId = firstSection.rooms[0]._id;
@@ -223,7 +215,7 @@ exports.confirmArrival = async (adoptionId, user) => {
   const work = await Work.findById(adoption.workId);
   if (work) {
     work.museumId = adoption.toMuseumId;
-    work.roomId = adoption.targetRoomId || null;
+    work.roomId = adoption.toRoomId;
     work.adoptionId = adoption._id;
     await work.save();
   }

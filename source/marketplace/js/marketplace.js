@@ -1,14 +1,5 @@
 // le varie variabili globali sono in config.js
 
-// Unico nodo sentinella condiviso per qualsiasi scroll infinito
-const globalSentinel = document.createElement("div");
-globalSentinel.id = "global-infinite-sentinel";
-globalSentinel.className = "col-12 text-center py-4 d-none w-100";
-globalSentinel.innerHTML = `
-  <div class="spinner-border text-light spinner-border-sm" role="status"></div>
-  <p class="text-secondary small mt-1">Caricamento altri elementi...</p>
-`;
-
 // 1. INIZIALIZZAZIONE
 document.addEventListener("DOMContentLoaded", async () => {
   // Gestione del tasto indietro del browser
@@ -100,7 +91,7 @@ async function getMuseums(isHistoryPop = false) {
   setupInfiniteScroll(); // Attiva il guardiano dello scroll in fondo
 
   if (!isHistoryPop) {
-    history.pushState({ view: 'home' }, "", "/");
+    history.pushState({ view: 'home' }, "", "/marketplace");
   }
 }
 
@@ -123,7 +114,7 @@ async function getMuseumItems(museumId, isHistoryPop = false) {
     const museum = cachedMuseums.find((m) => m._id === museumId);
     currentView = 'works';
     if (!isHistoryPop) {
-      history.pushState({ view: 'museum', id: museumId }, "", `/?museumId=${museumId}`);
+      history.pushState({ view: 'museum', id: museumId }, "", `/marketplace?museumId=${museumId}`);
     }
     renderMuseumDashboard(museum);
   } catch (error) {
@@ -164,7 +155,7 @@ function renderMuseumsList(museums, containerId = "content-area", append = false
 
     const clickAction = isMarketplace 
         ? `getMuseumItems('${museum._id}')` 
-        : `window.location.href='/?museumId=${museum._id}'`;
+        : `window.location.href='/marketplace?museumId=${museum._id}'`;
 
     htmlString += `
       <div class="col">

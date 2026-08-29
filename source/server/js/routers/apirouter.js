@@ -357,6 +357,18 @@ apiRouter.get("/museums/:id/works", async (req, res) => {
   }
 });
 
+// Ritorna SOLO info base delle opere (Ottimizzato per le tendine delle adozioni)
+apiRouter.get("/museums/:id/works-list", async (req, res) => {
+  try {
+    // Selezioniamo solo _id, name, autore e immagine
+    const worksList = await Work.find({ museumId: req.params.id }, '_id name authorName image').sort({ name: 1 });
+    res.status(200).json(worksList);
+  } catch (error) {
+    console.error("Errore recupero lista opere:", error);
+    res.status(500).json({ error: "Errore recupero lista opere" });
+  }
+});
+
 // per la modifica di un'opera
 // * nel body deve esserci il museumId, potrei anche fare il controllo nel controller ma dovrei prendere l'oggetto dal db per poi dire che non
 apiRouter.put("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, res) => {
@@ -876,8 +888,8 @@ apiRouter.get("/my-adoptions", auth.isCurator, async (req, res) => {
 // Rispondi alla richiesta (accetta 'accepted' o rifiuta 'refused')
 apiRouter.put("/adoptions/:id/respond", auth.isCurator, async (req, res) => {
   try {
-    const { status, targetRoomId } = req.body;
-    const adoption = await adoptionController.respondToAdoption(req.params.id, status, targetRoomId, req.user);
+    const { status, toRoomId } = req.body;
+    const adoption = await adoptionController.respondToAdoption(req.params.id, status, toRoomId, req.user);
     res.json({ message: `Adozione aggiornata in stato: ${status}`, adoption });
   } catch (error) {
     console.error("Errore risposta adozione:", error);

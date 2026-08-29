@@ -8,7 +8,7 @@ function renderOrdersList(ordersToRender) {
       <div class="text-center py-5 text-secondary glass-panel">
         <i class="bi bi-folder-x fs-1 mb-2"></i>
         <p>Non hai ancora effettuato nessun ordine.</p>
-        <a href="/" class="btn btn-sm btn-gradient rounded-pill px-4 mt-2">Esplora il Marketplace</a>
+        <a href="/marketplace" class="btn btn-sm btn-gradient rounded-pill px-4 mt-2">Esplora il Marketplace</a>
       </div>`;
     return;
   }
@@ -125,6 +125,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderOrdersList(cachedOrders);
   } catch (error) {
     console.error("Errore nel caricamento ordini frontend:", error);
-    container.innerHTML = `<div class="text-danger text-center py-5">Impossibile caricare lo storico ordini.</div>`;
+    const container = document.getElementById("orders-container");
+    if (container) {
+      container.innerHTML = `<div class="text-danger text-center py-5">Impossibile caricare lo storico ordini.</div>`;
+    }
   }
 });
