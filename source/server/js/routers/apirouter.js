@@ -538,7 +538,7 @@ apiRouter.get("/museum-map-svg", async (req, res) => {
 // ------------- immagini ------------------------
 
 // 1. Upload File Locale
-apiRouter.post("/upload-image", auth.isCurator, upload.single('image'), (req, res) => {
+apiRouter.post("/upload-image", auth.isLoggedIn, upload.single('image'), (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Nessun file caricato" });
     // Restituisce il percorso relativo per il frontend
@@ -550,7 +550,7 @@ apiRouter.post("/upload-image", auth.isCurator, upload.single('image'), (req, re
 });
 
 // 2. Cerca Immagini su Wikimedia Commons
-apiRouter.get("/search-wikimedia", auth.isCurator, async (req, res) => {
+apiRouter.get("/search-wikimedia", auth.isLoggedIn, async (req, res) => {
   try {
     const query = req.query.q;
     if (!query) return res.status(400).json({ error: "Testo di ricerca mancante" });
@@ -580,42 +580,8 @@ apiRouter.get("/search-wikimedia", auth.isCurator, async (req, res) => {
   }
 });
 
-// 3. Proxy Download: Scarica un URL esterno e lo salva in locale (Risolve il problema dei link rotti!)
-apiRouter.post("/download-external-image", auth.isCurator, async (req, res) => {
-  try {
-    const { url } = req.body;
-    if (!url) return res.status(400).json({ error: "URL mancante" });
-
-    // CORREZIONE: Per scaricare file serve una GET. Tolto responseType.
-    const response = await fetch(url, {
-      method: 'GET', 
-      headers: { 'User-Agent': 'ArtAround (progetto universitario)' }
-    });
-    
-    if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
-    
-    // CORREZIONE: In fetch gli header si leggono con il metodo .get()
-    const contentType = response.headers.get('content-type');
-    const ext = contentType ? '.' + contentType.split('/')[1] : '.jpg';
-    
-    const filename = `ext-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${ext}`;
-    const filePath = path.join(__dirname, '..', '..', '..', 'uploads', filename);
-
-    // CORREZIONE: Estraiamo l'arrayBuffer e lo convertiamo in Buffer per Node.js
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    await fs.writeFile(filePath, buffer);
-
-    res.json({ url: `/uploads/${filename}` });
-  } catch (error) {
-    console.error("Errore download immagine:", error.message);
-    res.status(500).json({ error: "Impossibile scaricare e salvare l'immagine. Usa l'upload manuale." });
-  }
-});
-
 // 4. Elimina fisicamente un'immagine dal disco (chiamato dal widget)
-apiRouter.delete("/delete-image", auth.isCurator, async (req, res) => {
+apiRouter.delete("/delete-image", auth.isLoggedIn, async (req, res) => {
   try {
     const { imageUrl } = req.body;
     if (imageUrl) {

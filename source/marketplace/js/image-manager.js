@@ -10,17 +10,8 @@ function initImageWidget(containerId, hiddenInputId, labelText, uploadOnly = fal
   if (!uploadOnly) {
     externalSearchHtml = `
       <button type="button" class="btn btn-sm btn-glass text-info px-3 d-flex align-items-center justify-content-center" onclick="searchWikimediaForWidget('${hiddenInputId}')" title="Cerca immagine su Wikimedia">
-        <i class="bi bi-wikipedia me-2"></i> Wiki
+        <i class="bi bi-wikipedia me-2"></i> Cerca su Wikimedia
       </button>
-    `;
-    urlInputHtml = `
-      <div class="input-group input-group-sm mt-2 shadow-sm">
-        <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-link-45deg fs-5"></i></span>
-        <input type="text" id="${hiddenInputId}-url-input" class="form-control glass-input text-white border-secondary" placeholder="Incolla un URL esterno e clicca Salva...">
-        <button class="btn btn-sm btn-outline-success px-3" type="button" onclick="downloadExternalToLocal('${hiddenInputId}')">
-          Salva
-        </button>
-      </div>
     `;
   }
 
@@ -36,10 +27,8 @@ function initImageWidget(containerId, hiddenInputId, labelText, uploadOnly = fal
         <div id="${hiddenInputId}-input-section">
           <div class="d-flex flex-column flex-md-row gap-2">
             <div class="flex-grow-1 position-relative">
-              <!-- Input file nascosto ma perfettamente funzionante -->
               <input type="file" id="${hiddenInputId}-file" class="d-none" accept="image/*" onchange="handleImageUpload(this, '${hiddenInputId}')">
               
-              <!-- Finto bottone moderno che attiva l'input nascosto -->
               <label for="${hiddenInputId}-file" class="btn btn-sm btn-glass text-white w-100 border border-secondary border-opacity-50 py-2 d-flex align-items-center justify-content-center gap-2 mb-0 shadow-sm" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
                 <i class="bi bi-cloud-arrow-up text-info fs-5"></i>
                 <span class="small fw-bold">Scegli un'immagine dal dispositivo</span>
@@ -47,14 +36,12 @@ function initImageWidget(containerId, hiddenInputId, labelText, uploadOnly = fal
             </div>
             ${externalSearchHtml}
           </div>
-          
-          ${urlInputHtml}
 
           <!-- Contenitore Risultati Wiki -->
           <div id="${hiddenInputId}-wiki-results" class="d-flex gap-2 overflow-auto py-2 d-none custom-scrollbar mt-2" style="max-height: 110px;"></div>
         </div>
 
-        <!-- SEZIONE ANTEPRIMA (Appare solo ad immagine caricata) -->
+        <!-- SEZIONE ANTEPRIMA -->
         <div id="${hiddenInputId}-preview-container" class="d-none text-center">
           <div class="position-relative d-inline-block rounded-3 overflow-hidden shadow-lg border border-secondary border-opacity-50 bg-dark">
             <img id="${hiddenInputId}-preview" src="" class="img-fluid" style="max-height: 180px; object-fit: contain;">
@@ -74,7 +61,6 @@ function initImageWidget(containerId, hiddenInputId, labelText, uploadOnly = fal
     </div>
   `;
 }
-
 async function handleImageUpload(fileInput, targetId) {
   const file = fileInput.files[0];
   if (!file) return;
@@ -127,49 +113,17 @@ async function searchWikimediaForWidget(targetId) {
 }
 
 function selectWikiImage(url, targetId) {
-  document.getElementById(`${targetId}-url-input`).value = url;
   document.getElementById(`${targetId}-wiki-results`).classList.add("d-none");
-  downloadExternalToLocal(targetId);
-}
-
-async function downloadExternalToLocal(targetId) {
-  const urlInput = document.getElementById(`${targetId}-url-input`);
-  const url = urlInput.value.trim();
-  if (!url) return;
-
-  urlInput.value = "Salvataggio sul server in corso...";
-  urlInput.disabled = true;
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/download-external-image`, {
-      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url })
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setFinalImage(targetId, data.url);
-      urlInput.value = "Immagine salvata in locale!";
-    } else {
-      urlInput.value = url;
-      alert("Impossibile scaricare. L'immagine potrebbe essere protetta o il link errato.");
-    }
-  } catch (error) { console.error(error); urlInput.value = url; } 
-  finally { urlInput.disabled = false; }
+  setFinalImage(targetId, url); // Salviamo direttamente l'URL di Wiki senza scaricare!
 }
 
 function setFinalImage(targetId, finalUrl) {
-  // Aggiorna l'input nascosto per il database
   document.getElementById(targetId).value = finalUrl;
   
-  // Aggiorna la barra URL (anche se ora verrà nascosta, fa da backup)
-  const urlInput = document.getElementById(`${targetId}-url-input`);
-  if (urlInput) urlInput.value = finalUrl;
-
-  // Elementi UI
   const previewContainer = document.getElementById(`${targetId}-preview-container`);
   const previewImg = document.getElementById(`${targetId}-preview`);
   const inputSection = document.getElementById(`${targetId}-input-section`);
   
-  // Mostra l'anteprima e nasconde il form di input
   if (previewContainer && previewImg) {
     previewImg.src = finalUrl;
     previewContainer.classList.remove("d-none");
@@ -183,7 +137,6 @@ async function clearImageWidget(targetId) {
   const hiddenInput = document.getElementById(targetId);
   const imageUrl = hiddenInput.value;
 
-  // Se c'è un'immagine caricata, la eliminiamo dal disco
   if (imageUrl && imageUrl.startsWith('/uploads/')) {
     try {
       await fetch(`${API_BASE_URL}/delete-image`, {
@@ -196,14 +149,10 @@ async function clearImageWidget(targetId) {
     }
   }
 
-  // Svuotamento campi dati
   hiddenInput.value = "";
   const fileInput = document.getElementById(`${targetId}-file`);
   if (fileInput) fileInput.value = "";
-  const urlInput = document.getElementById(`${targetId}-url-input`);
-  if (urlInput) urlInput.value = "";
   
-  // Elementi UI: Nascondiamo l'anteprima e ripristiniamo il form
   const previewContainer = document.getElementById(`${targetId}-preview-container`);
   const inputSection = document.getElementById(`${targetId}-input-section`);
   
