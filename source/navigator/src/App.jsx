@@ -49,10 +49,21 @@ function AppLayout() {
 
   const [selectedMuseum, setSelectedMuseum] = useState(() => {
     const params = new URLSearchParams(location.search);
+    
     if (params.has('visitId') || params.has('roomCode')) {
+      const savedId = localStorage.getItem('selected_museum_id');
+      const savedName = localStorage.getItem('selected_museum_name');
+      
+      // Se abbiamo i dati reali salvati dal marketplace, li usiamo
+      if (savedId && savedName) {
+        return { _id: savedId, name: savedName };
+      }
+      
+      // Fallback solo se l'utente è entrato tramite link diretto (es. join stanza)
       return { name: "Visita in corso..." }; 
     }
-    return null; 
+    
+    return null; // O la tua logica preesistente se c'era altro
   });
 
   const handleChangeMuseum = () => {

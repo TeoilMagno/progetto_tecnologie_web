@@ -11,9 +11,17 @@ function goBackToVisits() {
 function startVisit() {
   const urlParams = new URLSearchParams(window.location.search);
   const visitId = urlParams.get("id");
+
+  const museumSub = document.getElementById("visit-museum-sub");
+  const museumId = museumSub ? museumSub.dataset.museumId : "";
+  // Estraiamo il nome pulito rimuovendo il prefisso "Presso: "
+  const museumName = museumSub ? museumSub.innerText.replace('Presso: ', '').trim() : "";
   
-  // Usiamo .href invece di .replace() per NON cancellare la cronologia!
-  // Così il tasto "Indietro" del browser riporterà correttamente ai dettagli della visita.
+  if (museumId) {
+    localStorage.setItem('selected_museum_id', museumId);
+    localStorage.setItem('selected_museum_name', museumName);
+  }
+  
   window.location.href = `/navigator/map?visitId=${visitId}`;
 }
 

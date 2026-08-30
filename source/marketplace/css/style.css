@@ -730,6 +730,7 @@ body.artaround-theme::-webkit-scrollbar {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
+  z-index: 2000;
 }
 .ts-dropdown .option {
   border-bottom: 1px solid rgba(255,255,255,0.05);
