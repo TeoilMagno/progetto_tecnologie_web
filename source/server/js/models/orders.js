@@ -11,7 +11,6 @@ const orderItemSchema = new mongoose.Schema({
 const orderVisitSchema = new mongoose.Schema({
   visitId: { type: mongoose.Schema.Types.ObjectId, ref: 'Visit' },
   title: { type: String, required: true },
-  image: { type: String, required: true },
   price: { type: Number, required: true }
 });
 
