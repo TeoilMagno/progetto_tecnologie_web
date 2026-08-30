@@ -73,19 +73,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   }, [roomCode, isTeacher, socket]);
 
   useEffect(() => {
-    const fetchMap = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/museum-map-svg`);
-        const textData = await response.text();
-        setSvgMapString(textData);
-      } catch (error) {
-        console.error("Errore caricamento mappa SVG:", error);
-      }
-    };
-    fetchMap();
-  }, []);
-
-  useEffect(() => {
     const fetchVisitData = async () => {
       try {
         const queryParam = isSharedSession ? `?roomCode=${roomCode}` : ''
@@ -132,7 +119,11 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         if (museumId) {
           // Gestiamo il potenziale fallimento dell'API delle sezioni senza far crashare tutto
           try {
-            const sectionsResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`, { credentials: 'include' });
+            const sectionsPromise = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`, { credentials: 'include' });
+            const mapPromise = fetch(`${API_BASE_URL}/museums/${museumId}/map-svg`);
+            //facciamo entrambi i fetch in contemporanea
+            const [sectionsResponse, mapResponse] = await Promise.all([sectionsPromise, mapPromise]);
+            //controlliamo sectionsResponse
             if (sectionsResponse.ok) {
               const sectionsData = await sectionsResponse.json();
               setSections(Array.isArray(sectionsData) ? sectionsData : []);
@@ -140,11 +131,13 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
               setSections([]); // Attiverà il fallback
             }
 
-            // const worksResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/works`, { credentials: 'include' });
-            // if (worksResponse.ok) {
-            //   const worksData = await worksResponse.json();
-            //   setAllMuseumWorks(Array.isArray(worksData) ? worksData : []);
-            // }
+            //controlliamo mapResponse
+            if (mapResponse.ok) {
+              const textData = await mapResponse.text();
+              setSvgMapString(textData);
+            } else {
+              console.warn("Mappa SVG non trovata per questo museo.");
+            }
           } catch (e) {
             console.warn("Errore nel caricamento dei dati mappa/opere del museo. Fallback attivato.", e);
             setSections([]);

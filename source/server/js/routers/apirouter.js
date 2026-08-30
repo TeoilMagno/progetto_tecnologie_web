@@ -491,10 +491,11 @@ apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
   }
 });
 
-apiRouter.get("/museum-map-svg", async (req, res) => {
+apiRouter.get("museums/:id/museum-map-svg", async (req, res) => {
   try {
+    console.log(req);
     // Supponiamo che tu abbia salvato mappa-completa.svg nella cartella 'public' o 'assets' del backend
-    const svgPath = path.join(__dirname, '..', '..', '..', 'navigator', 'src', 'assets', 'mappa-prova.svg')
+    const svgPath = path.join(__dirname, '..', '..', '..', 'navigator', 'src', 'assets', `${id}.svg`)
     // Leggiamo il file come semplice testo (utf-8)
     const svgString = await fs.readFile(svgPath, 'utf8');
     

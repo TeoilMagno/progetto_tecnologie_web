@@ -20,7 +20,8 @@
       {
         "museumId": [
           "6a7622a872031acd0ee0a2d3",
-          "6a8879bfe6c216683b02eb70"
+          "6a8879bfe6c216683b02eb70",
+          "6a8c6dfa4ce9e1ef09aee754"
         ],
         "description": "",
         "_id": "6a81c6af622833492a3be874"
@@ -33,7 +34,7 @@
         "_id": "6a856a847dbf05bd4b707637"
       }
     ],
-    "__v": 7
+    "__v": 8
   },
   {
     "_id": "6a81c7abaac995cd638bd678",
@@ -76,15 +77,15 @@
     ]
   },
   {
-    "_id": "6a821c134d292854096c43f3",
-    "name": "Arte Egizia / Nuovo Regno",
+    "_id": "6a821c134d292854096c43f6",
+    "name": "Barocco Olandese",
     "data": [
       {
         "museumId": [
           "6a821d4940de71cb515d1407"
         ],
-        "description": "Il Nuovo Regno d'Egitto, fiorito tra il sedicesimo e l'undicesimo secolo avanti Cristo, rappresenta l'età dell'oro della civiltà dei faraoni, un'epoca di straordinaria espansione imperiale e di immensa ricchezza culminata nei regni di sovrani leggendari come Ramses Secondo e la regina Hatshepsut. In questo periodo, l'arte egizia raggiunge l'apice della magnificenza e della raffinatezza, abbandonando in parte la rigida austerità dei secoli precedenti per aprirsi a una maggiore eleganza decorativa, a una cura minuziosa dei dettagli e a un senso di grandiosità che trova la sua massima espressione nei templi mastodontici di Karnak, Luxor e nella Valle dei Re. Le caratteristiche visive si evolvono pur mantenendo i canoni tradizionali della rappresentazione: le figure conservano la tipica visione combinata, con il busto frontale e il volto di profilo, ma i rilievi e le pitture parietali mostrano una freschezza e un dinamismo inediti, immortalando cerimonie sfarzose, battaglie epiche e il profondo legame tra il sovrano e le divinità protettrici.\n\nI temi fondanti di questa fase artistica ruotano attorno alla celebrazione del potere divino del faraone e alla promessa della vita eterna, declinati attraverso un linguaggio visivo che unisce la solennità religiosa alla celebrazione politica. Le tombe scavate nella roccia e i templi celebrativi non erano semplici luoghi di culto, ma vere e proprie macchine di immortalità, progettate per stupire i vivi e guidare l'anima del defunto nel suo viaggio ultraterreno. Anche durante la breve ma rivoluzionaria parentesi amarniana, sotto il regno di Akhenaton, l'arte cercò una nuova via espressiva attraverso un verismo quasi espressionista, prima di tornare ai canoni classici che hanno reso l'arte del Nuovo Regno immortale e universalmente riconosciuta come una delle vette più alte della creatività umana.",
-        "_id": "6a821d6740de71cb515d1450"
+        "description": "",
+        "_id": "6a821d5040de71cb515d1417"
       }
     ]
   },
@@ -115,15 +116,15 @@
     ]
   },
   {
-    "_id": "6a821c134d292854096c43f6",
-    "name": "Barocco Olandese",
+    "_id": "6a821c134d292854096c43f3",
+    "name": "Arte Egizia / Nuovo Regno",
     "data": [
       {
         "museumId": [
           "6a821d4940de71cb515d1407"
         ],
-        "description": "",
-        "_id": "6a821d5040de71cb515d1417"
+        "description": "Il Nuovo Regno d'Egitto, fiorito tra il sedicesimo e l'undicesimo secolo avanti Cristo, rappresenta l'età dell'oro della civiltà dei faraoni, un'epoca di straordinaria espansione imperiale e di immensa ricchezza culminata nei regni di sovrani leggendari come Ramses Secondo e la regina Hatshepsut. In questo periodo, l'arte egizia raggiunge l'apice della magnificenza e della raffinatezza, abbandonando in parte la rigida austerità dei secoli precedenti per aprirsi a una maggiore eleganza decorativa, a una cura minuziosa dei dettagli e a un senso di grandiosità che trova la sua massima espressione nei templi mastodontici di Karnak, Luxor e nella Valle dei Re. Le caratteristiche visive si evolvono pur mantenendo i canoni tradizionali della rappresentazione: le figure conservano la tipica visione combinata, con il busto frontale e il volto di profilo, ma i rilievi e le pitture parietali mostrano una freschezza e un dinamismo inediti, immortalando cerimonie sfarzose, battaglie epiche e il profondo legame tra il sovrano e le divinità protettrici.\n\nI temi fondanti di questa fase artistica ruotano attorno alla celebrazione del potere divino del faraone e alla promessa della vita eterna, declinati attraverso un linguaggio visivo che unisce la solennità religiosa alla celebrazione politica. Le tombe scavate nella roccia e i templi celebrativi non erano semplici luoghi di culto, ma vere e proprie macchine di immortalità, progettate per stupire i vivi e guidare l'anima del defunto nel suo viaggio ultraterreno. Anche durante la breve ma rivoluzionaria parentesi amarniana, sotto il regno di Akhenaton, l'arte cercò una nuova via espressiva attraverso un verismo quasi espressionista, prima di tornare ai canoni classici che hanno reso l'arte del Nuovo Regno immortale e universalmente riconosciuta come una delle vette più alte della creatività umana.",
+        "_id": "6a821d6740de71cb515d1450"
       }
     ]
   },
@@ -137,32 +138,6 @@
         ],
         "description": "",
         "_id": "6a821d5a40de71cb515d142c"
-      }
-    ]
-  },
-  {
-    "_id": "6a821c134d292854096c43f8",
-    "name": "Classico Greco",
-    "data": [
-      {
-        "museumId": [
-          "6a821d4940de71cb515d1407"
-        ],
-        "description": "Il periodo classico dell'arte greca, fiorito tra il V e il IV secolo a.C., rappresenta uno dei momenti più alti e influenti della storia dell'umanità. Nato nel clima di rinascita e orgoglio seguito alle vittorie contro i Persiani, in particolare ad Atene sotto la guida di Pericle, questo stile ha ridefinito il concetto stesso di bellezza, spostando il fulcro dell'espressione artistica verso l'armonia, l'equilibrio e la perfezione proporzionale. Gli artisti di questa epoca cercavano un ordine ideale che superasse la semplice imitazione della natura, aspirando a una dimensione universale ed eterna.\n\nDal punto di vista visivo, le opere del periodo classico si riconoscono immediatamente per la ricerca del 'chiasmo', ovvero quella posa in cui il peso del corpo grava su una sola gamba, creando una curva naturale e dinamica della colonna vertebrale e dei fianchi. I volti perdono i sorrisi arcaici per assumere un'espressione di serena nobiltà e imperturbabile autocontrollo, nota come 'ethos'. I temi fondanti affondano le radici nel mito, nella tragedia e nella celebrazione della polis, ma il vero soggetto è l'uomo inteso come 'misura di tutte le cose'. Attraverso marmi levigati e bronzi perfetti, i maestri greci ci hanno consegnato non solo immagini di dei ed eroi, ma l'eterna celebrazione della dignità e della ragione umana.",
-        "_id": "6a821d6440de71cb515d1449"
-      }
-    ]
-  },
-  {
-    "_id": "6a821c134d292854096c43f9",
-    "name": "Ellenistico",
-    "data": [
-      {
-        "museumId": [
-          "6a821d4940de71cb515d1407"
-        ],
-        "description": "",
-        "_id": "6a821d4940de71cb515d1409"
       }
     ]
   },
@@ -193,19 +168,6 @@
     ]
   },
   {
-    "_id": "6a821c134d292854096c43fc",
-    "name": "Periodo Edo",
-    "data": [
-      {
-        "museumId": [
-          "6a821d4940de71cb515d1407"
-        ],
-        "description": "",
-        "_id": "6a821d7540de71cb515d1470"
-      }
-    ]
-  },
-  {
     "_id": "6a821c134d292854096c43fd",
     "name": "Post-Impressionismo",
     "data": [
@@ -219,6 +181,45 @@
       }
     ],
     "__v": 1
+  },
+  {
+    "_id": "6a821c134d292854096c43fc",
+    "name": "Periodo Edo",
+    "data": [
+      {
+        "museumId": [
+          "6a821d4940de71cb515d1407"
+        ],
+        "description": "",
+        "_id": "6a821d7540de71cb515d1470"
+      }
+    ]
+  },
+  {
+    "_id": "6a821c134d292854096c43f9",
+    "name": "Ellenistico",
+    "data": [
+      {
+        "museumId": [
+          "6a821d4940de71cb515d1407"
+        ],
+        "description": "",
+        "_id": "6a821d4940de71cb515d1409"
+      }
+    ]
+  },
+  {
+    "_id": "6a821c134d292854096c43f8",
+    "name": "Classico Greco",
+    "data": [
+      {
+        "museumId": [
+          "6a821d4940de71cb515d1407"
+        ],
+        "description": "Il periodo classico dell'arte greca, fiorito tra il V e il IV secolo a.C., rappresenta uno dei momenti più alti e influenti della storia dell'umanità. Nato nel clima di rinascita e orgoglio seguito alle vittorie contro i Persiani, in particolare ad Atene sotto la guida di Pericle, questo stile ha ridefinito il concetto stesso di bellezza, spostando il fulcro dell'espressione artistica verso l'armonia, l'equilibrio e la perfezione proporzionale. Gli artisti di questa epoca cercavano un ordine ideale che superasse la semplice imitazione della natura, aspirando a una dimensione universale ed eterna.\n\nDal punto di vista visivo, le opere del periodo classico si riconoscono immediatamente per la ricerca del 'chiasmo', ovvero quella posa in cui il peso del corpo grava su una sola gamba, creando una curva naturale e dinamica della colonna vertebrale e dei fianchi. I volti perdono i sorrisi arcaici per assumere un'espressione di serena nobiltà e imperturbabile autocontrollo, nota come 'ethos'. I temi fondanti affondano le radici nel mito, nella tragedia e nella celebrazione della polis, ma il vero soggetto è l'uomo inteso come 'misura di tutte le cose'. Attraverso marmi levigati e bronzi perfetti, i maestri greci ci hanno consegnato non solo immagini di dei ed eroi, ma l'eterna celebrazione della dignità e della ragione umana.",
+        "_id": "6a821d6440de71cb515d1449"
+      }
+    ]
   },
   {
     "_id": "6a821c134d292854096c43fe",

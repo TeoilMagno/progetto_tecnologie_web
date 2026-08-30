@@ -147,5 +147,77 @@
     "createdAt": "2026-08-21T15:23:33.028Z",
     "updatedAt": "2026-08-21T15:23:33.028Z",
     "__v": 0
+  },
+  {
+    "_id": "6a8b2203f63e22e6949a0c41",
+    "user": "6a6dab11ccd4a931660f74e4",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6a70a7213e6d2134c05bee84",
+        "title": "Visita pubblica al Museo del Prado",
+        "price": 50,
+        "_id": "6a8b2203f63e22e6949a0c42"
+      }
+    ],
+    "totalAmount": 50,
+    "status": "completed",
+    "createdAt": "2026-08-23T16:38:27.376Z",
+    "updatedAt": "2026-08-23T16:38:27.376Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a8c5e4419517116a4937b6a",
+    "user": "6a71eaad1d50777ccbe3e75a",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6a7484b4ecb4b1ac265525c4",
+        "title": "Visita libera",
+        "price": 0,
+        "_id": "6a8c5e4419517116a4937b6b"
+      }
+    ],
+    "totalAmount": 0,
+    "status": "completed",
+    "createdAt": "2026-08-24T15:07:48.471Z",
+    "updatedAt": "2026-08-24T15:07:48.471Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a944012933eec51841dadff",
+    "user": "6a78a30033e2e31e8d045a1a",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6a748f6c4210254c3519ef76",
+        "title": "visita pubblica admin",
+        "price": 150,
+        "_id": "6a944012933eec51841dae00"
+      }
+    ],
+    "totalAmount": 150,
+    "status": "completed",
+    "createdAt": "2026-08-30T14:37:06.650Z",
+    "updatedAt": "2026-08-30T14:37:06.650Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a946a9feea272fececb29e0",
+    "user": "6a79e82abec8ac8f2ee4ff11",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6a94682ed38404dfc005d68a",
+        "title": "L'Impressionismo: I Colori e l'Emozione della Luce",
+        "price": 20,
+        "_id": "6a946a9feea272fececb29e1"
+      }
+    ],
+    "totalAmount": 20,
+    "status": "completed",
+    "createdAt": "2026-08-30T17:38:39.468Z",
+    "updatedAt": "2026-08-30T17:38:39.468Z",
+    "__v": 0
   }
 ]
