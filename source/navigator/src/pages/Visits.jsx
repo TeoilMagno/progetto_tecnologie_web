@@ -6,7 +6,7 @@ import { API_BASE_URL } from '../config';
 import VisitPreviewModal from '../components/VisitPreviewModal';
 
 export default function Visits({ selectedMuseum }) {
-  const loaction = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState(location.pathname.includes('my-visits') ? 'my' : 'all');

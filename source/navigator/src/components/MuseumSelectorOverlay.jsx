@@ -61,7 +61,7 @@ export default function MuseumSelectorOverlay({ onSelect }) {
         if (data.length > 0) {
           // Seleziona il primo per impostazione predefinita
           setSelectedId(data[0]._id);
-          localStorage.setItem('selected_museum_id', selectedId._id);
+          localStorage.setItem('selected_museum_id', data[0]._id);
         }
         setLoading(false);
       })
