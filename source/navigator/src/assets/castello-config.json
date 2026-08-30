@@ -1,0 +1,30 @@
+{
+  "name": "Castello di Gradara & Museo Medievale",
+  "iconUrl": "/assets/icons/castle-logo.svg",
+  "backgroundImage": "/assets/images/castle-background.jpg",
+  "welcomeMessage": "Benvenuto nel Castello di Gradara. Viaggia nel tempo tra armature lucenti, torri merlate e antichi segreti.",
+  "description": "Un'imponente fortezza medievale che custodisce segreti storici, armi storiche e affreschi leggendari della celebre storia d'amore di Paolo e Francesca.",
+  "mapFile": "mappa-castello.svg",
+  "openingHours": "Mar-Dom: 09:00 - 19:00, Lun: Chiuso",
+  "theme": {
+    "primary": "#D4AF37",
+    "secondary": "#8B0000",
+    "accent": "#FF4500",
+    "bg-main": "#1A1A1A",
+    "bg-overlay": "0.75",
+    "bg-card": "#2A2A2E",
+    "bg-dark": "#0D0D0D",
+    "text-main": "#F5E6BE",
+    "text-muted": "#A0937D",
+    "text-on-dark": "#FDF5E6",
+    "text-on-primary": "#1A1A1A",
+    "radius": "4px",
+    "border-width": "2px",
+    "border-style": "ridge",
+    "border-color": "#4A4A4A",
+    "shadow": "0 15px 30px -5px rgba(0,0,0,0.8)",
+    "font-heading": "'Cinzel', serif",
+    "font-body": "'MedievalSharp', cursive",
+    "bg-pattern": "url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), linear-gradient(180deg, #1A1A1A 0%, #0D0D0D 100%)"
+  }
+}

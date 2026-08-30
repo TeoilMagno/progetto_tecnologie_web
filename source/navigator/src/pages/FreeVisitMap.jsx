@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ZoomIn, ZoomOut, Maximize, MapPin, AlertCircle } from 'lucide-react';
-import mappaIncompleta from '../assets/mappa-completa.svg';
+import mappaCompleta from '../assets/mappa-completa.svg';
 
 export default function FreeVisitMap({ selectedMuseum }) {
   // Stati per la mappa (Zoom & Pan)
@@ -167,7 +167,7 @@ export default function FreeVisitMap({ selectedMuseum }) {
         >
           {/* File Vettoriale di Base */}
           <img 
-            src={mappaIncompleta} 
+            src={mappaCompleta} 
             alt="Mappa del museo MET" 
             className="w-full h-auto max-h-full object-contain pointer-events-none select-none"
           />

@@ -1,8 +1,47 @@
 @import "tailwindcss";
 
+:root {
+  /* Default CSS Theme Fallbacks */
+  --primary: #f59e0b;
+  --secondary: #3b82f6;
+  --accent: #10b981;
+  --bg-main: #020617;
+  --bg-overlay: 0.75;
+  --bg-card: #1e293b;
+  --bg-dark: #020617;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-on-dark: #ffffff;
+  --text-on-primary: #0f172a;
+  --radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --border-color: rgba(51, 65, 85, 0.5);
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  --font-heading: system-ui, -apple-system, sans-serif;
+  --font-body: system-ui, -apple-system, sans-serif;
+  --bg-pattern: none;
+}
+
 @layer base {
   body {
-    @apply bg-slate-950 text-white; /* Sfondo scuro globale */
+    background-color: var(--bg-main) !important;
+    background-image: var(--bg-pattern) !important;
+    color: var(--text-main) !important;
+    font-family: var(--font-body) !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading) !important;
+  }
+
+  /* Automatically map dynamic border, radius and shadow styles to common elements */
+  .rounded-2xl, .rounded-xl, .rounded-3xl, .rounded-lg, .card, .btn {
+    border-radius: var(--radius) !important;
+    border-width: var(--border-width) !important;
+    border-style: var(--border-style) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: var(--shadow) !important;
   }
 }
 

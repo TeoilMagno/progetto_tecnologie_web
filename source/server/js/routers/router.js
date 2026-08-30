@@ -112,4 +112,9 @@ router.get('/quiz-report-details', auth.isLoggedInPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'quiz-report-details.html'));
 });
 
+// pagina del creatore di temi per i musei
+router.get('/create-theme', auth.isCuratorPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'create-theme.html'));
+});
+
 module.exports = router;
