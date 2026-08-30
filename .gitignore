@@ -6,3 +6,5 @@ appunti_progetto.txt
 *.sh
 .idea/
 *.pem
+dist/
+uploads/
