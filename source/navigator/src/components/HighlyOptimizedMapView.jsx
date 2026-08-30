@@ -54,7 +54,9 @@ export default function HighlyOptimizedMapView({
           /* COMPORTAMENTO DI BASE (Quando guardi tutto il museo) */
           /* Mostriamo la mappa approssimata e nascondiamo i dettagli */
           g[id="vista-globale"] { display: block; }
-          g[id="vista-dettaglio"] { display: none; }
+          
+          /* Metto sia vista che visita per intercettare eventuali typo di Illustrator! */
+          g[id="vista-dettaglio"], g[id="visita-dettaglio"] { display: none; }
         `}
 
         {activeSection && `
@@ -63,13 +65,13 @@ export default function HighlyOptimizedMapView({
           g[id="vista-globale"] { display: none !important; }
           
           /* 2. Accendiamo il livello dei dettagli */
-          g[id="vista-dettaglio"] { display: block !important; }
+          g[id="vista-dettaglio"], g[id="visita-dettaglio"] { display: block !important; }
           
-          /* 3. Nascondiamo TUTTE le sezioni dettagliate... */
-          g[id="vista-dettaglio"] g[id^="section-"] { display: none; }
+          /* 3. Nascondiamo TUTTE le sezioni dettagliate (i figli diretti del livello dettaglio) */
+          g[id="vista-dettaglio"] > g, g[id="visita-dettaglio"] > g { display: none; }
           
-          /* 4. ...tranne quella attiva! */
-          g[id="${activeSection.svgGroupId}"] { display: block !important; }
+          /* 4. ...tranne quella attiva! (NOTA IL PREFISSO 'dettaglio-' AGGIUNTO QUI) */
+          g[id="dettaglio-${activeSection.svgGroupId}"] { display: block !important; }
         `}
       </style>
 

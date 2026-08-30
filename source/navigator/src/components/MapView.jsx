@@ -119,7 +119,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         if (museumId) {
           // Gestiamo il potenziale fallimento dell'API delle sezioni senza far crashare tutto
           try {
-            const sectionsPromise = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`, { credentials: 'include' });
+            const sectionsPromise = fetch(`${API_BASE_URL}/museums/${museumId}/sections`, { credentials: 'include' });
             const mapPromise = fetch(`${API_BASE_URL}/museums/${museumId}/map-svg`);
             //facciamo entrambi i fetch in contemporanea
             const [sectionsResponse, mapResponse] = await Promise.all([sectionsPromise, mapPromise]);
@@ -308,22 +308,22 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const handleNext = () => {
     if (currentWorkIndex < visitedWorks.length - 1) {
       const nextIndex = currentWorkIndex + 1;
-      const previousWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
       setCurrentWorkIndex(nextIndex);
       const activeWork = visitedWorks[nextIndex];
       
       if (hasMap) {
         const currentSection = selectedSection;
-        const { section: nextSection, room: nextRoom } = selectSectionForWork(activeWork) || {};
+        const result = selectSectionForWork(activeWork);
+        const nextSection = result ? result.section : null;
         
-        if (nextSection && nextRoom) {
-          if (currentSection && nextSection._id === currentSection._id) {
-            alert(`La prossima opera si trova in ${nextRoom.name}`);
-          } else {
-            alert(`La prossima opera si trova nella sezione ${nextSection.name}, sala ${nextRoom.name}`);
+        if (nextSection) {
+          // Se la nuova opera si trova in una sezione DIVERSA da quella attuale, 
+          // diamo un piccolo avviso (opzionale, ma utile per l'orientamento)
+          if (currentSection && nextSection._id !== currentSection._id) {
+            alert(`Stiamo passando alla sezione: ${nextSection.name}`);
           }
         } else {
-          alert("Attenzione: Impossibile determinare la posizione della prossima opera.");
+           console.warn("Attenzione: Impossibile determinare la posizione sulla mappa della prossima opera.");
         }
       }
 
@@ -336,26 +336,26 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const handlePrev = () => {
     if (currentWorkIndex > 0) {
       const prevIndex = currentWorkIndex - 1;
-      const previousWork = visitedWorks[currentWorkIndex];
       setCurrentWorkIndex(prevIndex);
+      const activeWork = visitedWorks[prevIndex];
       
       if (hasMap) {
         const currentSection = selectedSection;
-        const activeWork = visitedWorks[prevIndex];
-        const { section: prevSection, room: prevRoom } = selectSectionForWork(activeWork) || {};
-        if (prevSection && prevRoom) {
-          if (currentSection && prevSection._id === currentSection._id) {
-            alert(`La prossima opera si trova in ${prevRoom.name}`);
-          } else {
-            alert(`La prossima opera si trova nella sezione ${prevSection.name}, sala ${prevRoom.name}`);
+        const result = selectSectionForWork(activeWork);
+        const prevSection = result ? result.section : null;
+        
+        if (prevSection) {
+          // Se la precedente opera si trova in una sezione DIVERSA
+          if (currentSection && prevSection._id !== currentSection._id) {
+            alert(`Torniamo alla sezione: ${prevSection.name}`);
           }
         } else {
-          alert("Attenzione: Impossibile determinare la posizione della prossima opera.");
+           console.warn("Attenzione: Impossibile determinare la posizione sulla mappa della prossima opera.");
         }
       }
 
       if (isSharedSession && isTeacher && socket) {
-        socket.emit("change_artwork", { roomCode, artworkId: visitedWorks[prevIndex]._id });
+        socket.emit("change_artwork", { roomCode, artworkId: activeWork._id });
       }
     } else if (currentWorkIndex === 0) {
       setCurrentWorkIndex(-1);
@@ -540,8 +540,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
             setCurrentWorkIndex(0);
             if (hasMap) {
               const result = selectSectionForWork(visitedWorks[0]);
-              if (result?.room) {
-                alert(`Si parte dalla ${result.room.name}`);
+              if (result?.section) {
+                alert(`Si parte dalla sezione: ${result.section.name}`);
               }
             }
             if (isSharedSession && isTeacher && socket) {
