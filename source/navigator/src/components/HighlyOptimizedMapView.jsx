@@ -49,14 +49,29 @@ export default function HighlyOptimizedMapView({
       )}
 
       {/* MAGIA CSS */}
-      {activeSection && (
-        <style>
-          {`
-            g[id^="section-"] { display: none; }
-            g[id="${activeSection.svgGroupId}"] { display: block !important; }
-          `}
-        </style>
-      )}
+      <style>
+        {`
+          /* COMPORTAMENTO DI BASE (Quando guardi tutto il museo) */
+          /* Mostriamo la mappa approssimata e nascondiamo i dettagli */
+          g[id="vista-globale"] { display: block; }
+          g[id="vista-dettaglio"] { display: none; }
+        `}
+
+        {activeSection && `
+          /* QUANDO ENTRI IN UNA SEZIONE (Zoom) */
+          /* 1. Nascondiamo i blocchettoni approssimati */
+          g[id="vista-globale"] { display: none !important; }
+          
+          /* 2. Accendiamo il livello dei dettagli */
+          g[id="vista-dettaglio"] { display: block !important; }
+          
+          /* 3. Nascondiamo TUTTE le sezioni dettagliate... */
+          g[id="vista-dettaglio"] g[id^="section-"] { display: none; }
+          
+          /* 4. ...tranne quella attiva! */
+          g[id="${activeSection.svgGroupId}"] { display: block !important; }
+        `}
+      </style>
 
       {/* IL WRAPPER PER LO ZOOM */}
       <TransformWrapper 
