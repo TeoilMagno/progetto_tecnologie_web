@@ -12,6 +12,9 @@ function initImageWidget(containerId, hiddenInputId, labelText, uploadOnly = fal
       <button type="button" class="btn btn-sm btn-glass text-info px-3 d-flex align-items-center justify-content-center" onclick="searchWikimediaForWidget('${hiddenInputId}')" title="Cerca immagine su Wikimedia">
         <i class="bi bi-wikipedia me-2"></i> Cerca su Wikimedia
       </button>
+      <button type="button" class="btn btn-sm btn-glass text-info px-3 d-flex align-items-center justify-content-center" onclick="promptForImageUrl('${hiddenInputId}')" title="Inserisci link URL immagine diretto">
+        <i class="bi bi-link-45deg me-2"></i> Inserisci URL
+      </button>
     `;
   }
 
@@ -61,6 +64,7 @@ function initImageWidget(containerId, hiddenInputId, labelText, uploadOnly = fal
     </div>
   `;
 }
+
 async function handleImageUpload(fileInput, targetId) {
   const file = fileInput.files[0];
   if (!file) return;
@@ -110,6 +114,19 @@ async function searchWikimediaForWidget(targetId) {
            onclick="selectWikiImage('${url}', '${targetId}')" title="Clicca per scegliere">
     `).join('');
   } catch (error) { resultsContainer.innerHTML = `<span class="small text-danger m-auto">Errore ricerca.</span>`; }
+}
+
+async function promptForImageUrl(targetId) {
+  const url = await window.showCustomPrompt("Inserisci URL Immagine", "Es. https://upload.wikimedia.org/wikipedia/commons/... o /uploads/...", "bi-link-45deg");
+  if (!url || url.trim() === "") return;
+
+  const trimmedUrl = url.trim();
+  if (!trimmedUrl.startsWith("http://") && !trimmedUrl.startsWith("https://") && !trimmedUrl.startsWith("/")) {
+    alert("Inserisci un URL valido (deve iniziare con http://, https:// o /)");
+    return;
+  }
+
+  setFinalImage(targetId, trimmedUrl);
 }
 
 function selectWikiImage(url, targetId) {
