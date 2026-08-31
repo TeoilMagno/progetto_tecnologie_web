@@ -8,7 +8,6 @@ import HomePage from './pages/Home';
 import Visits from './pages/Visits';
 import JoinSession from './pages/JoinSession';
 import StudentWaitingRoom from './pages/StudentWaitingRoom';
-import FreeVisitMap from './pages/FreeVisitMap';
 import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
 import MapView from './components/MapView';
 import QuizSession from './pages/QuizSession';
@@ -118,7 +117,6 @@ function AppLayout() {
               <Route path="/" element={<HomePage config={config} />} />
               <Route path="/visits" element={<Visits selectedMuseum={selectedMuseum} />} />
               <Route path="/join" element={<JoinSession />} />
-              <Route path="/free-map" element={<FreeVisitMap selectedMuseum={selectedMuseum} />} />
               <Route path="/my-visits" element={<Visits selectedMuseum={selectedMuseum} />} />
               <Route path="/menu" element={<MenuPage/>} />
               <Route path="/settings" element={<SettingsPage/>} />

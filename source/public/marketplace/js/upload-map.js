@@ -1,18 +1,29 @@
+let sectionModalInstance = null;
+let localSections = []; // Teniamo in memoria l'array delle sezioni!
+
 document.addEventListener("DOMContentLoaded", async () => {
   const pathSegments = window.location.pathname.split('/');
-  // Estrae l'ID museo dal percorso (es. /museums/:id/upload-map)
   currentMuseumId = pathSegments[2];
 
-  if (!currentMuseumId) {
-    console.error("Museum ID non trovato nell'URL");
-    return;
+  if (!currentMuseumId) return;
+
+  if (document.getElementById("sectionModal")) {
+    sectionModalInstance = new bootstrap.Modal(document.getElementById("sectionModal"));
+  }
+
+  // INIZIALIZZAZIONE WIDGETS
+  if (typeof initImageWidget === "function") {
+    // Il parametro 'true' nasconde il tasto Wikimedia
+    initImageWidget("map-svg-widget-container", "map-svg-input", "Carica nuovo file Planimetria (SVG)", true);
+    
+    initImageWidget("edit-section-image-widget", "section-image-input", "Immagine della Sezione", true);
   }
 
   await loadCurrentMap(currentMuseumId);
   await loadMuseumSections(currentMuseumId);
 });
 
-// 1. CARICA L'ANTEPRIMA DELLA MAPPA ESISTENTE
+// CARICA L'ANTEPRIMA DELLA MAPPA ESISTENTE
 async function loadCurrentMap(museumId) {
   const container = document.getElementById("mapPreviewContainer");
   try {
@@ -26,143 +37,156 @@ async function loadCurrentMap(museumId) {
         </div>`;
       return;
     }
-
     if (!response.ok) throw new Error("Errore durante il recupero della mappa");
 
-    const svgText = await response.text();
-    container.innerHTML = svgText;
+    container.innerHTML = await response.text();
   } catch (error) {
-    container.innerHTML = `
-      <div class="text-center text-danger p-4">
-        <i class="bi bi-x-octagon fs-2 d-block mb-2"></i>
-        Impossibile caricare l'anteprima della mappa.
-      </div>`;
-    console.error(error);
+    container.innerHTML = `<div class="text-danger p-4"><i class="bi bi-x-octagon fs-2 d-block mb-2"></i>Impossibile caricare l'anteprima della mappa.</div>`;
   }
 }
 
-// 2. CARICA LE SEZIONI DAL DATABASE
+// CARICA LE SEZIONI DAL DATABASE NEL NOSTRO ARRAY LOCALE
 async function loadMuseumSections(museumId) {
-  const container = document.getElementById("sectionsContainer");
   try {
     const response = await fetch(`/api/museums/${museumId}/sections`);
     if (!response.ok) throw new Error("Errore nel recupero delle sezioni");
     
-    const sections = await response.json();
-    container.innerHTML = "";
-
-    if (!sections || sections.length === 0) {
-      container.innerHTML = `
-        <div class="text-white-50 small mb-3">Nessuna sezione registrata. Clicca su "Aggiungi Sezione" per definirne una.</div>`;
-      return;
-    }
-
-    sections.forEach(section => {
-      renderSectionCard(section);
-    });
+    localSections = await response.json();
+    renderSectionsList(); // Renderizza la UI
   } catch (error) {
     console.error("Errore nel caricamento delle sezioni:", error);
-    container.innerHTML = `<div class="text-danger small">Errore durante il caricamento delle sezioni.</div>`;
   }
 }
 
-// 3. RENDERIZZA LA CARD DI UNA SEZIONE
-function renderSectionCard(section = {}) {
+// RENDERIZZA LA LISTA COMPATTA DELLE SEZIONI
+function renderSectionsList() {
   const container = document.getElementById("sectionsContainer");
-  const sectionId = section._id || `temp_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`;
-  const isExisting = Boolean(section._id);
+  container.innerHTML = "";
 
-  const card = document.createElement("div");
-  card.className = "section-card position-relative";
-  card.dataset.sectionId = sectionId;
-  card.dataset.isExisting = isExisting;
+  if (localSections.length === 0) {
+    container.innerHTML = `<div class="text-white-50 small mb-3">Nessuna sezione registrata. Clicca su "Aggiungi Sezione" per definirne una.</div>`;
+    return;
+  }
 
-  const viewBox = section.viewBox || { x: 0, y: 0, width: 2000, height: 1200 };
-
-  card.innerHTML = `
-    <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" onclick="this.closest('.section-card').remove()" aria-label="Elimina"></button>
-    <div class="row g-3">
-      <div class="col-md-6">
-        <label class="form-label text-white small">Nome Sezione</label>
-        <input type="text" class="form-control input-aura sec-name" value="${section.name || ''}" placeholder="Es: Greek and Roman Art" required />
+  localSections.forEach((sec, index) => {
+    container.innerHTML += `
+      <div class="glass-panel p-3 mb-3 d-flex align-items-center justify-content-between" style="border-radius: 12px;">
+        <div class="d-flex align-items-center gap-3">
+          <img src="${sec.image || '/img/default-section.jpg'}" alt="${sec.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+          <div>
+            <h6 class="text-white mb-1">${sec.name}</h6>
+            <div class="text-info small fw-bold">ID: <span class="text-white-50 fw-normal">${sec.svgGroupId}</span></div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-sm btn-glass text-white" onclick="openSectionModal(${index})"><i class="bi bi-pencil"></i> Modifica</button>
+          <button type="button" class="btn btn-sm btn-glass text-danger" onclick="removeLocalSection(${index})"><i class="bi bi-trash"></i> Elimina</button>
+        </div>
       </div>
-      <div class="col-md-6">
-        <label class="form-label text-white small">SVG Group ID (senza prefisso dettaglio)</label>
-        <input type="text" class="form-control input-aura sec-svg-id" value="${section.svgGroupId || ''}" placeholder="Es: section-greek-and-roman-art" required />
-      </div>
-
-      <!-- VIEWBOX COORDINATES -->
-      <div class="col-12 mt-2">
-        <span class="text-info small fw-semibold">Coordinate ViewBox per Zoom:</span>
-      </div>
-      <div class="col-3">
-        <label class="form-label text-white-50 small">X</label>
-        <input type="number" class="form-control input-aura sec-v-x" value="${viewBox.x ?? 0}" required />
-      </div>
-      <div class="col-3">
-        <label class="form-label text-white-50 small">Y</label>
-        <input type="number" class="form-control input-aura sec-v-y" value="${viewBox.y ?? 0}" required />
-      </div>
-      <div class="col-3">
-        <label class="form-label text-white-50 small">Larghezza (Width)</label>
-        <input type="number" class="form-control input-aura sec-v-w" value="${viewBox.width ?? 2000}" required />
-      </div>
-      <div class="col-3">
-        <label class="form-label text-white-50 small">Altezza (Height)</label>
-        <input type="number" class="form-control input-aura sec-v-h" value="${viewBox.height ?? 1200}" required />
-      </div>
-    </div>
-  `;
-
-  container.appendChild(card);
-}
-
-function addNewSectionCard() {
-  renderSectionCard({
-    name: "",
-    svgGroupId: "section-",
-    viewBox: { x: 0, y: 0, width: 2000, height: 1200 }
+    `;
   });
 }
 
-// 4. SALVATAGGIO CONFIGURAZIONE COMPLETA
+// APRE IL MODALE (Sia per creazione che per modifica)
+function openSectionModal(index = -1) {
+  const idInput = document.getElementById("section-id-input");
+  idInput.dataset.index = index;
+
+  if (index >= 0) {
+    // MODIFICA SEZIONE ESISTENTE
+    const sec = localSections[index];
+    idInput.value = sec._id || `temp_${index}`;
+    document.getElementById("section-name-input").value = sec.name || "";
+    document.getElementById("section-svg-id-input").value = sec.svgGroupId || "";
+    document.getElementById("sec-v-x").value = sec.viewBox?.x ?? 0;
+    document.getElementById("sec-v-y").value = sec.viewBox?.y ?? 0;
+    document.getElementById("sec-v-w").value = sec.viewBox?.width ?? 2000;
+    document.getElementById("sec-v-h").value = sec.viewBox?.height ?? 1200;
+    
+    // Gestione Immagine nel Widget
+    if (sec.image && typeof setFinalImage === 'function') {
+      setFinalImage("section-image-input", sec.image);
+    } else if (typeof clearImageWidget === 'function') {
+      clearImageWidget("section-image-input");
+    }
+  } else {
+    // NUOVA SEZIONE
+    idInput.value = `temp_${Date.now()}`;
+    document.getElementById("section-form").reset();
+    document.getElementById("section-svg-id-input").value = "section-"; // Aiuto per la digitazione
+    document.getElementById("sec-v-w").value = 2000;
+    document.getElementById("sec-v-h").value = 1200;
+
+    if (typeof clearImageWidget === 'function') clearImageWidget("section-image-input");
+  }
+
+  sectionModalInstance.show();
+}
+
+// SALVA I DATI DAL MODALE ALL'ARRAY LOCALE
+function saveSectionFromModal() {
+  const index = parseInt(document.getElementById("section-id-input").dataset.index);
+  const name = document.getElementById("section-name-input").value.trim();
+  const svgGroupId = document.getElementById("section-svg-id-input").value.trim();
+  
+  // L'Image Manager salva l'URL in questo input hidden
+  const imageHiddenInput = document.getElementById("section-image-input");
+  const image = imageHiddenInput ? imageHiddenInput.value.trim() : "default-section.jpg";
+
+  if (!name || !svgGroupId) {
+    alert("Compila i campi Nome e SVG Group ID!");
+    return;
+  }
+
+  const sectionData = {
+    _id: document.getElementById("section-id-input").value,
+    name,
+    svgGroupId,
+    image: image || "default-section.jpg",
+    museumId: currentMuseumId,
+    viewBox: {
+      x: parseFloat(document.getElementById("sec-v-x").value) || 0,
+      y: parseFloat(document.getElementById("sec-v-y").value) || 0,
+      width: parseFloat(document.getElementById("sec-v-w").value) || 2000,
+      height: parseFloat(document.getElementById("sec-v-h").value) || 1200
+    }
+  };
+
+  // Se è una modifica aggiorniamo, altrimenti pushiamo
+  if (index >= 0) {
+    localSections[index] = { ...localSections[index], ...sectionData };
+  } else {
+    localSections.push(sectionData);
+  }
+
+  sectionModalInstance.hide();
+  renderSectionsList(); // Ridisegniamo la UI aggiornata
+}
+
+// RIMUOVE UNA SEZIONE DALLA LISTA LOCALE
+function removeLocalSection(index) {
+  if (confirm("Sei sicuro di voler rimuovere questa sezione dalla configurazione?")) {
+    localSections.splice(index, 1);
+    renderSectionsList();
+  }
+}
+
+// SALVATAGGIO DEFINITIVO AL SERVER
 async function handleSaveMapAndSections(event) {
   if (event) event.preventDefault();
 
-  const fileInput = document.getElementById("svgFileInput");
-  const svgFile = fileInput.files[0];
+  // ORA PRENDIAMO IL FILE DIRETTAMENTE DAL WIDGET!
+  // Il widget genera automaticamente un id aggiungendo "-file" al nome che gli passiamo
+  const fileInput = document.getElementById("map-svg-input-file");
+  const svgFile = fileInput && fileInput.files.length > 0 ? fileInput.files[0] : null;
 
-  // Raccogliamo le sezioni dal DOM
-  const sectionCards = document.querySelectorAll(".section-card");
-  const sectionsPayload = [];
-
-  for (const card of sectionCards) {
-    const name = card.querySelector(".sec-name").value.trim();
-    const svgGroupId = card.querySelector(".sec-svg-id").value.trim();
-    const x = parseFloat(card.querySelector(".sec-v-x").value);
-    const y = parseFloat(card.querySelector(".sec-v-y").value);
-    const width = parseFloat(card.querySelector(".sec-v-w").value);
-    const height = parseFloat(card.querySelector(".sec-v-h").value);
-
-    if (!name || !svgGroupId) {
-      alert("Compila il nome e il Group ID per tutte le sezioni!");
-      return;
+  const sectionsPayload = localSections.map(sec => {
+    const cleanSec = { ...sec };
+    if (cleanSec._id && cleanSec._id.startsWith("temp_")) {
+      delete cleanSec._id;
     }
-
-    const secObj = {
-      name,
-      svgGroupId,
-      viewBox: { x, y, width, height },
-      museumId: currentMuseumId,
-      image: "default-section.jpg"
-    };
-
-    if (card.dataset.isExisting === "true" && !card.dataset.sectionId.startsWith("temp_")) {
-      secObj._id = card.dataset.sectionId;
-    }
-
-    sectionsPayload.push(secObj);
-  }
+    return cleanSec;
+  });
 
   try {
     // 1. Invio del file SVG (se fornito)
@@ -178,7 +202,7 @@ async function handleSaveMapAndSections(event) {
       if (!uploadSvgRes.ok) throw new Error("Errore durante l'upload del file SVG");
     }
 
-    // 2. Invio/Aggiornamento delle sezioni nel Database
+    // 2. Invio dell'array delle sezioni al Database
     const updateSectionsRes = await fetch(`/api/museums/${currentMuseumId}/sections/bulk-update`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

@@ -6,31 +6,28 @@
       "width": 1450,
       "height": 750
     },
-    "_id": "6a71f268d43150559b8099c8",
+    "_id": "6a95d97a40e04cf66fa196ce",
     "name": "Verde",
     "image": "No",
     "works": [
       {
+        "_id": "6a95e52f0d18f9511ba22683",
         "x": 1200,
         "y": 300,
-        "_id": "6a736c0f7e32a469378318dc",
-        "workId": "6a71f268d43150559b8099c5"
+        "workId": "6a95d97b40e04cf66fa196f5"
       }
     ],
-    "museumId": "6a71f268d43150559b8099b9",
+    "museumId": "6a95d97740e04cf66fa1966d",
     "rooms": [
       {
-        "_id": "6a736c0f7e32a469378318da",
         "name": "Sala 1",
         "svgId": "room-sala-1"
       },
       {
-        "_id": "6a736c0f7e32a469378318db",
         "name": "Sala 2",
         "svgId": "room-sala-2"
       }
     ],
-    "__v": 0,
     "color": "#809624",
     "svgGroupId": "section-verde"
   },
@@ -41,209 +38,185 @@
       "width": 1400,
       "height": 700
     },
-    "_id": "6a71f268d43150559b8099ce",
+    "_id": "6a95d97a40e04cf66fa196cf",
     "name": "Blu",
     "image": "Nein",
     "works": [
       {
+        "_id": "6a95e52f0d18f9511ba22684",
         "x": 1000,
         "y": 150,
-        "_id": "6a736c0f7e32a469378318e5",
-        "workId": "6a71f268d43150559b8099cb"
+        "workId": "6a95d97b40e04cf66fa196f6"
       }
     ],
-    "museumId": "6a71f268d43150559b8099b9",
+    "museumId": "6a95d97740e04cf66fa1966d",
     "rooms": [
       {
-        "_id": "6a736c0f7e32a469378318e1",
         "name": "Sala 3",
         "svgId": "room-sala-3"
       },
       {
-        "_id": "6a736c0f7e32a469378318e2",
         "name": "Sala 4",
         "svgId": "room-sala-4"
       },
       {
-        "_id": "6a736c0f7e32a469378318e3",
         "name": "Sala 5",
         "svgId": "room-sala-5"
       },
       {
-        "_id": "6a736c0f7e32a469378318e4",
         "name": "Sala 6",
         "svgId": "room-sala-6"
       }
     ],
-    "__v": 0,
     "color": "#00a7a7",
     "svgGroupId": "section-blu"
   },
   {
-    "_id": "6a721ddb7eb50308c05512aa",
+    "_id": "6a95d97a40e04cf66fa196d0",
     "name": "Museo prova - sezione1",
     "image": "Museo prova - sezione1",
     "works": [],
     "museumId": "6a721ddb7eb50308c05512a6",
-    "rooms": [],
-    "__v": 0
+    "rooms": []
   },
   {
-    "_id": "6a73703ee77df97525919c9b",
+    "_id": "6a95d97a40e04cf66fa196d1",
     "name": "Museo prova - sezione1",
     "image": "Museo prova - sezione1",
     "works": [
       {
-        "work": "6a73703ee77df97525919c99",
-        "_id": "6a73703ee77df97525919c9c"
+        "_id": "6a95e52f0d18f9511ba22685",
+        "work": "6a73703ee77df97525919c99"
       }
     ],
     "museumId": "6a73703ee77df97525919c93",
-    "rooms": [],
-    "__v": 0
+    "rooms": []
   },
   {
-    "_id": "6a7622bf72031acd0ee0a2dd",
+    "_id": "6a95d97a40e04cf66fa196d2",
     "name": "sezione 1",
     "image": "sections1",
     "works": [
       {
-        "workId": "6a81bdc801de947766fe8343",
-        "_id": "6a81bdc901de947766fe8346"
+        "_id": "6a95e52f0d18f9511ba22686",
+        "workId": "6a95d97b40e04cf66fa196fd"
       },
       {
-        "workId": "6a81c25b1d096f7a8ace88c4",
-        "_id": "6a81c25b1d096f7a8ace88c7"
+        "_id": "6a95e52f0d18f9511ba22687",
+        "workId": "6a95d97b40e04cf66fa196fe"
       }
     ],
-    "museumId": "6a7622a872031acd0ee0a2d3",
+    "museumId": "6a95d97840e04cf66fa1966e",
     "rooms": [
       {
         "name": "sala 1",
         "shape": {
           "type": "polygon",
           "points": ""
-        },
-        "_id": "6a81bd8f01de947766fe830b"
+        }
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a817b7a6102a42968f02b77",
+    "_id": "6a95d97a40e04cf66fa196d3",
     "name": "sezione 1",
     "image": "sections1",
     "works": [
       {
-        "workId": "6a817ba76102a42968f02ba7",
-        "_id": "6a817ba76102a42968f02baa"
+        "_id": "6a95e52f0d18f9511ba22688",
+        "workId": "6a95d97b40e04cf66fa196fc"
       }
     ],
-    "museumId": "696a65ca017c648acfc9b561",
+    "museumId": "6a95d97740e04cf66fa1966b",
     "rooms": [
       {
         "name": "sala 1",
         "shape": {
           "type": "polygon",
           "points": ""
-        },
-        "_id": "6a817b7f6102a42968f02b7d"
+        }
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a856a5b7dbf05bd4b707620",
+    "_id": "6a95d97a40e04cf66fa196d4",
     "name": "sezione 1",
     "image": "sections1",
     "works": [
       {
-        "workId": "6a871aa88629e24afc1cb4d2",
-        "_id": "6a871aa88629e24afc1cb4d3"
+        "_id": "6a95e52f0d18f9511ba22689",
+        "workId": "6a95d97b40e04cf66fa196ff"
       },
       {
-        "workId": "6a8722d40ee9a0ad15b1cd1b",
-        "_id": "6a8722d50ee9a0ad15b1cd1c"
+        "_id": "6a95e52f0d18f9511ba2268a",
+        "workId": "6a95d97b40e04cf66fa19700"
       }
     ],
-    "museumId": "6a81cc550bf4fc3fd102cb31",
+    "museumId": "6a95d97840e04cf66fa19670",
     "rooms": [
       {
         "name": "sala 1",
         "shape": {
           "type": "polygon",
           "points": ""
-        },
-        "_id": "6a856a637dbf05bd4b707627"
+        }
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a8da8af431740ed4d7abe3c",
+    "_id": "6a95d97a40e04cf66fa196d5",
     "name": "sezione 1",
     "image": "/uploads/1787671593448-966244077.png",
     "works": [],
-    "museumId": "6a8c6dfa4ce9e1ef09aee754",
+    "museumId": "6a95d97840e04cf66fa19671",
     "rooms": [
       {
         "name": "sala 1",
         "shape": {
           "type": "polygon",
           "points": ""
-        },
-        "_id": "6a8dc6827a0810a965acc157"
+        }
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a8dc6797a0810a965acc155",
+    "_id": "6a95d97a40e04cf66fa196d6",
     "name": "sezione 1",
     "image": "/uploads/1787676279459-772685603.png",
     "works": [
       {
-        "workId": "6a8dc6a97a0810a965acc160",
-        "_id": "6a930e34bf500363eae54939"
+        "_id": "6a95e52f0d18f9511ba2268b",
+        "workId": "6a95d97b40e04cf66fa19701"
       },
       {
-        "workId": "6a9464fbaca2e44927ced22c",
-        "_id": "6a9464fbaca2e44927ced22d"
+        "_id": "6a95e52f0d18f9511ba2268c",
+        "workId": "6a95d97b40e04cf66fa19702"
       }
     ],
-    "museumId": "6a8c6dfa4ce9e1ef09aee754",
+    "museumId": "6a95d97840e04cf66fa19671",
     "rooms": [
       {
         "name": "sala 2",
         "shape": {
           "type": "polygon",
           "points": ""
-        },
-        "_id": "6a8dc6bc7a0810a965acc166"
+        }
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a94682dd38404dfc005d65b",
-    "name": "Ala Ovest - Neoclassicismo & Scultura",
-    "color": "#b91c1c",
-    "shape": {
-      "type": "polygon",
-      "points": "100 100, 100 500, 500 500, 500 100"
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
     },
-    "rooms": [
-      {
-        "name": "Sala Neoclassica Canova",
-        "shape": {
-          "type": "polygon",
-          "points": "120 120, 120 480, 480 480, 480 120"
-        },
-        "_id": "6a94682dd38404dfc005d65c"
-      }
-    ],
-    "image": "stanza in alto a sinistra.svg",
-    "museumId": "6a8879bfe6c216683b02eb70",
+    "_id": "6a95ddf4d01493f397e9a387",
+    "name": "European Sculpture and Decorative Arts",
+    "svgGroupId": "section-european-sculpture-and-decorative-arts",
+    "rooms": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675",
     "works": [
       {
         "workId": "6a94682dd38404dfc005d661",
@@ -257,29 +230,21 @@
         "y": 380,
         "_id": "6a94682dd38404dfc005d682"
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a94682dd38404dfc005d65d",
-    "name": "Galleria Centrale - Impressionismo & Luce",
-    "color": "#1d4ed8",
-    "shape": {
-      "type": "polygon",
-      "points": "500 100, 500 500, 1500 500, 1500 100"
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
     },
-    "rooms": [
-      {
-        "name": "Sala Ninfee Monet",
-        "shape": {
-          "type": "polygon",
-          "points": "520 120, 520 480, 1480 480, 1480 120"
-        },
-        "_id": "6a94682dd38404dfc005d65e"
-      }
-    ],
-    "image": "stanza centro grande.svg",
-    "museumId": "6a8879bfe6c216683b02eb70",
+    "_id": "6a95ddf4d01493f397e9a388",
+    "name": "Modern and Contemporary Art",
+    "svgGroupId": "section-modern-and-contemporary-art",
+    "rooms": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675",
     "works": [
       {
         "workId": "6a94682dd38404dfc005d669",
@@ -299,29 +264,21 @@
         "y": 1100,
         "_id": "6a94682dd38404dfc005d685"
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a94682dd38404dfc005d65f",
-    "name": "Ala Est - Arte Americana & Storica",
-    "color": "#047857",
-    "shape": {
-      "type": "polygon",
-      "points": "1500 100, 1500 500, 2000 500, 2000 100"
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
     },
-    "rooms": [
-      {
-        "name": "Sala Storica Delaware",
-        "shape": {
-          "type": "polygon",
-          "points": "1520 120, 1520 480, 1980 480, 1980 120"
-        },
-        "_id": "6a94682dd38404dfc005d660"
-      }
-    ],
-    "image": "stanza in basso destra.svg",
-    "museumId": "6a8879bfe6c216683b02eb70",
+    "_id": "6a95ddf4d01493f397e9a389",
+    "name": "The American Wing",
+    "svgGroupId": "section-the-american-wing",
+    "rooms": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675",
     "works": [
       {
         "workId": "6a94682dd38404dfc005d675",
@@ -341,7 +298,171 @@
         "y": 1650,
         "_id": "6a94682dd38404dfc005d688"
       }
-    ],
-    "__v": 1
+    ]
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a38a",
+    "name": "Medieval Art",
+    "svgGroupId": "section-medieval-art",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a38b",
+    "name": "Arms and Armor",
+    "svgGroupId": "section-arms-and-armor",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a38c",
+    "name": "Grace Rainey Rogers Auditorium",
+    "svgGroupId": "section-grace-rainey-rogers-autirorium",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a38d",
+    "name": "Exhibition Gallery 199",
+    "svgGroupId": "section-exhibition-gallery-199",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a38e",
+    "name": "Exhibition Gallery 099",
+    "svgGroupId": "section-exhibition-gallery-099",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a38f",
+    "name": "Thomas Watson Library",
+    "svgGroupId": "section-thomas-watson-library",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a390",
+    "name": "Robert Lehman Wing",
+    "svgGroupId": "section-robert-lehman-wing",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a391",
+    "name": "Michael Rockefeller Wing",
+    "svgGroupId": "section-michael-rockefeller-wing",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a392",
+    "name": "Greek and Roman Art",
+    "svgGroupId": "section-greek-and-roman-art",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a393",
+    "name": "The Great Hall",
+    "svgGroupId": "section-the-great-hall",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
+  },
+  {
+    "viewBox": {
+      "x": 0,
+      "y": 0,
+      "width": 2000,
+      "height": 1200
+    },
+    "_id": "6a95ddf4d01493f397e9a394",
+    "name": "Egyptian Art",
+    "svgGroupId": "section-egyptian-art",
+    "rooms": [],
+    "works": [],
+    "image": "default-section.jpg",
+    "museumId": "6a95d97840e04cf66fa19675"
   }
 ]

@@ -1,5 +1,6 @@
 [
   {
+    "_id": "6a95d97c40e04cf66fa1970b",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
@@ -7,14 +8,13 @@
     "visitType": "custom",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a70a7213e6d2134c05bee84",
     "title": "Visita pubblica al Museo del Prado",
     "description": "amazing",
     "creator": "69bbcc8442929ff5331b368a",
     "works": [
-      "6a6b97e7478a8542634450ee",
-      "6a6b97e7478a8542634450ef",
-      "6a6b97e7478a8542634450f0"
+      "6a95d97b40e04cf66fa196e8",
+      "6a95d97a40e04cf66fa196e1",
+      "6a95d97b40e04cf66fa196e9"
     ],
     "price": 50,
     "isDraft": false,
@@ -22,11 +22,11 @@
     "language": "it",
     "createdAt": "2026-08-03T14:35:13.909Z",
     "updatedAt": "2026-08-03T14:35:30.171Z",
-    "__v": 0,
-    "museumId": "696a65ca017c648acfc9b55c",
+    "museumId": "6a95d97740e04cf66fa19668",
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa1970c",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
@@ -34,14 +34,13 @@
     "visitType": "custom",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a70a73e3e6d2134c05bee9d",
     "title": "Visita pubblica al Louvre",
     "description": "",
     "creator": "69bbcc8442929ff5331b368a",
     "works": [
       "6a6b9719478a8542634450e6",
-      "6a6b97e7478a854263445101",
-      "6a6b9719478a8542634450e7"
+      "6a95d97b40e04cf66fa196ee",
+      "6a95d97a40e04cf66fa196dd"
     ],
     "price": 45,
     "isDraft": false,
@@ -49,11 +48,11 @@
     "language": "it",
     "createdAt": "2026-08-03T14:35:42.560Z",
     "updatedAt": "2026-08-03T14:35:56.483Z",
-    "__v": 0,
-    "museumId": "696a65ca017c648acfc9b559",
+    "museumId": "6a95d97740e04cf66fa19669",
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa1970d",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
@@ -61,13 +60,12 @@
     "visitType": "custom",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a70addf5388a087e10025c8",
     "title": "Visita prova",
     "description": "",
     "creator": "6a6dab11ccd4a931660f74e4",
     "works": [
-      "6a6b9719478a8542634450ea",
-      "6a6b97e7478a8542634450ff"
+      "6a95d97a40e04cf66fa196e0",
+      "6a95d97b40e04cf66fa196e7"
     ],
     "price": 0,
     "isDraft": false,
@@ -75,11 +73,11 @@
     "language": "it",
     "createdAt": "2026-08-03T15:03:59.416Z",
     "updatedAt": "2026-08-03T15:04:00.936Z",
-    "__v": 0,
-    "museumId": "696a65ca017c648acfc9b55e",
+    "museumId": "6a95d97740e04cf66fa19664",
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa1970e",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
@@ -87,15 +85,14 @@
     "visitType": "custom",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a71a9e9308f544508dfe623",
     "title": "Bozza prova",
     "description": "finita",
-    "museumId": "696a65ca017c648acfc9b55f",
+    "museumId": "6a95d97740e04cf66fa19667",
     "creator": "69bbcc8442929ff5331b368a",
     "works": [
-      "6a6b9719478a8542634450e9",
-      "6a6b97e7478a8542634450f7",
-      "6a6b97e7478a8542634450f6"
+      "6a95d97a40e04cf66fa196da",
+      "6a95d97b40e04cf66fa196e5",
+      "6a95d97b40e04cf66fa196ef"
     ],
     "price": 0,
     "isDraft": false,
@@ -103,10 +100,10 @@
     "language": "it",
     "createdAt": "2026-08-04T08:59:21.978Z",
     "updatedAt": "2026-08-04T08:59:43.861Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa1970f",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
@@ -114,13 +111,12 @@
     "visitType": "custom",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a71aae85804aee3c17fac56",
     "title": "Pubblica 1",
     "description": "",
-    "museumId": "696a65ca017c648acfc9b55e",
+    "museumId": "6a95d97740e04cf66fa19664",
     "creator": "69bbcc8442929ff5331b368a",
     "works": [
-      "6a6b9719478a8542634450ea"
+      "6a95d97a40e04cf66fa196e0"
     ],
     "price": 12,
     "isDraft": false,
@@ -128,10 +124,10 @@
     "language": "it",
     "createdAt": "2026-08-04T09:03:36.420Z",
     "updatedAt": "2026-08-04T09:03:42.557Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19710",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
@@ -139,10 +135,9 @@
     "visitType": "custom",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a739dcbb2becec37eaac9f6",
     "title": "Visita prova",
     "description": "",
-    "museumId": "696a65ca017c648acfc9b561",
+    "museumId": "6a95d97740e04cf66fa1966b",
     "creator": "69bbcc8442929ff5331b368a",
     "works": [],
     "price": 82,
@@ -151,10 +146,10 @@
     "language": "it",
     "createdAt": "2026-08-05T20:32:11.283Z",
     "updatedAt": "2026-08-05T20:33:12.038Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19711",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
@@ -162,14 +157,13 @@
     "visitType": "custom",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a7484b4ecb4b1ac265525c4",
     "title": "Visita libera",
     "description": "mostra tutte le opere contenute nel museo",
-    "museumId": "6a71f268d43150559b8099b9",
+    "museumId": "6a95d97740e04cf66fa1966d",
     "creator": "6a71eaad1d50777ccbe3e75a",
     "works": [
-      "6a71f268d43150559b8099c5",
-      "6a71f268d43150559b8099cb"
+      "6a95d97b40e04cf66fa196f5",
+      "6a95d97b40e04cf66fa196f6"
     ],
     "price": 0,
     "isDraft": false,
@@ -177,10 +171,10 @@
     "language": "it",
     "createdAt": "2026-08-06T12:57:24.235Z",
     "updatedAt": "2026-08-06T12:57:44.699Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19712",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
@@ -188,15 +182,14 @@
     "visitType": "custom",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a748f6c4210254c3519ef76",
     "title": "visita pubblica admin",
     "description": "",
-    "museumId": "696a65ca017c648acfc9b55b",
+    "museumId": "6a95d97740e04cf66fa19665",
     "creator": "6a71eaad1d50777ccbe3e75a",
     "works": [
-      "6a6b9719478a8542634450ed",
-      "6a6b97e7478a8542634450f8",
-      "6a6b97e7478a8542634450f9"
+      "6a95d97a40e04cf66fa196db",
+      "6a95d97b40e04cf66fa196f4",
+      "6a95d97b40e04cf66fa196e6"
     ],
     "price": 150,
     "isDraft": false,
@@ -204,10 +197,10 @@
     "language": "it",
     "createdAt": "2026-08-06T13:43:08.992Z",
     "updatedAt": "2026-08-06T13:43:17.748Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19713",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
@@ -215,14 +208,13 @@
     "visitType": "custom",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a7d889c8c41eba0f41a6551",
     "title": "a spasso",
     "description": "ciao",
-    "museumId": "696a65ca017c648acfc9b55d",
+    "museumId": "6a95d97740e04cf66fa1966a",
     "creator": "6a7d88748c41eba0f41a653c",
     "works": [
-      "6a6b9719478a8542634450e8",
-      "6a6b97e7478a8542634450fe"
+      "6a95d97a40e04cf66fa196de",
+      "6a95d97b40e04cf66fa196ec"
     ],
     "price": 0,
     "isDraft": true,
@@ -230,15 +222,14 @@
     "language": "it",
     "createdAt": "2026-08-13T09:04:28.725Z",
     "updatedAt": "2026-08-13T09:06:33.847Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19714",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
-    "_id": "6a8037e179736a4d4dcd1798",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a8037e179736a4d4dcd1796",
@@ -255,15 +246,14 @@
     "accessibility": [],
     "createdAt": "2026-08-15T09:56:49.682Z",
     "updatedAt": "2026-08-15T09:56:49.682Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19715",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
-    "_id": "6a8038e5493cd5ba5d203bf5",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a8038e5493cd5ba5d203bf3",
@@ -280,15 +270,14 @@
     "accessibility": [],
     "createdAt": "2026-08-15T10:01:09.781Z",
     "updatedAt": "2026-08-15T10:01:09.781Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19716",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
-    "_id": "6a803bc7f9f14b6344bf9e11",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a803bc7f9f14b6344bf9e0f",
@@ -305,15 +294,14 @@
     "accessibility": [],
     "createdAt": "2026-08-15T10:13:27.191Z",
     "updatedAt": "2026-08-15T10:13:27.191Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19717",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
-    "_id": "6a803c59a353e842b63cb635",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a803c59a353e842b63cb633",
@@ -330,15 +318,14 @@
     "accessibility": [],
     "createdAt": "2026-08-15T10:15:53.285Z",
     "updatedAt": "2026-08-15T10:20:55.840Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19718",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
-    "_id": "6a8075865f8606281045023f",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a8075865f8606281045023d",
@@ -355,15 +342,14 @@
     "accessibility": [],
     "createdAt": "2026-08-15T14:19:50.687Z",
     "updatedAt": "2026-08-15T14:19:50.687Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19719",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
-    "_id": "6a8077d667aa4a00e098b690",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a8077d667aa4a00e098b68e",
@@ -380,15 +366,14 @@
     "accessibility": [],
     "createdAt": "2026-08-15T14:29:42.507Z",
     "updatedAt": "2026-08-15T15:11:12.758Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa1971a",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
-    "_id": "6a807b47dfe007f6bd8bc9c4",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a807b47dfe007f6bd8bc9c2",
@@ -405,15 +390,14 @@
     "accessibility": [],
     "createdAt": "2026-08-15T14:44:23.937Z",
     "updatedAt": "2026-08-15T14:47:01.110Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa1971b",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
-    "_id": "6a807d76cf911b2d4f7693eb",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a807d76cf911b2d4f7693e9",
@@ -430,15 +414,14 @@
     "accessibility": [],
     "createdAt": "2026-08-15T14:53:42.852Z",
     "updatedAt": "2026-08-15T14:53:42.852Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa1971c",
     "duration": 0,
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
-    "_id": "6a807ed76739a2e715fbb669",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a807ed66739a2e715fbb667",
@@ -455,20 +438,19 @@
     "accessibility": [],
     "createdAt": "2026-08-15T14:59:35.039Z",
     "updatedAt": "2026-08-15T15:10:29.232Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa1971d",
     "maxDuration": 0,
     "expertiseLevel": "medium",
-    "_id": "6a81cc550bf4fc3fd102cb33",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
-    "museumId": "6a81cc550bf4fc3fd102cb31",
+    "museumId": "6a95d97840e04cf66fa19670",
     "creator": "69bbcc8442929ff5331b368a",
     "works": [
-      "6a871aa88629e24afc1cb4d2",
-      "6a8722d40ee9a0ad15b1cd1b"
+      "6a95d97b40e04cf66fa196ff",
+      "6a95d97b40e04cf66fa19700"
     ],
     "price": 12,
     "isDraft": false,
@@ -483,13 +465,12 @@
     "accessibility": [],
     "createdAt": "2026-08-16T14:42:29.762Z",
     "updatedAt": "2026-08-28T18:40:47.065Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa1971e",
     "maxDuration": 0,
     "expertiseLevel": "medium",
-    "_id": "6a81cdd20ea67a572bfacde7",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a81cdd10ea67a572bfacde5",
@@ -508,20 +489,19 @@
     "accessibility": [],
     "createdAt": "2026-08-16T14:48:50.497Z",
     "updatedAt": "2026-08-16T14:48:50.497Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa1971f",
     "maxDuration": 0,
     "expertiseLevel": "medium",
-    "_id": "6a82cc88deca07acdc006c1f",
     "title": "E' domenica",
     "description": "",
-    "museumId": "6a71f268d43150559b8099b9",
+    "museumId": "6a95d97740e04cf66fa1966d",
     "creator": "6a78a30033e2e31e8d045a1a",
     "works": [
-      "6a71f268d43150559b8099c5",
-      "6a71f268d43150559b8099cb"
+      "6a95d97b40e04cf66fa196f5",
+      "6a95d97b40e04cf66fa196f6"
     ],
     "price": 0,
     "isDraft": false,
@@ -536,20 +516,19 @@
     "accessibility": [],
     "createdAt": "2026-08-17T08:55:36.410Z",
     "updatedAt": "2026-08-17T08:55:56.292Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19720",
     "maxDuration": 0,
     "expertiseLevel": "medium",
-    "_id": "6a841feef59d55d1a7c35d86",
     "title": "Nuova visita",
     "description": "",
-    "museumId": "6a7622a872031acd0ee0a2d3",
+    "museumId": "6a95d97840e04cf66fa1966e",
     "creator": "6a78a30033e2e31e8d045a1a",
     "works": [
-      "6a81bdc801de947766fe8343",
-      "6a81c25b1d096f7a8ace88c4"
+      "6a95d97b40e04cf66fa196fd",
+      "6a95d97b40e04cf66fa196fe"
     ],
     "price": 10,
     "isDraft": false,
@@ -566,13 +545,12 @@
     ],
     "createdAt": "2026-08-18T09:03:42.208Z",
     "updatedAt": "2026-08-18T09:04:15.592Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19721",
     "maxDuration": 0,
     "expertiseLevel": "medium",
-    "_id": "6a847991f47fe06fc751e7e6",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a84798ff47fe06fc751e7e4",
@@ -593,13 +571,12 @@
     ],
     "createdAt": "2026-08-18T15:26:09.077Z",
     "updatedAt": "2026-08-18T15:26:18.904Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19722",
     "maxDuration": 0,
     "expertiseLevel": "medium",
-    "_id": "6a847b0d103db876cb4f53dd",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a847b0d103db876cb4f53da",
@@ -620,13 +597,12 @@
     ],
     "createdAt": "2026-08-18T15:32:29.987Z",
     "updatedAt": "2026-08-18T15:32:36.396Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19723",
     "maxDuration": 0,
     "expertiseLevel": "medium",
-    "_id": "6a84c9b8a5174a9b7dd17356",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a84c9b7a5174a9b7dd17353",
@@ -647,24 +623,23 @@
     ],
     "createdAt": "2026-08-18T21:08:09.000Z",
     "updatedAt": "2026-08-18T21:08:11.871Z",
-    "__v": 0,
     "quiz": []
   },
   {
+    "_id": "6a95d97c40e04cf66fa19724",
     "price": 0,
     "maxDuration": 0,
     "expertiseLevel": "medium",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a85716e177aaad0085d9936",
     "title": "Ferragosto",
     "description": "",
-    "museumId": "696a65ca017c648acfc9b55d",
+    "museumId": "6a95d97740e04cf66fa1966a",
     "creator": "6a6dab11ccd4a931660f74e4",
     "works": [
-      "6a6b9719478a8542634450e8",
-      "6a6b97e7478a8542634450fe",
-      "6a6b97e7478a8542634450fd"
+      "6a95d97a40e04cf66fa196de",
+      "6a95d97b40e04cf66fa196ec",
+      "6a95d97b40e04cf66fa196e2"
     ],
     "isDraft": false,
     "isPublic": false,
@@ -674,7 +649,6 @@
     "visitType": "custom",
     "createdAt": "2026-08-19T09:03:42.566Z",
     "updatedAt": "2026-08-22T17:44:24.968Z",
-    "__v": 0,
     "quiz": [
       {
         "question": "Chi ha dipinto la Nascita di Venere?",
@@ -701,19 +675,19 @@
     ]
   },
   {
+    "_id": "6a95d97c40e04cf66fa19725",
     "price": 0,
     "maxDuration": 0,
     "expertiseLevel": "medium",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a886eb71d635be0b862425d",
     "title": "Visita con quiz",
     "description": "",
-    "museumId": "696a65ca017c648acfc9b55c",
+    "museumId": "6a95d97740e04cf66fa19668",
     "creator": "6a6dab11ccd4a931660f74e4",
     "works": [
-      "6a6b97e7478a8542634450ee",
-      "6a6b97e7478a8542634450ef"
+      "6a95d97b40e04cf66fa196e8",
+      "6a95d97a40e04cf66fa196e1"
     ],
     "isDraft": false,
     "isPublic": false,
@@ -735,20 +709,19 @@
       }
     ],
     "createdAt": "2026-08-21T15:28:55.672Z",
-    "updatedAt": "2026-08-21T15:30:06.342Z",
-    "__v": 0
+    "updatedAt": "2026-08-21T15:30:06.342Z"
   },
   {
+    "_id": "6a95d97d40e04cf66fa19726",
     "maxDuration": 0,
     "expertiseLevel": "medium",
-    "_id": "6a8c6dfb4ce9e1ef09aee756",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
-    "museumId": "6a8c6dfa4ce9e1ef09aee754",
+    "museumId": "6a95d97840e04cf66fa19671",
     "creator": "6a78a30033e2e31e8d045a1a",
     "works": [
-      "6a8dc6a97a0810a965acc160",
-      "6a9464fbaca2e44927ced22c"
+      "6a95d97b40e04cf66fa19701",
+      "6a95d97b40e04cf66fa19702"
     ],
     "price": 0,
     "isDraft": false,
@@ -765,11 +738,10 @@
     ],
     "quiz": [],
     "createdAt": "2026-08-24T16:14:51.451Z",
-    "updatedAt": "2026-08-30T17:14:35.519Z",
-    "__v": 0
+    "updatedAt": "2026-08-30T17:14:35.519Z"
   },
   {
-    "_id": "6a929fdf649feeece9dd16a0",
+    "_id": "6a95d97d40e04cf66fa19727",
     "title": "Visita libera",
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6a929fde649feeece9dd169f",
@@ -791,22 +763,21 @@
     ],
     "quiz": [],
     "createdAt": "2026-08-29T09:01:19.753Z",
-    "updatedAt": "2026-08-29T09:03:22.223Z",
-    "__v": 0
+    "updatedAt": "2026-08-29T09:03:22.223Z"
   },
   {
+    "_id": "6a95d97d40e04cf66fa19728",
     "price": 0,
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a930b94bf500363eae5456b",
     "title": "Calle",
     "description": "Viva la vita",
-    "museumId": "696a65ca017c648acfc9b55f",
+    "museumId": "6a95d97740e04cf66fa19667",
     "creator": "6a6dab11ccd4a931660f74e4",
     "works": [
-      "6a6b9719478a8542634450e9",
-      "6a6b97e7478a8542634450f6",
-      "6a6b97e7478a8542634450f7"
+      "6a95d97a40e04cf66fa196da",
+      "6a95d97b40e04cf66fa196ef",
+      "6a95d97b40e04cf66fa196e5"
     ],
     "isDraft": false,
     "isPublic": false,
@@ -830,21 +801,20 @@
     ],
     "createdAt": "2026-08-29T16:40:52.507Z",
     "updatedAt": "2026-08-29T16:46:28.810Z",
-    "__v": 0,
     "coverImage": ""
   },
   {
+    "_id": "6a95d97d40e04cf66fa19729",
     "price": 0,
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a930ba7bf500363eae5456c",
     "title": "Czlld",
     "description": "",
-    "museumId": "696a65ca017c648acfc9b559",
+    "museumId": "6a95d97740e04cf66fa19669",
     "creator": "6a6dab11ccd4a931660f74e4",
     "works": [
-      "6a6b9719478a8542634450e7",
-      "6a6b97e7478a854263445101"
+      "6a95d97a40e04cf66fa196dd",
+      "6a95d97b40e04cf66fa196ee"
     ],
     "isDraft": true,
     "isPublic": false,
@@ -856,18 +826,17 @@
     "quiz": [],
     "createdAt": "2026-08-29T16:41:11.582Z",
     "updatedAt": "2026-08-29T16:41:33.958Z",
-    "__v": 0,
     "coverImage": ""
   },
   {
-    "_id": "6a94433c8c3d82494d293d2a",
+    "_id": "6a95d97d40e04cf66fa1972a",
     "title": "Bozza in corso...",
     "description": "",
-    "museumId": "696a65ca017c648acfc9b55c",
+    "museumId": "6a95d97740e04cf66fa19668",
     "creator": "6a6dab11ccd4a931660f74e4",
     "works": [
-      "6a6b97e7478a8542634450ee",
-      "6a6b97e7478a8542634450ef"
+      "6a95d97b40e04cf66fa196e8",
+      "6a95d97a40e04cf66fa196e1"
     ],
     "price": 0,
     "isDraft": false,
@@ -881,80 +850,85 @@
     "accessibility": [],
     "quiz": [],
     "createdAt": "2026-08-30T14:50:36.596Z",
-    "updatedAt": "2026-08-30T14:50:36.596Z",
-    "__v": 0
+    "updatedAt": "2026-08-30T14:50:36.596Z"
   },
   {
+    "_id": "6a95d97d40e04cf66fa1972b",
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
     "visitType": "custom",
-    "targetAudience": [],
-    "accessibility": [],
-    "_id": "6a94682ed38404dfc005d689",
+    "targetAudience": [
+      "all"
+    ],
+    "accessibility": [
+      "none"
+    ],
     "title": "Il Neoclassicismo: Razionalità e Trionfo Eroico",
     "description": "Esplora l'ala ovest del MET (Sezione Rossa): un viaggio affascinante che ripercorre il Neoclassicismo. Ammirerai la solenne determinazione razionale de 'La Morte di Socrate' di David e l'impareggiabile armonia ed eroismo scultoreo del 'Perseo con la testa di Medusa' di Canova.",
-    "museumId": "6a8879bfe6c216683b02eb70",
+    "museumId": "6a95d97840e04cf66fa19675",
     "creator": "6a71eaad1d50777ccbe3e75a",
     "works": [
-      "6a94682dd38404dfc005d661",
-      "6a94682dd38404dfc005d665"
+      "6a95d97b40e04cf66fa19703",
+      "6a95d97b40e04cf66fa19704"
     ],
     "price": 15,
     "isDraft": false,
     "isPublic": true,
-    "duration": 30,
+    "duration": 6,
     "language": "it",
-    "coverImage": "https://upload.wikimedia.org/wikipedia/commons/8/8c/David_-_The_Death_of_Socrates_-_Google_Art_Project.jpg",
-    "__v": 0,
+    "coverImage": "https://eii38vo2nqq.exactdn.com/web/app/uploads/2024/08/illiade.webp?strip=all&lossy=1&ssl=1",
     "createdAt": "2026-08-30T17:28:14.017Z",
-    "updatedAt": "2026-08-30T17:28:14.017Z",
+    "updatedAt": "2026-08-31T19:58:56.113Z",
     "quiz": []
   },
   {
+    "_id": "6a95d97d40e04cf66fa1972c",
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
     "visitType": "custom",
-    "targetAudience": [],
-    "accessibility": [],
-    "_id": "6a94682ed38404dfc005d68a",
+    "targetAudience": [
+      "all"
+    ],
+    "accessibility": [
+      "none"
+    ],
     "title": "L'Impressionismo: I Colori e l'Emozione della Luce",
     "description": "Immergiti nella galleria centrale del MET (Sezione Blu): un'esperienza totalizzante tra i riflessi cromatici e luminosi dell'Impressionismo e Post-Impressionismo. Ammira lo stagno delle ninfee di Monet, i tratti direzionali dell'autoritratto di Van Gogh e l'eleganza dinamica della classe di danza di Degas.",
-    "museumId": "6a8879bfe6c216683b02eb70",
+    "museumId": "6a95d97840e04cf66fa19675",
     "creator": "6a71eaad1d50777ccbe3e75a",
     "works": [
-      "6a94682dd38404dfc005d669",
-      "6a94682dd38404dfc005d66d",
-      "6a94682dd38404dfc005d671"
+      "6a95d97b40e04cf66fa19705",
+      "6a95d97b40e04cf66fa19706",
+      "6a95d97b40e04cf66fa19707"
     ],
     "price": 20,
     "isDraft": false,
     "isPublic": true,
-    "duration": 45,
+    "duration": 9,
     "language": "it",
-    "coverImage": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Claude_Monet_Bridge_over_a_Pond_of_Water_Lilies_Google_Art_Project.jpg",
-    "__v": 0,
+    "coverImage": "https://medias.artmajeur.com/ultra_quality/338248_painting-by-irina-laube.jpg?v=1784790833",
     "createdAt": "2026-08-30T17:28:14.017Z",
-    "updatedAt": "2026-08-30T17:28:14.017Z",
+    "updatedAt": "2026-08-31T20:06:57.482Z",
     "quiz": []
   },
   {
+    "_id": "6a95d97d40e04cf66fa1972d",
     "maxDuration": 0,
     "preferredLength": "medium",
     "expertiseLevel": "medium",
     "visitType": "custom",
     "targetAudience": [],
     "accessibility": [],
-    "_id": "6a94682ed38404dfc005d68b",
     "title": "L'Anima Americana: Realismo, Ritratti e Grandi Storie",
     "description": "Scopri l'ala est del MET (Sezione Verde): un viaggio storico attraverso il grande Realismo americano. Attraverserai il fiume Delaware con il generale George Washington, sfiderai lo scandalo con l'eleganza ammaliante di 'Madame X' di Sargent e osserverai il realismo scientifico nel canottiere di Eakins.",
-    "museumId": "6a8879bfe6c216683b02eb70",
+    "museumId": "6a95d97840e04cf66fa19675",
     "creator": "6a71eaad1d50777ccbe3e75a",
     "works": [
-      "6a94682dd38404dfc005d675",
-      "6a94682dd38404dfc005d679",
-      "6a94682dd38404dfc005d67d"
+      "6a95d97b40e04cf66fa19708",
+      "6a95d97c40e04cf66fa19709",
+      "6a95d97c40e04cf66fa1970a"
     ],
     "price": 18,
     "isDraft": false,
@@ -962,9 +936,66 @@
     "duration": 40,
     "language": "it",
     "coverImage": "https://upload.wikimedia.org/wikipedia/commons/9/95/Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg",
-    "__v": 0,
     "createdAt": "2026-08-30T17:28:14.017Z",
     "updatedAt": "2026-08-30T17:28:14.017Z",
     "quiz": []
+  },
+  {
+    "price": 0,
+    "targetAudience": [],
+    "accessibility": [],
+    "_id": "6a95e0caf35dd3db5bfe44c0",
+    "title": "Visita libera MET",
+    "description": "",
+    "museumId": "6a95d97840e04cf66fa19675",
+    "creator": "6a71eaad1d50777ccbe3e75a",
+    "works": [
+      "6a95d97b40e04cf66fa19703",
+      "6a95d97b40e04cf66fa19704",
+      "6a95d97b40e04cf66fa19705",
+      "6a95d97b40e04cf66fa19706",
+      "6a95d97b40e04cf66fa19707",
+      "6a95d97b40e04cf66fa19708",
+      "6a95d97c40e04cf66fa19709",
+      "6a95d97c40e04cf66fa1970a"
+    ],
+    "isDraft": false,
+    "isPublic": false,
+    "duration": 22,
+    "maxDuration": 0,
+    "preferredLength": "medium",
+    "expertiseLevel": "medium",
+    "visitType": "custom",
+    "quiz": [],
+    "createdAt": "2026-08-31T20:15:06.362Z",
+    "updatedAt": "2026-08-31T20:15:18.776Z",
+    "__v": 0,
+    "coverImage": ""
+  },
+  {
+    "_id": "6a95e206d43c245ab07d4040",
+    "title": "Visita libera",
+    "description": "Ingresso base con accesso a tutte le opere in esposizione.",
+    "museumId": "6a95e205d43c245ab07d403e",
+    "creator": "6a71eaad1d50777ccbe3e75a",
+    "works": [],
+    "price": 10,
+    "isDraft": false,
+    "isPublic": true,
+    "duration": 0,
+    "maxDuration": 0,
+    "preferredLength": "medium",
+    "expertiseLevel": "medium",
+    "visitType": "standard",
+    "targetAudience": [
+      "all"
+    ],
+    "accessibility": [
+      "none"
+    ],
+    "quiz": [],
+    "createdAt": "2026-08-31T20:20:22.087Z",
+    "updatedAt": "2026-08-31T20:20:27.049Z",
+    "__v": 0
   }
 ]

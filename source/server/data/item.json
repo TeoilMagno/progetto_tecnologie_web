@@ -1,6 +1,7 @@
 [
   {
-    "_id": "696a7129d10f009d3d77e052",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196ad",
     "museumId": "696a65ca017c648acfc9b55a",
     "name": "Tazza: Washington attraversa il Delaware",
     "description": "Celebre dipinto patriottico americano.",
@@ -9,11 +10,11 @@
     "quantity": 10,
     "duration": "15 min",
     "tone": "Eroico",
-    "__v": 0,
     "category": "gadget"
   },
   {
-    "_id": "696a7129d10f009d3d77e054",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196ae",
     "museumId": "696a65ca017c648acfc9b55a",
     "name": "Libro: Il Tempio di Dendur",
     "description": "Un intero tempio egizio ricostruito dentro il museo.",
@@ -22,11 +23,11 @@
     "quantity": 1,
     "duration": "30 min",
     "tone": "Monumentale",
-    "__v": 0,
     "category": "book"
   },
   {
-    "_id": "696a7129d10f009d3d77e059",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196af",
     "museumId": "696a65ca017c648acfc9b55b",
     "name": "Peluche: Mummia di Katebet",
     "description": "Una delle mummie egizie più famose e ben conservate.",
@@ -35,11 +36,11 @@
     "quantity": 2,
     "duration": "15 min",
     "tone": "Misterioso",
-    "__v": 0,
     "category": "gadget"
   },
   {
-    "_id": "696a7129d10f009d3d77e05d",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196b0",
     "museumId": "696a65ca017c648acfc9b560",
     "name": "Action Figure: Armatura Samurai",
     "description": "Antica armatura completa del periodo Edo.",
@@ -48,11 +49,11 @@
     "quantity": 1,
     "duration": "20 min",
     "tone": "Marziale",
-    "__v": 0,
     "category": "gadget"
   },
   {
-    "_id": "696a712ad10f009d3d77e062",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196b1",
     "museumId": "696a65ca017c648acfc9b562",
     "name": "Set LEGO: Modulo Apollo 11",
     "description": "La capsula Columbia che portò gli uomini sulla Luna.",
@@ -61,11 +62,11 @@
     "quantity": 1,
     "duration": "30 min",
     "tone": "Spaziale",
-    "__v": 0,
     "category": "gadget"
   },
   {
-    "_id": "696a7128d10f009d3d77e035",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196b2",
     "museumId": "696a65ca017c648acfc9b559",
     "name": "Orecchini: Venere di Milo",
     "description": "Celebre statua greca che rappresenta l'ideale di bellezza.",
@@ -74,11 +75,11 @@
     "quantity": 5,
     "duration": "15 min",
     "tone": "Classico",
-    "__v": 0,
     "category": "jewelry"
   },
   {
-    "_id": "696a7128d10f009d3d77e03a",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196b3",
     "museumId": "696a65ca017c648acfc9b55d",
     "name": "Ciondolo: La Primavera",
     "description": "Un'altra opera maestra di Botticelli, ricca di allegorie.",
@@ -87,11 +88,11 @@
     "quantity": 8,
     "duration": "20 min",
     "tone": "Armonioso",
-    "__v": 0,
     "category": "jewelry"
   },
   {
-    "_id": "696a7128d10f009d3d77e03e",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196b4",
     "museumId": "696a65ca017c648acfc9b561",
     "name": "Quaderno: I Girasoli",
     "description": "Una delle serie di dipinti più famose di Van Gogh.",
@@ -100,11 +101,11 @@
     "quantity": 20,
     "duration": "15 min",
     "tone": "Luminoso",
-    "__v": 0,
     "category": "stationery"
   },
   {
-    "_id": "696a7128d10f009d3d77e03f",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196b5",
     "museumId": "696a65ca017c648acfc9b561",
     "name": "Album da colorare: Camera da letto ad Arles",
     "description": "La famosa stanza dell'artista dipinta con prospettiva unica.",
@@ -113,11 +114,11 @@
     "quantity": 15,
     "duration": "10 min",
     "tone": "Intimo",
-    "__v": 0,
     "category": "book"
   },
   {
-    "_id": "696a7128d10f009d3d77e044",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196b6",
     "museumId": "696a65ca017c648acfc9b55e",
     "name": "Stampa su tela: La Lattaia",
     "description": "Capolavoro di Vermeer che ritrae una scena domestica.",
@@ -126,11 +127,11 @@
     "quantity": 8,
     "duration": "20 min",
     "tone": "Realistico",
-    "__v": 0,
     "category": "stationery"
   },
   {
-    "_id": "696a7129d10f009d3d77e053",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196b7",
     "museumId": "696a65ca017c648acfc9b55a",
     "name": "Catalogo Mostra: Madame X",
     "description": "Ritratto scandaloso e famoso di John Singer Sargent.",
@@ -139,11 +140,11 @@
     "quantity": 8,
     "duration": "10 min",
     "tone": "Elegante",
-    "__v": 0,
     "category": "book"
   },
   {
-    "_id": "696a712ad10f009d3d77e063",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196b8",
     "museumId": "696a65ca017c648acfc9b562",
     "name": "Aereo in legno: Spirit of St. Louis",
     "description": "L'aereo di Lindbergh per la prima traversata atlantica.",
@@ -152,11 +153,11 @@
     "quantity": 1,
     "duration": "15 min",
     "tone": "Avventuroso",
-    "__v": 0,
     "category": "gadget"
   },
   {
-    "_id": "696a7128d10f009d3d77e034",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196b9",
     "museumId": "696a65ca017c648acfc9b559",
     "name": "Portachiavi: La Gioconda",
     "description": "Il capolavoro enigmatico di Leonardo da Vinci.",
@@ -165,11 +166,11 @@
     "quantity": 1,
     "duration": "10 min",
     "tone": "Misterioso",
-    "__v": 0,
     "category": "gadget"
   },
   {
-    "_id": "696a7128d10f009d3d77e043",
+    "targetAge": "all",
+    "_id": "6a95d97940e04cf66fa196ba",
     "museumId": "696a65ca017c648acfc9b55e",
     "name": "Puzzle 1000pz: Ronda di Notte",
     "description": "Il colossale dipinto di Rembrandt, simbolo del Secolo d'oro.",
@@ -178,11 +179,11 @@
     "quantity": 1,
     "duration": "30 min",
     "tone": "Maestoso",
-    "__v": 0,
     "category": "stationery"
   },
   {
-    "_id": "696a712ad10f009d3d77e061",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196bb",
     "museumId": "696a65ca017c648acfc9b562",
     "name": "Modellino in scala: Wright Flyer",
     "description": "Il primo aereo a motore della storia (1903).",
@@ -191,11 +192,11 @@
     "quantity": 1,
     "duration": "20 min",
     "tone": "Ingegneristico",
-    "__v": 0,
     "category": "gadget"
   },
   {
-    "_id": "696a7129d10f009d3d77e04a",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196bc",
     "museumId": "696a65ca017c648acfc9b55f",
     "name": "Collana: Gruppo del Laocoonte",
     "description": "Antica scultura greca piena di pathos e movimento.",
@@ -204,11 +205,11 @@
     "quantity": 5,
     "duration": "15 min",
     "tone": "Tragico",
-    "__v": 0,
     "category": "jewelry"
   },
   {
-    "_id": "696a7129d10f009d3d77e04e",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196bd",
     "museumId": "696a65ca017c648acfc9b55c",
     "name": "Stampa: Il 3 maggio 1808",
     "description": "Drammatica rappresentazione della guerra di Francisco Goya.",
@@ -217,11 +218,11 @@
     "quantity": 3,
     "duration": "15 min",
     "tone": "Drammatico",
-    "__v": 0,
     "category": "stationery"
   },
   {
-    "_id": "696a7129d10f009d3d77e05e",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196be",
     "museumId": "696a65ca017c648acfc9b560",
     "name": "Vestaglia di seta: Kimono Imperiale",
     "description": "Veste tradizionale in seta finemente decorata.",
@@ -230,11 +231,11 @@
     "quantity": 3,
     "duration": "15 min",
     "tone": "Raffinato",
-    "__v": 0,
     "category": "clothing"
   },
   {
-    "_id": "696a7129d10f009d3d77e058",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196bf",
     "museumId": "696a65ca017c648acfc9b55b",
     "name": "Guida: Marmi del Partenone",
     "description": "Sculture classiche provenienti dall'Acropoli di Atene.",
@@ -243,11 +244,11 @@
     "quantity": 5,
     "duration": "25 min",
     "tone": "Classico",
-    "__v": 0,
     "category": "book"
   },
   {
-    "_id": "696a7128d10f009d3d77e040",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196c0",
     "museumId": "696a65ca017c648acfc9b561",
     "name": "Foulard: Ramo di mandorlo in fiore",
     "description": "Dipinto delicato dedicato al nipote dell'artista.",
@@ -256,11 +257,11 @@
     "quantity": 22,
     "duration": "12 min",
     "tone": "Sereno",
-    "__v": 0,
     "category": "clothing"
   },
   {
-    "_id": "696a7129d10f009d3d77e057",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196c1",
     "museumId": "696a65ca017c648acfc9b55b",
     "name": "Fermacarte: Stele di Rosetta",
     "description": "La chiave che ha permesso di decifrare i geroglifici.",
@@ -269,11 +270,11 @@
     "quantity": 1,
     "duration": "20 min",
     "tone": "Storico",
-    "__v": 0,
     "category": "gadget"
   },
   {
-    "_id": "696a7128d10f009d3d77e039",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196c2",
     "museumId": "696a65ca017c648acfc9b55d",
     "name": "Spilla: Nascita di Venere",
     "description": "L'iconico dipinto di Sandro Botticelli.",
@@ -282,11 +283,11 @@
     "quantity": 10,
     "duration": "15 min",
     "tone": "Poetico",
-    "__v": 0,
     "category": "jewelry"
   },
   {
-    "_id": "696a7128d10f009d3d77e045",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196c3",
     "museumId": "696a65ca017c648acfc9b55e",
     "name": "Stampa: Autoritratto di Van Gogh",
     "description": "Uno dei tanti autoritratti espressivi di Van Gogh.",
@@ -295,11 +296,11 @@
     "quantity": 6,
     "duration": "10 min",
     "tone": "Intenso",
-    "__v": 0,
     "category": "stationery"
   },
   {
-    "_id": "696a7129d10f009d3d77e04d",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196c4",
     "museumId": "696a65ca017c648acfc9b55c",
     "name": "Saggio: I segreti di Las Meninas",
     "description": "Il capolavoro complesso e misterioso di Diego Velázquez.",
@@ -308,11 +309,11 @@
     "quantity": 5,
     "duration": "25 min",
     "tone": "Regale",
-    "__v": 0,
     "category": "book"
   },
   {
-    "_id": "696a7129d10f009d3d77e05c",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196c5",
     "museumId": "696a65ca017c648acfc9b560",
     "name": "Borsa di tela: La Grande Onda",
     "description": "L'opera d'arte giapponese più famosa al mondo.",
@@ -321,11 +322,11 @@
     "quantity": 20,
     "duration": "10 min",
     "tone": "Potente",
-    "__v": 0,
     "category": "clothing"
   },
   {
-    "_id": "696a7128d10f009d3d77e036",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196c6",
     "museumId": "696a65ca017c648acfc9b559",
     "name": "Poster: La Libertà che guida il popolo",
     "description": "Il famoso dipinto di Eugène Delacroix simbolo della rivoluzione.",
@@ -334,11 +335,11 @@
     "quantity": 3,
     "duration": "20 min",
     "tone": "Epico",
-    "__v": 0,
     "category": "stationery"
   },
   {
-    "_id": "696a7128d10f009d3d77e03b",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196c7",
     "museumId": "696a65ca017c648acfc9b55d",
     "name": "Magnete: Medusa",
     "description": "Lo scudo con la testa di Medusa dipinto da Caravaggio.",
@@ -347,11 +348,11 @@
     "quantity": 4,
     "duration": "10 min",
     "tone": "Drammatico",
-    "__v": 0,
     "category": "gadget"
   },
   {
-    "_id": "696a7129d10f009d3d77e049",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196c8",
     "museumId": "696a65ca017c648acfc9b55f",
     "name": "T-shirt: Creazione di Adamo",
     "description": "Il dettaglio più celebre della Cappella Sistina.",
@@ -360,11 +361,11 @@
     "quantity": 2,
     "duration": "30 min",
     "tone": "Divino",
-    "__v": 0,
     "category": "clothing"
   },
   {
-    "_id": "696a7129d10f009d3d77e048",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196c9",
     "museumId": "696a65ca017c648acfc9b55f",
     "name": "Cartolina: Scuola di Atene",
     "description": "Famoso affresco di Raffaello nelle Stanze Vaticane.",
@@ -373,11 +374,11 @@
     "quantity": 3,
     "duration": "25 min",
     "tone": "Filosofico",
-    "__v": 0,
     "category": "stationery"
   },
   {
-    "_id": "696a7129d10f009d3d77e04f",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196ca",
     "museumId": "696a65ca017c648acfc9b55c",
     "name": "Puzzle 2000pz: Giardino delle delizie",
     "description": "Trittico surreale e dettagliato di Hieronymus Bosch.",
@@ -386,40 +387,51 @@
     "quantity": 6,
     "duration": "30 min",
     "tone": "Surreale",
-    "__v": 0,
     "category": "stationery"
   },
   {
-    "_id": "6a82279fe8a49affe844c0ab",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196cb",
     "name": "Tazza: I Girasoli",
     "price": 10,
     "description": "descrizione",
     "image": "foto",
     "museumId": "6a7622a872031acd0ee0a2d3",
     "quantity": 38,
-    "category": "gadget",
-    "__v": 0
+    "category": "gadget"
   },
   {
-    "_id": "6a82d88a607b705da43eefdc",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196cc",
     "name": "Maglia Mirandola",
     "price": 10,
     "description": "maglia souvenir del castello dei Pico",
     "image": "foto",
     "museumId": "6a81cc550bf4fc3fd102cb31",
     "quantity": 15,
-    "category": "clothing",
-    "__v": 0
+    "category": "clothing"
   },
   {
-    "_id": "6a8327c57768692a20d119e8",
+    "targetAge": "all",
+    "_id": "6a95d97a40e04cf66fa196cd",
     "name": "Biografia di Van Gogh",
     "price": 15,
     "description": "Biografia esaustiva di Van Gogh",
     "image": "foto",
     "museumId": "696a65ca017c648acfc9b561",
     "quantity": 10,
-    "category": "book",
+    "category": "book"
+  },
+  {
+    "_id": "6a95e2f445123c6b58491bc8",
+    "name": "tazza da cancellare",
+    "price": 14,
+    "description": "tazza da cancellare",
+    "image": "https://imgs.search.brave.com/4L9htJ4N1y-6Q40-4nWIUeojFZn2KFZ79dOPxNmcWiU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jb25z/dW1lci1jYXRhbG9n/LXNlcnZpY2UtbWFz/dGVyLnN0b3JhZ2Uu/Z29vZ2xlYXBpcy5j/b20vaW1hZ2VzL1Rh/enphLUNvbmljYS0w/Mi53aWR0aC01MDQu/Zm9ybWF0LWpwZWcu/anBlZ3F1YWxpdHkt/OTUuanBn",
+    "museumId": "6a95e205d43c245ab07d403e",
+    "quantity": 10,
+    "category": "gadget",
+    "targetAge": "all",
     "__v": 0
   }
 ]

@@ -1,472 +1,462 @@
 [
   {
-    "_id": "6a80391c493cd5ba5d203c1a",
+    "_id": "6a95d97840e04cf66fa19676",
     "name": "Vincent Van Gogh",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226a9",
         "museumId": [
           "6a8038e5493cd5ba5d203bf3"
         ],
         "bio": "un grande",
         "bd": "1500 - 1550",
         "studies": "bottega",
-        "mainWorksId": [],
-        "_id": "6a80391c493cd5ba5d203c1b"
+        "mainWorksId": []
       },
       {
+        "_id": "6a95e52f0d18f9511ba226aa",
         "museumId": [],
         "bio": "pessimo",
         "bd": "1500 - 1550",
         "studies": "bottega",
-        "mainWorksId": [],
-        "_id": "6a8075a95f8606281045025f"
+        "mainWorksId": []
       },
       {
+        "_id": "6a95e52f0d18f9511ba226ab",
         "museumId": [
-          "6a81cc550bf4fc3fd102cb31"
+          "6a95d97840e04cf66fa19670"
         ],
         "bio": "Vincent van Gogh è stato un grandissimo maestro della pittura, considerato tra i pionieri dell'arte moderna. Vissuto nella seconda metà del XIX secolo, purtroppo incompreso e tormentato per gran parte della sua esistenza, ha saputo trasformare il proprio tumulto interiore in una visione artistica rivoluzionaria.\n\nFigura di spicco del Post-impressionismo, Van Gogh ha superato la mera rappresentazione naturalistica attraverso l'uso espressivo e violento del colore e una pennellata materica, densa e vorticosa. La sua produzione ha anticipato correnti cruciali come l'Espressionismo, lasciando un'impronta indelebile nella storia dell'arte visiva e ridefinendo il concetto di modernità creativa.",
         "bd": "1853 - 1890",
         "studies": "Vincent van Gogh fu un artista prevalentemente autodidatta. La sua formazione avvenne attraverso lo studio appassionato dei maestri della pittura olandese e del realismo, integrato da un periodo di intenso apprendistato a Parigi, dove entrò in contatto con gli impressionisti e i neoimpressionisti, assimilandone la luminosità cromatica.",
-        "_id": "6a8367fa64b51b4ad26bd6f0",
         "mainWorks": "Tra i suoi capolavori assoluti spicca \"La notte stellata\", dipinta durante il ricovero a Saint-Rémy-de-Provence, in cui il cielo notturno si anima di una potente energia cosmica. Altre opere fondamentali come \"I girasoli\" e \"Notte stellata sul Rodano\" testimoniano la sua straordinaria capacità di infondere un profondo significato emotivo e simbolico ai soggetti della vita quotidiana."
       },
       {
+        "_id": "6a95e52f0d18f9511ba226ac",
         "museumId": [],
         "bio": "un grandissimo",
         "bd": "1500 - 1550",
-        "studies": "bottega",
-        "_id": "6a836a0e174a7284fe2f4c01"
+        "studies": "bottega"
       },
       {
+        "_id": "6a95e52f0d18f9511ba226ad",
         "museumId": [
-          "696a65ca017c648acfc9b561"
+          "6a95d97740e04cf66fa1966b"
         ],
         "bio": "Vincent Willem van Gogh è stato un pittore olandese, considerato un grande maestro della storia dell'arte. La sua vita fu segnata da profondi tormenti psicologici e da una continua ricerca spirituale, che lo portarono a viaggiare tra i Paesi Bassi, il Belgio e la Francia. Nonostante in vita abbia venduto pochissime tele, la sua visione artistica rivoluzionaria ha gettato le basi per l'espressionismo moderno.\n\nOpere principali: Le sue opere principali sono caratterizzate da pennellate dense, colori vibranti e una forte carica emotiva. Tra i suoi capolavori più celebri si annoverano 'Notte stellata', 'I girasoli' e 'La camera di Vincent ad Arles'.",
         "bd": "1853 - 1890",
-        "studies": "Autodidatta per la maggior parte, ha frequentato brevemente l'Accademia di Belle Arti di Bruxelles e ha studiato sotto la guida del pittore Anton Mauve all'Aia.",
-        "_id": "6a836cdd52c4a11868f09edc"
+        "studies": "Autodidatta per la maggior parte, ha frequentato brevemente l'Accademia di Belle Arti di Bruxelles e ha studiato sotto la guida del pittore Anton Mauve all'Aia."
       }
-    ],
-    "__v": 24
+    ]
   },
   {
-    "_id": "6a8081285b91f8583b399214",
+    "_id": "6a95d97840e04cf66fa19677",
     "name": "Leonardo Da Vinci",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226ae",
         "museumId": [],
         "bio": "genio",
         "bd": "1420 - 1480",
         "studies": "self",
-        "mainWorksId": [],
-        "_id": "6a8081285b91f8583b399215"
+        "mainWorksId": []
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a81c3e26872d6d52c13848e",
+    "_id": "6a95d97840e04cf66fa19678",
     "name": "Munch",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226af",
         "museumId": [
-          "6a7622a872031acd0ee0a2d3"
+          "6a95d97840e04cf66fa1966e"
         ],
         "bio": "Edvard Munch è stato una delle figure centrali dell'arte moderna, un pioniere visionario la cui opera ha segnato profondamente il passaggio dal tardo impressionismo all'espressionismo. Vissuto a cavallo tra il XIX e il XX secolo, l'artista norvegese ha tradotto in immagini potenti le angosce esistenziali, la solitudine, il dolore e la paura della morte, derivati anche da un'infanzia segnata da gravi lutti familiari e da una salute fragile. \n\nAppartenente simbolicamente e stilisticamente alle radici dell'Espressionismo, Munch ha impiegato linee sinuose, colori violenti e innaturali e una pennellata carica di tensione psicologica per dare forma visiva agli stati d'animo più cupi dell'essere umano. La sua ricerca artistica ha rotto definitivamente con la rappresentazione accademica della realtà oggettiva, inaugurando una nuova stagione in cui l'arte diventa specchio implacabile dell'inconscio.\n\nL'impatto di Munch sulla storia dell'arte è inestimabile: le sue intuizioni estetiche e tematiche hanno influenzato in modo determinante le avanguardie storiche del Novecento, in particolare il movimento Die Brücke in Germania. La sua capacità di universalizzare il dramma personale ha reso la sua produzione, e in particolare la sua iconografia ossessiva, un patrimonio indelebile della cultura visiva mondiale.",
         "bd": "1863 - 1944",
         "studies": "Munch ha iniziato la sua formazione artistica a Oslo (allora Kristiania) frequentando la Regia Scuola di Disegno e successivamente l'accademia libera gestita dal pittore naturalista Christian Krohg. Fondamentale per la sua maturazione fu un soggiorno di studio a Parigi nel 1889, dove ebbe modo di entrare in contatto con le opere di Paul Gauguin, Vincent van Gogh e Henri de Toulouse-Lautrec, assimilandone la libertà cromatica e l'espressività simbolica.",
-        "_id": "6a81c3e26872d6d52c13848f",
         "mainWorks": "Il capolavoro assoluto di Munch è L'urlo (1893), un'icona universale dell'angoscia moderna in cui il paesaggio stesso sembra deformarsi sotto il peso di un grido silenzioso. Tra le sue opere principali si annoverano anche La bambina malata, struggente ricordo del lutto per la perdita della sorella, e il ciclo del Fregio della vita, nel quale l'artista ha esplorato i grandi temi universali dell'amore, della sofferenza e della morte."
       }
-    ],
-    "__v": 3
+    ]
   },
   {
-    "_id": "6a81c5e6ad36d9e03b9ca11b",
+    "_id": "6a95d97840e04cf66fa19679",
     "name": "Giorgio De Chirico",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226b0",
         "museumId": [
-          "6a7622a872031acd0ee0a2d3"
+          "6a95d97840e04cf66fa1966e"
         ],
         "bio": "Giorgio de Chirico è stato uno dei pittori più influenti e enigmatici del XX secolo, riconosciuto universalmente come il padre fondatore della Pittura Metafisica. Vissuto tra la fine dell'Ottocento e la fine del Novecento, le sue opere hanno anticipato e ispirato profondamente il movimento surrealista, catturando l'attenzione di artisti come Salvador Dalí, René Magritte e Max Ernst. Attraverso l'uso di piazze desolate, statue classiche, ombre allungate e prospettive distorte, de Chirico ha saputo tradurre in immagini la sensazione di mistero, alienazione e malinconia che caratterizzava la modernità, ribaltando la concezione tradizionale dello spazio e del tempo pittorico.",
         "bd": "1888 - 1978",
         "studies": "Ha compiuto la sua prima formazione artistica presso il Politecnico di Atene, per poi trasferirsi in Germania e iscriversi all'Accademia di Belle Arti di Monaco di Baviera. Durante gli anni tedeschi, subì un influsso determinante dai filosofi Friedrich Nietzsche e Arthur Schopenhauer, nonché dalla pittura di Arnold Böcklin e Max Klinger, elementi che avrebbero segnato in modo indelebile la sua visione estetica e concettuale.",
-        "_id": "6a81c5e6ad36d9e03b9ca11c",
         "mainWorks": "Tra i suoi capolavori assoluti spicca 'Canto d'amore' (1914), un'opera emblematica che accosta in modo spiazzante la testa di una scultura classica, un guanto di gomma e una palla da passeggio. Altrettanto celebre è 'L'enigma dell'ora' (1911), considerato uno dei manifesti della pittura metafisica per la sua atmosfera sospesa e il rigoroso impianto prospettico."
       }
-    ],
-    "__v": 4
+    ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b705",
+    "_id": "6a95d97840e04cf66fa1967a",
     "name": "Sandro Botticelli",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226b1",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Sandro Botticelli, nato Alessandro di Mariano di Vanni Filipepi a Firenze intorno al 1445, è stato uno dei massimi esponenti del Rinascimento italiano, operando in particolare durante la stagione dell'Umanesimo laurenziano. La sua arte si distingue per una raffinata eleganza formale, un uso magistrale della linea sinuosa e una profonda adesione ai temi filosofici e mitologici dell'epoca, pur esprimendo in seguito una drammatica tensione spirituale. L'impatto di Botticelli nella storia dell'arte è immenso: sebbene dimenticato per secoli dopo la sua morte, avvenuta nel 1510, la sua opera è stata riscoperta e celebrata in età moderna dai Preraffaelliti e dai moderni, diventando un'icona universale della bellezza ideale.",
         "bd": "1445 - 1510",
         "studies": "Inizialmente formato come orafo, Botticelli passò presto alla pittura entrando nella bottega di Filippo Lippi, maestro da cui ereditò la sensibilità per il linearismo e la delicatezza espressiva. Subì inoltre l'influenza di Andrea del Verrocchio e dei fratelli Pollaiuolo, che arricchirono il suo stile con una maggiore attenzione all'anatomia e al dinamismo.",
-        "_id": "6a8219f66865287b46b42b02",
         "mainWorks": "Tra i suoi capolavori assoluti figurano la Primavera e la Nascita di Venere, monumentali tele allegoriche conservate agli Uffizi che celebrano il neoplatonismo e l'amore come forza vitale attraverso un linguaggio di ineguagliabile grazia. Nella maturità, opere come la Calunnia di Apelle e il Compianto sul Cristo morto riflettono invece la crisi spirituale e morale scaturita dalle prediche di Girolamo Savonarola."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6f6",
+    "_id": "6a95d97840e04cf66fa1967b",
     "name": "Caravaggio",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226b2",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "",
         "bd": "",
-        "studies": "",
-        "_id": "6a821a276865287b46b42b7c"
+        "studies": ""
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b703",
+    "_id": "6a95d97840e04cf66fa1967c",
     "name": "Raffaello Sanzio",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226b3",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Raffaello Sanzio, nato a Urbino nel 1483 e morto a Roma nel 1520, è stato uno dei più grandi maestri del Rinascimento italiano. Figura chiave del movimento rinascimentale insieme a Leonardo da Vinci e Michelangelo, Raffaello ha incarnato l'ideale di bellezza classica, armonia ed equilibrio compositivo. La sua straordinaria capacità di sintesi visiva e la grazia formale hanno influenzato profondamente la storia dell'arte occidentale per i secoli successivi, ponendo le basi per il manierismo e l'accademismo.\n\nDurante la sua vita, Raffaello lavorò nelle corti e nei centri artistici più importanti d'Italia, tra cui Firenze e Roma. Sotto il pontificato di Giulio II e Leone X, divenne uno dei pittori e architetti più richiesti della curia papale, dirigendo cantieri monumentali come la decorazione delle Stanze Vaticane. La sua eredità artistica continua a essere celebrata come l'apice della perfezione estetica e della grazia pittorica rinascimentale.",
         "bd": "1483 - 1520",
         "studies": "Raffaello si formò inizialmente nella bottega del padre, Giovanni Santi, un pittore di corte a Urbino. Successivamente, entrò come apprendista nella bottega di Perugino a Perugia, da cui assimilò la dolcezza dei volti e la spazialità limpida. Si trasferì poi a Firenze, dove studiò attentamente le opere di Leonardo da Vinci e Michelangelo, arricchendo il proprio linguaggio con un maggiore dinamismo e una profonda comprensione dell'anatomia.",
-        "_id": "6a821a1d6865287b46b42b5c",
         "mainWorks": "Tra i capolavori assoluti di Raffaello spiccano gli affreschi delle Stanze Vaticane, in particolare la Scuola di Atene, che celebra la filosofia classica attraverso una maestosa composizione prospettica. Altre opere fondamentali sono la Madonna del Cardellino, celebre per la tenerezza e la geometria piramidale dei corpi, e i suoi raffinati ritratti papali che ridefinirono il genere."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b706",
+    "_id": "6a95d97840e04cf66fa1967d",
     "name": "Vincent van Gogh",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226b4",
         "museumId": [
           "6a8219f26865287b46b42af9",
-          "6a8879bfe6c216683b02eb70"
+          "6a95d97840e04cf66fa19675"
         ],
         "bio": "Vincent van Gogh è una delle figure più emblematiche e rivoluzionarie della storia dell'arte occidentale. Vissuto nella seconda metà del XIX secolo, durante il periodo tardo-ottocentesco, viene tradizionalmente associato al movimento del Post-impressionismo, pur anticipando fortemente i tratti drammatici dell'Espressionismo attraverso l'uso tumultuoso del colore e del segno pittorico.\n\nLa sua vita fu segnata da una profonda instabilità psicologica, da un'irrequietezza esistenziale e da una radicale dedizione alla pittura, intesa come veicolo di assoluta sincerità emotiva. Nonostante in vita abbia ottenuto scarsissimo successo commerciale e riconoscimento critico, la sua visione artistica ha ridefinito i confini della rappresentazione visiva.\n\nOggi Van Gogh è universalmente riconosciuto come un pioniere dell'arte moderna. Il suo impatto sul Novecento è incalcolabile: la sua tecnica basata su pennellate dense e cariche di tensione ha influenzato profondamente i movimenti d'avanguardia successivi, consacrandolo come il mito dell'artista geniale e tormentato.",
         "bd": "1853 - 1890",
         "studies": "Vincent van Gogh non seguì un percorso accademico tradizionale e lineare. Iniziò la sua carriera lavorando come mercante d'arte per la Goupil & Cie, un'esperienza che gli permise di entrare in contatto diretto con i capolavori della pittura europea. Dopo aver fallito nei tentativi di intraprendere la carriera ecclesiastica e di studio teologico, si dedicò interamente al disegno e alla pittura da autodidatta intorno al 1880. Successivamente frequentò brevemente l'Accademia di Belle Arti di Anversa e studiò per un breve periodo a Parigi nello studio di Fernand Cormon, dove entrò in contatto con l'impressionismo e il divisionismo, studiando inoltre con passione le stampe giapponesi ukiyo-e.",
-        "_id": "6a821a006865287b46b42b17",
         "mainWorks": "Tra i suoi capolavori assoluti spicca \"Notte stellata\" (1889), dipinto durante il ricovero nel manicomio di Saint-Rémy, in cui il cielo notturno si anima di vortici cosmici carichi di intensa drammaticità psicologica. Altrettanto celebri sono i \"Girasoli\" (1888), una serie di dipinti caratterizzati da vibranti tonalità di giallo che testimoniano la ricerca espressiva del colore durante il soggiorno ad Arles. Infine, \"I mangiatori di patate\" (1885) rappresenta il culmine del suo periodo giovanile olandese, focalizzato sulla rappresentazione cruda e partecipe della dura realtà contadina."
       }
-    ],
-    "__v": 2
+    ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6f4",
+    "_id": "6a95d97840e04cf66fa1967e",
     "name": "Agesandro, Atenodoro, Polidoro",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226b5",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Agesandro, Atenodoro e Polidoro furono tre celebri scultori originari di Rodi, attivi tra il II e il I secolo a.C. La loro opera si colloca nell'ambito del tardo ellenismo, una fase artistica caratterizzata da un forte dinamismo, da una teatralità accentuata e da un virtuosismo tecnico esasperato. Questi maestri rodii seppero interpretare al meglio il gusto del loro tempo, fondendo la lezione della grande scultura classica con un pathos travolgente che avrebbe esercitato un influsso duraturo e profondo sull'arte occidentale, in particolare sulla successiva scultura romana.\n\nLa fama immortale del trio è legata a doppio filo alla celeberrima scoperta del gruppo del Laocoonte, rinvenuto a Roma nel 1506 sul colle Esquilino e subito acclamato dai contemporanei, tra cui Michelangelo. Quest'opera monumentale in marmo incarna i canoni del barocco ellenistico attraverso la rappresentazione della sofferenza fisica e morale del sacerdote troiano e dei suoi figli, stritolati dai serpenti marini. L'impatto di questo capolavoro sul Rinascimento fu dirompente, ridefinendo il concetto di bellezza tragica e inaugurando una nuova stagione di studi anatomici ed espressivi.",
         "bd": "II secolo a.C. - I secolo a.C.",
         "studies": "Non si possiedono notizie documentarie dirette sulla loro formazione giovanile. Essendo originari dell'isola di Rodi, che in epoca ellenistica rappresentava uno dei centri culturali e artistici più vivaci e rinomati del Mediterraneo, i tre artisti si formarono certamente all'interno della prestigiosa scuola scultorea rodia, celebre per la perizia tecnica nella lavorazione del marmo e per la capacità di fondere la tradizione greca classica con istanze espressive innovative.",
-        "_id": "6a821a1a6865287b46b42b55",
         "mainWorks": "Il loro capolavoro indiscusso è il Gruppo del Laocoonte, oggi conservato nei Musei Vaticani, descritto dallo scrittore romano Plinio il Vecchio come un'opera superiore a qualsiasi altra di pittura e di scultura. A essi viene inoltre attribuito il monumentale complesso scultoreo rinvenuto nella grotta-ninfeo di Sperlonga, che raffigura episodi mitologici legati alle avventure di Ulisse, caratterizzati dalla stessa esuberanza drammatica e dalla medesima maestria compositiva."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b704",
+    "_id": "6a95d97840e04cf66fa1967f",
     "name": "Rembrandt van Rijn",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226b6",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Rembrandt Harmenszoon van Rijn, nato a Leida nel 1606 e morto a Amsterdam nel 1669, è universalmente riconosciuto come uno dei più grandi pittori e incisori della storia dell'arte occidentale, nonché la figura centrale del Secolo d'oro olandese. Operando in un'epoca di straordinario fiorire economico e culturale, Rembrandt ha magistralmente catturato la complessità dell'animo umano attraverso una cifra stilistica inconfondibile, caratterizzata da un uso drammatico del chiaroscuro e da una profonda introspezione psicologica.\n\nLa sua carriera si snoda tra il successo mondano della giovinezza ad Amsterdam, dove era il ritrattista più richiesto dell'alta società, e la successiva fase di isolamento e bancarotta, segnata da lutti personali e da un linguaggio pittorico sempre più radicale e introspettivo. Nonostante le avversità, Rembrandt non ha mai smesso di innovare, influenzando profondamente generazioni di artisti successivi grazie alla sua straordinaria capacità di rendere la dignità universale nei volti dei suoi soggetti, siano essi facoltosi borghesi, mendicanti o se stesso nei suoi celebri autoritratti.",
         "bd": "1606 - 1669",
         "studies": "Rembrandt iniziò la sua formazione nella sua città natale, Leida, studiando per breve tempo presso l'università locale prima di dedicarsi interamente all'arte. Fu allievo del pittore Jacob van Swanenburgh a Leida per circa tre anni e, successivamente, si trasferì ad Amsterdam per studiare per sei mesi sotto la guida di Pieter Lastman, un maestro celebre per i suoi dipinti di storia che influenzarono profondamente l'uso della luce e la narrazione drammatica del giovane Rembrandt.",
-        "_id": "6a8219fc6865287b46b42b10",
         "mainWorks": "Tra i suoi capolavori assoluti spicca La ronda di notte (1642), una monumentale e dinamica tela che rivoluzionò il genere dei ritratti di gruppo grazie all'uso innovativo di luce e movimento. Altre opere fondamentali sono La lepre scorticata e la profonda serie di Autoritratti, nei quali l'artista ha documentato senza vanità il passare del tempo e il proprio declino fisico con una pennellata densa e materica."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6f8",
+    "_id": "6a95d97840e04cf66fa19680",
     "name": "Emanuel Leutze",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226b7",
         "museumId": [
           "6a8219f26865287b46b42af9",
-          "6a8879bfe6c216683b02eb70"
+          "6a95d97840e04cf66fa19675"
         ],
         "bio": "",
         "bd": "",
-        "studies": "",
-        "_id": "6a821a156865287b46b42b46"
+        "studies": ""
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6fb",
+    "_id": "6a95d97840e04cf66fa19681",
     "name": "Francisco Goya",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226b8",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Francisco Goya y Lucientes è una delle figure più irripetibili e rivoluzionarie della storia dell'arte occidentale, considerato l'ultimo dei grandi maestri classici e, al tempo stesso, il primo dei moderni. Vissuto tra la fine del XVIII e l'inizio del XIX secolo, un'epoca di radicali sconvolgimenti politici e sociali segnata dall'Illuminismo, dalla Rivoluzione Francese e dalle guerre napoleoniche, Goya ha saputo interpretare lo spirito del suo tempo con una lucidità spietata. La sua carriera attraversa diverse fasi: da brillante e richiesto pittore di corte, celebre per i suoi ritratti realistici e privi di idealizzazione della famiglia reale spagnola, a lucido testimone delle atrocità della guerra. Nel periodo della maturità, segnato dalla sordità e dal profondo pessimismo esistenziale, Goya approda alle celebri \"Pitture Nere\", opere visionarie e angoscianti dipinte sulle pareti della sua casa, che anticipano di un secolo l'espressionismo e il surrealismo.",
         "bd": "1746 - 1828",
         "studies": "Goya ha iniziato la sua formazione artistica a Saragozza nella bottega di José Luzán y Martínez, per poi trasferirsi a Madrid dove tentò senza successo di entrare nella Real Academia de Bellas Arties de San Fernando. Un momento cruciale del suo percorso fu il viaggio di formazione in Italia tra il 1770 e il 1771, durante il quale entrò in contatto con la pittura classica e barocca, in particolare a Roma, assimilandone la lezione per poi fonderla con la tradizione spagnola di Velázquez e Rembrandt.",
-        "_id": "6a821a0b6865287b46b42b2d",
         "mainWorks": "Tra i suoi capolavori assoluti figurano \"La maja desnuda\" e \"La maja vestida\", celebri per la dirompente sensualità e la modernità nella rappresentazione del corpo. Di drammatica potenza storica e visiva sono \"Il 2 maggio 1808 a Madrid\" e \"Il 3 maggio 1808\", tele che inaugurano la pittura moderna di denuncia sociale trasformando la crudeltà della guerra in un monumento universale al dolore umano."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b701",
+    "_id": "6a95d97840e04cf66fa19682",
     "name": "Michelangelo Buonarroti",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226b9",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Michelangelo Buonarroti, nato a Caprese nel 1475 e morto a Roma nel 1564, è stato uno dei più grandi maestri del Rinascimento italiano. Scultore, pittore, architetto e poeta, la sua figura ha dominato la scena artistica del XVI secolo, imponendosi come uno dei vertici assoluti della creatività umana. Il suo stile si è evoluto dal rigore classico del Rinascimento maturo fino alle tensioni drammatiche e spirituali del Manierismo.\n\nNel corso della sua lunga vita, trascorsa principalmente tra Firenze e Roma sotto il patronato dei papi e della famiglia Medici, Michelangelo ha ridefinito i canoni della bellezza corporea e dell'espressione emotiva. La sua eredità ha segnato profondamente la storia dell'arte occidentale, influenzando generazioni di artisti grazie alla potenza monumentale e alla profonda introspezione psicologica delle sue creazioni.",
         "bd": "1475 - 1564",
         "studies": "Si formò dapprima a Firenze nella bottega del Ghirlandaio e successivamente nel Giardino di San Marco, dove poté studiare le antichità classiche sotto la protezione di Lorenzo il Magnifico e alla corte di Bertoldo di Giovanni, influenzato dal neoplatonismo dell'epoca.",
-        "_id": "6a8219f96865287b46b42b09",
         "mainWorks": "Tra i suoi capolavori assoluti vi sono la Pietà vaticana e il David, simboli della perfezione formale del primo periodo, seguiti dalla titanica volta della Cappella Sistina e dal Giudizio Universale, che testimoniano la svolta drammatica e monumentale della sua maturità artistica."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b702",
+    "_id": "6a95d97840e04cf66fa19683",
     "name": "NASA",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226ba",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "",
         "bd": "",
-        "studies": "",
-        "_id": "6a821a276865287b46b42b74"
+        "studies": ""
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6f9",
+    "_id": "6a95d97840e04cf66fa19684",
     "name": "Eugène Delacroix",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226bb",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "",
         "bd": "",
-        "studies": "",
-        "_id": "6a821a2a6865287b46b42b8b"
+        "studies": ""
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6ff",
+    "_id": "6a95d97840e04cf66fa19685",
     "name": "John Singer Sargent",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226bc",
         "museumId": [
           "6a8219f26865287b46b42af9",
-          "6a8879bfe6c216683b02eb70"
+          "6a95d97840e04cf66fa19675"
         ],
         "bio": "John Singer Sargent (1856–1925) è stato uno dei più celebri ritrattisti della sua epoca, nonché un maestro indiscusso della pittura en plein air. Vissuto tra la fine del XIX e l'inizio del XX secolo, sebbene non si sia mai legato ufficialmente a un singolo movimento, la sua tecnica brillante e vibrante lo colloca a metà strada tra l'Impressionismo e il Realismo accademico. Americato di nascita ma cosmopolita per educazione, ha immortalato l'alta società europea e americana con un virtuosismo pittorico straordinario, capace di catturare non solo le sembianze fisiche ma anche la psicologia e lo status dei suoi soggetti.\n\nLa sua carriera subì una svolta e una celebrità immediata a Parigi, seguita poi dal definitivo successo a Londra e negli Stati Uniti. L'impatto di Sargent nel mondo dell'arte risiede nella sua pennellata audace, fluida e apparentemente disinvolta, che ha ridefinito i canoni del ritratto mondano. Pur avendo affrontato occasionali controversie, come nel caso del celebre 'Madame X', Sargent ha lasciato un'eredità visiva ineguagliabile che documenta l'eleganza e la transizione culturale dell'epoca edoardiana e della Belle Époque.",
         "bd": "1856 - 1925",
         "studies": "Sargent ha ricevuto una formazione artistica cosmopolita e rigorosa. Ha studiato all'Accademia di Belle Arti di Firenze prima di trasferirsi a Parigi nel 1874, dove è entrato nello studio del prestigioso ritrattista Carolus-Duran. Durante questo periodo ha viaggiato frequentemente in Spagna e nei Paesi Bassi, studiando approfonditamente i capolavori di Diego Velázquez e Frans Hals, che hanno influenzato in modo determinante il suo uso della luce e della pennellata.",
-        "_id": "6a821a176865287b46b42b4b",
         "mainWorks": "Tra le sue opere più iconiche spicca 'Madame X' (1884), un ritratto audace e scandaloso che segnò profondamente la sua carriera parigina. Altri capolavori fondamentali sono 'I carracci' (Carnation, Lily, Lily, Rose, 1885-1886), che dimostra la sua maestria nella luce impressionista, e il monumentale ciclo di affreschi realizzato per la Boston Public Library."
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6f7",
+    "_id": "6a95d97840e04cf66fa19686",
     "name": "Diego Velázquez",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226bd",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Diego Velázquez (1599-1660) è stato il pittore più importante del Secolo d'Oro spagnolo e una delle figure centrali dell'arte barocca europea. Attivo alla corte di Re Filippo IV a Madrid, Velázquez seppe elevarsi da semplice ritrattista di corte a maestro indiscusso della luce, della prospettiva e della rappresentazione psicologica, influenzando profondamente generazioni di artisti successivi, dai pittori impressionisti fino ai maestri del Novecento come Pablo Picasso e Salvador Dalí.\n\nLa sua pittura si distingue per un realismo straordinario, privo di idealizzazioni retoriche, capace di catturare la verità ottica del mondo attraverso pennellate fluide, sintetiche e apparentemente libere se viste da vicino. Velázquez seppe immortalare con la stessa dignità regale i membri della famiglia reale e gli umili buffoni di corte, ridefinendo il concetto stesso di rappresentazione pittorica e anticipando la modernità.",
         "bd": "1599 - 1660",
         "studies": "Velázquez compì la sua formazione a Siviglia nella bottega di Francisco Herrera il Vecchio, per poi passare sotto la guida di Francisco Pacheco, raffinato pittore e teorico d'arte di cui sposò la figlia. Durante i suoi soggiorni in Italia, in particolare a Roma e Venezia, ebbe modo di studiare direttamente i capolavori del Rinascimento italiano, rimanendo particolarmente affascinato dal colorismo di Tiziano e dalla maestria compositiva dei grandi maestri del Cinquecento.",
-        "_id": "6a821a0e6865287b46b42b34",
         "mainWorks": "Tra i suoi capolavori assoluti spicca 'Las Meninas' (1656), una complessa e affascinante riflessione sul potere dell'immagine e sulla realtà della pittura. Altrettanto celebri sono la 'Resa di Breda' ('Le lance'), che nobilita la pittura di storia con un'umanità senza precedenti, e il 'Ritratto di Papa Innocenzo X', lodato universalmente per la sua sconvolgente penetrazione psicologica e la straordinaria resa cromatica."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6fa",
+    "_id": "6a95d97840e04cf66fa19687",
     "name": "Fidia (supervisione)",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226be",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Fidia, vissuto nel V secolo a.C., è unanimemente riconosciuto come il più grande scultore dell'antica Grecia e il massimo esponente del periodo classico, noto anche come l'età di Pericle. Operando all'interno del movimento artistico e culturale legato al rinnovamento di Atene dopo le guerre persiane, Fidia impresse una svolta epocale nella concezione della forma umana e divina. La sua arte si distingueva per una sintesi perfetta di idealismo e naturalismo, caratterizzata dalla celebre 'gravitas' e da una monumentale serenità che conferiva alle statue un senso di maestosità eterea.\n\nNel suo ruolo di sovrintendente e supervisore generale dei lavori di ricostruzione dell'Acropoli di Atene, Fidia orchestrò il più grandioso programma monumentale dell'antichità occidentale. La sua supervisione artistica non si limitava alla progettazione, ma coordinava un'équipe di maestranze d'élite per la realizzazione dei fregi, delle metope e dei frontoni del Partenone. Il suo impatto sul mondo dell'arte fu immenso e duraturo, definendo i canoni estetici della bellezza classica che avrebbero ispirato generazioni di artisti dal Rinascimento al Neoclassicismo.",
         "bd": "490 a.C. - 430 a.C.",
         "studies": "Fidia si formò ad Atene all'inizio del V secolo a.C., studiando pittura e scultura sotto la guida di maestri della tradizione attica e argiva, tra cui Egelida di Argo e il pittore e scultore Polieneto. L'ambiente culturale ateniese, unito alla conoscenza dei grandi cantieri dell'epoca, permise al giovane artista di sviluppare una tecnica sopraffina nella lavorazione del bronzo, del marmo e della tecnica crisoelefantina.",
-        "_id": "6a821a206865287b46b42b63",
         "mainWorks": "La supervisione e la progettazione dei marmi del Partenone, inclusi i fregi e le sculture dei frontoni, rappresentano il vertice della sua produzione e il manifesto della scultura classica. Tra i suoi capolavori assoluti spiccano la monumentale statua crisoelefantina di Atena Parthenos, collocata all'interno del Partenone, e la colossale statua di Zeus a Olimpia, una delle sette meraviglie del mondo antico."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6fe",
+    "_id": "6a95d97840e04cf66fa19688",
     "name": "Johannes Vermeer",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226bf",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "",
         "bd": "",
-        "studies": "",
-        "_id": "6a821a286865287b46b42b83"
+        "studies": ""
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b707",
+    "_id": "6a95d97840e04cf66fa19689",
     "name": "Autore Sconosciuto",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226c0",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "L'appellativo di \"Autore Sconosciuto\" (o Maestro Anonimo) identifica una molteplicità di artisti, artigiani e botteghe la cui identità personale è andata perduta nel corso dei secoli, ma la cui produzione costituisce l'ossatura fondamentale della storia dell'arte antica, medievale e moderna. Spesso privi di un nome documentato, questi creatori operavano all'interno di contesti culturali ben definiti, rispondendo alle committenze di corti, istituzioni religiose o patriziati locali.\n\nNonostante l'anonimato, l'impatto di questi artisti anonimi è immenso, poiché molte delle opere più celebri dell'antichità e del Medioevo — dai cicli di affreschi parietali ai codici miniati, fino alle grandi pale d'altare — portano la loro firma collettiva. La critica d'arte moderna ha spesso ricostruito i profili stilistici di questi autori attraverso analisi stilistiche rigorose, raggruppando corpus di opere sotto nomi convenzionali (come \"Maestro di San Francesco\" o \"Maestro della Vierge de Nuremberg\").\n\nIl contributo di tali figure anonime ha permesso di preservare la continuità stilistica e tecnica tra le diverse generazioni. La loro eredità continua a vivere nei musei di tutto il mondo, ricordandoci che la storia dell'arte non è fatta solo di grandi personalità celebri, ma anche di un ricco tessuto di maestranze silenziose e straordinariamente competenti.",
         "bd": "Secolo XII - Secolo XVIII",
         "studies": "La formazione avveniva solitamente all'interno delle botteghe artigiane tradizionali, dove gli apprendisti imparavano l'arte direttamente dai maestri anziani attraverso la pratica quotidiana, la copia dei modelli e la trasmissione empirica delle tecniche pittoriche, scultoree o architettoniche.",
-        "_id": "6a821a086865287b46b42b26",
         "mainWorks": "Le opere principali attribuite ad autori sconosciuti spaziano da imponenti cicli musivi bizantini a straordinari manoscritti miniati medievali, fino a pale d'altare rinascimentali anonime. Questi capolavori sono spesso identificati dalla critica moderna attraverso il luogo di conservazione o peculiarità stilistiche uniche."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6f5",
+    "_id": "6a95d97840e04cf66fa1968a",
     "name": "Alessandro di Antiochia (attribuito)",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226c1",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Alessandro di Antiochia è uno scultore della Grecia antica, tradizionalmente identificato come l'autore di uno dei capolavori più celebri della storia dell'arte mondiale: la Venere di Milo. Vissuto probabilmente verso la fine del II secolo a.C., durante il periodo ellenistico, la sua figura si muove tra storia e attribuzione epigrafica, legata a doppio filo al frammento di iscrizione un tempo recante il suo nome trovato insieme alla celebre statua. L'opera riflette perfettamente il gusto ellenistico, caratterizzato da un sincretismo stilistico che guarda alla classicità del IV secolo a.C. (in particolare a Prassitele) unendola a un nuovo e inedito senso di monumentalità e sensualità.\n\nL'impatto di Alessandro di Antiochia nella storia dell'arte è indissolubilmente legato alla scoperta della Venere di Milo sull'isola di Milo nel 1820. Questo capolavoro in marmo pario è diventato nel corso dei secoli l'archetipo stesso della bellezza femminile classica, ammirato, studiato e reinterpretato da generazioni di artisti, da Eugène Delacroix ai surrealisti come Salvador Dalí. La capacità dell'artista di fondere la grazia ideale con una forte presenza corporea ha ridefinito i canoni estetici dell'arte occidentale, rendendo il suo nome immortale nonostante la scarsità di notizie biografiche giunte fino a noi.",
         "bd": "II secolo a.C. - I secolo a.C.",
         "studies": "Non sono giunte fonti storiche dirette sulla sua formazione o sui suoi maestri. Tuttavia, lo stile delle sue opere attesta una profonda padronanza della tradizione scultorea ellenistica e delle grandi scuole classiche ateniesi, suggerendo un apprendistato all'interno di botteghe di alto livello nel bacino del Mediterraneo orientale.",
-        "_id": "6a8219f36865287b46b42afb",
         "mainWorks": "La sua opera più celebre e universalmente riconosciuta è la Venere di Milo, oggi conservata al Museo del Louvre di Parigi, che incarna la quintessenza della scultura ellenistica per il suo raffinato gioco di volumi e il panneggio virtuosistico. A lui viene talvolta attribuito anche un rilievo votivo, noto come il rilievo di Archelao di Priene, sebbene la Venere rimanga il fulcro assoluto della sua fama artistica."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6fd",
+    "_id": "6a95d97840e04cf66fa1968b",
     "name": "Hieronymus Bosch",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226c2",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Hieronymus Bosch, pseudonimo di Jeroen Anthoniszoon van Aken, è stato uno dei pittori fiamminghi più enigmatici e affascinanti della storia dell'arte. Vissuto a cavallo tra il XV e il XVI secolo, nel pieno del Rinascimento nordico, Bosch non aderì ai canoni classici del Rinascimento italiano, ma sviluppò un linguaggio visivo unico e visionario, caratterizzato da un simbolismo complesso, creature bizzarre e atmosfere oniriche che anticipano di secoli il surrealismo. La sua opera riflette le tensioni morali e religiose del suo tempo, oscillando costantemente tra il fascino per il peccato e il timore della dannazione eterna.\n\nLa sua eredità artistica risiede nell'incredibile capacità di materializzare le paure inconsce e le ansie escatologiche dell'uomo medievale attraverso una tecnica pittorica raffinata e dettagliata. Re e collezionisti dell'epoca, come Filippo II di Spagna, rimasero affascinati dalla sua inventiva, rendendolo uno degli artisti più imitati e studiati. L'impatto di Bosch sul mondo dell'arte è immenso, poiché ha dimostrato come la pittura potesse spingersi ben oltre la rappresentazione mimetica della realtà per esplorare i recessi più profondi della psiche umana.",
         "bd": "1450 - 1516",
         "studies": "Bosch nacque a 's-Hertogenbosch (Boscoducale) in una famiglia di pittori di origini tedesche. Formato probabilmente nella bottega del padre Anthonius e dei suoi zii, ereditò le competenze tecniche della tradizione pittorica fiamminga. Non compì viaggi formativi in Italia, ma trasse ispirazione dalla cultura locale, dai manoscritti miniati e dal clima spirituale della sua città natale, dove era attivo anche come membro della confraternita religiosa di Nostra Signora.",
-        "_id": "6a821a116865287b46b42b3b",
         "mainWorks": "Il capolavoro assoluto di Bosch è il trittico del 'Giardino delle delizie', conservato al Museo del Prado di Madrid, un'opera complessa che esplora il peccato, la tentazione e la corruzione attraverso un'iconografia visionaria. Altrettanto celebri sono il 'Trittico del Carro di fieno' e 'Le tentazioni di Sant'Antonio', nei quali l'artista dimostra la sua straordinaria abilità nel popolare paesaggi fantastici di demoni grotteschi, allegorie morali e ammonimenti spirituali."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b700",
+    "_id": "6a95d97840e04cf66fa1968c",
     "name": "Katsushika Hokusai",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226c3",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Katsushika Hokusai è stato uno dei più celebri e influenti pittori e incisori giapponesi del periodo Edo, maestro indiscusso dell'ukiyo-e. Vissuto tra il XVIII e il XIX secolo, Hokusai ha saputo ritrarre con straordinaria vivacità sia la vita quotidiana e il folklore del Giappone dell'epoca, sia la maestosità della natura, ridefinendo i confini della xilografia tradizionale.\n\nLa sua prolifica carriera ha attraversato oltre sette decenni, durante i quali ha cambiato nome d'arte più di trenta volte, riflettendo la sua continua evoluzione stilistica e ricerca spirituale. Il suo capolavoro più celebre, \"La grande onda di Kanagawa\", fa parte della monumentale serie \"Trentasei vedute del monte Fuji\" e rimane una delle icone visive più riconoscibili al mondo.\n\nL'impatto di Hokusai sull'arte occidentale è stato immenso, avendo giocato un ruolo cruciale nella nascita del Giapponismo e avendo ispirato profondamente movimenti come l'Impressionismo e l'Art Nouveau. La sua instancabile dedizione all'arte e la sua celebre ricerca della perfezione tecnica continuano a fare di lui una figura leggendaria nella storia dell'arte globale.",
         "bd": "1760 - 1849",
         "studies": "Hokusai iniziò il suo percorso artistico all'età di dodici anni come apprendista intagliatore di legno. A diciotto anni entrò nello studio del maestro Katsukawa Shunshō, un importante esponente della scuola ukiyo-e specializzato in ritratti di attori kabuki. Oltre agli insegnamenti tradizionali, Hokusai studiò autonomamente la pittura in stile cinese e occidentale, inclusa la prospettiva geometrica europea, e viaggiò ampiamente per il Giappone per studiare dal vero i paesaggi e la figura umana.",
-        "_id": "6a821a046865287b46b42b1e",
         "mainWorks": "Tra le sue opere fondamentali spicca la celebre serie di stampe \"Trentasei vedute del monte Fuji\", che include il capolavoro assoluto \"La grande onda di Kanagawa\", un'immagine che cattura la potenza della natura attraverso una composizione audace e l'uso del blu di Prussia. Altrettanto importante è la monumentale enciclopedia visiva dei \"Hokusai Manga\", una raccolta di migliaia di schizzi che spaziano dalla natura alla figura umana, dimostrando la sua straordinaria capacità di sintesi e osservazione."
       }
     ]
   },
   {
-    "_id": "6a8215f9bbd3642f8830b6fc",
+    "_id": "6a95d97840e04cf66fa1968d",
     "name": "Fratelli Wright",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226c4",
         "museumId": [
           "6a8219f26865287b46b42af9"
         ],
         "bio": "Sebbene i Fratelli Wright, Orville e Wilbur, siano universalmente riconosciuti come i pionieri dell'aviazione moderna per aver inventato e pilotato il primo aeromotore, la loro figura riveste un'importanza fondamentale anche nella storia della visualità e dell'estetica tecnologica. Vissuti tra la fine del XIX e l'inizio del XX secolo, essi operano nel pieno fervore della Seconda Rivoluzione Industriale e del Positivismo, anticipando le istanze estetiche del Futurismo. La loro ricerca formale e funzionale, basata sulla aerodinamica e sulla leggerezza delle strutture, ha ridefinito il concetto di bellezza legato alla macchina e al movimento.\n\nNel contesto della cultura visiva e del design, l'impatto dei Fratelli Wright è paragonabile a quello di una rivoluzione visiva: l'invenzione del velivolo ha mutato per sempre la percezione dello spazio e del paesaggio umano, offrendo all'arte del Novecento una nuova prospettiva visiva, quella a volo d'uccello. Artisti d'avanguardia come i futuristi italiani e i costruttivisti russi trovarono nelle loro macchine volanti l'incarnazione plastica del dinamismo e della velocità, celebrando il trionfo della tecnica come opera d'arte totale.",
         "bd": "1867 - 1948",
         "studies": "I Fratelli Wright non frequentarono accademie d'arte o istituti universitari tradizionali, ma compirono la loro formazione sul campo, gestendo un'officina di biciclette a Dayton, nell'Ohio. Questo percorso tecnico e meccanico, unito a una rigorosa autoformazione attraverso la lettura di trattati scientifici di fisica e aeronautica e a meticolosi esperimenti empirici nella galleria del vento da loro ideata, ha rappresentato il loro specifico apprendistato.",
-        "_id": "6a821a246865287b46b42b6d",
         "mainWorks": "La loro opera principale non è un dipinto o una scultura tradizionali, ma il Flyer del 1903, il primo velivolo a motore più pesante dell'aria capace di un volo controllato e sostenuto. Questo capolavoro di ingegneria aerodinamica, insieme ai meticolosi disegni tecnici e alle celebri fotografie documentarie dei loro voli a Kitty Hawk, costituisce un monumento visivo e concettuale che ha ridefinito il rapporto tra l'uomo, la forma e lo spazio."
       }
     ]
   },
   {
-    "_id": "6a85c7d51262f1bb1eeca37f",
+    "_id": "6a95d97840e04cf66fa1968e",
     "name": "Gesù",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226c5",
         "museumId": [],
         "bio": "Gesù, nato a Nazaret e morto per mano dei Romani, è una delle figure centrali della storia occidentale, la cui esistenza ha profondamente ridefinito il corso della civiltà e dell'estetica visiva. Pur non essendo un artista in senso tradizionale, la sua vita e la sua predicazione hanno dato origine a uno dei movimenti culturali e spirituali più influenti di sempre, ispirando millenni di produzione artistica, dall'arte paleocristiana al Rinascimento, fino al Barocco e al contemporaneo. La sua iconografia, segnata dal mistero della resurrezione avvenuta in un luogo non storicamente definito, ha stimolato la genialità di maestri come Giotto, Michelangelo e Caravaggio, trasformando il dolore, il sacrificio e la trascendenza nei soggetti più indagati di tutta la storia dell'arte.",
         "bd": "0004 a.C. - 0030 d.C.",
         "studies": "Formato nella bottega artigiana del padre terreno Giuseppe a Nazaret, dove apprese l'arte della falegnameria. Il suo percorso formativo si è poi evoluto attraverso un intenso apprendistato spirituale nel deserto e viaggi di predicazione itinerante nella regione della Galilea e della Giudea, affinando grandi doti oratorie e simboliche.",
-        "_id": "6a85c7d51262f1bb1eeca380",
         "mainWorks": "Sebbene non abbia lasciato manufatti pittorici o scultorei diretti, la sua intera esistenza è stata trasfigurata in capolavori universali. Tra le rappresentazioni più celebri ispirate alla sua figura si annoverano il monumentale ciclo musivo bizantino di Ravenna, l'affresco del 'Giudizio Universale' di Michelangelo nella Cappella Sistina e la 'Vocazione di san Matteo' di Caravaggio, dove la luce divina diventa materia pittorica."
       }
-    ],
-    "__v": 1
+    ]
   },
   {
-    "_id": "6a8879bfe6c216683b02eb71",
+    "_id": "6a95d97840e04cf66fa1968f",
     "name": "Jacques-Louis David",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226c6",
         "museumId": [
-          "6a8879bfe6c216683b02eb70"
+          "6a95d97840e04cf66fa19675"
         ],
         "bio": "Famoso pittore neoclassico francese.",
         "bd": "1748 - 1825",
         "studies": "Accademia di Belle Arti",
-        "mainWorks": "Vari capolavori",
-        "_id": "6a8879bfe6c216683b02eb72"
+        "mainWorks": "Vari capolavori"
       }
-    ],
-    "__v": 0
+    ]
   },
   {
-    "_id": "6a8879bfe6c216683b02eb76",
+    "_id": "6a95d97840e04cf66fa19690",
     "name": "Claude Monet",
     "data": [
       {
+        "_id": "6a95e52f0d18f9511ba226c7",
         "museumId": [
-          "6a8879bfe6c216683b02eb70"
+          "6a95d97840e04cf66fa19675"
         ],
         "bio": "Padre fondatore dell'impressionismo francese.",
         "bd": "1840 - 1926",
         "studies": "Accademia di Belle Arti",
-        "mainWorks": "Vari capolavori",
-        "_id": "6a8879bfe6c216683b02eb77"
+        "mainWorks": "Vari capolavori"
       }
-    ],
-    "__v": 0
+    ]
   }
 ]
