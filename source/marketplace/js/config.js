@@ -147,10 +147,13 @@ window.showCustomConfirm = function(title, message, isDanger = true) {
 };
 
 // Popup di input testuale universale (Promise-based)
-window.showCustomPrompt = function(title, placeholder) {
+window.showCustomPrompt = function(title, placeholder, iconClass = "bi-wikipedia") {
   return new Promise((resolve) => {
     const existingModal = document.getElementById("custom-prompt-modal");
     if (existingModal) existingModal.remove();
+
+    const isSearch = title.toLowerCase().includes("cerca");
+    const buttonText = isSearch ? "Cerca" : "Conferma";
 
     const modalHTML = `
       <div class="modal fade" id="custom-prompt-modal" tabindex="-1" aria-hidden="true">
@@ -158,7 +161,7 @@ window.showCustomPrompt = function(title, placeholder) {
           <div class="modal-content glass-modal text-white" style="border: 1px solid rgba(255, 255, 255, 0.1); background-color: #18181b; box-shadow: 0 0 35px rgba(0, 0, 0, 0.7); border-radius: 16px;">
             <div class="modal-header border-bottom border-secondary border-opacity-25 p-3">
               <h5 class="modal-title d-flex align-items-center" style="font-weight: 700;">
-                <i class="bi bi-wikipedia me-2 text-info fs-5"></i>
+                <i class="bi ${iconClass} me-2 text-info fs-5"></i>
                 <span>${title}</span>
               </h5>
               <button type="button" class="btn-close custom-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -168,7 +171,7 @@ window.showCustomPrompt = function(title, placeholder) {
             </div>
             <div class="modal-footer border-top border-secondary border-opacity-25 p-2 d-flex gap-2 justify-content-end">
               <button type="button" class="btn btn-sm btn-glass px-4 py-2" data-bs-dismiss="modal" style="font-weight: 600;">Annulla</button>
-              <button type="button" id="custom-prompt-yes-btn" class="btn btn-sm btn-info text-dark px-4 py-2" style="border-radius: 50px; font-weight: 600; border: none; box-shadow: 0 4px 15px rgba(13, 202, 240, 0.3);">Cerca</button>
+              <button type="button" id="custom-prompt-yes-btn" class="btn btn-sm btn-info text-dark px-4 py-2" style="border-radius: 50px; font-weight: 600; border: none; box-shadow: 0 4px 15px rgba(13, 202, 240, 0.3);">${buttonText}</button>
             </div>
           </div>
         </div>

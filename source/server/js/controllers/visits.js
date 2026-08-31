@@ -130,6 +130,7 @@ exports.getVisits = async (userId) => {
 exports.getVisitById = async (visitId, user, isShared = false) => {
   const visit = await Visit.findById(visitId).populate('museumId')
     .populate('works')
+    .populate('creator', 'username email')
     .populate({ path: 'works', populate: { path: 'adoptionId' } }); 
 
   if (!visit) {

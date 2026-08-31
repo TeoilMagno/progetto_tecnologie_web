@@ -1,12 +1,12 @@
 /* BANNER DI COPERTINA */
 .visit-banner {
-    height: 18vh;
+    min-height: 250px;
+    padding: 3.5rem 0;
     background-size: cover;
     background-position: center;
     position: relative;
     display: flex;
     align-items: center;
-    padding-left: 2rem;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -17,7 +17,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(9, 9, 11, 0.7); /* Adattato al --bg-dark */
+    background: linear-gradient(to bottom, rgba(9, 9, 11, 0.45) 0%, rgba(9, 9, 11, 0.9) 100%); /* Adattato al --bg-dark */
     z-index: 1;
 }
 
@@ -37,32 +37,60 @@
 .timeline-container::before {
     content: "";
     position: absolute;
-    top: 15px;
-    bottom: 15px;
+    top: 24px;
+    bottom: 24px;
     left: 15px;
     width: 2px;
-    background: var(--border-color);
+    background: linear-gradient(to bottom, #0dcaf0 0%, var(--border-color) 100%);
 }
 
-.timeline-item {
+.timeline-work {
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Tappino (cerchietto) della timeline */
-.timeline-item::before {
+.timeline-work:hover {
+    transform: translateX(8px);
+}
+
+/* Tappino (cerchietto) della timeline su ciascuna tappa */
+.timeline-work::before {
     content: "";
     position: absolute;
-    left: -25px;
-    top: 12px;
-    width: 12px;
-    height: 12px;
+    left: -24px;
+    top: 28px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    /* Utilizzo del colore viola/neon in linea con il tuo tema */
-    background: #a855f7; 
+    background: #0dcaf0; 
     border: 2px solid var(--bg-dark);
-    box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+    box-shadow: 0 0 8px rgba(13, 202, 240, 0.6);
     z-index: 2;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timeline-work:hover::before {
+    background: #ffffff;
+    box-shadow: 0 0 14px #0dcaf0, 0 0 4px #0dcaf0;
+    transform: scale(1.3);
+}
+
+/* Animazione battito / pulsazione */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(13, 202, 240, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(13, 202, 240, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(13, 202, 240, 0);
+  }
+}
+
+.animate-pulse {
+  animation: pulse-glow 2s infinite;
 }
 
 /* POPOVER PER L'IMMAGINE INGRANDITA */
