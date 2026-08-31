@@ -73,7 +73,7 @@ exports.createAuthor = async (authorData) => {
 
 // Aggiungi una nuova card descrittiva a un autore esistente
 exports.addAuthorData = async (authorId, newData) => {
-  const { museumId, oldDataId, bio, bd, studies } = newData;
+  const { museumId, oldDataId, bio, bd, studies, mainWorks } = newData;
   
   const author = await Author.findById(authorId);
   if (!author) {
@@ -102,7 +102,7 @@ exports.addAuthorData = async (authorId, newData) => {
     bio,
     bd,
     studies,
-    mainWorksId: [] // Inizialmente vuoto
+    mainWorks // Inizialmente vuoto
   });
 
   return await author.save();

@@ -287,68 +287,85 @@ async function deleteSection(sectionId) {
 
 // ------------------- GESTIONE OPERE -------------------
 async function openWorkModal(sectionId, workId = null) {
-  document.getElementById("work-section-id").value = sectionId;
-  document.getElementById("work-id").value = workId || "";
+  // Helper di sicurezza: non crasha mai anche se rimuovi un id dall'HTML
+  const safeSetValue = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+  };
+
+  safeSetValue("work-section-id", sectionId);
+  safeSetValue("work-id", workId || "");
 
   if (workId && worksCache[workId]) {
     const w = worksCache[workId];
-    document.getElementById("workModalLabel").innerText = "Modifica Opera";
-    document.getElementById("save-work-btn").innerText = "Aggiorna Opera";
-    document.getElementById("work-name").value = w.name || "";
     
-    // Recupero Dati Autore
+    const labelEl = document.getElementById("workModalLabel");
+    if (labelEl) labelEl.innerText = "Modifica Opera";
+    const btnEl = document.getElementById("save-work-btn");
+    if (btnEl) btnEl.innerText = "Aggiorna Opera";
+    
+    safeSetValue("work-name", w.name || "");
+    
     const authorId = w.author?._id || w.author || "";
     const authorName = w.author?.name || (authorId ? "Autore Selezionato" : ""); 
-    document.getElementById("work-author-id").value = authorId;
-    document.getElementById("work-author-search").value = authorName; 
+    safeSetValue("work-author-id", authorId);
+    safeSetValue("work-author-search", authorName); 
     
-    // Recupero Dati Stile
     const styleId = w.style?._id || w.style || "";
     const styleName = w.style?.name || (styleId ? "Stile Selezionato" : ""); 
-    document.getElementById("work-style-id").value = styleId;
-    document.getElementById("work-style-search").value = styleName; 
+    safeSetValue("work-style-id", styleId);
+    safeSetValue("work-style-search", styleName); 
     
-    document.getElementById("work-technique").value = w.technique || "";
-    document.getElementById("work-year").value = w.year || "";
-    document.getElementById("work-image").value = w.image || "";
+    safeSetValue("work-technique", w.technique || "");
+    safeSetValue("work-year", w.year || "");
+    safeSetValue("work-image", w.image || "");
     
     let desc = "";
     if (w.description && w.description.simple && w.description.simple.medium) {
       desc = w.description.simple.medium;
     }
-    document.getElementById("work-description").value = desc;
+    safeSetValue("work-description", desc);
 
-    // --- LA MAGIA: Inneschiamo le card visive! ---
     if (authorId) selectAuthor(authorId, authorName);
-    else document.getElementById("author-cards-container").style.display = "none";
+    else {
+      const authContainer = document.getElementById("author-cards-container");
+      if (authContainer) authContainer.style.display = "none";
+    }
 
     if (styleId) selectStyle(styleId, styleName);
-    else document.getElementById("style-cards-container").style.display = "none";
-    // ---------------------------------------------
+    else {
+      const styleContainer = document.getElementById("style-cards-container");
+      if (styleContainer) styleContainer.style.display = "none";
+    }
 
     if (w.image) {
-      document.getElementById("work-image-url-input").value = w.image; // Extra visivo opzionale
-      setFinalImage("work-image", w.image);
+      safeSetValue("work-image-url-input", w.image);
+      if (typeof setFinalImage === 'function') setFinalImage("work-image", w.image);
     }
   } else {
-    document.getElementById("workModalLabel").innerText = "Nuova Opera";
-    document.getElementById("save-work-btn").innerText = "Crea Opera";
-    document.getElementById("work-form").reset();
+    const labelEl = document.getElementById("workModalLabel");
+    if (labelEl) labelEl.innerText = "Nuova Opera";
+    const btnEl = document.getElementById("save-work-btn");
+    if (btnEl) btnEl.innerText = "Crea Opera";
     
-    // Pulizia campi nascosti
-    document.getElementById("work-author-id").value = "";
-    document.getElementById("work-style-id").value = "";
-    document.getElementById("work-author-data-id").value = "";
-    document.getElementById("work-style-data-id").value = "";
+    const form = document.getElementById("work-form");
+    if (form) form.reset();
     
-    // Nascondiamo gli slider delle card se l'opera è nuova
-    document.getElementById("author-cards-container").style.display = "none";
-    document.getElementById("style-cards-container").style.display = "none";
+    safeSetValue("work-author-id", "");
+    safeSetValue("work-style-id", "");
+    safeSetValue("work-author-data-id", "");
+    safeSetValue("work-style-data-id", "");
+    
+    const authContainer = document.getElementById("author-cards-container");
+    if (authContainer) authContainer.style.display = "none";
+    
+    const styleContainer = document.getElementById("style-cards-container");
+    if (styleContainer) styleContainer.style.display = "none";
 
-    clearImageWidget("work-image"); // Pulisce il widget per la nuova opera
+    if (typeof clearImageWidget === 'function') clearImageWidget("work-image"); 
   }
   
-  workModalInstance.show();
+  if (workModalInstance) workModalInstance.show();
 }
 
 async function saveWorkFromModal() {
@@ -839,27 +856,27 @@ async function saveAuthorData() {
   const payloadData = {
     museumId: currentMuseumId,
     oldDataId: document.getElementById("old-author-data-id").value,
-    bd: document.getElementById("author-bd").value.trim(),
-    studies: document.getElementById("author-studies").value.trim(),
-    bio: document.getElementById("author-bio").value.trim()
+    bd: document.getElementById("author-bd").value.trim() || "Da definire",
+    studies: document.getElementById("author-studies").value.trim() || "In elaborazione...",
+    bio: document.getElementById("author-bio").value.trim() || "Generazione della biografia in corso...",
+    mainWorks: "Generazione automatica in corso..."
   };
 
   try {
     let res;
-    let finalAuthor; // Usiamo una variabile unificata per la risposta
+    let finalAuthor; 
 
     if (newName && !existingAuthorId) {
-      // Caso creazione nuovo autore
       res = await fetch(`${API_BASE_URL}/authors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newName, data: [payloadData] })
+        // BUG RISOLTO: Invio come oggetto puro, ci pensa il backend a farne un array
+        body: JSON.stringify({ name: newName, data: payloadData }) 
       });
       if (!res.ok) throw new Error("Errore durante la creazione dell'autore");
       finalAuthor = await res.json();
       
     } else if (existingAuthorId) {
-      // Caso modifica autore esistente
       res = await fetch(`${API_BASE_URL}/authors/${existingAuthorId}/data`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -869,7 +886,6 @@ async function saveAuthorData() {
       finalAuthor = await res.json();
     }
 
-    // Se tutto e' andato bene generiamo le descrizioni con l'ia
     if (finalAuthor) {
       if(!existingAuthorId) {
         console.log("Inizio generazione IA per l'autore in background...");
@@ -880,12 +896,11 @@ async function saveAuthorData() {
             authorId: finalAuthor._id, 
             museumId: currentMuseumId,
             authorName: finalAuthor.name || newName,
-            userDescription: payloadData.bio // Usiamo il testo del form come contesto!
+            userDescription: payloadData.bio
           })
         });
       }
 
-      // Selezioniamo automaticamente il nuovo autore e ricarichiamo le card
       selectAuthor(finalAuthor._id, finalAuthor.name || newName);
       authorDataModalInstance.hide();
     }
@@ -1082,7 +1097,7 @@ async function saveStyleData() {
   const payloadData = {
     museumId: currentMuseumId,
     oldDataId: document.getElementById("old-style-data-id").value,
-    description: document.getElementById("style-description").value.trim() 
+    description: document.getElementById("style-description").value.trim() || "Generazione della definizione in corso..."
   };
 
   try {
@@ -1319,11 +1334,12 @@ function editAuthorData(dataId) {
   const data = currentFetchedAuthor.data.find(d => d._id === dataId);
   if (!data) return;
 
-  document.getElementById("new-author-name-input").value = ""; // Lasciamo vuoto, autore esistente
-  document.getElementById("old-author-data-id").value = dataId; // Salviamo il vecchio ID!
+  document.getElementById("new-author-name-input").value = ""; 
+  document.getElementById("old-author-data-id").value = dataId; 
   document.getElementById("author-bd").value = data.bd || "";
   document.getElementById("author-studies").value = data.studies || "";
   document.getElementById("author-bio").value = data.bio || "";
+  
   document.getElementById("btn-ai-author").classList.remove("d-none");
   document.getElementById("authorDataModalLabel").innerText = "Modifica Biografia";
   authorDataModalInstance.show();
@@ -1348,23 +1364,27 @@ async function generateAuthorBioWithAI() {
   const authorName = currentFetchedAuthor ? currentFetchedAuthor.name : document.getElementById("new-author-name-input").value;
   const userContext = bioTextarea.value.trim();
   
-  const prompt = `Crea scheda biografica per: "${authorName}". Appunti: "${userContext}". Istruzioni: 1. "bio": 2-3 paragrafi. 2. "bd": Date in formato "AAAA - AAAA". 3. "studies": Formazione. 4. "mainWorks": 2-3 frasi sulle opere principali. Restituisci SOLO un JSON valido: {"bio": "...", "bd": "...", "studies": "...", "mainWorks": "..."}. Non usare markdown.`;
+  // Rimosso il prompt inutile per le mainWorks
+  const prompt = `Crea scheda biografica per: "${authorName}". Appunti: "${userContext}". Istruzioni: 1. "bio": 2-3 paragrafi. 2. "bd": Date in formato "AAAA - AAAA". 3. "studies": Formazione. Restituisci SOLO un JSON valido: {"bio": "...", "bd": "...", "studies": "..."}. Non usare markdown.`;
 
   bioTextarea.value = "Compilazione scheda in corso...";
   try {
     const res = await fetch(`${API_BASE_URL}/ai/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
     if (res.ok) {
-      // Puliamo eventuale markdown di formattazione di Gemini
       const cleanText = (await res.json()).text.replace(/```json/g, '').replace(/```/g, '').trim();
       const data = JSON.parse(cleanText);
       
-      // Riempiamo i vari input del form
       if(data.bd) document.getElementById("author-bd").value = data.bd;
       if(data.studies) document.getElementById("author-studies").value = data.studies;
-      // Uniamo la bio alle opere principali
-      bioTextarea.value = (data.bio || "") + (data.mainWorks ? "\n\nOpere principali: " + data.mainWorks : "");
-    } else { bioTextarea.value = "Errore API."; }
-  } catch (e) { bioTextarea.value = "Errore di parsing dati. Riprova."; console.error(e); }
+      
+      bioTextarea.value = data.bio || "";
+    } else { 
+      bioTextarea.value = "Errore API.";
+    }
+  } catch (e) { 
+    bioTextarea.value = "Errore di parsing dati. Riprova."; 
+    console.error(e); 
+  }
 }
 
 // 3. Genera e riempie la descrizione dello Stile
