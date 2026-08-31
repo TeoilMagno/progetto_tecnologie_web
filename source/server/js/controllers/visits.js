@@ -150,6 +150,7 @@ exports.getVisitById = async (visitId, user, isShared = false) => {
 };
 
 exports.editVisitById = async (visitId, payload, user) => {
+  console.log("editVisitById - Ricevuto payload:", JSON.stringify(payload, null, 2));
   const query = { _id: visitId };
 
   // Se NON è admin, limitiamo la modifica solo alla visita creata dall'utente
@@ -173,17 +174,27 @@ exports.editVisitById = async (visitId, payload, user) => {
     };
   }
 
-  // Pulizia immagine
+  // Pulizia immagine copertina (se è un file locale /uploads/ e viene cambiato o rimosso)
   const oldVisit = await Visit.findOne(query);
-  if (oldVisit && oldVisit.image && oldVisit.image !== updateData.image) {
-    await deleteLocalFile(oldVisit.image);
+  if (oldVisit && oldVisit.coverImage && oldVisit.coverImage !== payload.coverImage) {
+    if (oldVisit.coverImage.startsWith('/uploads/')) {
+      await deleteLocalFile(oldVisit.coverImage);
+    }
   }
+
+  // Costruiamo l'oggetto di update sicuro separando $set e $unset per evitare che Mongoose ignori i campi di primo livello
+  const update = {};
+  if (payload.$unset) {
+    update.$unset = payload.$unset;
+    delete payload.$unset;
+  }
+  update.$set = payload;
   
   // Troviamo e aggiorniamo SOLO se l'ID corrisponde e il creatore è l'utente corrente
   const updatedVisit = await Visit.findOneAndUpdate(      
     query,
-    payload,
-    { returnDocument: 'after' }
+    update,
+    { returnDocument: 'after', runValidators: true }
   );
 
   if (!updatedVisit) {
