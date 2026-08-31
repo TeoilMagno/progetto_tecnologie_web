@@ -31,6 +31,3 @@ Prossime idee:
                     Castello di Gradara & Museo Medievale
                     Museo Internazionale del Fumetto e dell'Animazione
                     Museo della Scienza e del Futuro Tecnologico
-
-    
-Per un'idea sulle prossime funzionalita' che abbiamo quanto meno pensato di aggiungere c'e' la TODO_list.txt nei branch matteo e alessia.
