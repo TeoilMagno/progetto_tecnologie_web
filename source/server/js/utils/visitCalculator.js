@@ -1,6 +1,6 @@
 // Tempi di spostamento e osservazione (in minuti)
-const WALK_SAME_ROOM = 30 / 60; // 30 secondi tra opere nella stessa stanza
-const WALK_DIFF_ROOM = 2;       // 2 minuti tra opere in stanze diverse o per la prima opera
+const WALK_SAME_SECTION = 30 / 60; // 30 secondi tra opere nella stessa stanza
+const WALK_DIFF_SECTION = 2;       // 2 minuti tra opere in stanze diverse o per la prima opera
 const OBSERVATION_TIME = 0.5;   // 30 secondi forfettari dedicati solo a guardare l'opera prima/dopo aver letto
 
 // Stima dei minuti necessari per leggere/ascoltare le descrizioni (I tuoi valori IA)
@@ -13,7 +13,7 @@ const READING_TIMES = {
 
 /**
  * 1. Calcola la durata totale stimata della visita
- * @param {Array} worksArray - Array di opere ordinate (devono contenere il campo roomId)
+ * @param {Array} worksArray - Array di opere ordinate (devono contenere il campo sectionId)
  * @param {String} preferredLength - 'short', 'medium', 'long', 'exhaustive'
  */
 exports.calculateVisitDuration = (worksArray, preferredLength = 'medium') => {
@@ -29,16 +29,16 @@ exports.calculateVisitDuration = (worksArray, preferredLength = 'medium') => {
     // 2. Tempo di cammino per arrivare a quest'opera
     if (i === 0) {
       // Per la prima opera calcoliamo l'ingresso nel museo/stanza
-      totalMinutes += WALK_DIFF_ROOM; 
+      totalMinutes += WALK_DIFF_SECTION; 
     } else {
-      // Confrontiamo la stanza attuale con quella dell'opera precedente
-      const currentRoomId = worksArray[i].roomId?.toString();
-      const previousRoomId = worksArray[i - 1].roomId?.toString();
+      // Confrontiamo la sezione attuale con quella dell'opera precedente
+      const currentSectionId = worksArray[i].sectionId?.toString();
+      const previousSectionId = worksArray[i - 1].sectionId?.toString();
 
-      if (currentRoomId && previousRoomId && currentRoomId === previousRoomId) {
-        totalMinutes += WALK_SAME_ROOM;
+      if (currentSectionId && previousSectionId && currentSectionId === previousSectionId) {
+        totalMinutes += WALK_SAME_SECTION;
       } else {
-        totalMinutes += WALK_DIFF_ROOM;
+        totalMinutes += WALK_DIFF_SECTION;
       }
     }
   }

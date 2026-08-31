@@ -241,8 +241,8 @@ exports.estimateDuration = async (workIds, preferredLength) => {
     return 0;
   }
 
-  // recuperiamo i roomId delle opere
-  const works = await Work.find({ _id: { $in: workIds } }).select('_id roomId');
+  // recuperiamo i sectionId delle opere
+  const works = await Work.find({ _id: { $in: workIds } }).select('_id sectionid');
 
   // Mongoose non garantisce l'ordine con l'operatore $in.
   // Riordiniamo l'array rispettando l'ordine esatto inviato dal frontend.

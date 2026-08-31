@@ -436,27 +436,21 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
   }
 
   // Mappa Stanze/Sezioni veloce
-  const roomMap = {};
+  const sectionMap = {};
   allMuseumSections.forEach(section => {
-    const secName = section.name;
-    const secImg = section.image || "/img/fallback-section.jpg";
-    if (section.rooms) {
-      section.rooms.forEach(room => {
-        roomMap[room._id] = { roomName: room.name, sectionName: secName, sectionImage: secImg, sectionId: section._id };
-      });
-    }
+    sectionMap[section._id] = {
+      sectionName: section.name,
+      sectionImage: section.image || "/img/fallback-section.jpg"
+    };
   });
 
   worksToRender.forEach(work => {
-    const roomInfo = roomMap[work.roomId];
-    const secName = roomInfo ? roomInfo.sectionName : "Opere non collocate";
-    const secImg = roomInfo ? roomInfo.sectionImage : "/img/fallback-section.jpg";
-    const roomName = roomInfo ? roomInfo.roomName : "Senza stanza";
-    const secId = roomInfo ? roomInfo.sectionId : "unassigned";
+    const secInfo = sectionMap[work.sectionId];
+    const secName = secInfo ? secInfo.sectionName : "Opere non collocate";
+    const secImg = secInfo ? secInfo.sectionImage : "/img/fallback-section.jpg";
+    const secId = work.sectionId || "unassigned";
 
-    // Generazione ID sicuri per il DOM
     const safeSecId = `sec-${secId}`;
-    const safeRoomId = `room-${secId}-${roomName.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
     // Crea la Sezione se non esiste
     let sectionContainer = document.getElementById(safeSecId);
@@ -472,23 +466,10 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
           <div style="position: absolute; bottom: 10px; right: 10px; width: 80px; height: 80px; opacity: 0.15; pointer-events: none; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
             <img src="${secImg}" style="width: 100%; height: 100%; object-fit: cover;">
           </div>
-          <div class="row g-3" id="rooms-container-${safeSecId}"></div>
+          <div class="row g-3" id="works-container-${safeSecId}"></div>
         </div>
       `;
       catalogArea.appendChild(sectionContainer);
-    }
-
-    // Crea la Stanza se non esiste
-    let roomContainer = document.getElementById(safeRoomId);
-    if (!roomContainer) {
-      roomContainer = document.createElement("div");
-      roomContainer.id = safeRoomId;
-      roomContainer.className = "col-12 mb-1";
-      roomContainer.innerHTML = `
-        <h5 class="text-secondary small mb-2" style="font-size: 0.8rem;"><i class="bi bi-door-open me-1"></i> Stanza: ${roomName}</h5>
-        <div class="row row-cols-1 row-cols-md-2 g-2" id="works-container-${safeRoomId}"></div>
-      `;
-      document.getElementById(`rooms-container-${safeSecId}`).appendChild(roomContainer);
     }
 
     // Inserisce la Card dell'Opera
@@ -521,7 +502,7 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
     
     // Evita duplicati se la fetch ha intersecato record esistenti
     if (!document.getElementById(`work-card-${work._id}`)) {
-      document.getElementById(`works-container-${safeRoomId}`).insertAdjacentHTML("beforeend", workHtml);
+      document.getElementById(`works-container-${safeSecId}`).insertAdjacentHTML("beforeend", workHtml);
     }
   });
 }

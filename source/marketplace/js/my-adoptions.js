@@ -3,7 +3,7 @@ let currentUserId = null;
 let cachedIncoming = [];
 let cachedOutgoing = [];
 
-let sourceTs, workTs, targetTs, roomTs;
+let sourceTs, workTs, targetTs, sectionTs;
 
 document.addEventListener("DOMContentLoaded", async () => {
   newAdoptionModalInstance = new bootstrap.Modal(document.getElementById("newAdoptionModal"));
@@ -32,17 +32,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   targetTs = new TomSelect("#target-museum-select", {
     valueField: '_id', labelField: 'name', searchField: ['name'],
-    onChange: onTargetMuseumChange // Innesca la cascata delle stanze!
+    onChange: onTargetMuseumChange // Innesca la cascata delle sezioni!
   });
 
-  roomTs = new TomSelect("#target-room-select", {
-    valueField: '_id', labelField: 'name', searchField: ['name'],
-    optgroupField: 'sectionId', optgroupLabelField: 'label', optgroupValueField: 'id',
-    render: {
-      optgroup_header: function(data, escape) {
-        return `<div class="fw-bold text-info p-2 border-bottom border-secondary border-opacity-25" style="background: rgba(255,255,255,0.02); font-size: 0.75rem; text-transform: uppercase;">${escape(data.label)}</div>`;
-      }
-    }
+  sectionTs = new TomSelect("#target-section-select", {
+    valueField: '_id', labelField: 'name', searchField: ['name']
   });
 
   // INIZIALIZZAZIONE IMASK PER LE DATE
@@ -294,7 +288,7 @@ async function openNewAdoptionModal() {
   sourceTs.clear(); sourceTs.clearOptions();
   workTs.clear(); workTs.clearOptions();
   targetTs.clear(); targetTs.clearOptions();
-  roomTs.clear(); roomTs.clearOptions();
+  sectionTs.clear(); sectionTs.clearOptions();
 
   try {
     // 1. Musei totali per la fonte
@@ -338,39 +332,25 @@ async function onSourceMuseumChange(museumId) {
 }
 
 async function onTargetMuseumChange(museumId) {
-  roomTs.clear();
-  roomTs.clearOptions();
-  roomTs.clearOptionGroups();
+  sectionTs.clear();
+  sectionTs.clearOptions();
 
   if (!museumId) {
-    roomTs.control_input.placeholder = "Prima scegli un tuo museo...";
+    sectionTs.control_input.placeholder = "Prima scegli un tuo museo...";
     return;
   }
 
-  roomTs.control_input.placeholder = "Caricamento stanze...";
+  sectionTs.control_input.placeholder = "Caricamento sezioni...";
 
   try {
     const res = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`);
     const sections = await res.json();
 
-    let hasRooms = false;
-
-    // Aggiungiamo i gruppi (Sezioni) e le opzioni (Stanze)
-    sections.forEach(sec => {
-      if (sec.rooms && sec.rooms.length > 0) {
-        hasRooms = true;
-        roomTs.addOptionGroup(sec._id, { id: sec._id, label: `Sezione: ${sec.name}` });
-        
-        sec.rooms.forEach(room => {
-          roomTs.addOption({ _id: room._id, name: room.name, sectionId: sec._id });
-        });
-      }
-    });
-
-    if (!hasRooms) {
-      roomTs.control_input.placeholder = "Nessuna stanza creata!";
+    if (sections.length > 0) {
+      sectionTs.addOptions(sections.map(sec => ({ _id: sec._id, name: sec.name })));
+      sectionTs.control_input.placeholder = "Seleziona la sezione in cui esporla...";
     } else {
-      roomTs.control_input.placeholder = "Seleziona la stanza in cui esporla...";
+      sectionTs.control_input.placeholder = "Nessuna sezione creata!";
     }
   } catch (error) { console.error(error); }
 }
@@ -378,11 +358,11 @@ async function onTargetMuseumChange(museumId) {
 async function submitAdoptionRequest() {
   const workId = document.getElementById("work-select").value;
   const toMuseumId = document.getElementById("target-museum-select").value;
-  const toRoomId = document.getElementById("target-room-select").value;
+  const toSectionId = document.getElementById("target-section-select").value;
   const beginDateStr = document.getElementById("begin-date-input").value;
   const endDateStr = document.getElementById("end-date-input").value;
 
-  if (!workId || !toMuseumId || !toRoomId || !beginDateStr || !endDateStr) {
+  if (!workId || !toMuseumId || !toSectionId || !beginDateStr || !endDateStr) {
     alert("Tutti i campi sono obbligatori!");
     return;
   }
@@ -433,7 +413,7 @@ async function submitAdoptionRequest() {
     const res = await fetch(`${API_BASE_URL}/adoptions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ workId, toMuseumId, toRoomId, beginDate, endDate })
+      body: JSON.stringify({ workId, toMuseumId, toSectionId, beginDate, endDate })
     });
 
     if (res.ok) {

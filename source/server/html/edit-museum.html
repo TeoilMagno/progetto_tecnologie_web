@@ -150,32 +150,6 @@
       </div>
     </div>
 
-    <div class="modal fade" id="roomModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content glass-modal text-white">
-          <div class="modal-header border-bottom-custom">
-            <h5 class="modal-title" id="roomModalLabel">Gestisci Stanza</h5>
-            <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <form id="room-form">
-              <input type="hidden" id="room-section-id" />
-              <input type="hidden" id="room-id-input" />
-              <div class="mb-3">
-                <label class="form-label small text-secondary">Nome Stanza *</label>
-                <input type="text" class="form-control glass-input" id="room-name-input" placeholder="Es. Sala Raffaello" required />
-              </div>
-              <p class="small text-secondary"><i class="bi bi-info-circle me-1"></i>Le forme SVG per la mappa potranno essere aggiunte in seguito.</p>
-            </form>
-          </div>
-          <div class="modal-footer border-top-custom">
-            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
-            <button type="button" class="btn btn-gradient px-3" onclick="saveRoomFromModal()">Salva Stanza</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="modal fade" id="workModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content glass-modal text-white">
@@ -187,7 +161,6 @@
             <form id="work-form">
               <input type="hidden" id="work-id" />
               <input type="hidden" id="work-section-id" />
-              <input type="hidden" id="work-room-id" /> 
               <input type="hidden" id="work-author-data-id" />
               <input type="hidden" id="work-style-data-id" />
               

@@ -81,8 +81,9 @@ const workSchema = new Schema({
     required: true
   },
 
-  roomId: {
+  sectionId: {
     type: Schema.Types.ObjectId,
+    ref: 'Section',
     required: true
   },
 

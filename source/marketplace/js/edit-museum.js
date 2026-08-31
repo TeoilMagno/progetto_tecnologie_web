@@ -1,7 +1,6 @@
 let currentMuseumData = null;
 let museumSections = [];
 let workModalInstance = null;
-let roomModalInstance = null;
 let sectionModalInstance = null;
 let deleteMuseumModalInstance = null;
 let currentFetchedAuthor = null;
@@ -9,12 +8,10 @@ let currentFetchedStyle = null;
 
 // Cache globale per tenere in memoria i dati
 let worksCache = {};
-let roomsCache = {};
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("workModal")) workModalInstance = new bootstrap.Modal(document.getElementById("workModal"));
   if (document.getElementById("sectionModal")) sectionModalInstance = new bootstrap.Modal(document.getElementById("sectionModal"));
-  if (document.getElementById("roomModal")) roomModalInstance = new bootstrap.Modal(document.getElementById("roomModal"));
   if (document.getElementById("deleteMuseumModal")) deleteMuseumModalInstance = new bootstrap.Modal(document.getElementById("deleteMuseumModal"));
   if (document.getElementById("authorDataModal")) authorDataModalInstance = new bootstrap.Modal(document.getElementById("authorDataModal"));
 
@@ -100,7 +97,6 @@ async function loadSectionsAndWorks() {
   const container = document.getElementById("sectionsAccordion");
   container.innerHTML = "";
   worksCache = {};
-  roomsCache = {};
 
   try {
     const res = await fetch(`${API_BASE_URL}/museums/${currentMuseumId}/sections`);
@@ -119,11 +115,6 @@ async function loadSectionsAndWorks() {
       const works = await worksRes.json();
       works.forEach(w => worksCache[w._id] = w);
 
-      // Le stanze sono subdocumenti già presenti in section.rooms!
-      if (section.rooms) {
-        section.rooms.forEach(r => roomsCache[r._id] = r);
-      }
-
       container.innerHTML += renderSectionAccordionItem(section, works, index);
     }
 
@@ -141,67 +132,30 @@ function renderSectionAccordionItem(section, works, index) {
   const safeSectionName = (section.name || "").replace(/'/g, "\\'");
   const safeSectionImage = (section.image || "").replace(/'/g, "\\'");
 
-  let roomsHtml = "";
-  const rooms = section.rooms || [];
-  
-  if (rooms.length === 0) {
-    roomsHtml = `
-      <div class="alert bg-dark border border-warning border-opacity-50 text-warning small p-3 mb-0 rounded-3">
-        <i class="bi bi-exclamation-triangle me-2"></i>Nessuna stanza creata. Crea una stanza per poter inserire le opere.
-      </div>`;
+  let worksHtml = `<div class="row row-cols-1 row-cols-md-2 g-3 mt-1 sortable-works-container" data-section-id="${section._id}" style="min-height: 80px;">`;
+
+  if (works.length === 0) {
+    worksHtml += `<div class="col-12 empty-section-placeholder"><p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa sezione. Trascinane una qui o aggiungine una!</p></div>`;
   } else {
-    rooms.forEach(room => {
-      // Filtriamo le opere che appartengono a questa specifica stanza
-      const roomWorks = works.filter(w => w.roomId === room._id);
-      const safeRoomName = (room.name || "").replace(/'/g, "\\'");
-
-      // HTML delle opere dentro la stanza
-      // Aggiunti data-attributes, altezza minima e classi per Sortable
-      let worksHtml = `<div class="row row-cols-1 row-cols-md-2 g-3 mt-1 sortable-works-container" data-section-id="${section._id}" data-room-id="${room._id}" style="min-height: 80px;">`;
-      
-      if (roomWorks.length === 0) {
-        worksHtml += `<div class="col-12 empty-room-placeholder"><p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa stanza. Trascinane una qui!</p></div>`;
-      } else {
-        worksHtml += roomWorks.map(w => `
-          <div class="col sortable-work-item" data-work-id="${w._id}">
-            <div class="card bg-transparent border border-secondary border-opacity-25 h-100 p-2 d-flex flex-row align-items-center rounded-3" style="transition: all 0.2s ease;">
-              
-              <!-- Maniglia per il trascinamento -->
-              <i class="bi bi-grip-vertical text-secondary me-2 drag-handle fs-5" style="cursor: grab;" title="Trascina per spostare"></i>
-              
-              <img src="${w.image || '/img/fallback-work.jpg'}" class="rounded me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
-              <div class="flex-grow-1 text-truncate">
-                <h6 class="mb-0 text-white text-truncate small fw-bold">${w.name}</h6>
-                <small class="text-white-50" style="font-size: 0.7rem;">${w.author?.name || w.author || 'Autore Sconosciuto'}</small>
-              </div>
-              <div class="d-flex gap-1 ms-2">
-                <button class="btn btn-sm btn-glass text-info p-1 px-2 border-0" title="Gestisci Testi" onclick="openTextManager('${w._id}')"><i class="bi bi-card-text"></i></button>
-                <button class="btn btn-sm btn-glass text-white p-1 px-2 border-0" title="Modifica Opera" onclick="openWorkModal('${section._id}', '${room._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
-                <button class="btn btn-sm btn-glass text-danger p-1 px-2 border-0" title="Elimina Opera" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
-              </div>
-            </div>
+    worksHtml += works.map(w => `
+      <div class="col sortable-work-item" data-work-id="${w._id}">
+        <div class="card bg-transparent border border-secondary border-opacity-25 h-100 p-2 d-flex flex-row align-items-center rounded-3" style="transition: all 0.2s ease;">
+          <i class="bi bi-grip-vertical text-secondary me-2 drag-handle fs-5" style="cursor: grab;" title="Trascina per spostare"></i>
+          <img src="${w.image || '/img/fallback-work.jpg'}" class="rounded me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
+          <div class="flex-grow-1 text-truncate">
+            <h6 class="mb-0 text-white text-truncate small fw-bold">${w.name}</h6>
+            <small class="text-white-50" style="font-size: 0.7rem;">${w.author?.name || w.author || 'Autore Sconosciuto'}</small>
           </div>
-        `).join('');
-      }
-      worksHtml += `</div>`;
-
-      // HTML della singola Stanza (in stile card scura)
-      roomsHtml += `
-        <div class="card custom-card mb-4 border-secondary border-opacity-25 bg-dark bg-opacity-25">
-          <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-10">
-            <h6 class="mb-0 text-info fw-bold"><i class="bi bi-door-open me-2"></i>${room.name}</h6>
-            <div class="d-flex gap-2">
-              <button class="btn btn-sm btn-outline-info rounded-pill px-3 py-1" onclick="openWorkModal('${section._id}', '${room._id}')"><i class="bi bi-plus-lg me-1"></i>Opera</button>
-              <button class="btn btn-sm btn-glass text-white px-2 py-1" title="Modifica Stanza" onclick="openRoomModal('${section._id}', '${room._id}', '${safeRoomName}')"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-sm btn-glass text-danger px-2 py-1" title="Elimina Stanza" onclick="deleteRoom('${section._id}', '${room._id}')"><i class="bi bi-trash"></i></button>
-            </div>
+          <div class="d-flex gap-1 ms-2">
+            <button class="btn btn-sm btn-glass text-info p-1 px-2 border-0" title="Gestisci Testi" onclick="openTextManager('${w._id}')"><i class="bi bi-card-text"></i></button>
+            <button class="btn btn-sm btn-glass text-white p-1 px-2 border-0" title="Modifica Opera" onclick="openWorkModal('${section._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-glass text-danger p-1 px-2 border-0" title="Elimina Opera" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
           </div>
-          <div class="card-body">
-            ${worksHtml}
-          </div>
-        </div>`;
-    });
+        </div>
+      </div>
+    `).join('');
   }
+  worksHtml += `</div>`;
 
   return `
     <div class="accordion-item bg-transparent mb-3 border-0">
@@ -209,7 +163,7 @@ function renderSectionAccordionItem(section, works, index) {
         <button class="accordion-button collapsed custom-card text-white py-3 px-4 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: none;">
           <i class="bi bi-grid-1x2-fill me-3 text-info fs-5"></i> 
           <span class="fw-bold fs-6">${section.name}</span>
-          <span class="badge bg-info bg-opacity-25 text-info border border-info ms-auto me-3 rounded-pill px-3 py-2">${rooms.length} Stanze</span>
+          <span class="badge bg-info bg-opacity-25 text-info border border-info ms-auto me-3 rounded-pill px-3 py-2">${works.length} Opere</span>
         </button>
       </h2>
       
@@ -226,14 +180,14 @@ function renderSectionAccordionItem(section, works, index) {
                 <i class="bi bi-trash me-1"></i> Elimina
               </button>
             </div>
-            <button class="btn btn-sm btn-gradient px-4 rounded-pill shadow-sm" onclick="openRoomModal('${section._id}')">
-              <i class="bi bi-plus-lg me-1"></i> Nuova Stanza
+            <button class="btn btn-sm btn-gradient px-4 rounded-pill shadow-sm" onclick="openWorkModal('${section._id}')">
+              <i class="bi bi-plus-lg me-1"></i> Nuova Opera
             </button>
           </div>
-          
-          <!-- Contenuto Stanze -->
-          ${roomsHtml}
-          
+
+          <!-- Contenuto Opere -->
+          ${worksHtml}
+
         </div>
       </div>
     </div>`;
@@ -282,7 +236,7 @@ async function saveSectionFromModal() {
         // MODIFICA LIVE DEL DOM: Cambiamo solo il testo del bottone dell'accordion senza ricaricare nulla!
         const accordionButton = document.querySelector(`#headingSection${secIndex} .accordion-button`);
         if (accordionButton) {
-          accordionButton.innerHTML = `<i class="bi bi-folder2-open me-2 text-info"></i> ${sectionName} <span class="badge badge-tag ms-auto me-3">${museumSections[secIndex].rooms?.length || 0} stanze</span>`;
+          accordionButton.innerHTML = `<i class="bi bi-folder2-open me-2 text-info"></i> ${sectionName} <span class="badge badge-tag ms-auto me-3">${museumSections[secIndex].works?.length || 0} opere</span>`;
         }
       }
     } else {
@@ -290,7 +244,7 @@ async function saveSectionFromModal() {
       res = await fetch(`${API_BASE_URL}/save-section`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rsection: { name: sectionName, image: sectionImage, rooms: [] }, museumId: currentMuseumId })
+        body: JSON.stringify({ rsection: { name: sectionName, image: sectionImage }, museumId: currentMuseumId })
       });
       
       if (res.ok) {
@@ -298,7 +252,7 @@ async function saveSectionFromModal() {
         sectionModalInstance.hide();
         
         // Pushiamo la nuova sezione nello stato locale
-        const newSectionObj = { _id: newSectionId, name: sectionName, image: sectionImage, rooms: [] };
+        const newSectionObj = { _id: newSectionId, name: sectionName, image: sectionImage };
         museumSections.push(newSectionObj);
         
         // Appendiamo l'HTML della nuova sezione in fondo all'accordion esistente
@@ -318,7 +272,7 @@ async function saveSectionFromModal() {
 async function deleteSection(sectionId) {
   const isConfirmed = await window.showCustomConfirm(
     "Conferma eliminazione",
-    "Attenzione: Eliminerai la sezione, tutte le stanze e le opere! Sei sicuro?"
+    "Attenzione: Eliminerai la sezione e tutte le opere contenute! Sei sicuro?"
   );
   if(!isConfirmed) return;
 
@@ -331,112 +285,9 @@ async function deleteSection(sectionId) {
   } catch (error) { console.error(error); }
 }
 
-// ------------------- NUOVO: GESTIONE STANZE -------------------
-function openRoomModal(sectionId, roomId = null, currentName = "") {
-  document.getElementById("room-section-id").value = sectionId;
-  document.getElementById("room-id-input").value = roomId || "";
-  document.getElementById("room-name-input").value = currentName;
-  document.getElementById("roomModalLabel").innerText = roomId ? "Rinomina Stanza" : "Nuova Stanza";
-  roomModalInstance.show();
-}
-
-async function saveRoomFromModal() {
-  const sectionId = document.getElementById("room-section-id").value;
-  const roomId = document.getElementById("room-id-input").value;
-  const roomName = document.getElementById("room-name-input").value.trim();
-
-  if (!roomName) { alert("Il nome della stanza è obbligatorio."); return; }
-
-  try {
-    let res;
-    if (roomId) {
-      // MODIFICA STANZA (Rinomina)
-      res = await fetch(`${API_BASE_URL}/sections/${sectionId}/rooms/${roomId}`, {
-        method: "PUT", 
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ roomData: { name: roomName }, museumId: currentMuseumId })
-      });
-      
-      if (res.ok) {
-        roomModalInstance.hide();
-        // Aggiorniamo la cache locale
-        if (roomsCache[roomId]) roomsCache[roomId].name = roomName;
-        
-        // Aggiorniamo live l'intestazione H6 della stanza nel DOM
-        const targetTitle = document.querySelector(`[onclick*="${roomId}"][onclick*="deleteRoom"]`);
-        if (targetTitle) {
-          const headerContainer = targetTitle.closest('.card-header');
-          if (headerContainer) {
-            headerContainer.querySelector('h6').innerHTML = `<i class="bi bi-door-open me-2 text-warning"></i>${roomName}`;
-          }
-        }
-      }
-    } else {
-      // CREAZIONE STANZA
-      res = await fetch(`${API_BASE_URL}/sections/${sectionId}/rooms`, {
-        method: "POST", 
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ roomData: { name: roomName, shape: { type: 'polygon', points: '' } }, museumId: currentMuseumId })
-      });
-      
-      if (res.ok) {
-        const savedRoom = await res.json();
-        roomModalInstance.hide();
-        
-        // Inseriamo la nuova stanza nella cache
-        roomsCache[savedRoom._id] = savedRoom;
-        
-        // Troviamo l'indice della sezione nello stato per poter fare il rendering corretto
-        const secIndex = museumSections.findIndex(s => s._id === sectionId);
-        if (secIndex !== -1) {
-          if (!museumSections[secIndex].rooms) museumSections[secIndex].rooms = [];
-          museumSections[secIndex].rooms.push(savedRoom);
-          
-          // Invece di ricostruire tutto l'accordion, ricarichiamo solo le sezioni e le opere di QUELLA specifica sezione
-          const worksRes = await fetch(`${API_BASE_URL}/sections/${sectionId}/works`);
-          const works = await worksRes.json();
-          
-          const collapseBody = document.querySelector(`#collapseSection${secIndex} .accordion-body`);
-          if (collapseBody) {
-            // Ricostruiamo solo il contenuto interno della sezione lasciando l'accordion aperto!
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = renderSectionAccordionItem(museumSections[secIndex], works, secIndex);
-            const newBodyContent = tempDiv.querySelector('.accordion-body').innerHTML;
-            collapseBody.innerHTML = newBodyContent;
-
-            setTimeout(initSortableWorks, 100);
-          }
-        }
-      }
-    }
-  } catch (error) { 
-    console.error("Errore salvataggio stanza:", error); 
-  }
-}
-
-async function deleteRoom(sectionId, roomId) {
-  const isConfirmed = await window.showCustomConfirm(
-    "Eliminazione stanza",
-    "Attenzione: Eliminando la stanza verranno eliminate (o perse) le opere contenute in essa. Sei sicuro?"
-  );
-  if(!isConfirmed) return;
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/sections/${sectionId}/rooms/${roomId}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" }, // Aggiunto header per il body
-      // Inviamo il museumId anche nella DELETE
-      body: JSON.stringify({ museumId: currentMuseumId }) 
-    });
-    
-    if (res.ok) loadSectionsAndWorks();
-  } catch (error) { console.error(error); }
-}
-
-// ------------------- GESTIONE OPERE (Aggiornata per includere RoomId) -------------------
-async function openWorkModal(sectionId, roomId, workId = null) {
+// ------------------- GESTIONE OPERE -------------------
+async function openWorkModal(sectionId, workId = null) {
   document.getElementById("work-section-id").value = sectionId;
-  document.getElementById("work-room-id").value = roomId;
   document.getElementById("work-id").value = workId || "";
 
   if (workId && worksCache[workId]) {
@@ -502,7 +353,6 @@ async function openWorkModal(sectionId, roomId, workId = null) {
 
 async function saveWorkFromModal() {
   const sectionId = document.getElementById("work-section-id").value;
-  const roomId = document.getElementById("work-room-id").value;
   const workId = document.getElementById("work-id").value;
   const workDesc = document.getElementById("work-description").value.trim();
   
@@ -515,7 +365,6 @@ async function saveWorkFromModal() {
     style: document.getElementById("work-style-id").value.trim() || undefined,
     styleName: document.getElementById("work-style-search").value.trim() || undefined, // NUOVO!
     image: document.getElementById("work-image").value.trim(),
-    roomId: roomId
   };
   
   if (!workData.name || !workData.author || !workData.technique) { 
@@ -1640,14 +1489,13 @@ function initSortableWorks() {
 
         const workId = itemEl.dataset.workId;
         const newSectionId = toContainer.dataset.sectionId;
-        const newRoomId = toContainer.dataset.roomId;
         const oldSectionId = fromContainer.dataset.sectionId;
 
-        const placeholder = toContainer.querySelector('.empty-room-placeholder');
+        const placeholder = toContainer.querySelector('.empty-section-placeholder');
         if (placeholder) placeholder.remove();
 
         if (fromContainer.children.length === 0) {
-          fromContainer.innerHTML = `<div class="col-12 empty-room-placeholder"><p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa stanza. Trascinane una qui!</p></div>`;
+          fromContainer.innerHTML = `<div class="col-12 empty-section-placeholder"><p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa stanza. Trascinane una qui!</p></div>`;
         }
 
         itemEl.style.opacity = '0.4';
@@ -1660,14 +1508,11 @@ function initSortableWorks() {
               museumId: currentMuseumId,
               oldSectionId: oldSectionId,
               newSectionId: newSectionId,
-              newRoomId: newRoomId
             })
           });
           
           if (!res.ok) throw new Error("Errore API spostamento");
-          
-          if (worksCache[workId]) worksCache[workId].roomId = newRoomId;
-          
+                    
           itemEl.style.opacity = '1';
         } catch (error) {
           console.error(error);

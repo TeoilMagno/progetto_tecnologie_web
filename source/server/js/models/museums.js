@@ -66,12 +66,9 @@ const museumSchema = new Schema({
   // Mappatura geometrica dei servizi sulla mappa SVG (Simile alle opere nelle sezioni)
   // Se un servizio non e' fisico, i relativi campi saranno impostati a null
   facilities: [{
-    roomId: { type: Schema.Types.ObjectId },
     serviceType: {
       type: servicesSchema,
     },
-    x: { type: Number },
-    y: { type: Number },
     inSection: {
       sectionId: { type: Schema.Types.ObjectId, ref: 'Section' },
       x: { type: Number },

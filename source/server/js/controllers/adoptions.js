@@ -43,7 +43,7 @@ exports.getWorkByAdoption = async (adoptionId) => {
 
 // Un museo richiede in adozione un'opera (status: pending)
 exports.createAdoptionRequest = async (data, requestingUser) => {
-  const { workId, toMuseumId, toRoomId, beginDate, endDate } = data;
+  const { workId, toMuseumId, toSectionId, beginDate, endDate } = data;
 
   if (requestingUser.role !== 'admin') {
     const isOwnerOfTarget = requestingUser.managed_museums.some(
@@ -78,7 +78,7 @@ exports.createAdoptionRequest = async (data, requestingUser) => {
   // La provenienza dell'opera NON deve mai arrivare dal client:
   // la ricaviamo dal documento Work, che è la fonte di verità su dove si trova l'opera ora.
   const fromMuseumId = work.museumId;
-  const fromRoomId = work.roomId;
+  const fromSectionId = work.sectionId;
 
   // Identifichiamo il curatore proprietario dell'opera
   const ownerUser = await User.findOne({ managed_museums: fromMuseumId });
@@ -100,8 +100,8 @@ exports.createAdoptionRequest = async (data, requestingUser) => {
     beginDate,
     endDate,
     workId,
-    fromRoomId, 
-    toRoomId,
+    fromSectionId, 
+    toSectionId,
     status: 'pending' 
   });
 
@@ -120,7 +120,7 @@ exports.getUserAdoptions = async (userId) => {
 };
 
 // Rispondi alla richiesta (accepted / refused)
-exports.respondToAdoption = async (adoptionId, status, targetRoomId, user) => {
+exports.respondToAdoption = async (adoptionId, status, targetSectionId, user) => {
   if (!['accepted', 'refused'].includes(status)) {
     throw new Error("Stato non valido. Usa 'accepted' o 'refused'.");
   }
@@ -136,7 +136,7 @@ exports.respondToAdoption = async (adoptionId, status, targetRoomId, user) => {
   }
 
   adoption.status = status; 
-  if (targetRoomId) adoption.toRoomId = targetRoomId;
+  if (targetSectionId) adoption.toSectionId = targetSectionId;
   
   await adoption.save(); 
   return adoption;
@@ -168,17 +168,24 @@ exports.completeAdoption = async (adoptionId, user) => {
   const work = await Work.findById(adoption.workId); 
   if (work) { 
     work.museumId = adoption.fromMuseumId;
-    // Se originalRoomId è salvato lo usiamo, altrimenti cerchiamo la prima stanza disponibile nel museo originario
-    if (adoption.fromRoomId) {
-      work.roomId = adoption.fromRoomId;
+    // fromSectionId è required a livello di schema Adoption, quindi in condizioni normali
+    // è sempre valorizzato (viene preso da work.sectionId, a sua volta required, al momento
+    // della richiesta). Il fallback sotto copre solo eventuali dati storici/incoerenti.
+    if (adoption.fromSectionId) {
+      work.sectionId = adoption.fromSectionId;
     } else {
-      // Fallback di sicurezza: cerca la prima sezione e la prima stanza del museo originario
       const firstSection = await Section.findOne({ museumId: adoption.fromMuseumId });
-      if (firstSection && firstSection.rooms && firstSection.rooms.length > 0) {
-        work.roomId = firstSection.rooms[0]._id;
-      } else {
-        work.roomId = null;
+      if (!firstSection) {
+        // sectionId è required su Work: non possiamo salvare con null.
+        // Blocchiamo l'operazione con un errore chiaro invece di far fallire
+        // il salvataggio con un ValidationError generico di Mongoose.
+        const error = new Error(
+          "Impossibile completare l'adozione: il museo di provenienza non ha nessuna sezione a cui riassegnare l'opera."
+        );
+        error.statusCode = 409;
+        throw error;
       }
+      work.sectionId = firstSection._id;
     }
 
     work.adoptionId = null; 
@@ -215,7 +222,7 @@ exports.confirmArrival = async (adoptionId, user) => {
   const work = await Work.findById(adoption.workId);
   if (work) {
     work.museumId = adoption.toMuseumId;
-    work.roomId = adoption.toRoomId;
+    work.sectionId = adoption.toSectionId;
     work.adoptionId = adoption._id;
     await work.save();
   }

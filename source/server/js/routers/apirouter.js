@@ -292,47 +292,6 @@ apiRouter.delete("/sections/:id", [auth.isCurator, auth.isMuseumOwner], async (r
   }
 });
 
-// -------------- rooms -----------------------
-
-// Aggiungi una stanza a una sezione
-// * nel body deve esserci il museumId
-apiRouter.post("/sections/:sectionId/rooms", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
-  try {
-    const { roomData, museumId } = req.body;
-    const newRoom = await sectionController.addRoomToSection(req.params.sectionId, roomData, museumId);
-    res.status(201).json(newRoom);
-  } catch (error) {
-    console.error("Errore aggiunta stanza:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Modifica (rinomina) una Stanza
-// * nel body deve esserci il museumId
-apiRouter.put("/sections/:sectionId/rooms/:roomId", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
-  try {
-    const { roomData, museumId } = req.body;
-    const updatedRoom = await sectionController.updateRoomInSection(req.params.sectionId, req.params.roomId, roomData, museumId);
-    res.json(updatedRoom);
-  } catch (error) {
-    console.error("Errore modifica stanza:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Elimina una Stanza
-// * nel body deve esserci il museumId
-apiRouter.delete("/sections/:sectionId/rooms/:roomId", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
-  try {
-    const { museumId } = req.body;
-    await sectionController.deleteRoomFromSection(req.params.sectionId, req.params.roomId, museumId);
-    res.json({ message: "Stanza eliminata con successo" });
-  } catch (error) {
-    console.error("Errore eliminazione stanza:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
 //--------------- works -----------------------
 
 // ? ha senso dato che c'e' gia' la rotta per ottenere le opere di ogni sezione e ogni sezione di un museo
@@ -406,10 +365,10 @@ apiRouter.delete("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, 
 apiRouter.put("/works/:id/move", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
   try {
     const workId = req.params.id;
-    const { museumId, oldSectionId, newSectionId, newRoomId } = req.body;
+    const { museumId, oldSectionId, newSectionId } = req.body;
 
     // 1. Aggiorna la stanza nell'opera tramite il controller (grazie al fix di prima, l'immagine è salva!)
-    await workController.updateWorkById(workId, { roomId: newRoomId }, museumId);
+    await workController.updateWorkById(workId, { sectionId: newSectionId }, museumId);
 
     // 2. Se l'opera è stata trascinata in un'altra SEZIONE, spostiamo il suo ID nei rispettivi array
     if (oldSectionId !== newSectionId) {
@@ -436,7 +395,7 @@ apiRouter.post("/add-work", [auth.isCurator, auth.isMuseumOwner], async (req, re
     const newWork = new Work({
       ...work,
       museumId: museumId, // Evitiamo che l'utente si inventi cose
-      roomId: work.roomId || null, // Valorizza il campo roomId sul DB!
+      sectionId: sectionId,
     });
     const savedWork = await newWork.save();
 
@@ -874,8 +833,8 @@ apiRouter.get("/my-adoptions", auth.isCurator, async (req, res) => {
 // Rispondi alla richiesta (accetta 'accepted' o rifiuta 'refused')
 apiRouter.put("/adoptions/:id/respond", auth.isCurator, async (req, res) => {
   try {
-    const { status, toRoomId } = req.body;
-    const adoption = await adoptionController.respondToAdoption(req.params.id, status, toRoomId, req.user);
+    const { status, toSectionId } = req.body;
+    const adoption = await adoptionController.respondToAdoption(req.params.id, status, toSectionId, req.user);
     res.json({ message: `Adozione aggiornata in stato: ${status}`, adoption });
   } catch (error) {
     console.error("Errore risposta adozione:", error);

@@ -44,12 +44,14 @@ const adoptionSchema = new Schema({
   },
 
   // dobbiamo sapere da dove proviene l'opera
-  fromRoomId: {
+  fromSectionId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'Section',
     required: true
   },
-  toRoomId: {
+  toSectionId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'Section',
     required: true
   },
 

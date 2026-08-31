@@ -2,10 +2,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+/*
+ * il seguente codice e' utile nel caso si volesse passare alla creazione e al salvataggio
+ * di stanze all'interno delle sezioni per fare un posizionamento piu' preciso
+ * delle opere
+
 const roomSchema = new Schema({
   name: { type: String, required: true },
   svgId: { type: String } // Es. "room-162" (utile in futuro se vuoi farle cliccare)
 });
+
+*/
 
 const sectionSchema = new Schema({
   name: { type: String, required: true },
@@ -19,7 +26,7 @@ const sectionSchema = new Schema({
     height: { type: Number, required: true }
   },
 
-  rooms: [roomSchema],
+  // rooms: [roomSchema],
   image: { type: String, required: true },
   museumId: { type: Schema.Types.ObjectId, ref: 'Museum', required: true },
   

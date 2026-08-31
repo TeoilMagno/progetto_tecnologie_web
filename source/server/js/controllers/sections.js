@@ -97,7 +97,7 @@ exports.uploadMap = async (mapData) => {
   const updatedSections = [];
 
   for (const section of sections) {
-    const {_id, color, works, rooms, shape} = section;
+    const {_id, color, works, shape} = section;
 
     if(!_id) {
       console.warn("Ricevuta una sezione senza _id, ignorata.");
@@ -110,8 +110,7 @@ exports.uploadMap = async (mapData) => {
         $set: {
           color: color,
           shape: shape,
-          works: works,
-          rooms: rooms
+          works: works
         }
       },
       {
@@ -159,70 +158,4 @@ exports.deleteSectionById = async (sectionId, museumId) => {
   }
 
   return await Section.findByIdAndDelete(sectionId);
-};
-
-// ----------- Stanze -----------
-
-// Aggiunge una nuova stanza all'interno di una sezione
-exports.addRoomToSection = async (sectionId, roomData, museumId) => {
-  const section = await Section.findOne({ _id: sectionId, museumId: museumId });
-  if (!section) {
-    const error = new Error("Sezione non trovata o non sei autorizzato a modificarla");
-    error.statusCode = 403;
-    throw error;
-  }
-
-  section.rooms.push(roomData);
-  await section.save();
-
-  // Restituiamo l'ultima stanza aggiunta (che ora contiene il suo _id univoco generato da MongoDB)
-  return section.rooms[section.rooms.length - 1];
-};
-
-// Aggiorna il nome o la forma (shape) di una stanza
-exports.updateRoomInSection = async (sectionId, roomId, updateData, museumId) => {
-  const section = await Section.findOne({ _id: sectionId, museumId: museumId });
-  if (!section) {
-    const error = new Error("Sezione non trovata o non sei autorizzato a modificarla");
-    error.statusCode = 403;
-    throw error;
-  }
-
-  const room = section.rooms.id(roomId);
-  if (!room) {
-    const error = new Error("Stanza non trovata");
-    error.statusCode = 404;
-    throw error;
-  }
-
-  if (updateData.name) room.name = updateData.name;
-  if (updateData.shape) room.shape = updateData.shape;
-
-  await section.save();
-  return room;
-};
-
-// Elimina una stanza da una sezione e cancella le opere al suo interno
-exports.deleteRoomFromSection = async (sectionId, roomId, museumId) => {
-  const section = await Section.findOne({ _id: sectionId, museumId: museumId });
-  if (!section) {
-    const error = new Error("Sezione non trovata o non sei autorizzato a modificarla");
-    error.statusCode = 403;
-    throw error;
-  }
-
-  const worksInRoom = await Work.find({ roomId: roomId, museumId: museumId });
-  
-  for (const w of worksInRoom) {
-    // elimina l'opera fisica dalla collezione Works
-    await deleteWorkById(w._id, museumId);
-    
-    // rimuove il riferimento dell'opera anche dall'array "works" della sezione
-    section.works = section.works.filter(sw => sw.workId && sw.workId.toString() !== w._id.toString());
-  }
-
-  section.rooms.pull(roomId);
-  await section.save();
-  
-  return true;
 };
