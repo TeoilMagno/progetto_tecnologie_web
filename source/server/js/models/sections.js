@@ -18,12 +18,12 @@ const sectionSchema = new Schema({
   name: { type: String, required: true },
   color: { type: String },
   
-  svgGroupId: { type: String, required: true }, // Es. "section-greca"
+  svgGroupId: { type: String }, // Es. "section-greca"
   viewBox: {
-    x: { type: Number, required: true },
-    y: { type: Number, required: true },
-    width: { type: Number, required: true },
-    height: { type: Number, required: true }
+    x: { type: Number },
+    y: { type: Number },
+    width: { type: Number },
+    height: { type: Number }
   },
 
   // rooms: [roomSchema],

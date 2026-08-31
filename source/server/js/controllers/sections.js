@@ -39,9 +39,9 @@ exports.saveSection = async (sectionData, museumId) => {
   }
 
   const section = new Section({
-    name: sectionData.name, 
+    name: sectionData.name,
     image: sectionData.image,
-    works: workObjects, 
+    works: workObjects,
     museumId: museumId
   });
 

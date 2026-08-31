@@ -9,6 +9,7 @@ appunti_progetto.txt
 dist/
 
 uploads/
+source/public/navigator
 
 # Logs
 logs
