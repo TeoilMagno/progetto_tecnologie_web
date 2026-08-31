@@ -99,8 +99,7 @@ async function getMuseumItems(museumId, isHistoryPop = false) {
   const container = document.getElementById("content-area");
   currentMuseumId = museumId;
 
-  // Stacca la sentinella dai musei così non interferisce
-  if (globalSentinel.parentNode) {
+  if (globalSentinel && globalSentinel.parentNode) {
     globalSentinel.parentNode.removeChild(globalSentinel);
   }
 
@@ -111,11 +110,22 @@ async function getMuseumItems(museumId, isHistoryPop = false) {
     </div>`;
 
   try {
-    const museum = cachedMuseums.find((m) => m._id === museumId);
+    // FIX: Ricerca sicura nella cache globale (previene il crash _id)
+    let museum = cachedMuseums.find((m) => m && m._id === museumId);
+    
+    // Se non lo troviamo (es. atterriamo diretti da I Miei Musei), lo scarichiamo E lo mettiamo in cache
+    if (!museum) {
+      const res = await fetch(`${API_BASE_URL}/museums/${museumId}`);
+      if (!res.ok) throw new Error("Museo non trovato nel database.");
+      museum = await res.json();
+      cachedMuseums.push(museum); // Aggiornamento Cache Globale
+    }
+
     currentView = 'works';
     if (!isHistoryPop) {
       history.pushState({ view: 'museum', id: museumId }, "", `/marketplace?museumId=${museumId}`);
     }
+    
     renderMuseumDashboard(museum);
   } catch (error) {
     console.error("Errore in getMuseumItems: ", error);
@@ -311,7 +321,6 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
     return;
   }
 
-  // se è admin, sblocca il bottone istantaneamente
   if (currentUser.role === 'admin') {
     const editBtn = document.getElementById("edit-museum-btn");
     const editBshopBtn = document.getElementById("edit-stock-btn");
@@ -319,39 +328,30 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
     if (editBtn) editBtn.classList.remove("d-none");
     if (editBshopBtn) editBshopBtn.classList.remove("d-none");
     if (uploadMapBtn) uploadMapBtn.classList.remove("d-none");
-    return; // Ci fermiamo qui, l'admin ha già i permessi
+    return; 
   }
 
-  // logica normale per i curatori
   try {
-    // Se non abbiamo la cache, scarichiamo SOLO _id e name (fetching selettivo)
     if (!myManagedMuseumsCache) {
       const response = await fetch(`${API_BASE_URL}/my-museums?fields=_id,name`);
-      if (response.ok) {
-        myManagedMuseumsCache = await response.json();
-      } else {
-        return;
-      }
+      if (response.ok) myManagedMuseumsCache = await response.json();
+      else return;
     }
     
-    // Controlliamo la cache
+    // FIX _id CRASH: Assicuriamoci che 'museum' esista prima di leggere l'ID
     const isManaged = myManagedMuseumsCache.some(museum => {
-       return (museum._id && museum._id === currentMuseumId) || museum === currentMuseumId;
+       return museum && (museum._id === currentMuseumId || museum === currentMuseumId);
     });
-    // mostriamo il bottone
+
     if (isManaged) {
       const editBtn = document.getElementById("edit-museum-btn");
       const editBshopBtn = document.getElementById("edit-stock-btn");
 
-      if (editBtn) {
-        editBtn.classList.remove("d-none");
-      }
-      if (editBshopBtn) {
-        editBshopBtn.classList.remove("d-none");
-      }
+      if (editBtn) editBtn.classList.remove("d-none");
+      if (editBshopBtn) editBshopBtn.classList.remove("d-none");
     }
   } catch (error) {
-    console.error("Errore durante la verifica dei permessi di modifica museo:", error);
+    console.error("Errore verifica permessi:", error);
   }
 }
 
@@ -575,8 +575,7 @@ async function loadMuseumSubView(view, museumId) {
   const subContainer = document.getElementById("museum-display-area");
   if (!subContainer) return;
 
-  // Stacchiamo temporaneamente la sentinella mentre puliamo il subContainer
-  if (globalSentinel.parentNode) {
+  if (globalSentinel && globalSentinel.parentNode) {
     globalSentinel.parentNode.removeChild(globalSentinel);
   }
 
@@ -591,32 +590,29 @@ async function loadMuseumSubView(view, museumId) {
       if (!response.ok) throw new Error("Errore nel caricamento delle visite");
       const allVisits = await response.json();
       
-      // Filtriamo per questo museo
-      const museumVisits = allVisits.filter(v => v.isPublic !== false && (v.museumId?._id === museumId || v.museumId === museumId));
+      // FIX _id CRASH: Protezione oggetti null in cache
+      const museumVisits = allVisits.filter(v => v && v.isPublic !== false && (v.museumId?._id === museumId || v.museumId === museumId));
       
       currentVisits = museumVisits;
       renderVisitsListForMuseum(currentVisits);
     } else {
-      // Scegliamo l'endpoint corretto
       if (view === 'works') {
-        // --- MAGIA DELLA CACHE DEI TAB ---
-        // Se abbiamo già scaricato le opere per questo museo e l'array non è vuoto, usiamole al volo!
-        if (currentWorks && currentWorks.length > 0 && currentWorks[0].museumId === museumId) {
+        // FIX _id CRASH: Optional Chaining aggiunto (currentWorks[0]?.museumId)
+        if (currentWorks && currentWorks.length > 0 && currentWorks[0]?.museumId === museumId) {
            currentWorkPage = 1;
            renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
            const cachedChunk = currentWorks.slice(0, renderedWorksCount);
            renderWorksList(cachedChunk, false);
            updateWorksSentinelVisibility();
-           return; // STOP! Nessun fetch, visualizzazione istantanea!
+           return; 
         }
         
-        // Altrimenti procedi col fetch normale
         currentWorkPage = 1;
         renderedWorksCount = 0;
         await fetchAndRenderWorks(museumId, false);
       } else {
-        // --- MAGIA DELLA CACHE: Se li abbiamo già scaricati per questo museo, usiamo la RAM ---
-        if (currentItems && currentItems.length > 0 && (currentItems[0].museumId === museumId || currentItems[0].museumId?._id === museumId)) {
+        // FIX _id CRASH per gli Articoli Bookshop
+        if (currentItems && currentItems.length > 0 && (currentItems[0]?.museumId === museumId || currentItems[0]?.museumId?._id === museumId)) {
            currentItemsPage = 1;
            renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK, currentItems.length);
            const cachedChunk = currentItems.slice(0, renderedItemsCount);
@@ -839,7 +835,6 @@ async function loadManagedMuseums(isLoadMore = false) {
   const container = document.getElementById("managed-museums-area");
   if (!container) return;
 
-  // Mostriamo il caricamento solo al primo giro
   if (!isLoadMore) {
     container.innerHTML = `<div class="col-12 text-center mt-5"><div class="spinner-border text-info"></div></div>`;
     myMuseumsAdminPage = 1;
@@ -850,26 +845,34 @@ async function loadManagedMuseums(isLoadMore = false) {
     const data = await response.json();
 
     const isPaginated = !Array.isArray(data);
-    const managedMuseums = isPaginated ? data.museums : data;
+    const fetchedMuseums = isPaginated ? data.museums : data;
     const totalPages = isPaginated ? data.totalPages : 1;
 
-    if (managedMuseums.length === 0 && !isLoadMore) {
+    if (fetchedMuseums.length === 0 && !isLoadMore) {
       container.innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <p class="text-secondary">Non hai ancora musei assegnati.</p>
-                    <a href="/add-museum" class="btn btn-primary">Aggiungi il tuo primo museo</a>
-                </div>`;
+        <div class="col-12 text-center py-5">
+            <p class="text-secondary">Non hai ancora musei assegnati.</p>
+            <a href="/add-museum" class="btn btn-primary">Aggiungi il tuo primo museo</a>
+        </div>`;
       return;
     }
 
-    renderMuseumsList(managedMuseums, "managed-museums-area", isLoadMore);
+    // FIX CACHE: Iniettiamo i musei recuperati nella Cache Globale
+    if (fetchedMuseums && fetchedMuseums.length > 0) {
+      fetchedMuseums.forEach(newMus => {
+        if (!newMus) return;
+        const index = cachedMuseums.findIndex(m => m && m._id === newMus._id);
+        if (index === -1) cachedMuseums.push(newMus);
+        else cachedMuseums[index] = newMus; // Aggiorna dati se già presente
+      });
+    }
 
-    // Se stiamo gestendo dati paginati (admin), attiviamo lo scroll infinito
+    renderMuseumsList(fetchedMuseums, "managed-museums-area", isLoadMore);
+
     if (isPaginated) {
       container.appendChild(globalSentinel);
       setupManagedMuseumsObserver(totalPages);
       
-      // Nascondiamo la sentinella se abbiamo raggiunto l'ultima pagina
       if (myMuseumsAdminPage >= totalPages) {
         globalSentinel.classList.add("d-none");
       } else {

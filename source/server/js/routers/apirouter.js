@@ -608,7 +608,7 @@ apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
   try {
     // Se è Admin, restituiamo TUTTI i musei del DB
     if (req.user.role === "admin") {
-      const allMuseums = await museumController.getMuseums();
+      const allMuseums = await museumController.getMuseums(null, null, null, null, null, null, null, null, null);
       return res.json(allMuseums);
     }
 
