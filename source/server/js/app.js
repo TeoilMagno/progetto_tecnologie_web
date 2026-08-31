@@ -45,13 +45,11 @@ app.use((req, res, next) => {
 });
 
 // ─── Middleware base ───────────────────────────────────────────────────────
-app.use(cors({ credentials: true }));
+app.use(cors({ credentials: true, origin: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use("/marketplace", express.static(path.join(__dirname, '..', '..', 'marketplace')));
-app.use("/navigator",   express.static(path.join(__dirname, '..', '..', 'navigator', 'dist')));
-app.use("/uploads",     express.static(path.join(__dirname, '..', '..', 'uploads')));
+app.use("/", express.static(path.join(__dirname, '..', '..', 'public')));
 
 // ─── Sessione e Passport ───────────────────────────────────────────────────
 app.use(session({
