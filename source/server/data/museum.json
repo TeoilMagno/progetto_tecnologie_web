@@ -1,66 +1,58 @@
 [
   {
-    "_id": "696a65ca017c648acfc9b55c",
-    "name": "Museo del Prado",
-    "address": "C. de Ruiz de Alarcón, 23, 28014 Madrid, Spagna",
-    "image": "https://content3.cdnprado.net/imagenes/Documentos/imgsem/5b/5bd8/5bd83198-50ef-dd66-164b-2a26fb9e9b61/da30334e-766b-3efb-b748-b92179436d67.jpg",
+    "_id": "696a65ca017c648acfc9b560",
+    "name": "Tokyo National Museum",
+    "address": "13-9 Uenokoen, Taito City, Tokyo 110-8712, Giappone",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6d10hb-MRXK1OWotHAgzkcN8sWjW8HiHMqg&s",
     "tags": [
-      "Pittura",
-      "Spagna",
-      "Rinascimento"
+      "Asia",
+      "Samurai",
+      "Arte Orientale"
     ],
     "__v": 0,
     "accessibility": [
       "wheelchair_accessible"
     ],
-    "services": [
-      "cafe",
-      "cloakroom"
-    ],
-    "ticketPrice": 15,
-    "latitude": 40.4135675,
-    "longitude": -3.6913514,
+    "ticketPrice": 10,
     "schedule": [
       {
-        "_id": "6a886a999f07c0b628582323",
-        "day": "monday",
-        "hours": "10:00 - 20:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582324",
+        "_id": "6a886a999f07c0b628582331",
         "day": "tuesday",
-        "hours": "10:00 - 20:00"
+        "hours": "09:30 - 17:00"
       },
       {
-        "_id": "6a886a999f07c0b628582325",
+        "_id": "6a886a999f07c0b628582332",
         "day": "wednesday",
-        "hours": "10:00 - 20:00"
+        "hours": "09:30 - 17:00"
       },
       {
-        "_id": "6a886a999f07c0b628582326",
+        "_id": "6a886a999f07c0b628582333",
         "day": "thursday",
-        "hours": "10:00 - 20:00"
+        "hours": "09:30 - 17:00"
       },
       {
-        "_id": "6a886a999f07c0b628582327",
+        "_id": "6a886a999f07c0b628582334",
         "day": "friday",
-        "hours": "10:00 - 20:00"
+        "hours": "09:30 - 17:00"
       },
       {
-        "_id": "6a886a999f07c0b628582328",
+        "_id": "6a886a999f07c0b628582335",
         "day": "saturday",
-        "hours": "10:00 - 20:00"
+        "hours": "09:30 - 17:00"
       },
       {
-        "_id": "6a886a999f07c0b628582329",
+        "_id": "6a886a999f07c0b628582336",
         "day": "sunday",
-        "hours": "10:00 - 20:00"
+        "hours": "09:30 - 17:00"
       }
     ],
-    "contact_email": "info@museodelprado.es",
-    "contact_phone": "+34 913 30 28 00",
+    "contact_email": "info@tnm.jp",
+    "contact_phone": "+81 50-5528-2050",
     "facilities": [],
-    "sections": []
+    "latitude": 35.7187,
+    "longitude": 139.7765,
+    "sections": [],
+    "services": []
   },
   {
     "_id": "696a65ca017c648acfc9b55e",
@@ -76,10 +68,6 @@
     "accessibility": [
       "wheelchair_accessible",
       "blind_friendly"
-    ],
-    "services": [
-      "cafe",
-      "wifi"
     ],
     "ticketPrice": 22,
     "latitude": 52.3596632,
@@ -124,429 +112,8 @@
     "contact_email": "info@rijksmuseum.nl",
     "contact_phone": "+31 20 6747 000",
     "facilities": [],
-    "sections": []
-  },
-  {
-    "_id": "696a65ca017c648acfc9b560",
-    "name": "Tokyo National Museum",
-    "address": "13-9 Uenokoen, Taito City, Tokyo 110-8712, Giappone",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6d10hb-MRXK1OWotHAgzkcN8sWjW8HiHMqg&s",
-    "tags": [
-      "Asia",
-      "Samurai",
-      "Arte Orientale"
-    ],
-    "__v": 0,
-    "accessibility": [
-      "wheelchair_accessible"
-    ],
-    "services": [
-      "cafe",
-      "cloakroom"
-    ],
-    "ticketPrice": 10,
-    "schedule": [
-      {
-        "_id": "6a886a999f07c0b628582331",
-        "day": "tuesday",
-        "hours": "09:30 - 17:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582332",
-        "day": "wednesday",
-        "hours": "09:30 - 17:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582333",
-        "day": "thursday",
-        "hours": "09:30 - 17:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582334",
-        "day": "friday",
-        "hours": "09:30 - 17:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582335",
-        "day": "saturday",
-        "hours": "09:30 - 17:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582336",
-        "day": "sunday",
-        "hours": "09:30 - 17:00"
-      }
-    ],
-    "contact_email": "info@tnm.jp",
-    "contact_phone": "+81 50-5528-2050",
-    "facilities": [],
-    "latitude": 35.7187,
-    "longitude": 139.7765,
-    "sections": []
-  },
-  {
-    "_id": "696a65ca017c648acfc9b55d",
-    "name": "Galleria degli Uffizi",
-    "address": "Piazzale degli Uffizi, 6, 50122 Firenze, Italia",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Uffizi_Gallery%2C_Florence.jpg",
-    "tags": [
-      "Rinascimento",
-      "Italia",
-      "Scultura"
-    ],
-    "__v": 0,
-    "accessibility": [
-      "wheelchair_accessible"
-    ],
-    "services": [
-      "cafe",
-      "cloakroom",
-      "wifi"
-    ],
-    "ticketPrice": 20,
-    "latitude": 43.7682095,
-    "longitude": 11.2554494,
-    "schedule": [
-      {
-        "_id": "6a886a999f07c0b628582337",
-        "day": "tuesday",
-        "hours": "08:15 - 18:30"
-      },
-      {
-        "_id": "6a886a999f07c0b628582338",
-        "day": "wednesday",
-        "hours": "08:15 - 18:30"
-      },
-      {
-        "_id": "6a886a999f07c0b628582339",
-        "day": "thursday",
-        "hours": "08:15 - 18:30"
-      },
-      {
-        "_id": "6a886a999f07c0b62858233a",
-        "day": "friday",
-        "hours": "08:15 - 18:30"
-      },
-      {
-        "_id": "6a886a999f07c0b62858233b",
-        "day": "saturday",
-        "hours": "08:15 - 18:30"
-      },
-      {
-        "_id": "6a886a999f07c0b62858233c",
-        "day": "sunday",
-        "hours": "08:15 - 18:30"
-      }
-    ],
-    "contact_email": "info@uffizi.it",
-    "contact_phone": "+39 055 294883",
-    "facilities": [],
-    "sections": []
-  },
-  {
-    "_id": "696a65ca017c648acfc9b562",
-    "name": "National Air and Space Museum",
-    "address": "600 Independence Ave SW, Washington, DC 20560, USA",
-    "image": "https://images.contentstack.io/v3/assets/blt06f605a34f1194ff/blt896ced5b897afde0/67f355fe8097d846ba3d6e3a/Smithsonian_National_Air_and_Space_Museum_Washington_DC_(36085958805)-MOBILE_HEADER.jpg?format=webp&auto=avif&quality=60&crop=4%3A3&width=1440",
-    "tags": [
-      "Spazio",
-      "Aerei",
-      "Scienza"
-    ],
-    "__v": 0,
-    "accessibility": [
-      "wheelchair_accessible",
-      "deaf_friendly"
-    ],
-    "services": [
-      "cafe",
-      "wifi"
-    ],
-    "ticketPrice": 0,
-    "latitude": 38.8871904,
-    "longitude": -77.0208887,
-    "schedule": [
-      {
-        "_id": "6a886a999f07c0b62858233d",
-        "day": "monday",
-        "hours": "10:00 - 17:30"
-      },
-      {
-        "_id": "6a886a999f07c0b62858233e",
-        "day": "tuesday",
-        "hours": "10:00 - 17:30"
-      },
-      {
-        "_id": "6a886a999f07c0b62858233f",
-        "day": "wednesday",
-        "hours": "10:00 - 17:30"
-      },
-      {
-        "_id": "6a886a999f07c0b628582340",
-        "day": "thursday",
-        "hours": "10:00 - 17:30"
-      },
-      {
-        "_id": "6a886a999f07c0b628582341",
-        "day": "friday",
-        "hours": "10:00 - 17:30"
-      },
-      {
-        "_id": "6a886a999f07c0b628582342",
-        "day": "saturday",
-        "hours": "10:00 - 17:30"
-      },
-      {
-        "_id": "6a886a999f07c0b628582343",
-        "day": "sunday",
-        "hours": "10:00 - 17:30"
-      }
-    ],
-    "contact_email": "info@nasm.si.edu",
-    "contact_phone": "+1 202-633-2214",
-    "facilities": [],
-    "sections": []
-  },
-  {
-    "_id": "696a65ca017c648acfc9b55a",
-    "name": "The Metropolitan Museum of Art (The Met)",
-    "address": "1000 5th Ave, New York, NY 10028, USA",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg/330px-Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg",
-    "tags": [
-      "Moderno",
-      "Classico",
-      "Enorme"
-    ],
-    "__v": 0,
-    "accessibility": [
-      "wheelchair_accessible",
-      "blind_friendly"
-    ],
-    "services": [
-      "cafe",
-      "cloakroom",
-      "wifi"
-    ],
-    "ticketPrice": 25,
-    "latitude": 40.7794396,
-    "longitude": -73.9633825,
-    "schedule": [
-      {
-        "_id": "6a886a999f07c0b628582344",
-        "day": "monday",
-        "hours": "10:00 - 17:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582345",
-        "day": "tuesday",
-        "hours": "10:00 - 17:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582346",
-        "day": "thursday",
-        "hours": "10:00 - 17:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582347",
-        "day": "friday",
-        "hours": "10:00 - 17:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582348",
-        "day": "saturday",
-        "hours": "10:00 - 17:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582349",
-        "day": "sunday",
-        "hours": "10:00 - 17:00"
-      }
-    ],
-    "contact_email": "communications@metmuseum.org",
-    "contact_phone": "+1 212-535-7710",
-    "facilities": [],
-    "sections": []
-  },
-  {
-    "_id": "696a65ca017c648acfc9b559",
-    "name": "Louvre Museum",
-    "address": "Rue de Rivoli, 75001 Paris, Francia",
-    "image": "https://www.franciaturismo.net/wp-content/uploads/sites/4/parigi-louvre-piramide-hd.jpg",
-    "tags": [
-      "Arte Classica",
-      "Storia",
-      "Iconico"
-    ],
-    "__v": 0,
-    "accessibility": [
-      "wheelchair_accessible"
-    ],
-    "services": [
-      "cafe",
-      "cloakroom",
-      "wifi"
-    ],
-    "ticketPrice": 17,
-    "latitude": 48.8643028,
-    "longitude": 2.3305559,
-    "schedule": [
-      {
-        "_id": "6a886a999f07c0b62858234a",
-        "day": "monday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b62858234b",
-        "day": "wednesday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b62858234c",
-        "day": "thursday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b62858234d",
-        "day": "friday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b62858234e",
-        "day": "saturday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b62858234f",
-        "day": "sunday",
-        "hours": "09:00 - 18:00"
-      }
-    ],
-    "contact_email": "info@louvre.fr",
-    "contact_phone": "+33 1 40 20 50 50",
-    "facilities": [],
-    "sections": []
-  },
-  {
-    "_id": "696a65ca017c648acfc9b561",
-    "name": "Van Gogh Museum",
-    "address": "Museumplein 6, 1071 DJ Amsterdam, Paesi Bassi",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg/330px-Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg",
-    "tags": [
-      "Impressionismo",
-      "Van Gogh",
-      "Colori"
-    ],
-    "__v": 0,
     "sections": [],
-    "contact_email": "info@vangoghmuseum.nl",
-    "contact_phone": "+31 20 570 5200",
-    "accessibility": [
-      "wheelchair_accessible",
-      "blind_friendly"
-    ],
-    "services": [
-      "cafe",
-      "wifi"
-    ],
-    "ticketPrice": 20,
-    "latitude": 52.3579248,
-    "longitude": 4.8813227,
-    "schedule": [
-      {
-        "_id": "6a886a999f07c0b628582350",
-        "day": "monday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582351",
-        "day": "tuesday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582352",
-        "day": "wednesday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582353",
-        "day": "thursday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582354",
-        "day": "friday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582355",
-        "day": "saturday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582356",
-        "day": "sunday",
-        "hours": "09:00 - 18:00"
-      }
-    ],
-    "facilities": []
-  },
-  {
-    "_id": "696a65ca017c648acfc9b55f",
-    "name": "Musei Vaticani",
-    "address": "00120 Città del Vaticano",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScoLLfex1G-bgSLSkVyPfjy-4f9J_qyBz6YQ&s",
-    "tags": [
-      "Religione",
-      "Affreschi",
-      "Michelangelo"
-    ],
-    "__v": 0,
-    "accessibility": [
-      "wheelchair_accessible"
-    ],
-    "services": [
-      "cafe",
-      "cloakroom"
-    ],
-    "ticketPrice": 17,
-    "latitude": 41.9028577,
-    "longitude": 12.453794,
-    "schedule": [
-      {
-        "_id": "6a886a999f07c0b628582357",
-        "day": "monday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582358",
-        "day": "tuesday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b628582359",
-        "day": "wednesday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b62858235a",
-        "day": "thursday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b62858235b",
-        "day": "friday",
-        "hours": "09:00 - 18:00"
-      },
-      {
-        "_id": "6a886a999f07c0b62858235c",
-        "day": "saturday",
-        "hours": "09:00 - 18:00"
-      }
-    ],
-    "contact_email": "info.mv@scv.va",
-    "contact_phone": "+39 06 69883145",
-    "facilities": [],
-    "sections": []
+    "services": []
   },
   {
     "_id": "696a65ca017c648acfc9b55b",
@@ -561,11 +128,6 @@
     "__v": 0,
     "accessibility": [
       "wheelchair_accessible"
-    ],
-    "services": [
-      "cafe",
-      "wifi",
-      "cloakroom"
     ],
     "ticketPrice": 0,
     "latitude": 51.5181106,
@@ -610,7 +172,411 @@
     "contact_email": "info@britishmuseum.org",
     "contact_phone": "+44 20 7323 8000",
     "facilities": [],
-    "sections": []
+    "sections": [],
+    "services": []
+  },
+  {
+    "_id": "696a65ca017c648acfc9b55a",
+    "name": "The Metropolitan Museum of Art (The Met)",
+    "address": "1000 5th Ave, New York, NY 10028, USA",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg/330px-Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg",
+    "tags": [
+      "Moderno",
+      "Classico",
+      "Enorme"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair_accessible",
+      "blind_friendly"
+    ],
+    "ticketPrice": 25,
+    "latitude": 40.7794396,
+    "longitude": -73.9633825,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582344",
+        "day": "monday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582345",
+        "day": "tuesday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582346",
+        "day": "thursday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582347",
+        "day": "friday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582348",
+        "day": "saturday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582349",
+        "day": "sunday",
+        "hours": "10:00 - 17:00"
+      }
+    ],
+    "contact_email": "communications@metmuseum.org",
+    "contact_phone": "+1 212-535-7710",
+    "facilities": [],
+    "sections": [],
+    "services": []
+  },
+  {
+    "_id": "696a65ca017c648acfc9b55f",
+    "name": "Musei Vaticani",
+    "address": "00120 Città del Vaticano",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScoLLfex1G-bgSLSkVyPfjy-4f9J_qyBz6YQ&s",
+    "tags": [
+      "Religione",
+      "Affreschi",
+      "Michelangelo"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair_accessible"
+    ],
+    "ticketPrice": 17,
+    "latitude": 41.9028577,
+    "longitude": 12.453794,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582357",
+        "day": "monday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582358",
+        "day": "tuesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582359",
+        "day": "wednesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858235a",
+        "day": "thursday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858235b",
+        "day": "friday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858235c",
+        "day": "saturday",
+        "hours": "09:00 - 18:00"
+      }
+    ],
+    "contact_email": "info.mv@scv.va",
+    "contact_phone": "+39 06 69883145",
+    "facilities": [],
+    "sections": [],
+    "services": []
+  },
+  {
+    "_id": "696a65ca017c648acfc9b55c",
+    "name": "Museo del Prado",
+    "address": "C. de Ruiz de Alarcón, 23, 28014 Madrid, Spagna",
+    "image": "https://content3.cdnprado.net/imagenes/Documentos/imgsem/5b/5bd8/5bd83198-50ef-dd66-164b-2a26fb9e9b61/da30334e-766b-3efb-b748-b92179436d67.jpg",
+    "tags": [
+      "Pittura",
+      "Spagna",
+      "Rinascimento"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair_accessible"
+    ],
+    "ticketPrice": 15,
+    "latitude": 40.4135675,
+    "longitude": -3.6913514,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582323",
+        "day": "monday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582324",
+        "day": "tuesday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582325",
+        "day": "wednesday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582326",
+        "day": "thursday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582327",
+        "day": "friday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582328",
+        "day": "saturday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582329",
+        "day": "sunday",
+        "hours": "10:00 - 20:00"
+      }
+    ],
+    "contact_email": "info@museodelprado.es",
+    "contact_phone": "+34 913 30 28 00",
+    "facilities": [],
+    "sections": [],
+    "services": []
+  },
+  {
+    "_id": "696a65ca017c648acfc9b559",
+    "name": "Louvre Museum",
+    "address": "Rue de Rivoli, 75001 Paris, Francia",
+    "image": "https://www.franciaturismo.net/wp-content/uploads/sites/4/parigi-louvre-piramide-hd.jpg",
+    "tags": [
+      "Arte Classica",
+      "Storia",
+      "Iconico"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair_accessible"
+    ],
+    "ticketPrice": 17,
+    "latitude": 48.8643028,
+    "longitude": 2.3305559,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b62858234a",
+        "day": "monday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858234b",
+        "day": "wednesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858234c",
+        "day": "thursday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858234d",
+        "day": "friday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858234e",
+        "day": "saturday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b62858234f",
+        "day": "sunday",
+        "hours": "09:00 - 18:00"
+      }
+    ],
+    "contact_email": "info@louvre.fr",
+    "contact_phone": "+33 1 40 20 50 50",
+    "facilities": [],
+    "sections": [],
+    "services": []
+  },
+  {
+    "_id": "696a65ca017c648acfc9b55d",
+    "name": "Galleria degli Uffizi",
+    "address": "Piazzale degli Uffizi, 6, 50122 Firenze, Italia",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Uffizi_Gallery%2C_Florence.jpg",
+    "tags": [
+      "Rinascimento",
+      "Italia",
+      "Scultura"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair_accessible"
+    ],
+    "ticketPrice": 20,
+    "latitude": 43.7682095,
+    "longitude": 11.2554494,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582337",
+        "day": "tuesday",
+        "hours": "08:15 - 18:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582338",
+        "day": "wednesday",
+        "hours": "08:15 - 18:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582339",
+        "day": "thursday",
+        "hours": "08:15 - 18:30"
+      },
+      {
+        "_id": "6a886a999f07c0b62858233a",
+        "day": "friday",
+        "hours": "08:15 - 18:30"
+      },
+      {
+        "_id": "6a886a999f07c0b62858233b",
+        "day": "saturday",
+        "hours": "08:15 - 18:30"
+      },
+      {
+        "_id": "6a886a999f07c0b62858233c",
+        "day": "sunday",
+        "hours": "08:15 - 18:30"
+      }
+    ],
+    "contact_email": "info@uffizi.it",
+    "contact_phone": "+39 055 294883",
+    "facilities": [],
+    "sections": [],
+    "services": []
+  },
+  {
+    "_id": "696a65ca017c648acfc9b561",
+    "name": "Van Gogh Museum",
+    "address": "Museumplein 6, 1071 DJ Amsterdam, Paesi Bassi",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg/330px-Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg",
+    "tags": [
+      "Impressionismo",
+      "Van Gogh",
+      "Colori"
+    ],
+    "__v": 0,
+    "sections": [],
+    "contact_email": "info@vangoghmuseum.nl",
+    "contact_phone": "+31 20 570 5200",
+    "accessibility": [
+      "wheelchair_accessible",
+      "blind_friendly"
+    ],
+    "ticketPrice": 20,
+    "latitude": 52.3579248,
+    "longitude": 4.8813227,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b628582350",
+        "day": "monday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582351",
+        "day": "tuesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582352",
+        "day": "wednesday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582353",
+        "day": "thursday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582354",
+        "day": "friday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582355",
+        "day": "saturday",
+        "hours": "09:00 - 18:00"
+      },
+      {
+        "_id": "6a886a999f07c0b628582356",
+        "day": "sunday",
+        "hours": "09:00 - 18:00"
+      }
+    ],
+    "facilities": [],
+    "services": []
+  },
+  {
+    "_id": "696a65ca017c648acfc9b562",
+    "name": "National Air and Space Museum",
+    "address": "600 Independence Ave SW, Washington, DC 20560, USA",
+    "image": "https://images.contentstack.io/v3/assets/blt06f605a34f1194ff/blt896ced5b897afde0/67f355fe8097d846ba3d6e3a/Smithsonian_National_Air_and_Space_Museum_Washington_DC_(36085958805)-MOBILE_HEADER.jpg?format=webp&auto=avif&quality=60&crop=4%3A3&width=1440",
+    "tags": [
+      "Spazio",
+      "Aerei",
+      "Scienza"
+    ],
+    "__v": 0,
+    "accessibility": [
+      "wheelchair_accessible",
+      "deaf_friendly"
+    ],
+    "ticketPrice": 0,
+    "latitude": 38.8871904,
+    "longitude": -77.0208887,
+    "schedule": [
+      {
+        "_id": "6a886a999f07c0b62858233d",
+        "day": "monday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b62858233e",
+        "day": "tuesday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b62858233f",
+        "day": "wednesday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582340",
+        "day": "thursday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582341",
+        "day": "friday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582342",
+        "day": "saturday",
+        "hours": "10:00 - 17:30"
+      },
+      {
+        "_id": "6a886a999f07c0b628582343",
+        "day": "sunday",
+        "hours": "10:00 - 17:30"
+      }
+    ],
+    "contact_email": "info@nasm.si.edu",
+    "contact_phone": "+1 202-633-2214",
+    "facilities": [],
+    "sections": [],
+    "services": []
   },
   {
     "_id": "6a71f268d43150559b8099b9",
@@ -630,9 +596,6 @@
     "__v": 1,
     "accessibility": [
       "wheelchair_accessible"
-    ],
-    "services": [
-      "wifi"
     ],
     "ticketPrice": 10,
     "latitude": 44.3500985,
@@ -664,7 +627,8 @@
         "hours": "09:00 - 18:00"
       }
     ],
-    "facilities": []
+    "facilities": [],
+    "services": []
   },
   {
     "_id": "6a7622a872031acd0ee0a2d3",
@@ -707,9 +671,6 @@
       "Tecnologia"
     ],
     "ticketPrice": 15,
-    "services": [
-      "cafe"
-    ],
     "accessibility": [
       "wheelchair_accessible"
     ],
@@ -753,7 +714,8 @@
       }
     ],
     "latitude": 41.9028,
-    "longitude": 12.4964
+    "longitude": 12.4964,
+    "services": []
   },
   {
     "_id": "6a81cc550bf4fc3fd102cb31",
@@ -769,9 +731,7 @@
     "image": "https://dummyimage.com/600x400",
     "tags": [],
     "ticketPrice": 12,
-    "services": [
-      "cloakroom"
-    ],
+    "services": [],
     "accessibility": [
       "none"
     ],
@@ -781,34 +741,162 @@
       {
         "day": "tuesday",
         "hours": "09:30 - 19:30",
-        "_id": "6a871aab8629e24afc1cb4e4"
+        "_id": "6a91d62f10cdaecdf45937e0"
       },
       {
         "day": "wednesday",
         "hours": "09:30 - 19:30",
-        "_id": "6a871aab8629e24afc1cb4e5"
+        "_id": "6a91d62f10cdaecdf45937e1"
       },
       {
         "day": "thursday",
         "hours": "09:30 - 19:30",
-        "_id": "6a871aab8629e24afc1cb4e6"
+        "_id": "6a91d62f10cdaecdf45937e2"
       },
       {
         "day": "friday",
         "hours": "09:30 - 19:30",
-        "_id": "6a871aab8629e24afc1cb4e7"
+        "_id": "6a91d62f10cdaecdf45937e3"
       },
       {
         "day": "saturday",
         "hours": "09:30 - 19:30",
-        "_id": "6a871aab8629e24afc1cb4e8"
+        "_id": "6a91d62f10cdaecdf45937e4"
       },
       {
         "day": "sunday",
         "hours": "09:30 - 19:30",
-        "_id": "6a871aab8629e24afc1cb4e9"
+        "_id": "6a91d62f10cdaecdf45937e5"
       }
     ]
+  },
+  {
+    "_id": "6a8c6dfa4ce9e1ef09aee754",
+    "name": "Van Gogh Museum",
+    "address": "Museumplein 6, 1071 DJ Amsterdam, Paesi Bassi",
+    "latitude": 52.3579248,
+    "longitude": 4.8813227,
+    "contact_email": "Museoprova@as",
+    "contact_phone": "1234",
+    "sections": [
+      "6a8da8af431740ed4d7abe3c",
+      "6a8dc6797a0810a965acc155"
+    ],
+    "image": "/uploads/1787673124133-385077623.png",
+    "tags": [],
+    "ticketPrice": 0,
+    "accessibility": [
+      "none"
+    ],
+    "schedule": [
+      {
+        "day": "thursday",
+        "hours": "9-12",
+        "_id": "6a8dc75f481d89050050f065"
+      }
+    ],
+    "facilities": [],
+    "__v": 0,
+    "services": []
+  },
+  {
+    "_id": "6a8dfae9a88f1bcdb73ec5e7",
+    "name": "Castello di Gradara & Museo Medievale",
+    "address": "Piazza de i Caduti, 1, 61012 Gradara PU, Italia",
+    "latitude": 43.941,
+    "longitude": 12.771,
+    "contact_email": "info@castellodigradara.it",
+    "contact_phone": "+39 0541 964181",
+    "sections": [],
+    "image": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Gradara_Castle.jpg",
+    "tags": [
+      "Castello",
+      "Medioevo",
+      "Armature",
+      "Paolo e Francesca"
+    ],
+    "ticketPrice": 10,
+    "accessibility": [],
+    "openingHours": "Mar-Dom: 09:00 - 19:00, Lun: Chiuso",
+    "openingDays": [
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday"
+    ],
+    "facilities": [],
+    "__v": 0,
+    "services": [],
+    "schedule": []
+  },
+  {
+    "_id": "6a8dfae9a88f1bcdb73ec5e8",
+    "name": "Museo Internazionale del Fumetto e dell'Animazione",
+    "address": "Corso Garibaldi, 53, 55100 Lucca LU, Italia",
+    "latitude": 43.842,
+    "longitude": 10.506,
+    "contact_email": "info@museofumetto.lucca.it",
+    "contact_phone": "+39 0583 401711",
+    "sections": [],
+    "image": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Lucca_comics_and_games.jpg",
+    "tags": [
+      "Fumetti",
+      "Supereroi",
+      "Manga",
+      "Animazione"
+    ],
+    "ticketPrice": 8,
+    "accessibility": [],
+    "openingHours": "Tutti i giorni: 10:00 - 20:00",
+    "openingDays": [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday"
+    ],
+    "facilities": [],
+    "__v": 0,
+    "services": [],
+    "schedule": []
+  },
+  {
+    "_id": "6a8dfae9a88f1bcdb73ec5e9",
+    "name": "Museo della Scienza e del Futuro Tecnologico",
+    "address": "Corso del Lavoro e della Scienza, 3, 38122 Trento TN, Italia",
+    "latitude": 46.063,
+    "longitude": 11.114,
+    "contact_email": "info@museofutura.trento.it",
+    "contact_phone": "+39 0461 270311",
+    "sections": [],
+    "image": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Trento_MUSE_01.jpg",
+    "tags": [
+      "Scienza",
+      "Tecnologia",
+      "Robotica",
+      "Spazio",
+      "Futuro"
+    ],
+    "ticketPrice": 12,
+    "accessibility": [],
+    "openingHours": "Tutti i giorni: 09:30 - 18:30",
+    "openingDays": [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday"
+    ],
+    "facilities": [],
+    "__v": 0,
+    "services": [],
+    "schedule": []
   },
   {
     "_id": "6a8879bfe6c216683b02eb70",
@@ -819,7 +907,7 @@
     "contact_email": "info@metmuseum.org",
     "contact_phone": "+1 212-535-7710",
     "sections": [],
-    "image": "https://upload.wikimedia.org/wikipedia/commons/3/30/Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg",
+    "image": "https://www.travel365.it/foto/met.jpg",
     "tags": [
       "Arte Antica",
       "Pittura",
@@ -827,13 +915,6 @@
       "Impressionismo"
     ],
     "ticketPrice": 25,
-    "services": [
-      "bathrooms",
-      "cafe",
-      "cloakroom",
-      "accessibility_ramp",
-      "wifi"
-    ],
     "accessibility": [
       "none"
     ],
@@ -848,6 +929,7 @@
     ],
     "facilities": [],
     "__v": 0,
-    "schedule": []
+    "schedule": [],
+    "services": []
   }
 ]

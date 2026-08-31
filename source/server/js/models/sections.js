@@ -9,10 +9,10 @@ const roomSchema = new Schema({
 
 const sectionSchema = new Schema({
   name: { type: String, required: true },
-  color: { type: String }, 
+  color: { type: String },
   
   svgGroupId: { type: String, required: true }, // Es. "section-greca"
-  viewBox: { 
+  viewBox: {
     x: { type: Number, required: true },
     y: { type: Number, required: true },
     width: { type: Number, required: true },

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 export default function HighlyOptimizedMapView({ 
@@ -11,19 +11,24 @@ export default function HighlyOptimizedMapView({
   activeWorkId,
   onWorkClick
 }) {
+  // STATO PER LE ANIMAZIONI DI TRANSIZIONE
+  const [animationStyle, setAnimationStyle] = useState({
+    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+    opacity: 1,
+    transform: 'scale(1)',
+    filter: 'blur(0px)'
+  });
   
-  // 1. Calcoliamo il viewBox.
   const zoomViewBox = activeSection?.viewBox 
     ? `${activeSection.viewBox.x} ${activeSection.viewBox.y} ${activeSection.viewBox.width} ${activeSection.viewBox.height}`
-    : "0 0 2000 2000";
+    : "0 0 2000 1200";
 
-  // 2. Aggiorniamo la stringa SVG
   const modifiedSvgString = svgString.replace(
     /viewBox="[^"]*"/, 
     `viewBox="${zoomViewBox}"`
   );
 
-  // 3. Gestiamo i click sulle aree colorate
+  // GESTIONE DEL CLICK CON ANIMAZIONE TIPO "HOLLOW KNIGHT"
   const handleMapClick = (e) => {
     if (activeSection) return; 
 
@@ -31,49 +36,120 @@ export default function HighlyOptimizedMapView({
     if (clickedGroup) {
       const sectionGroupId = clickedGroup.getAttribute('id');
       const targetSection = sections.find(s => s.svgGroupId === sectionGroupId);
-      if (targetSection) onSelectSection(targetSection);
+      
+      if (targetSection) {
+        // 1. Calcoliamo il punto esatto del click per centrare lì lo zoom!
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+        // 2. FASE 1: "Tuffo" dentro la mappa (Zoom In rapido, Fade e Blur)
+        setAnimationStyle({
+          transformOrigin: `${x}% ${y}%`,
+          transform: 'scale(3)', // Ingrandisce tantissimo verso il punto cliccato
+          opacity: 0,
+          filter: 'blur(8px)',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+        });
+
+        // 3. FASE 2: Dopo 400ms cambiamo i dati sottostanti mentre la mappa è invisibile
+        setTimeout(() => {
+          onSelectSection(targetSection);
+
+          // Resettiamo i parametri (senza transizione) pronti per l'entrata della nuova mappa
+          setAnimationStyle({
+            transformOrigin: 'center',
+            transform: 'scale(0.8)', // Parte leggermente rimpicciolita
+            opacity: 0,
+            filter: 'blur(4px)',
+            transition: 'none'
+          });
+
+          // 4. FASE 3: Anima l'entrata della vista dettaglio morbida
+          setTimeout(() => {
+            setAnimationStyle({
+              transformOrigin: 'center',
+              transform: 'scale(1)',
+              opacity: 1,
+              filter: 'blur(0px)',
+              transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+            });
+          }, 50);
+        }, 400);
+      }
     }
+  };
+
+  // ANIMAZIONE QUANDO SI TORNA ALLA VISTA GLOBALE
+  const handleBackClick = (e) => {
+    e.stopPropagation();
+
+    // 1. Allontanamento (Scala indietro e svanisce)
+    setAnimationStyle({
+      transformOrigin: 'center',
+      transform: 'scale(0.8)',
+      opacity: 0,
+      filter: 'blur(5px)',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+    });
+
+    setTimeout(() => {
+      onBack();
+
+      // 2. Prepara la vista globale (parte ingrandita)
+      setAnimationStyle({
+        transformOrigin: 'center',
+        transform: 'scale(1.2)',
+        opacity: 0,
+        filter: 'blur(5px)',
+        transition: 'none'
+      });
+
+      // 3. Caduta morbida della vista globale
+      setTimeout(() => {
+        setAnimationStyle({
+          transformOrigin: 'center',
+          transform: 'scale(1)',
+          opacity: 1,
+          filter: 'blur(0px)',
+          transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+        });
+      }, 50);
+    }, 300);
   };
 
   return (
     <div className="w-full h-full relative overflow-hidden bg-slate-900">
       
-      {/* TASTO INDIETRO */}
+      {/* TASTO INDIETRO MODIFICATO */}
       {activeSection && (
         <button 
-          onClick={(e) => { e.stopPropagation(); onBack(); }}
+          onClick={handleBackClick}
           className="absolute top-4 left-4 z-50 px-4 py-2 bg-slate-800/80 backdrop-blur border border-white/20 rounded-full text-white text-sm font-semibold shadow-lg hover:bg-slate-700 cursor-pointer"
         >
           ← Torna alla panoramica
         </button>
       )}
 
-      {/* MAGIA CSS */}
+      {/* MAGIA CSS PER LA GESTIONE LIVELLI (Con supporto per typo "visita") */}
       <style>
         {`
-          /* COMPORTAMENTO DI BASE (Quando guardi tutto il museo) */
-          /* Mostriamo la mappa approssimata e nascondiamo i dettagli */
           g[id="vista-globale"] { display: block; }
-          g[id="vista-dettaglio"] { display: none; }
+          g[id="vista-dettaglio"], g[id="visita-dettaglio"] { display: none; }
         `}
 
         {activeSection && `
-          /* QUANDO ENTRI IN UNA SEZIONE (Zoom) */
-          /* 1. Nascondiamo i blocchettoni approssimati */
           g[id="vista-globale"] { display: none !important; }
           
-          /* 2. Accendiamo il livello dei dettagli */
-          g[id="vista-dettaglio"] { display: block !important; }
+          g[id="vista-dettaglio"], g[id="visita-dettaglio"] { display: block !important; }
           
-          /* 3. Nascondiamo TUTTE le sezioni dettagliate... */
-          g[id="vista-dettaglio"] g[id^="section-"] { display: none; }
+          g[id="vista-dettaglio"] > g, g[id="visita-dettaglio"] > g { display: none; }
           
-          /* 4. ...tranne quella attiva! */
-          g[id="${activeSection.svgGroupId}"] { display: block !important; }
+          g[id="dettaglio-${activeSection.svgGroupId}"] { display: block !important; }
         `}
       </style>
 
-      {/* IL WRAPPER PER LO ZOOM */}
+      {/* WRAPPER ZOOM E ANIMAZIONE */}
       <TransformWrapper 
         initialScale={1} 
         minScale={0.5} 
@@ -82,17 +158,22 @@ export default function HighlyOptimizedMapView({
       >
         <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }} contentStyle={{ width: "100%", height: "100%" }}>
           
-          <div className="relative w-full h-full" onClick={handleMapClick}>
+          {/* APPLICHIAMO L'ANIMAZIONE DIRETTAMENTE A QUESTO DIV */}
+          <div 
+            className="relative w-full h-full" 
+            onClick={handleMapClick} 
+            style={animationStyle}
+          >
             
-            {/* Livello 1: Mappa SVG (L'unico che deve esserci!) */}
+            {/* Livello 1: Mappa SVG */}
             <div 
-              className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full transition-all duration-700 ease-in-out"
+              className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full"
               dangerouslySetInnerHTML={{ __html: modifiedSvgString }} 
             />
 
             {/* Livello 2: Opere d'arte */}
             {activeSection && (
-              <svg viewBox={zoomViewBox} className="absolute inset-0 w-full h-full pointer-events-none transition-all duration-700 ease-in-out">
+              <svg viewBox={zoomViewBox} className="absolute inset-0 w-full h-full pointer-events-none">
                 {works.map((work) => {
                   const isActive = activeWorkId === work._id;
                   const coords = activeSection.works?.find(sw => (sw.workId?._id || sw.workId) === work._id);

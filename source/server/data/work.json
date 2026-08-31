@@ -3,6 +3,57 @@
     "description": [
       {
         "length": 10,
+        "tone": "Divino",
+        "description": "Il dettaglio più celebre della volta della Cappella Sistina, simbolo della scintilla divina."
+      }
+    ],
+    "_id": "6a6b9719478a8542634450e9",
+    "name": "Creazione di Adamo",
+    "author": "6a8215f9bbd3642f8830b701",
+    "style": "6a821e97205d7c012f901e41",
+    "year": "1512",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/400px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg",
+    "museumId": "696a65ca017c648acfc9b55f",
+    "technique": "Affresco"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Storico",
+        "description": "Il prezioso frammento di stele che ha fornito la chiave per decifrare i geroglifici egizi."
+      }
+    ],
+    "_id": "6a6b9719478a8542634450ed",
+    "name": "Stele di Rosetta",
+    "author": "6a8215f9bbd3642f8830b707",
+    "style": "6a821c134d292854096c43f4",
+    "year": "196 a.C.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/300px-Rosetta_Stone.JPG",
+    "museumId": "696a65ca017c648acfc9b55b",
+    "technique": "Incisione su granodiorite"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Potente",
+        "description": "La celebre xilografia giapponese che mostra la furia della natura di fronte al Monte Fuji."
+      }
+    ],
+    "_id": "6a6b9719478a8542634450ec",
+    "name": "La Grande Onda (Hokusai)",
+    "author": "6a8215f9bbd3642f8830b700",
+    "style": "6a821e99205d7c012f901e4a",
+    "year": "1831",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Tsunami_by_hokusai_19th_century.jpg/400px-Tsunami_by_hokusai_19th_century.jpg",
+    "museumId": "696a65ca017c648acfc9b560",
+    "technique": "Xilografia (stampa policroma)"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
         "tone": "Classico",
         "description": "Celebre statua greca che rappresenta l'ideale di bellezza e amore."
       }
@@ -37,18 +88,18 @@
     "description": [
       {
         "length": 10,
-        "tone": "Divino",
-        "description": "Il dettaglio più celebre della volta della Cappella Sistina, simbolo della scintilla divina."
+        "tone": "Luminoso",
+        "description": "Una delle nature morte più famose e vibranti della storia dell'arte."
       }
     ],
-    "_id": "6a6b9719478a8542634450e9",
-    "name": "Creazione di Adamo",
-    "author": "6a8215f9bbd3642f8830b701",
-    "style": "6a821e97205d7c012f901e41",
-    "year": "1512",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/400px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg",
-    "museumId": "696a65ca017c648acfc9b55f",
-    "technique": "Affresco"
+    "_id": "6a6b9719478a8542634450eb",
+    "name": "I Girasoli",
+    "author": "6a8215f9bbd3642f8830b706",
+    "style": "6a821c134d292854096c43fd",
+    "year": "1889",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_Willem_van_Gogh_127.jpg/350px-Vincent_Willem_van_Gogh_127.jpg",
+    "museumId": "696a65ca017c648acfc9b561",
+    "technique": "Olio su tela"
   },
   {
     "description": [
@@ -71,16 +122,67 @@
     "description": [
       {
         "length": 10,
-        "tone": "Luminoso",
-        "description": "Una delle nature morte più famose e vibranti della storia dell'arte."
+        "tone": "Regale",
+        "description": "Il capolavoro complesso e misterioso di Diego Velázquez che gioca con le prospettive."
       }
     ],
-    "_id": "6a6b9719478a8542634450eb",
-    "name": "I Girasoli",
+    "_id": "6a6b97e7478a8542634450ef",
+    "name": "Las Meninas",
+    "author": "6a8215f9bbd3642f8830b6f7",
+    "style": "6a821c134d292854096c43f7",
+    "year": "1656",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg/350px-Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg",
+    "museumId": "696a65ca017c648acfc9b55c",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Drammatico",
+        "description": "Il celebre scudo da parata con dipinta la terrificante testa di Medusa mozzata."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450fd",
+    "name": "Medusa",
+    "author": "6a8215f9bbd3642f8830b6f6",
+    "style": "6a821c134d292854096c43f5",
+    "year": "1597",
+    "image": "https://www.datocms-assets.com/103094/1689148052-1518685471859782-preview.jpg?auto=format&fit=max&w=1200",
+    "museumId": "696a65ca017c648acfc9b55d",
+    "technique": "Olio su tela applicata su scudo di legno"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Spaziale",
+        "description": "La vera capsula di comando che ha portato e riportato i primi esseri umani dalla Luna."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450fb",
+    "name": "Modulo Apollo 11 (Columbia)",
+    "author": "6a8215f9bbd3642f8830b702",
+    "style": "6a821c134d292854096c43fb",
+    "year": "1969",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScHDgdoB7YMJ5m9L5-anoxL1ndsiL2pwRoVw&s",
+    "museumId": "696a65ca017c648acfc9b562",
+    "technique": "Lega di alluminio e titanio"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Sereno",
+        "description": "Dipinto delicato e intimo dedicato alla nascita del nipote dell'artista."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f1",
+    "name": "Ramo di mandorlo in fiore",
     "author": "6a8215f9bbd3642f8830b706",
     "style": "6a821c134d292854096c43fd",
-    "year": "1889",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_Willem_van_Gogh_127.jpg/350px-Vincent_Willem_van_Gogh_127.jpg",
+    "year": "1890",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Vincent_van_Gogh_-_Almond_blossom_-_Google_Art_Project.jpg/400px-Vincent_van_Gogh_-_Almond_blossom_-_Google_Art_Project.jpg",
     "museumId": "696a65ca017c648acfc9b561",
     "technique": "Olio su tela"
   },
@@ -88,35 +190,52 @@
     "description": [
       {
         "length": 10,
-        "tone": "Potente",
-        "description": "La celebre xilografia giapponese che mostra la furia della natura di fronte al Monte Fuji."
+        "tone": "Filosofico",
+        "description": "Il famoso affresco di Raffaello che celebra i grandi filosofi e scienziati del mondo classico."
       }
     ],
-    "_id": "6a6b9719478a8542634450ec",
-    "name": "La Grande Onda (Hokusai)",
-    "author": "6a8215f9bbd3642f8830b700",
-    "style": "6a821e99205d7c012f901e4a",
-    "year": "1831",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Tsunami_by_hokusai_19th_century.jpg/400px-Tsunami_by_hokusai_19th_century.jpg",
-    "museumId": "696a65ca017c648acfc9b560",
-    "technique": "Xilografia (stampa policroma)"
+    "_id": "6a6b97e7478a8542634450f7",
+    "name": "Scuola di Atene",
+    "author": "6a8215f9bbd3642f8830b703",
+    "style": "6a821e97205d7c012f901e41",
+    "year": "1511",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg/400px-%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg",
+    "museumId": "696a65ca017c648acfc9b55f",
+    "technique": "Affresco"
   },
   {
     "description": [
       {
         "length": 10,
-        "tone": "Storico",
-        "description": "Il prezioso frammento di stele che ha fornito la chiave per decifrare i geroglifici egizi."
+        "tone": "Misterioso",
+        "description": "Una delle mummie egizie meglio conservate, risalente a oltre 3000 anni fa."
       }
     ],
-    "_id": "6a6b9719478a8542634450ed",
-    "name": "Stele di Rosetta",
+    "_id": "6a6b97e7478a8542634450f9",
+    "name": "Mummia di Katebet",
     "author": "6a8215f9bbd3642f8830b707",
-    "style": "6a821c134d292854096c43f4",
-    "year": "196 a.C.",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/300px-Rosetta_Stone.JPG",
+    "style": "6a821c134d292854096c43f3",
+    "year": "1300 a.C.",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1Vc6gOKSvglICOpUL1LmTHfuFDnzhv4x_Sg&s",
     "museumId": "696a65ca017c648acfc9b55b",
-    "technique": "Incisione su granodiorite"
+    "technique": "Cartonnage dipinto e stucco"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Realistico",
+        "description": "Capolavoro di Vermeer che ritrae una domestica intenta a versare del latte con straordinario realismo."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450ff",
+    "name": "Lattaia",
+    "author": "6a8215f9bbd3642f8830b6fe",
+    "style": "6a821ea1205d7c012f901e69",
+    "year": "1660",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg/330px-Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
+    "museumId": "696a65ca017c648acfc9b55e",
+    "technique": "Olio su tela"
   },
   {
     "description": [
@@ -132,23 +251,6 @@
     "style": "6a821e9c205d7c012f901e53",
     "year": "1814",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/El_Tres_de_Mayo%2C_by_Francisco_de_Goya%2C_from_Prado_in_Google_Earth.jpg/330px-El_Tres_de_Mayo%2C_by_Francisco_de_Goya%2C_from_Prado_in_Google_Earth.jpg",
-    "museumId": "696a65ca017c648acfc9b55c",
-    "technique": "Olio su tela"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Regale",
-        "description": "Il capolavoro complesso e misterioso di Diego Velázquez che gioca con le prospettive."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450ef",
-    "name": "Las Meninas",
-    "author": "6a8215f9bbd3642f8830b6f7",
-    "style": "6a821c134d292854096c43f7",
-    "year": "1656",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg/350px-Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg",
     "museumId": "696a65ca017c648acfc9b55c",
     "technique": "Olio su tela"
   },
@@ -173,74 +275,6 @@
     "description": [
       {
         "length": 10,
-        "tone": "Sereno",
-        "description": "Dipinto delicato e intimo dedicato alla nascita del nipote dell'artista."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450f1",
-    "name": "Ramo di mandorlo in fiore",
-    "author": "6a8215f9bbd3642f8830b706",
-    "style": "6a821c134d292854096c43fd",
-    "year": "1890",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Vincent_van_Gogh_-_Almond_blossom_-_Google_Art_Project.jpg/400px-Vincent_van_Gogh_-_Almond_blossom_-_Google_Art_Project.jpg",
-    "museumId": "696a65ca017c648acfc9b561",
-    "technique": "Olio su tela"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Intimo",
-        "description": "La famosa stanza dell'artista dipinta con una prospettiva emotiva e colori vivaci."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450f2",
-    "name": "Camera da letto ad Arles",
-    "author": "6a8215f9bbd3642f8830b706",
-    "style": "6a821c134d292854096c43fd",
-    "year": "1888",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg/400px-Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg",
-    "museumId": "696a65ca017c648acfc9b561",
-    "technique": "Olio su tela"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Eroico",
-        "description": "Celebre dipinto patriottico americano che ritrae George Washington in un momento storico."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450f3",
-    "name": "Washington attraversa il Delaware",
-    "author": "6a8215f9bbd3642f8830b6f8",
-    "style": "6a821e9c205d7c012f901e53",
-    "year": "1851",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg/400px-Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg",
-    "museumId": "696a65ca017c648acfc9b55a",
-    "technique": "Olio su tela"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Elegante",
-        "description": "Un ritratto inizialmente considerato scandaloso, diventato poi un'icona di eleganza."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450f4",
-    "name": "Madame X",
-    "author": "6a8215f9bbd3642f8830b6ff",
-    "style": "6a821cdf4d292854096c4408",
-    "year": "1884",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "museumId": "696a65ca017c648acfc9b55a",
-    "technique": "Olio su tela"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
         "tone": "Monumentale",
         "description": "Un intero tempio egizio salvato dalle acque del Nilo e ricostruito dentro il museo."
       }
@@ -253,108 +287,6 @@
     "image": "https://res.cloudinary.com/ddjuftfy2/image/upload/f_webp,c_fill,w_800,h_533/multitenacy/wikis/2024-10-23-01-14-09-16718f6a175945.webp",
     "museumId": "696a65ca017c648acfc9b55a",
     "technique": "Architettura in arenaria"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Tragico",
-        "description": "Antica scultura greca piena di pathos e movimento che ritrae la fine del sacerdote troiano."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450f6",
-    "name": "Gruppo del Laocoonte",
-    "author": "6a8215f9bbd3642f8830b6f4",
-    "style": "6a821c134d292854096c43f9",
-    "year": "40-20 a.C.",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Laoco%C3%B6n_and_his_sons_group.jpg",
-    "museumId": "696a65ca017c648acfc9b55f",
-    "technique": "Scultura in marmo"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Filosofico",
-        "description": "Il famoso affresco di Raffaello che celebra i grandi filosofi e scienziati del mondo classico."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450f7",
-    "name": "Scuola di Atene",
-    "author": "6a8215f9bbd3642f8830b703",
-    "style": "6a821e97205d7c012f901e41",
-    "year": "1511",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg/400px-%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg",
-    "museumId": "696a65ca017c648acfc9b55f",
-    "technique": "Affresco"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Classico",
-        "description": "Le iconiche sculture classiche provenienti direttamente dall'Acropoli di Atene."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450f8",
-    "name": "Marmi del Partenone",
-    "author": "6a8215f9bbd3642f8830b6fa",
-    "style": "6a821c134d292854096c43f8",
-    "year": "447-432 a.C.",
-    "image": "https://cdn.finestresullarte.info/rivista/immagini/2022/1985/parte-meridionale-frontone-sud-bm.jpg",
-    "museumId": "696a65ca017c648acfc9b55b",
-    "technique": "Scultura in marmo pentelico"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Misterioso",
-        "description": "Una delle mummie egizie meglio conservate, risalente a oltre 3000 anni fa."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450f9",
-    "name": "Mummia di Katebet",
-    "author": "6a8215f9bbd3642f8830b707",
-    "style": "6a821c134d292854096c43f3",
-    "year": "1300 a.C.",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1Vc6gOKSvglICOpUL1LmTHfuFDnzhv4x_Sg&s",
-    "museumId": "696a65ca017c648acfc9b55b",
-    "technique": "Cartonnage dipinto e stucco"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Ingegneristico",
-        "description": "Il primo velivolo a motore della storia ad aver compiuto un volo controllato."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450fa",
-    "name": "Wright Flyer",
-    "author": "6a8215f9bbd3642f8830b6fc",
-    "style": "6a821c134d292854096c43fa",
-    "year": "1903",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDA3HkSw4Glia31vE65rdB6Lzh8TSq6qiM9Q&s",
-    "museumId": "696a65ca017c648acfc9b562",
-    "technique": "Legno, tessuto e motore a scoppio"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Spaziale",
-        "description": "La vera capsula di comando che ha portato e riportato i primi esseri umani dalla Luna."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450fb",
-    "name": "Modulo Apollo 11 (Columbia)",
-    "author": "6a8215f9bbd3642f8830b702",
-    "style": "6a821c134d292854096c43fb",
-    "year": "1969",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScHDgdoB7YMJ5m9L5-anoxL1ndsiL2pwRoVw&s",
-    "museumId": "696a65ca017c648acfc9b562",
-    "technique": "Lega di alluminio e titanio"
   },
   {
     "description": [
@@ -377,23 +309,6 @@
     "description": [
       {
         "length": 10,
-        "tone": "Drammatico",
-        "description": "Il celebre scudo da parata con dipinta la terrificante testa di Medusa mozzata."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450fd",
-    "name": "Medusa",
-    "author": "6a8215f9bbd3642f8830b6f6",
-    "style": "6a821c134d292854096c43f5",
-    "year": "1597",
-    "image": "https://www.datocms-assets.com/103094/1689148052-1518685471859782-preview.jpg?auto=format&fit=max&w=1200",
-    "museumId": "696a65ca017c648acfc9b55d",
-    "technique": "Olio su tela applicata su scudo di legno"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
         "tone": "Armonioso",
         "description": "Una delle opere più affascinanti e ricche di allegorie del Rinascimento fiorentino."
       }
@@ -406,23 +321,6 @@
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/400px-Botticelli-primavera.jpg",
     "museumId": "696a65ca017c648acfc9b55d",
     "technique": "Tempera su tavola"
-  },
-  {
-    "description": [
-      {
-        "length": 10,
-        "tone": "Realistico",
-        "description": "Capolavoro di Vermeer che ritrae una domestica intenta a versare del latte con straordinario realismo."
-      }
-    ],
-    "_id": "6a6b97e7478a8542634450ff",
-    "name": "Lattaia",
-    "author": "6a8215f9bbd3642f8830b6fe",
-    "style": "6a821ea1205d7c012f901e69",
-    "year": "1660",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg/330px-Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
-    "museumId": "696a65ca017c648acfc9b55e",
-    "technique": "Olio su tela"
   },
   {
     "description": [
@@ -462,17 +360,131 @@
     "description": [
       {
         "length": 10,
-        "tone": "normal",
-        "description": "Mona Lisa, perchè è una mona",
-        "_id": "6a71f268d43150559b8099c6"
-      },
-      {
-        "length": 20,
-        "tone": "medium",
-        "description": "Mona: termine veneto offensivo, Lisa: nome proprio di persona",
-        "_id": "6a7f30ddcd985288431a362d"
+        "tone": "Tragico",
+        "description": "Antica scultura greca piena di pathos e movimento che ritrae la fine del sacerdote troiano."
       }
     ],
+    "_id": "6a6b97e7478a8542634450f6",
+    "name": "Gruppo del Laocoonte",
+    "author": "6a8215f9bbd3642f8830b6f4",
+    "style": "6a821c134d292854096c43f9",
+    "year": "40-20 a.C.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Laoco%C3%B6n_and_his_sons_group.jpg",
+    "museumId": "696a65ca017c648acfc9b55f",
+    "technique": "Scultura in marmo"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Elegante",
+        "description": "Un ritratto inizialmente considerato scandaloso, diventato poi un'icona di eleganza."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f4",
+    "name": "Madame X",
+    "author": "6a8215f9bbd3642f8830b6ff",
+    "style": "6a821cdf4d292854096c4408",
+    "year": "1884",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "museumId": "696a65ca017c648acfc9b55a",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Intimo",
+        "description": "La famosa stanza dell'artista dipinta con una prospettiva emotiva e colori vivaci."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f2",
+    "name": "Camera da letto ad Arles",
+    "author": "6a8215f9bbd3642f8830b706",
+    "style": "6a821c134d292854096c43fd",
+    "year": "1888",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg/400px-Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg",
+    "museumId": "696a65ca017c648acfc9b561",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Ingegneristico",
+        "description": "Il primo velivolo a motore della storia ad aver compiuto un volo controllato."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450fa",
+    "name": "Wright Flyer",
+    "author": "6a8215f9bbd3642f8830b6fc",
+    "style": "6a821c134d292854096c43fa",
+    "year": "1903",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDA3HkSw4Glia31vE65rdB6Lzh8TSq6qiM9Q&s",
+    "museumId": "696a65ca017c648acfc9b562",
+    "technique": "Legno, tessuto e motore a scoppio"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Eroico",
+        "description": "Celebre dipinto patriottico americano che ritrae George Washington in un momento storico."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f3",
+    "name": "Washington attraversa il Delaware",
+    "author": "6a8215f9bbd3642f8830b6f8",
+    "style": "6a821e9c205d7c012f901e53",
+    "year": "1851",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg/400px-Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg",
+    "museumId": "696a65ca017c648acfc9b55a",
+    "technique": "Olio su tela"
+  },
+  {
+    "description": [
+      {
+        "length": 10,
+        "tone": "Classico",
+        "description": "Le iconiche sculture classiche provenienti direttamente dall'Acropoli di Atene."
+      }
+    ],
+    "_id": "6a6b97e7478a8542634450f8",
+    "name": "Marmi del Partenone",
+    "author": "6a8215f9bbd3642f8830b6fa",
+    "style": "6a821c134d292854096c43f8",
+    "year": "447-432 a.C.",
+    "image": "https://cdn.finestresullarte.info/rivista/immagini/2022/1985/parte-meridionale-frontone-sud-bm.jpg",
+    "museumId": "696a65ca017c648acfc9b55b",
+    "technique": "Scultura in marmo pentelico"
+  },
+  {
+    "description": {
+      "simple": {
+        "short": null,
+        "medium": "Un famoso quadro di una signora con un sorriso strano.",
+        "long": "Questo è un quadro vecchissimo di una signora chiamata Lisa. Sorride appena appena, come se sapesse un segreto molto divertente.",
+        "exhaustive": "Un dipinto molto celebre realizzato tanto tempo fa. Mostra una donna vestita di scuro con un paesaggio dietro. Molti turisti vanno in Francia solo per farsi un selfie con lei."
+      },
+      "medium": {
+        "short": "Mona Lisa, perchè è una mona",
+        "medium": "Ritratto rinascimentale di una nobildonna, noto in tutto il mondo per l'enigmatico sorriso.",
+        "long": "Mona: termine veneto offensivo, Lisa: nome proprio di persona",
+        "exhaustive": "Dipinto iconico del sedicesimo secolo. Leonardo di Caprio ha usato la tecnica dello sfumato per dare tridimensionalità e mistero al volto della Gioconda, creando un capolavoro indiscusso."
+      },
+      "professional": {
+        "short": "Ritratto fiorentino a mezza figura.",
+        "medium": "Opera emblematica del Rinascimento italiano, caratterizzata dall'uso magistrale dello sfumato.",
+        "long": "professionale lungo",
+        "exhaustive": "Ritratto di Lisa Gherardini commissionato da Francesco del Giocondo. La prospettiva aerea sullo sfondo e le velature sovrapposte dimostrano la padronanza assoluta della tecnica pittorica da parte dell'autore."
+      },
+      "expert": {
+        "short": null,
+        "medium": "Esempio paradigmatico di prospettiva aerea e sfumato.",
+        "long": "L'uso dello sfumato elimina i contorni netti, affidando i passaggi chiaroscurali a impercettibili variazioni cromatiche che conferiscono un moto psicologico latente.",
+        "exhaustive": "L'opera rappresenta l'apice della ricerca ottica e pittorica dell'artista. L'integrazione tra figura e paesaggio cosmico alle sue spalle sintetizza il microcosmo umano con il macrocosmo naturale, il tutto reso attraverso una complessa stratificazione di velature a olio."
+      }
+    },
     "_id": "6a71f268d43150559b8099c5",
     "name": "La Gioconda",
     "author": "6a8215f9bbd3642f8830b707",
@@ -484,23 +496,38 @@
     "roomId": "6a736c0f7e32a469378318db",
     "technique": "Olio su tavola di pioppo",
     "adoptionId": null,
-    "authorName": "Leonardo di Caprio"
+    "authorName": "Leonardo di Caprio",
+    "funFact": "Leonardo ha tenuto il quadro con sé fino alla fine, probabilmente per usarlo come vassoio per gli spritz.",
+    "paraphrase": "Una signora che sorride a metà perché non ha capito la battuta.",
+    "styleName": "All'italiana"
   },
   {
-    "description": [
-      {
-        "length": 10,
-        "tone": "normal",
-        "description": "Ce l'ha piccolo",
-        "_id": "6a71f268d43150559b8099cc"
+    "description": {
+      "simple": {
+        "short": "Un uomo di marmo senza vestiti.",
+        "medium": "Una grande statua bianca di un eroe antico chiamato David.",
+        "long": "Questa statua gigante mostra un giovane coraggioso prima di una grande battaglia. È famosa per essere molto grande e dettagliata.",
+        "exhaustive": null
       },
-      {
-        "length": 20,
-        "tone": "medium",
-        "description": "ce l'ha piccolo merche la Hunziker ha usato il resto del marmo per scopi personali",
-        "_id": "6a7f315fcd985288431a362e"
+      "medium": {
+        "short": "Ce l'ha piccolo",
+        "medium": "Scultura imponente che rappresenta l'eroe biblico David un attimo prima dello scontro con Golia.",
+        "long": "ce l'ha piccolo merche la Hunziker ha usato il resto del marmo per scopi personali",
+        "exhaustive": "Statua colossale scolpita in un unico blocco di marmo di Carrara, divenuta in breve tempo il simbolo della Repubblica Fiorentina e della forza e dell'ingegno dell'uomo."
+      },
+      "professional": {
+        "short": null,
+        "medium": "Capolavoro della scultura rinascimentale, emblema di virtù civica.",
+        "long": "L'opera si distingue per lo studio anatomico perfetto e per la tensione psicologica del soggetto, colto nell'attimo precedente all'azione fisica.",
+        "exhaustive": "Inizialmente destinata ai contrafforti del Duomo di Firenze, la scultura esalta l'ideale umanistico dell'uomo padrone del proprio destino tramite la ragione (simboleggiata dalla testa di grandi dimensioni) e l'azione (le mani grandi)."
+      },
+      "expert": {
+        "short": "Ponderazione eroica e tensione potenziale.",
+        "medium": "Esempio magistrale di chiasmo scultoreo e indagine anatomica iper-realistica.",
+        "long": "L'accentuazione proporzionale di mani e testa risponde non solo a calcoli prospettici per la originaria visione dal basso, ma a una profonda simbologia neoplatonica.",
+        "exhaustive": "La statua incarna l'apoteosi della scultura fiorentina. L'alterazione intenzionale delle proporzioni, il trattamento superficiale del marmo atto ad assorbire la luce e la posa a contrapposto ne fanno un manifesto estetico senza precedenti nel primo Cinquecento."
       }
-    ],
+    },
     "_id": "6a71f268d43150559b8099cb",
     "name": "David",
     "author": "6a8215f9bbd3642f8830b707",
@@ -511,7 +538,10 @@
     "__v": 0,
     "roomId": "6a736c0f7e32a469378318e2",
     "technique": "Scultura in marmo",
-    "authorName": "Michelle Hunziker"
+    "authorName": "Michelle Hunziker",
+    "funFact": "Si dice che l'autrice abbia scolpito gli addominali ispirandosi a un noto presentatore televisivo di Striscia la Notizia.",
+    "paraphrase": "Un ragazzo di marmo molto alto e nudo, pronto a tirare un sasso con la fionda.",
+    "styleName": "Scultoreo"
   },
   {
     "description": [],
@@ -725,7 +755,7 @@
       }
     },
     "_id": "6a871aa88629e24afc1cb4d2",
-    "name": "nuova opera",
+    "name": "nuova opera 5",
     "author": "6a80391c493cd5ba5d203c1a",
     "authorName": "Vincent Van Gogh",
     "technique": "olio",
@@ -786,106 +816,289 @@
   {
     "description": {
       "simple": {
-        "short": "Socrate beve la cicuta circondato dai suoi discepoli in lacrime.",
-        "medium": "Un capolavoro del neoclassicismo che celebra la fedeltà ai propri ideali e alla ragione filosofica fino alla morte.",
-        "long": "La scena ritrae Socrate nel momento di bere la cicuta, continuando a insegnare la filosofia ai suoi discepoli disperati.",
-        "exhaustive": "La scena ritrae Socrate nel momento di bere la cicuta, continuando a insegnare la filosofia ai suoi discepoli disperati."
+        "short": "Questa è un'opera d'arte moderna che cattura lo sguardo.",
+        "medium": "Questa opera d'arte moderna ci mostra forme e colori straordinari. Gli artisti usano la loro immaginazione per creare qualcosa di unico che tutti possono ammirare.",
+        "long": "Benvenuti davanti a questa meravigliosa opera d'arte contemporanea. Guardandola da vicino, possiamo notare come l'artista abbia usato colori vivaci e forme particolari per raccontare una storia senza parole. Ogni pennellata o linea ci invita a viaggiare con la fantasia, scoprendo dettagli sempre nuovi che rendono questo lavoro davvero speciale.\n\nL'arte moderna ha il potere di farci vedere il mondo con occhi diversi, proprio come fa questa creazione. Non serve conoscere regole complesse per apprezzarla: basta lasciarsi trasportare dalle emozioni che suspetta nel nostro cuore e nella nostra mente.",
+        "exhaustive": "Questa affascinante opera d'arte moderna rappresenta un viaggio straordinario nel mondo della creatività visiva. Fin dal primo sguardo, veniamo catturati dalla combinazione di colori e linee che sembrano quasi saltare fuori dalla tela per parlarci direttamente. L'artista ha impiegato tecniche accessibili ma efficaci per stimolare la curiosità di chi osserva, trasformando materiali semplici in un'esperienza visiva indimenticabile.\n\nNel percorso di scoperta di questo pezzo, i bambini e i visitatori più giovani possono divertirsi a cercare forme nascoste, animali stilizzati o volti celati tra le pennellate. È un gioco di osservazione che aiuta a comprendere come l'arte non sia solo rappresentazione della realtà, ma soprattutto espressione dei propri sentimenti e della propria fantasia.\n\nInoltre, l'opera ci insegna l'importanza della libertà espressiva. Non esiste un modo giusto o sbagliato di guardarla: ognuno può trovare un significato personale, immaginando avventure lontane o mondi fantastici. Questo la rende uno strumento educativo prezioso per avvicinare chiunque alla bellezza della cultura visiva, dimostrando che l'arte è un linguaggio universale che appartiene a tutti noi."
+      },
+      "medium": {
+        "short": "Questa è un'opera d'arte moderna che cattura lo sguardo.",
+        "medium": "Un affascinante esempio di arte contemporanea che esplora il rapporto tra colore e forma. L'opera invita il pubblico a riflettere sui temi universali dell'esistenza umana.",
+        "long": "Quest'opera rappresenta una tappa significativa nel panorama dell'arte contemporanea, distinguendosi per la sua capacità di fondere ricerca estetica e profondità espressiva. Attraverso un uso sapiente delle cromie e delle geometrie, l'autore riesce a stabilire un dialogo intimo con l'osservatore, superando la semplice contemplazione visiva per stimolare una riflessione attiva.\n\nLa composizione si sviluppa secondo equilibri dinamici che guidano lo sguardo lungo tutta la superficie. Ogni elemento è studiato per trasmettere un senso di movimento e tensione emotiva, rendendo l'esperienza della visita museale particolarmente coinvolgente e memorabile per qualsiasi tipo di pubblico.",
+        "exhaustive": "Collocata al centro del nostro percorso espositivo, questa creazione incarna perfettamente le istanze dell'arte moderna e contemporanea. L'opera si pone come un ponte ideale tra la tradizione pittorica classica e le nuove avanguardie, utilizzando un linguaggio visivo che unisce rigore formale e libertà inventiva. L'analisi della superficie rivela una stratificazione di significati e tecniche che testimoniano il percorso di ricerca intrapreso dall'autore.\n\nDal punto di vista compositivo, l'equilibrio dei volumi e la scelta cromatica non sono mai casuali, ma rispondono a una precisa volontà narrativa. I contrasti di luce e ombra creano una profondità spaziale che avvolge lo spettatore, invitandolo a un'osservazione prolungata e meditativa. Vengono così affrontati temi cruciali come la percezione del tempo, l'identità e la relazione tra l'individuo e lo spazio circostante.\n\nQuesta creazione non rappresenta soltanto un momento culminante nella produzione dell'artista, ma funge anche da specchio per le inquietudini e le aspirazioni della società contemporanea. La sua capacità di rimanere attuale e di interrogare continuamente il visitatore ne fa un capolavoro imperdibile, capace di arricchire profondamente l'offerta culturale del nostro museo e di lasciare un segno indelebile nella memoria di chi lo osserva."
+      },
+      "professional": {
+        "short": "Questa è un'opera d'arte moderna che cattura lo sguardo.",
+        "medium": "Un raffinato esempio di ricerca visiva contemporanea, caratterizzato da una forte tensione formale e da un uso innovativo dei materiali e delle texture.",
+        "long": "L'opera in esame si inserisce autorevolmente nel solco delle ricerche artistiche contemporanee, evidenziando una complessa articolazione tra impianto strutturale e resa materica. L'artista dimostra una notevole padronanza del mezzo espressivo, orchestrando una sintesi efficace tra istanze concettuali e perizia tecnica.\n\nL'analisi formale rivela un meticoloso studio delle tensioni spaziali e dei rapporti cromatici. Tale impianto non si esaurisce in un esercizio di stile, ma veicola una precisa visione critica, tipica del movimento di riferimento, offrendo al fruitore una chiave di lettura stratificata e stimolante.",
+        "exhaustive": "Quest'opera costituisce un documento fondamentale per comprendere le dinamiche evolutive dell'arte contemporanea. La sua genesi si inserisce in un contesto di profonda revisione dei linguaggi visivi, dove la decostruzione della forma tradizionale lascia spazio a nuove sintesi espressive. L'artista adotta un approccio metodologico rigoroso, in cui ogni scelta stilistica è il risultato di un'indagine teorica approfondita sui limiti e sulle potenzialità del mezzo.\n\nSul piano tecnico, si osserva una raffinata gestione della materia e della luce, trattate non mere componenti descrittive, ma come veri e propri vettori di senso. Le sovrapposizioni e le campiture testimoniano un processo lavorativo meditato, caratterizzato da ripensamenti e stratificazioni che arricchiscono la superficie pittorica di una vibrante tridimensionalità. Il dialogo instaurato tra le diverse componenti compositive genera un campo energetico che attiva lo spazio circostante.\n\nInoltre, l'opera riflette le tensioni socio-culturali del proprio tempo, facendosi portavoce di un'estetica che rifiuta la facile spettacolarizzazione in favore di un'intensa riflessione ontologica. L'ascolto critico di questo lavoro permette agli studiosi e agli appassionati di cogliere le sottili connessioni con il dibattito artistico internazionale, confermando il ruolo centrale dell'opera all'interno della storiografia artistica contemporanea."
+      },
+      "expert": {
+        "short": "Questa è un'opera d'arte moderna che cattura lo sguardo.",
+        "medium": "Un'articolata proposizione estetica che decostruisce i paradigmi tradizionali della rappresentazione, innestandosi nel dibattito critico sulle neo-avanguardie e sulla fenomenologia della visione.",
+        "long": "L'opera rappresenta un nodo cruciale all'interno del percorso di ridefinizione dei codici visivi attuato dalle ricerche più avanzate del periodo. La struttura compositiva si configura come un campo d'indagine fenomenologica, in cui la percezione dello spettatore viene sollecitata attraverso una dialettica serrata tra autonomia del medium e istanza concettuale.\n\nL'analisi critica evidenzia come l'artista operi una radicale messa in discussione dello spazio prospettico classico. Attraverso un trattamento spregiudicato della superficie e una sintassi visiva antinaturalistica, l'opera trascende la dimensione puramente oggettuale per farsi metafora dei processi cognitivi e delle crisi ontologiche della contemporaneità.",
+        "exhaustive": "L'indagine critica su quest'opera impone una ricognizione puntuale dei presupposti teorici ed epistemologici che ne hanno guidato l'ideazione. Collocata all'intersezione tra le derive delle neo-avanguardie e le successive istanze post-mediali, essa incarna una riflessione radicale sullo statuto dell'immagine e sulla crisi della rappresentazione mimetica. L'artista non si limita a produrre un oggetto estetico, ma istituisce un dispositivo visivo che interroga direttamente i meccanismi della visione e della ricezione critica.\n\nDal punto de vista morfologico, la composizione si regge su un'architettura sotterranea di tensioni vettoriali e contrappunti cromatici che sovvertono ogni aspettativa illusionistica. La materia viene indagata nella sua nuda essenza fenomenica: le opacità, le trasparenze e le scabrosità della superficie costituiscono il risultato di un processo sottrattivo e additivo che riflette l'angoscia e il rigore intellettuale del fare artistico. Ogni segno è il sedimento di un'operazione concettuale complessa, volta a smascherare le convenzioni percettive codificate dal sistema dell'arte.\n\nIn ultima analisi, l'opera si offre come un testo visivo altamente decifrabile solo attraverso l'adozione di griglie interpretative multidisciplinari, che spaziano dalla storia dell'arte comparata alla filosofia della percezione. Il suo valore storiografico risiede nella capacità di anticipare le future derive del dibattito critico, ponendosi come un imprescindibile termine di paragone per la comprensione delle mutazioni estetiche del tardo XX secolo e della transizione verso la contemporaneità."
       }
     },
-    "_id": "6a8879bfe6c216683b02eb81",
-    "name": "La Morte di Socrate",
-    "author": "6a8879bfe6c216683b02eb71",
-    "technique": "Dipinto a olio su tela",
-    "style": "6a8879bfe6c216683b02eb78",
-    "year": "1787",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Charles-alphonse_dufresnoy%2C_morte_di_socrate%2C_1650_ca.jpg/960px-Charles-alphonse_dufresnoy%2C_morte_di_socrate%2C_1650_ca.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "funFact": "David studiò attentamente i dialoghi di Platone per ricreare fedelmente la cerchia e l'atteggiamento dei presenti.",
-    "paraphrase": "Socrate sceglie di morire per obbedire alle leggi della sua città, piuttosto che rinnegare la propria filosofia.",
-    "museumId": "6a8879bfe6c216683b02eb70",
+    "_id": "6a8dc6a97a0810a965acc160",
+    "name": "nuova opera",
+    "author": "6a8081285b91f8583b399214",
+    "authorName": "Leonardo Da Vinci",
+    "technique": "plio",
+    "style": "6a81c6af622833492a3be873",
+    "styleName": "Impressionismo",
+    "year": "2026",
+    "image": "/uploads/1787676326247-57355100.png",
+    "museumId": "6a8c6dfa4ce9e1ef09aee754",
+    "roomId": "6a8dc6bc7a0810a965acc166",
+    "__v": 0,
+    "funFact": "Spesso le opere d'arte contemporanea celano dettagli nascosti che l'artista ha inserito quasi come firma segreta, visibili solo sotto una particolare angolazione della luce.",
+    "paraphrase": "L'opera utilizza forme e colori per esprimere emozioni profonde, invitando chi guarda a riflettere e a trovare un significato personale nella bellezza dell'arte."
+  },
+  {
+    "_id": "6a9464fbaca2e44927ced22c",
+    "name": "I mangiatori di patate",
+    "author": "6a8215f9bbd3642f8830b706",
+    "authorName": "Vincent van Gogh",
+    "technique": "pastelli 2",
+    "style": "6a81c6af622833492a3be873",
+    "styleName": "Impressionismo",
+    "year": "2026",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/1/12/Vincent_van_Gogh_-_The_potato_eaters_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "museumId": "6a8c6dfa4ce9e1ef09aee754",
+    "roomId": "6a8dc6bc7a0810a965acc166",
     "__v": 0
   },
   {
-    "description": {
-      "simple": {
-        "short": "George Washington guida le truppe americane attraverso il fiume ghiacciato Delaware.",
-        "medium": "Celebre dipinto che commemora l'attacco a sorpresa di Washington a Trenton durante la rivoluzione americana.",
-        "long": "Il dipinto è noto per la sua composizione eroica e patriottica, con Washington fiero a prua della barca.",
-        "exhaustive": "Il dipinto è noto per la sua composizione eroica e patriottica, con Washington fiero a prua della barca."
+    "description": [
+      {
+        "length": 50,
+        "tone": "Semplice",
+        "description": "Socrate, condannato a morte, beve la cicuta circondato dai suoi discepoli disperati.",
+        "_id": "6a94682dd38404dfc005d662"
+      },
+      {
+        "length": 150,
+        "tone": "Educativo",
+        "description": "Un celeberrimo esempio di pittura neoclassica. Rappresenta la fedeltà del filosofo alla verità e al pensiero razionale, preferendo la morte alla sottomissione intellettuale.",
+        "_id": "6a94682dd38404dfc005d663"
+      },
+      {
+        "length": 300,
+        "tone": "Professionale",
+        "description": "Il dipinto incarna l'estetica e la morale neoclassica di David. Attraverso una composizione rigorosa e geometrica e un uso drammatico della luce, l'artista glorifica l'integrità filosofica di Socrate. La tavolozza cromatica e la tensione muscolare richiamano la scultura greca.",
+        "_id": "6a94682dd38404dfc005d664"
       }
-    },
-    "_id": "6a8879bfe6c216683b02eb82",
+    ],
+    "_id": "6a94682dd38404dfc005d661",
+    "name": "La Morte di Socrate",
+    "year": "1787",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/8/8c/David_-_The_Death_of_Socrates_-_Google_Art_Project.jpg",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "roomId": "6a94682dd38404dfc005d65c",
+    "__v": 0
+  },
+  {
+    "description": [
+      {
+        "length": 50,
+        "tone": "Semplice",
+        "description": "L'eroe mitologico Perseo tiene trionfante la testa recisa di Medusa.",
+        "_id": "6a94682dd38404dfc005d666"
+      },
+      {
+        "length": 150,
+        "tone": "Educativo",
+        "description": "Realizzata in pregiato marmo di Carrara, questa magnifica statua di Canova rappresenta il trionfo dell'eroe e della grazia neoclassica sulla mostruosità di Medusa.",
+        "_id": "6a94682dd38404dfc005d667"
+      },
+      {
+        "length": 300,
+        "tone": "Professionale",
+        "description": "La scultura ripropone l'ideale neoclassico di 'nobile semplicità e quieta grandezza'. Canova ritrae Perseo in una posa calibrata, ispirata all'Apollo del Belvedere. Il contrasto tra la levigatezza del corpo eroico e i dettagli tormentati della testa serpentina di Medusa mette in mostra l'impareggiabile virtuosismo tecnico dell'autore.",
+        "_id": "6a94682dd38404dfc005d668"
+      }
+    ],
+    "_id": "6a94682dd38404dfc005d665",
+    "name": "Perseo con la testa di Medusa",
+    "year": "1804",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/2/23/Perseus_with_the_head_of_Medusa%2C_by_Antonio_Canova_%281757-1822%29_-_Metropolitan_Museum_of_Art_-_New_York_City_-_DSC01549.JPG",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "roomId": "6a94682dd38404dfc005d65c",
+    "__v": 0
+  },
+  {
+    "description": [
+      {
+        "length": 50,
+        "tone": "Semplice",
+        "description": "Un tranquillo ponte in legno stile giapponese sospeso sopra uno stagno ricolmo di ninfee fiorite.",
+        "_id": "6a94682dd38404dfc005d66a"
+      },
+      {
+        "length": 150,
+        "tone": "Educativo",
+        "description": "Monet dipinse questo affascinante angolo del suo giardino privato a Giverny, focalizzandosi interamente sullo studio della riflessione della luce e del colore sull'acqua.",
+        "_id": "6a94682dd38404dfc005d66b"
+      },
+      {
+        "length": 300,
+        "tone": "Professionale",
+        "description": "Questo capolavoro dell'Impressionismo evidenzia l'ossessione senile di Monet per le ninfee. La composizione cancella la linea dell'orizzonte, immergendo lo spettatore in una fusione atmosferica di foglie fiorite, acqua e luce riflessa, catturate con pennellate rapide, materiche e ricche di variazioni cromatiche vibranti.",
+        "_id": "6a94682dd38404dfc005d66c"
+      }
+    ],
+    "_id": "6a94682dd38404dfc005d669",
+    "name": "Lo stagno delle ninfee",
+    "year": "1899",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Claude_Monet_Bridge_over_a_Pond_of_Water_Lilies_Google_Art_Project.jpg",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "roomId": "6a94682dd38404dfc005d65e",
+    "__v": 0
+  },
+  {
+    "description": [
+      {
+        "length": 50,
+        "tone": "Semplice",
+        "description": "Un celebre ed espressivo autoritratto dell'artista olandese con un cappello estivo di paglia.",
+        "_id": "6a94682dd38404dfc005d66e"
+      },
+      {
+        "length": 150,
+        "tone": "Educativo",
+        "description": "Dipinto durante il suo fecondo soggiorno a Parigi, mostra chiaramente l'adozione da parte di Van Gogh di colori brillanti e audaci accostamenti cromatici complementari d'influenza impressionista.",
+        "_id": "6a94682dd38404dfc005d66f"
+      },
+      {
+        "length": 300,
+        "tone": "Professionale",
+        "description": "La tela rivela la transizione stilistica di Van Gogh verso una stesura del colore a piccoli tratti direzionali e vorticosi. L'uso dei colori complementari, come l'accostamento di blu e arancione, genera una forte tensione drammatica e psicologica che anticipa la corrente espressionista, rivelando l'anima irrequieta del pittore.",
+        "_id": "6a94682dd38404dfc005d670"
+      }
+    ],
+    "_id": "6a94682dd38404dfc005d66d",
+    "name": "Autoritratto con cappello di paglia",
+    "year": "1887",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Vincent_van_Gogh_-_Self-Portrait_with_Straw_Hat_-_Google_Art_Project.jpg",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "roomId": "6a94682dd38404dfc005d65e",
+    "__v": 0
+  },
+  {
+    "description": [
+      {
+        "length": 50,
+        "tone": "Semplice",
+        "description": "Giovani ballerine provano i loro passi sotto lo sguardo attento del loro anziano maestro di danza.",
+        "_id": "6a94682dd38404dfc005d672"
+      },
+      {
+        "length": 150,
+        "tone": "Educativo",
+        "description": "Degas cattura un momento spontaneo e non posato all'interno di una scuola di danza parigina, concentrandosi sui gesti naturali, la fatica e la dinamicità del movimento.",
+        "_id": "6a94682dd38404dfc005d673"
+      },
+      {
+        "length": 300,
+        "tone": "Professionale",
+        "description": "Il dipinto è celebre per la sua audace prospettiva diagonale che taglia la stanza, creando una profonda illusione tridimensionale. Degas, a differenza degli altri impressionisti, dipinge in studio prediligendo la luce artificiale e la precisione del disegno per riprodurre fedelmente la grazia transitoria delle posture delle ballerine.",
+        "_id": "6a94682dd38404dfc005d674"
+      }
+    ],
+    "_id": "6a94682dd38404dfc005d671",
+    "name": "La Classe di Danza",
+    "year": "1874",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/8/83/Edgar_Degas_-_The_Dance_Class_-_Google_Art_Project.jpg",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "roomId": "6a94682dd38404dfc005d65e",
+    "__v": 0
+  },
+  {
+    "description": [
+      {
+        "length": 50,
+        "tone": "Semplice",
+        "description": "Il generale George Washington guida eroicamente le truppe americane attraverso un fiume ghiacciato durante la rivoluzione.",
+        "_id": "6a94682dd38404dfc005d676"
+      },
+      {
+        "length": 150,
+        "tone": "Educativo",
+        "description": "Questa mastodontica opera d'arte commemora lo storico attacco a sorpresa a Trenton. È un simbolo patriottico ed eroico della determinazione americana per l'indipendenza.",
+        "_id": "6a94682dd38404dfc005d677"
+      },
+      {
+        "length": 300,
+        "tone": "Professionale",
+        "description": "Il dipinto sfrutta una possente composizione piramidale, con la figura statuaria di George Washington che domina la prua della barca nel freddo gelido. Leutze usa un forte chiaroscuro e una drammatizzazione romantica dei colori e delle pose per instillare un senso di destino manifesto e valore monumentale nell'evento storico americano.",
+        "_id": "6a94682dd38404dfc005d678"
+      }
+    ],
+    "_id": "6a94682dd38404dfc005d675",
     "name": "Washington attraversa il Delaware",
-    "author": "6a8215f9bbd3642f8830b6f8",
-    "technique": "Dipinto a olio su tela",
-    "style": "6a8879bfe6c216683b02eb7a",
     "year": "1851",
     "image": "https://upload.wikimedia.org/wikipedia/commons/9/95/Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg",
-    "funFact": "Il dipinto fu originariamente realizzato in Germania per incoraggiare i riformatori europei dopo le rivoluzioni del 1848.",
-    "paraphrase": "Washington guida i suoi soldati attraverso una notte gelida per compiere un attacco decisivo per l'indipendenza.",
     "museumId": "6a8879bfe6c216683b02eb70",
+    "roomId": "6a94682dd38404dfc005d660",
     "__v": 0
   },
   {
-    "description": {
-      "simple": {
-        "short": "Uno dei celebri autoritratti di Van Gogh dipinto a Parigi.",
-        "medium": "Dipinto con colori brillanti e pennellate rapide, mostra l'influenza della teoria del colore impressionista.",
-        "long": "In questo autoritratto, Van Gogh usa forti contrasti cromatici e una vibrante pennellata circolare.",
-        "exhaustive": "In questo autoritratto, Van Gogh usa forti contrasti cromatici e una vibrante pennellata circolare."
+    "description": [
+      {
+        "length": 50,
+        "tone": "Semplice",
+        "description": "Un audace ritratto di una nobildonna parigina in un elegante abito nero scollato.",
+        "_id": "6a94682dd38404dfc005d67a"
+      },
+      {
+        "length": 150,
+        "tone": "Educativo",
+        "description": "Questo sensuale ritratto di Virginie Gautreau creò un enorme scandalo al Salon di Parigi per via della sua posa altera e della scollatura giudicata immorale, costringendo Sargent a lasciare la città.",
+        "_id": "6a94682dd38404dfc005d67b"
+      },
+      {
+        "length": 300,
+        "tone": "Professionale",
+        "description": "Sargent sperimenta in quest'opera un audace realismo psicologico combinato con stilemi classici. L'incarnato pallidissimo, quasi marmoreo, contrasta nettamente con il nero vellutato dell'abito da sera, delineando una silhouette sinuosa e sensuale. L'opera sfida apertamente i costumi accademici e borghesi dell'epoca.",
+        "_id": "6a94682dd38404dfc005d67c"
       }
-    },
-    "_id": "6a8879bfe6c216683b02eb83",
-    "name": "Autoritratto con cappello di paglia",
-    "author": "6a8215f9bbd3642f8830b706",
-    "technique": "Dipinto a olio su tela",
-    "style": "6a821c134d292854096c43fd",
-    "year": "1887",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Self-Portrait_with_a_Straw_Hat_%28obverse-_The_Potato_Peeler%29_MET_DT1502_cropped2.jpg/960px-Self-Portrait_with_a_Straw_Hat_%28obverse-_The_Potato_Peeler%29_MET_DT1502_cropped2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "funFact": "Sul retro di questa tela Van Gogh dipinse un'altra opera, 'La tosatura delle pecore', per risparmiare denaro sulle tele.",
-    "paraphrase": "Van Gogh si ritrae come un contadino o lavoratore, esprimendo la sua complessa interiorità con colori accesi.",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "__v": 0
-  },
-  {
-    "description": {
-      "simple": {
-        "short": "Ritratto di Virginie Amélie Avegno Gautreau in un abito nero scollato.",
-        "medium": "Un ritratto audace che suscitò enorme scandalo a Parigi per via del suo stile sensuale e anticonvenzionale.",
-        "long": "Il dipinto enfatizza la pelle bianchissima della modella e la linea sinuosa del suo abito di raso nero.",
-        "exhaustive": "Il dipinto enfatizza la pelle bianchissima della modella e la linea sinuosa del suo abito di raso nero."
-      }
-    },
-    "_id": "6a8879bfe6c216683b02eb84",
+    ],
+    "_id": "6a94682dd38404dfc005d679",
     "name": "Madame X",
-    "author": "6a8215f9bbd3642f8830b6ff",
-    "technique": "Dipinto a olio su tela",
-    "style": "6a8879bfe6c216683b02eb7d",
     "year": "1884",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "funFact": "Sargent originariamente dipinse una delle spalline dell'abito caduta sulla spalla, ma dovette ridipingerla al suo posto a causa dello scandalo.",
-    "paraphrase": "Una donna dell'alta società parigina posa fiera, sfidando i costumi morali tradizionali del tempo.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Madame_X_%2C_Madame_Pierre_Gautreau%2C_John_Singer_Sargent%2C_1884.jpg",
     "museumId": "6a8879bfe6c216683b02eb70",
+    "roomId": "6a94682dd38404dfc005d660",
     "__v": 0
   },
   {
-    "description": {
-      "simple": {
-        "short": "Un ponte di legno in stile giapponese che sovrasta un laghetto fiorito di ninfee.",
-        "medium": "Monet dipinse questo celebre scorcio del suo giardino a Giverny, catturando i riflessi della luce sull'acqua.",
-        "long": "Il dipinto si concentra sulla vegetazione lussureggiante e sulle variazioni atmosferiche di luce e ombra.",
-        "exhaustive": "Il dipinto si concentra sulla vegetazione lussureggiante e sulle variazioni atmosferiche di luce e ombra."
+    "description": [
+      {
+        "length": 50,
+        "tone": "Semplice",
+        "description": "Un canottiere si riposa sulla sua canoa sulle calme acque del fiume Schuylkill a Filadelfia.",
+        "_id": "6a94682dd38404dfc005d67e"
+      },
+      {
+        "length": 150,
+        "tone": "Educativo",
+        "description": "Eakins ritrae il suo caro amico Max Schmitt in un momento di quiete sportiva all'aperto, celebrando la precisione anatomica, la prospettiva accurata e la vita quotidiana americana.",
+        "_id": "6a94682dd38404dfc005d67f"
+      },
+      {
+        "length": 300,
+        "tone": "Professionale",
+        "description": "Quest'opera rappresenta uno dei picchi del Realismo scientifico americano. Eakins applica meticolose leggi matematiche di prospettiva e di rifrazione ottica per rappresentare i riflessi nell'acqua e l'anatomia muscolare contratta. Il pittore si include anche sullo sfondo, remando in una canoa in lontananza.",
+        "_id": "6a94682dd38404dfc005d680"
       }
-    },
-    "_id": "6a8879bfe6c216683b02eb85",
-    "name": "Lo stagno delle ninfee",
-    "author": "6a8879bfe6c216683b02eb76",
-    "technique": "Dipinto a olio su tela",
-    "style": "6a81c6af622833492a3be873",
-    "year": "1899",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Claude_Monet%2C_The_Water-Lily_Pond_%28National_Gallery%2C_London%29.jpg/960px-Claude_Monet%2C_The_Water-Lily_Pond_%28National_Gallery%2C_London%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "funFact": "Monet costruì di persona lo stagno e il ponte giapponese per avere sempre a disposizione il soggetto perfetto da dipingere.",
-    "paraphrase": "La natura del giardino di Monet viene rappresentata come un'armonia di colori riflessi e forme soffuse.",
+    ],
+    "_id": "6a94682dd38404dfc005d67d",
+    "name": "Max Schmitt in a Single Scull",
+    "year": "1871",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Thomas_Eakins_-_Max_Schmitt_in_a_Single_Scull_-_Google_Art_Project.jpg",
     "museumId": "6a8879bfe6c216683b02eb70",
+    "roomId": "6a94682dd38404dfc005d660",
     "__v": 0
   }
 ]
