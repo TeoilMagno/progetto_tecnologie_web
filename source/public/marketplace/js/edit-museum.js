@@ -55,10 +55,12 @@ async function loadMuseumDetails() {
       clearImageWidget("museum-image");
     }
 
-    // Spunta le checkbox dei servizi
+    // Spunta le checkbox dei servizi (Adattato al nuovo Schema Mongoose)
     if (currentMuseumData.services) {
       currentMuseumData.services.forEach(s => {
-        const cb = document.querySelector(`.srv-cb[value="${s}"]`);
+        // Estrae la stringa sia che arrivi come oggetto { services: 'cafe' } sia come stringa pura
+        const serviceName = s.services || s; 
+        const cb = document.querySelector(`.srv-cb[value="${serviceName}"]`);
         if (cb) cb.checked = true;
       });
     }
@@ -1454,6 +1456,9 @@ function toggleScheduleInput(checkbox) {
 
 // Raccoglie tutti i dati dal form in un unico payload formattato per Mongoose
 function getMuseumFormData() {
+  const selectedServices = Array.from(document.querySelectorAll('.srv-cb:checked')).map(cb => cb.value);
+  const selectedAccessibility = Array.from(document.querySelectorAll('.acc-cb:checked')).map(cb => cb.value);
+
   const payload = {
     name: document.getElementById("museum-name").value.trim(),
     address: document.getElementById("museum-address").value.trim(),
@@ -1462,13 +1467,12 @@ function getMuseumFormData() {
     image: document.getElementById("museum-image").value.trim(),
     ticketPrice: parseFloat(document.getElementById("museum-price").value) || 0,
     tags: document.getElementById("museum-tags").value ? document.getElementById("museum-tags").value.split(",").map(t => t.trim()) : [],
-    services: Array.from(document.querySelectorAll('.srv-cb:checked')).map(cb => cb.value),
-    accessibility: Array.from(document.querySelectorAll('.acc-cb:checked')).map(cb => cb.value)
+    // Mappato come subdocumenti { services: string } per combaciare con servicesSchema
+    services: selectedServices.map(val => ({ services: val })),
+    accessibility: selectedAccessibility.length > 0 ? selectedAccessibility : ['none']
   };
 
-  if (payload.accessibility.length === 0) payload.accessibility = ['none'];
-
-  // Raccoglie SOLO i giorni in cui c'è la spunta!
+  // Raccoglie SOLO i giorni in cui c'è la spunta
   const schedule = [];
   document.querySelectorAll('.schedule-row').forEach(row => {
     const day = row.dataset.day;

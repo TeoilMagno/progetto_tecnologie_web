@@ -83,7 +83,6 @@ const museumSchema = new Schema({
       'blind_friendly', 
       'deaf_friendly', 
       'dsa_friendly', 
-      'sensory_friendly', 
       'none'
     ],
     default: ['none']

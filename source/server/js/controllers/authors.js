@@ -110,31 +110,24 @@ exports.addAuthorData = async (authorId, newData) => {
 
 // Aggiunge il museo corrente all'array museumId di una specifica card esistente (permette di utilizzare una descrizione esistente)
 exports.adoptAuthorData = async (authorId, dataId, museumId) => {
-  const author = await Author.findById(authorId);
-  if (!author) {
-    const error = new Error('Autore non trovato');
+  // 1. Rimuove il museo da qualsiasi altra descrizione di questo autore
+  await Author.updateOne(
+    { _id: authorId },
+    { $pull: { "data.$[].museumId": museumId } }
+  );
+
+  // 2. Aggiunge il museo alla descrizione scelta senza innescare la validazione globale
+  const updatedAuthor = await Author.findOneAndUpdate(
+    { _id: authorId, "data._id": dataId },
+    { $addToSet: { "data.$.museumId": museumId } },
+    { new: true } 
+  ).populate('data.museumId', 'name image');
+
+  if (!updatedAuthor) {
+    const error = new Error('Autore o descrizione non trovata');
     error.statusCode = 404;
     throw error;
   }
 
-  author.data.forEach(item => {
-    item.museumId = item.museumId.filter(id => id.toString() !== museumId.toString());
-  });
-  
-  // Cerchiamo la specifica card tramite il suo _id (Mongoose genera _id anche per i sotto-documenti)
-  const dataItem = author.data.id(dataId);
-  if (!dataItem) {
-    const error = new Error('Descrizione non trovata');
-    error.statusCode = 404;
-    throw error;
-  }
-
-  // Se il museo non sta già usando questa card, lo aggiungiamo
-  if (!dataItem.museumId.includes(museumId)) {
-    dataItem.museumId.push(museumId);
-    await author.save();
-  }
-
-  // Restituiamo l'autore popolato per aggiornare le card nel frontend
-  return await Author.findById(authorId).populate('data.museumId', 'name image');
+  return updatedAuthor;
 };

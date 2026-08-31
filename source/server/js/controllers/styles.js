@@ -84,22 +84,22 @@ exports.addStyleData = async (styleId, newData) => {
 
 // Adotta una definizione esistente
 exports.adoptStyleData = async (styleId, dataId, museumId) => {
-  const style = await Style.findById(styleId);
-  if (!style) throw Object.assign(new Error('Stile non trovato'), { statusCode: 404 });
+  await Style.updateOne(
+    { _id: styleId },
+    { $pull: { "data.$[].museumId": museumId } }
+  );
 
-  // Rimuoviamo il museo dalle altre definizioni
-  style.data.forEach(item => {
-    item.museumId = item.museumId.filter(id => id.toString() !== museumId.toString());
-  });
-  
-  const dataItem = style.data.id(dataId);
-  if (!dataItem) throw Object.assign(new Error('Definizione non trovata'), { statusCode: 404 });
+  const updatedStyle = await Style.findOneAndUpdate(
+    { _id: styleId, "data._id": dataId },
+    { $addToSet: { "data.$.museumId": museumId } },
+    { new: true }
+  ).populate('data.museumId', 'name image');
 
-  // Selezioniamo questa
-  if (!dataItem.museumId.includes(museumId)) {
-    dataItem.museumId.push(museumId);
-    await style.save();
+  if (!updatedStyle) {
+    const error = new Error('Stile o descrizione non trovata');
+    error.statusCode = 404;
+    throw error;
   }
 
-  return await Style.findById(styleId).populate('data.museumId', 'name image');
+  return updatedStyle;
 };

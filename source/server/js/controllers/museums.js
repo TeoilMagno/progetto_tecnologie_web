@@ -243,6 +243,8 @@ exports.removeSectionFromMuseum = async (museumId, sectionId) => {
 
 exports.deleteMuseumById = async (museumId) => {
   const { deleteSectionById } = require('./sections');
+  const { deleteAllItemsByMuseum } = require('./items');
+  const { deleteAllVisitsByMuseum } = require('./visits');
 
   const museum = await Museum.findByIdAndDelete(museumId);
   if (!museum) {
@@ -264,6 +266,19 @@ exports.deleteMuseumById = async (museumId) => {
         console.warn(`Impossibile eliminare la sezione ${sectionId} durante la cascata: ${err.message}`);
       }
     }
+  }
+
+  // Eliminiamo anche gli articoli del bookshop e tutte le visite (inclusa quella standard) del museo
+  try {
+    await deleteAllItemsByMuseum(museumId);
+  } catch (err) {
+    console.warn(`Errore durante l'eliminazione degli articoli del museo ${museumId}: ${err.message}`);
+  }
+
+  try {
+    await deleteAllVisitsByMuseum(museumId);
+  } catch (err) {
+    console.warn(`Errore durante l'eliminazione delle visite del museo ${museumId}: ${err.message}`);
   }
 
   // rimuoviamo il museo dai musei gestiti dagli utenti
