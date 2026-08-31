@@ -41,7 +41,7 @@ const auth = require("../middleware/roles");
 // 1. Configurazione Multer per i caricamenti locali
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
-    const dir = path.join(__dirname, '..', '..', '..', 'uploads');
+    const dir = path.join(__dirname, '..', '..', '..', 'public', 'uploads');
     // Crea la cartella se non esiste
     await fs.mkdir(dir, { recursive: true }).catch(console.error);
     cb(null, dir);
@@ -386,12 +386,12 @@ apiRouter.put("/works/:id/move", [auth.isCurator, auth.isMuseumOwner], async (re
 //------------------ form ------------------------
 
 // Rotta per creare e aggiungere un'opera sul db
-// * il frontend deve inviare museumId e roomId (se l'opera è in una stanza)
+// * il frontend deve inviare museumId e sectionId
 apiRouter.post("/add-work", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
   try {
     const { work, sectionId, museumId } = req.body;
 
-    // Salviamo la nuova opera inserendo esplicitamente il roomId e il museumId verificato
+    // Salviamo la nuova opera inserendo esplicitamente il sectionId e il museumId verificato
     const newWork = new Work({
       ...work,
       museumId: museumId, // Evitiamo che l'utente si inventi cose

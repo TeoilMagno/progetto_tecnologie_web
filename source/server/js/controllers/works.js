@@ -116,16 +116,9 @@ exports.updateWorkById = async (workId, updateData, museumId) => {
 
 // Elimina un'opera
 exports.deleteWorkById = async (workId, museumId) => {
-  const workToDelete = await Work.findOne({
-    _id: workId,
-    museumId: museumId,
-    $or: [{ adoptionId: null }, { adoptionId: { $exists: false } }]
-  });
-
-  if (workToDelete && workToDelete.image) {
-    await deleteLocalFile(workToDelete.image);
-  }
-
+  // Un solo findOneAndDelete atomico: cancella e restituisce il documento in un'unica query,
+  // niente più findOne "di controllo" prima, quindi niente più rischio di null-dereference
+  // se l'opera fosse già stata rimossa (a mano o da una cascata precedente).
   const deletedWork = await Work.findOneAndDelete({
     _id: workId,
     museumId: museumId,
@@ -137,7 +130,11 @@ exports.deleteWorkById = async (workId, museumId) => {
     error.statusCode = 403;
     throw error;
   }
-  
+
+  if (deletedWork.image) {
+    await deleteLocalFile(deletedWork.image);
+  }
+
   await Visit.findOneAndUpdate(
     { museumId: museumId, visitType: 'standard' },
     { $pull: { works: workId } } 

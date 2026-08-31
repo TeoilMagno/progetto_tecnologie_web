@@ -85,6 +85,14 @@ exports.updateSectionById = async (sectionId, updateData, museumId) => {
     updateData, 
     { returnDocument: 'after', runValidators: true }
   );
+
+  if (!updatedSection) {
+    const error = new Error("Sezione non trovata o non sei autorizzato a modificarla");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  return updatedSection;
 }
 
 exports.uploadMap = async (mapData) => {
@@ -140,22 +148,31 @@ exports.removeWorkFromSection = async (sectionId, workId) => {
 
 // Elimina una sezione e tutte le opere contenute al suo interno
 exports.deleteSectionById = async (sectionId, museumId) => {
-  const section = await Section.findOne({ _id:sectionId, museumId: museumId });
-  if (!section) {
+  const deletedSection = await Section.findOneAndDelete({ _id: sectionId, museumId: museumId });
+
+  if (!deletedSection) {
     const error = new Error("Sezione non trovata o non sei autorizzato a eliminarla");
     error.statusCode = 403;
     throw error;
   }
 
-  if(section && section.image) {
-    await deleteLocalFile(section.image);
+  if (deletedSection.image) {
+    await deleteLocalFile(deletedSection.image);
   }
 
-  if (section.works && section.works.length > 0) {
-    for (const w of section.works) {
-      if (w.workId) await deleteWorkById(w.workId, museumId);
+  // Deleghiamo l'eliminazione di ogni opera a deleteWorkById (gestisce lei stessa
+  // immagine, visita libera, ecc). Se un'opera fosse già sparita dal DB, non blocchiamo
+  // l'eliminazione dell'intera sezione: logghiamo e proseguiamo con le altre.
+  if (deletedSection.works && deletedSection.works.length > 0) {
+    for (const w of deletedSection.works) {
+      if (!w.workId) continue;
+      try {
+        await deleteWorkById(w.workId, museumId);
+      } catch (err) {
+        console.warn(`Impossibile eliminare l'opera ${w.workId} durante la cascata: ${err.message}`);
+      }
     }
   }
 
-  return await Section.findByIdAndDelete(sectionId);
+  return deletedSection;
 };

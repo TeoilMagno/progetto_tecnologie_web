@@ -244,19 +244,25 @@ exports.removeSectionFromMuseum = async (museumId, sectionId) => {
 exports.deleteMuseumById = async (museumId) => {
   const { deleteSectionById } = require('./sections');
 
-  const museum = await Museum.findById(museumId);
+  const museum = await Museum.findByIdAndDelete(museumId);
   if (!museum) {
     const error = new Error("Museo non trovato");
     error.statusCode = 404;
     throw error;
   }
 
-  if(museum?.image) await deleteLocalFile(museum.image);
+  if (museum.image) await deleteLocalFile(museum.image);
 
-  // eliminiamo tutte le sezioni (e relative opere) collegate a questo museo
+  // Deleghiamo l'eliminazione di ogni sezione (e a cascata delle sue opere) a deleteSectionById.
+  // Se una sezione fosse già sparita dal DB (es. rimossa a mano), non blocchiamo l'eliminazione
+  // dell'intero museo: logghiamo e proseguiamo con le altre.
   if (museum.sections && museum.sections.length > 0) {
     for (const sectionId of museum.sections) {
-      await deleteSectionById(sectionId, museumId);
+      try {
+        await deleteSectionById(sectionId, museumId);
+      } catch (err) {
+        console.warn(`Impossibile eliminare la sezione ${sectionId} durante la cascata: ${err.message}`);
+      }
     }
   }
 
@@ -278,5 +284,5 @@ exports.deleteMuseumById = async (museumId) => {
     { $pull: { "data.$[].museumId": museumId } }
   );
 
-  return await Museum.findByIdAndDelete(museumId);
+  return museum;
 };
