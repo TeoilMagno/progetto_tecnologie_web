@@ -29,7 +29,8 @@ exports.isLoggedInPage = (req, res, next) => {
     return next(); 
   }
   
-  res.redirect('/login?msg=login_required'); // teniamo traccia di quando il redirect al login e' forzato
+  const returnTo = encodeURIComponent(req.originalUrl);
+  res.redirect(`/login?msg=login_required&returnTo=${returnTo}`);
 };
 
 // Middleware per le pagine HTML: se non è curatore, caricamento della pagina 403

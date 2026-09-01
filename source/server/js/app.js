@@ -28,7 +28,6 @@ app.set('trust proxy', 1);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*", // Permette a React di connettersi da un'altra porta (es. 5173) in dev
     methods: ["GET", "POST"]
   }
 });
@@ -45,7 +44,7 @@ app.use((req, res, next) => {
 });
 
 // ─── Middleware base ───────────────────────────────────────────────────────
-app.use(cors({ credentials: true, origin: true }));
+app.use(cors({ credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
