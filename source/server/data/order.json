@@ -1,47 +1,46 @@
 [
   {
-    "_id": "6a75a5dd05183be2a8d12a98",
+    "_id": "6a95d97d40e04cf66fa19739",
     "user": "6a6dab11ccd4a931660f74e4",
     "items": [
       {
-        "itemId": "696a7128d10f009d3d77e043",
+        "_id": "6a95e52f0d18f9511ba22699",
+        "itemId": "6a95d97940e04cf66fa196ba",
         "name": "Ronda di Notte",
         "price": 70,
-        "quantity": 1,
-        "_id": "6a75a5dd05183be2a8d12a99"
+        "quantity": 1
       },
       {
-        "itemId": "696a7128d10f009d3d77e044",
+        "_id": "6a95e52f0d18f9511ba2269a",
+        "itemId": "6a95d97940e04cf66fa196b6",
         "name": "Lattaia",
         "price": 50,
-        "quantity": 1,
-        "_id": "6a75a5dd05183be2a8d12a9a"
+        "quantity": 1
       }
     ],
     "visits": [],
     "totalAmount": 120,
     "status": "completed",
     "createdAt": "2026-08-07T09:31:09.717Z",
-    "updatedAt": "2026-08-07T09:31:09.717Z",
-    "__v": 0
+    "updatedAt": "2026-08-07T09:31:09.717Z"
   },
   {
-    "_id": "6a75a7836ba61273d1e88643",
+    "_id": "6a95d97d40e04cf66fa1973a",
     "user": "6a6dab11ccd4a931660f74e4",
     "items": [
       {
-        "itemId": "696a7128d10f009d3d77e045",
+        "_id": "6a95e52f0d18f9511ba2269b",
+        "itemId": "6a95d97a40e04cf66fa196c3",
         "name": "Autoritratto",
         "price": 40,
-        "quantity": 1,
-        "_id": "6a75a7836ba61273d1e88644"
+        "quantity": 1
       },
       {
-        "itemId": "696a7128d10f009d3d77e044",
+        "_id": "6a95e52f0d18f9511ba2269c",
+        "itemId": "6a95d97940e04cf66fa196b6",
         "name": "Lattaia",
         "price": 50,
-        "quantity": 1,
-        "_id": "6a75a7836ba61273d1e88645"
+        "quantity": 1
       }
     ],
     "visits": [
@@ -55,101 +54,96 @@
     "totalAmount": 135,
     "status": "completed",
     "createdAt": "2026-08-07T09:38:11.416Z",
-    "updatedAt": "2026-08-07T09:38:11.416Z",
-    "__v": 0
+    "updatedAt": "2026-08-07T09:38:11.416Z"
   },
   {
-    "_id": "6a7f1f48cede002bfbfd8782",
+    "_id": "6a95d97d40e04cf66fa1973b",
     "user": "6a71eaad1d50777ccbe3e75a",
     "items": [
       {
-        "itemId": "696a7129d10f009d3d77e04e",
+        "_id": "6a95e52f0d18f9511ba2269e",
+        "itemId": "6a95d97a40e04cf66fa196bd",
         "name": "Il 3 maggio 1808",
         "price": 40,
-        "quantity": 1,
-        "_id": "6a7f1f48cede002bfbfd8783"
+        "quantity": 1
       },
       {
-        "itemId": "696a7129d10f009d3d77e04f",
+        "_id": "6a95e52f0d18f9511ba2269f",
+        "itemId": "6a95d97a40e04cf66fa196ca",
         "name": "Giardino delle delizie",
         "price": 45,
-        "quantity": 1,
-        "_id": "6a7f1f48cede002bfbfd8784"
+        "quantity": 1
       }
     ],
     "visits": [],
     "totalAmount": 85,
     "status": "completed",
     "createdAt": "2026-08-14T13:59:36.138Z",
-    "updatedAt": "2026-08-14T13:59:36.138Z",
-    "__v": 0
+    "updatedAt": "2026-08-14T13:59:36.138Z"
   },
   {
-    "_id": "6a8229bd87ff6839c1c4e47b",
+    "_id": "6a95d97d40e04cf66fa1973c",
     "user": "6a6dab11ccd4a931660f74e4",
     "items": [
       {
-        "itemId": "6a82279fe8a49affe844c0ab",
+        "_id": "6a95e52f0d18f9511ba226a0",
+        "itemId": "6a95d97a40e04cf66fa196cb",
         "name": "Tazza girasoli",
         "price": 10,
-        "quantity": 1,
-        "_id": "6a8229bd87ff6839c1c4e47c"
+        "quantity": 1
       }
     ],
     "visits": [],
     "totalAmount": 10,
     "status": "completed",
     "createdAt": "2026-08-16T21:21:01.708Z",
-    "updatedAt": "2026-08-16T21:21:01.708Z",
-    "__v": 0
+    "updatedAt": "2026-08-16T21:21:01.708Z"
   },
   {
-    "_id": "6a857012177aaad0085d98d8",
+    "_id": "6a95d97d40e04cf66fa1973d",
     "user": "6a6dab11ccd4a931660f74e4",
     "items": [
       {
-        "itemId": "6a82279fe8a49affe844c0ab",
+        "_id": "6a95e52f0d18f9511ba226a1",
+        "itemId": "6a95d97a40e04cf66fa196cb",
         "name": "Tazza girasoli",
         "price": 10,
-        "quantity": 1,
-        "_id": "6a857012177aaad0085d98d9"
+        "quantity": 1
       },
       {
-        "itemId": "696a7128d10f009d3d77e043",
+        "_id": "6a95e52f0d18f9511ba226a2",
+        "itemId": "6a95d97940e04cf66fa196ba",
         "name": "Puzzle 1000pz: Ronda di Notte",
         "price": 70,
-        "quantity": 4,
-        "_id": "6a857012177aaad0085d98da"
+        "quantity": 4
       }
     ],
     "visits": [],
     "totalAmount": 290,
     "status": "completed",
     "createdAt": "2026-08-19T08:57:54.476Z",
-    "updatedAt": "2026-08-19T08:57:54.476Z",
-    "__v": 0
+    "updatedAt": "2026-08-19T08:57:54.476Z"
   },
   {
-    "_id": "6a886d751b743fe60c6be0c4",
+    "_id": "6a95d97d40e04cf66fa1973e",
     "user": "6a79e82abec8ac8f2ee4ff11",
     "items": [
       {
-        "itemId": "696a7129d10f009d3d77e04e",
+        "_id": "6a95e52f0d18f9511ba226a3",
+        "itemId": "6a95d97a40e04cf66fa196bd",
         "name": "Stampa: Il 3 maggio 1808",
         "price": 40,
-        "quantity": 1,
-        "_id": "6a886d751b743fe60c6be0c5"
+        "quantity": 1
       }
     ],
     "visits": [],
     "totalAmount": 40,
     "status": "completed",
     "createdAt": "2026-08-21T15:23:33.028Z",
-    "updatedAt": "2026-08-21T15:23:33.028Z",
-    "__v": 0
+    "updatedAt": "2026-08-21T15:23:33.028Z"
   },
   {
-    "_id": "6a8b2203f63e22e6949a0c41",
+    "_id": "6a95d97d40e04cf66fa1973f",
     "user": "6a6dab11ccd4a931660f74e4",
     "items": [],
     "visits": [
@@ -163,11 +157,10 @@
     "totalAmount": 50,
     "status": "completed",
     "createdAt": "2026-08-23T16:38:27.376Z",
-    "updatedAt": "2026-08-23T16:38:27.376Z",
-    "__v": 0
+    "updatedAt": "2026-08-23T16:38:27.376Z"
   },
   {
-    "_id": "6a8c5e4419517116a4937b6a",
+    "_id": "6a95d97d40e04cf66fa19740",
     "user": "6a71eaad1d50777ccbe3e75a",
     "items": [],
     "visits": [
@@ -181,11 +174,10 @@
     "totalAmount": 0,
     "status": "completed",
     "createdAt": "2026-08-24T15:07:48.471Z",
-    "updatedAt": "2026-08-24T15:07:48.471Z",
-    "__v": 0
+    "updatedAt": "2026-08-24T15:07:48.471Z"
   },
   {
-    "_id": "6a944012933eec51841dadff",
+    "_id": "6a95d97d40e04cf66fa19741",
     "user": "6a78a30033e2e31e8d045a1a",
     "items": [],
     "visits": [
@@ -199,11 +191,10 @@
     "totalAmount": 150,
     "status": "completed",
     "createdAt": "2026-08-30T14:37:06.650Z",
-    "updatedAt": "2026-08-30T14:37:06.650Z",
-    "__v": 0
+    "updatedAt": "2026-08-30T14:37:06.650Z"
   },
   {
-    "_id": "6a946a9feea272fececb29e0",
+    "_id": "6a95d97d40e04cf66fa19742",
     "user": "6a79e82abec8ac8f2ee4ff11",
     "items": [],
     "visits": [
@@ -217,7 +208,24 @@
     "totalAmount": 20,
     "status": "completed",
     "createdAt": "2026-08-30T17:38:39.468Z",
-    "updatedAt": "2026-08-30T17:38:39.468Z",
+    "updatedAt": "2026-08-30T17:38:39.468Z"
+  },
+  {
+    "_id": "6a95e41b86e51ebe50526910",
+    "user": "6a71eaad1d50777ccbe3e75a",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6a95d97d40e04cf66fa1972b",
+        "title": "Il Neoclassicismo: Razionalità e Trionfo Eroico",
+        "price": 15,
+        "_id": "6a95e41b86e51ebe50526911"
+      }
+    ],
+    "totalAmount": 15,
+    "status": "completed",
+    "createdAt": "2026-08-31T20:29:15.560Z",
+    "updatedAt": "2026-08-31T20:29:15.560Z",
     "__v": 0
   }
 ]

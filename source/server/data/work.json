@@ -7,13 +7,13 @@
         "description": "Il dettaglio più celebre della volta della Cappella Sistina, simbolo della scintilla divina."
       }
     ],
-    "_id": "6a6b9719478a8542634450e9",
+    "_id": "6a95d97a40e04cf66fa196da",
     "name": "Creazione di Adamo",
-    "author": "6a8215f9bbd3642f8830b701",
-    "style": "6a821e97205d7c012f901e41",
+    "author": "6a95d97840e04cf66fa19682",
+    "style": "6a95d97940e04cf66fa196a3",
     "year": "1512",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/400px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg",
-    "museumId": "696a65ca017c648acfc9b55f",
+    "museumId": "6a95d97740e04cf66fa19667",
     "technique": "Affresco"
   },
   {
@@ -24,13 +24,13 @@
         "description": "Il prezioso frammento di stele che ha fornito la chiave per decifrare i geroglifici egizi."
       }
     ],
-    "_id": "6a6b9719478a8542634450ed",
+    "_id": "6a95d97a40e04cf66fa196db",
     "name": "Stele di Rosetta",
-    "author": "6a8215f9bbd3642f8830b707",
-    "style": "6a821c134d292854096c43f4",
+    "author": "6a95d97840e04cf66fa19689",
+    "style": "6a95d97940e04cf66fa19697",
     "year": "196 a.C.",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/300px-Rosetta_Stone.JPG",
-    "museumId": "696a65ca017c648acfc9b55b",
+    "museumId": "6a95d97740e04cf66fa19665",
     "technique": "Incisione su granodiorite"
   },
   {
@@ -41,13 +41,13 @@
         "description": "La celebre xilografia giapponese che mostra la furia della natura di fronte al Monte Fuji."
       }
     ],
-    "_id": "6a6b9719478a8542634450ec",
+    "_id": "6a95d97a40e04cf66fa196dc",
     "name": "La Grande Onda (Hokusai)",
-    "author": "6a8215f9bbd3642f8830b700",
-    "style": "6a821e99205d7c012f901e4a",
+    "author": "6a95d97840e04cf66fa1968c",
+    "style": "6a95d97940e04cf66fa196a4",
     "year": "1831",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Tsunami_by_hokusai_19th_century.jpg/400px-Tsunami_by_hokusai_19th_century.jpg",
-    "museumId": "696a65ca017c648acfc9b560",
+    "museumId": "6a95d97740e04cf66fa19663",
     "technique": "Xilografia (stampa policroma)"
   },
   {
@@ -58,13 +58,13 @@
         "description": "Celebre statua greca che rappresenta l'ideale di bellezza e amore."
       }
     ],
-    "_id": "6a6b9719478a8542634450e7",
+    "_id": "6a95d97a40e04cf66fa196dd",
     "name": "Venere di Milo",
-    "author": "6a8215f9bbd3642f8830b6f5",
-    "style": "6a821c134d292854096c43f9",
+    "author": "6a95d97840e04cf66fa1968a",
+    "style": "6a95d97940e04cf66fa1969f",
     "year": "130 a.C.",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Venus_de_Milo_Louvre_Ma399_n3.jpg/250px-Venus_de_Milo_Louvre_Ma399_n3.jpg",
-    "museumId": "696a65ca017c648acfc9b559",
+    "museumId": "6a95d97740e04cf66fa19669",
     "technique": "Scultura in marmo pario"
   },
   {
@@ -75,13 +75,13 @@
         "description": "L'iconico dipinto di Sandro Botticelli che celebra l'arrivo della dea della bellezza."
       }
     ],
-    "_id": "6a6b9719478a8542634450e8",
+    "_id": "6a95d97a40e04cf66fa196de",
     "name": "Nascita di Venere",
-    "author": "6a8215f9bbd3642f8830b705",
-    "style": "6a821c134d292854096c43fe",
+    "author": "6a95d97840e04cf66fa1967a",
+    "style": "6a95d97940e04cf66fa196a1",
     "year": "1485",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/400px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg",
-    "museumId": "696a65ca017c648acfc9b55d",
+    "museumId": "6a95d97740e04cf66fa1966a",
     "technique": "Tempera su tela"
   },
   {
@@ -92,13 +92,13 @@
         "description": "Una delle nature morte più famose e vibranti della storia dell'arte."
       }
     ],
-    "_id": "6a6b9719478a8542634450eb",
+    "_id": "6a95d97a40e04cf66fa196df",
     "name": "I Girasoli",
-    "author": "6a8215f9bbd3642f8830b706",
-    "style": "6a821c134d292854096c43fd",
+    "author": "6a95d97840e04cf66fa1967d",
+    "style": "6a95d97940e04cf66fa1969d",
     "year": "1889",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_Willem_van_Gogh_127.jpg/350px-Vincent_Willem_van_Gogh_127.jpg",
-    "museumId": "696a65ca017c648acfc9b561",
+    "museumId": "6a95d97740e04cf66fa1966b",
     "technique": "Olio su tela"
   },
   {
@@ -109,13 +109,13 @@
         "description": "Il colossale dipinto di Rembrandt, simbolo indiscusso del Secolo d'oro olandese."
       }
     ],
-    "_id": "6a6b9719478a8542634450ea",
+    "_id": "6a95d97a40e04cf66fa196e0",
     "name": "Ronda di Notte",
-    "author": "6a8215f9bbd3642f8830b704",
-    "style": "6a821c134d292854096c43f6",
+    "author": "6a95d97840e04cf66fa1967f",
+    "style": "6a95d97940e04cf66fa19696",
     "year": "1642",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/La_ronda_de_noche%2C_por_Rembrandt_van_Rijn.jpg/330px-La_ronda_de_noche%2C_por_Rembrandt_van_Rijn.jpg",
-    "museumId": "696a65ca017c648acfc9b55e",
+    "museumId": "6a95d97740e04cf66fa19664",
     "technique": "Olio su tela"
   },
   {
@@ -126,13 +126,13 @@
         "description": "Il capolavoro complesso e misterioso di Diego Velázquez che gioca con le prospettive."
       }
     ],
-    "_id": "6a6b97e7478a8542634450ef",
+    "_id": "6a95d97a40e04cf66fa196e1",
     "name": "Las Meninas",
-    "author": "6a8215f9bbd3642f8830b6f7",
-    "style": "6a821c134d292854096c43f7",
+    "author": "6a95d97840e04cf66fa19686",
+    "style": "6a95d97940e04cf66fa1969a",
     "year": "1656",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg/350px-Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg",
-    "museumId": "696a65ca017c648acfc9b55c",
+    "museumId": "6a95d97740e04cf66fa19668",
     "technique": "Olio su tela"
   },
   {
@@ -143,13 +143,13 @@
         "description": "Il celebre scudo da parata con dipinta la terrificante testa di Medusa mozzata."
       }
     ],
-    "_id": "6a6b97e7478a8542634450fd",
+    "_id": "6a95d97b40e04cf66fa196e2",
     "name": "Medusa",
-    "author": "6a8215f9bbd3642f8830b6f6",
-    "style": "6a821c134d292854096c43f5",
+    "author": "6a95d97840e04cf66fa1967b",
+    "style": "6a95d97940e04cf66fa19698",
     "year": "1597",
     "image": "https://www.datocms-assets.com/103094/1689148052-1518685471859782-preview.jpg?auto=format&fit=max&w=1200",
-    "museumId": "696a65ca017c648acfc9b55d",
+    "museumId": "6a95d97740e04cf66fa1966a",
     "technique": "Olio su tela applicata su scudo di legno"
   },
   {
@@ -160,13 +160,13 @@
         "description": "La vera capsula di comando che ha portato e riportato i primi esseri umani dalla Luna."
       }
     ],
-    "_id": "6a6b97e7478a8542634450fb",
+    "_id": "6a95d97b40e04cf66fa196e3",
     "name": "Modulo Apollo 11 (Columbia)",
-    "author": "6a8215f9bbd3642f8830b702",
-    "style": "6a821c134d292854096c43fb",
+    "author": "6a95d97840e04cf66fa19683",
+    "style": "6a95d97940e04cf66fa1969c",
     "year": "1969",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScHDgdoB7YMJ5m9L5-anoxL1ndsiL2pwRoVw&s",
-    "museumId": "696a65ca017c648acfc9b562",
+    "museumId": "6a95d97740e04cf66fa1966c",
     "technique": "Lega di alluminio e titanio"
   },
   {
@@ -177,13 +177,13 @@
         "description": "Dipinto delicato e intimo dedicato alla nascita del nipote dell'artista."
       }
     ],
-    "_id": "6a6b97e7478a8542634450f1",
+    "_id": "6a95d97b40e04cf66fa196e4",
     "name": "Ramo di mandorlo in fiore",
-    "author": "6a8215f9bbd3642f8830b706",
-    "style": "6a821c134d292854096c43fd",
+    "author": "6a95d97840e04cf66fa1967d",
+    "style": "6a95d97940e04cf66fa1969d",
     "year": "1890",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Vincent_van_Gogh_-_Almond_blossom_-_Google_Art_Project.jpg/400px-Vincent_van_Gogh_-_Almond_blossom_-_Google_Art_Project.jpg",
-    "museumId": "696a65ca017c648acfc9b561",
+    "museumId": "6a95d97740e04cf66fa1966b",
     "technique": "Olio su tela"
   },
   {
@@ -194,13 +194,13 @@
         "description": "Il famoso affresco di Raffaello che celebra i grandi filosofi e scienziati del mondo classico."
       }
     ],
-    "_id": "6a6b97e7478a8542634450f7",
+    "_id": "6a95d97b40e04cf66fa196e5",
     "name": "Scuola di Atene",
-    "author": "6a8215f9bbd3642f8830b703",
-    "style": "6a821e97205d7c012f901e41",
+    "author": "6a95d97840e04cf66fa1967c",
+    "style": "6a95d97940e04cf66fa196a3",
     "year": "1511",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg/400px-%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg",
-    "museumId": "696a65ca017c648acfc9b55f",
+    "museumId": "6a95d97740e04cf66fa19667",
     "technique": "Affresco"
   },
   {
@@ -211,13 +211,13 @@
         "description": "Una delle mummie egizie meglio conservate, risalente a oltre 3000 anni fa."
       }
     ],
-    "_id": "6a6b97e7478a8542634450f9",
+    "_id": "6a95d97b40e04cf66fa196e6",
     "name": "Mummia di Katebet",
-    "author": "6a8215f9bbd3642f8830b707",
-    "style": "6a821c134d292854096c43f3",
+    "author": "6a95d97840e04cf66fa19689",
+    "style": "6a95d97940e04cf66fa19699",
     "year": "1300 a.C.",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1Vc6gOKSvglICOpUL1LmTHfuFDnzhv4x_Sg&s",
-    "museumId": "696a65ca017c648acfc9b55b",
+    "museumId": "6a95d97740e04cf66fa19665",
     "technique": "Cartonnage dipinto e stucco"
   },
   {
@@ -228,13 +228,13 @@
         "description": "Capolavoro di Vermeer che ritrae una domestica intenta a versare del latte con straordinario realismo."
       }
     ],
-    "_id": "6a6b97e7478a8542634450ff",
+    "_id": "6a95d97b40e04cf66fa196e7",
     "name": "Lattaia",
-    "author": "6a8215f9bbd3642f8830b6fe",
-    "style": "6a821ea1205d7c012f901e69",
+    "author": "6a95d97840e04cf66fa19688",
+    "style": "6a95d97940e04cf66fa196a7",
     "year": "1660",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg/330px-Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
-    "museumId": "696a65ca017c648acfc9b55e",
+    "museumId": "6a95d97740e04cf66fa19664",
     "technique": "Olio su tela"
   },
   {
@@ -245,13 +245,13 @@
         "description": "Drammatica rappresentazione della guerra e della resistenza spagnola di Francisco Goya."
       }
     ],
-    "_id": "6a6b97e7478a8542634450ee",
+    "_id": "6a95d97b40e04cf66fa196e8",
     "name": "Il 3 maggio 1808",
-    "author": "6a8215f9bbd3642f8830b6fb",
-    "style": "6a821e9c205d7c012f901e53",
+    "author": "6a95d97840e04cf66fa19681",
+    "style": "6a95d97940e04cf66fa196a5",
     "year": "1814",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/El_Tres_de_Mayo%2C_by_Francisco_de_Goya%2C_from_Prado_in_Google_Earth.jpg/330px-El_Tres_de_Mayo%2C_by_Francisco_de_Goya%2C_from_Prado_in_Google_Earth.jpg",
-    "museumId": "696a65ca017c648acfc9b55c",
+    "museumId": "6a95d97740e04cf66fa19668",
     "technique": "Olio su tela"
   },
   {
@@ -262,13 +262,13 @@
         "description": "Trittico surreale e densamente popolato di dettagli allegorici."
       }
     ],
-    "_id": "6a6b97e7478a8542634450f0",
+    "_id": "6a95d97b40e04cf66fa196e9",
     "name": "Giardino delle delizie",
-    "author": "6a8215f9bbd3642f8830b6fd",
-    "style": "6a821e9e205d7c012f901e5c",
+    "author": "6a95d97840e04cf66fa1968b",
+    "style": "6a95d97940e04cf66fa196a6",
     "year": "1503",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/El_jard%C3%ADn_de_las_Delicias%2C_de_El_Bosco.jpg/400px-El_jard%C3%ADn_de_las_Delicias%2C_de_El_Bosco.jpg",
-    "museumId": "696a65ca017c648acfc9b55c",
+    "museumId": "6a95d97740e04cf66fa19668",
     "technique": "Olio su tavola"
   },
   {
@@ -279,13 +279,13 @@
         "description": "Un intero tempio egizio salvato dalle acque del Nilo e ricostruito dentro il museo."
       }
     ],
-    "_id": "6a6b97e7478a8542634450f5",
+    "_id": "6a95d97b40e04cf66fa196ea",
     "name": "Tempio di Dendur",
-    "author": "6a8215f9bbd3642f8830b707",
-    "style": "6a821c134d292854096c43f2",
+    "author": "6a95d97840e04cf66fa19689",
+    "style": "6a95d97940e04cf66fa19695",
     "year": "15 a.C.",
     "image": "https://res.cloudinary.com/ddjuftfy2/image/upload/f_webp,c_fill,w_800,h_533/multitenacy/wikis/2024-10-23-01-14-09-16718f6a175945.webp",
-    "museumId": "696a65ca017c648acfc9b55a",
+    "museumId": "6a95d97740e04cf66fa19666",
     "technique": "Architettura in arenaria"
   },
   {
@@ -296,13 +296,13 @@
         "description": "Il monoplano usato da Charles Lindbergh per la prima traversata in solitaria dell'Oceano Atlantico."
       }
     ],
-    "_id": "6a6b97e7478a8542634450fc",
+    "_id": "6a95d97b40e04cf66fa196eb",
     "name": "Spirit of St. Louis",
-    "author": "6a8215f9bbd3642f8830b707",
-    "style": "6a821c134d292854096c43fa",
+    "author": "6a95d97840e04cf66fa19689",
+    "style": "6a95d97940e04cf66fa1969b",
     "year": "1927",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQvB7zJyKn7QL6PNVfU4PXCwHkc9QOr4FeaQ&s",
-    "museumId": "696a65ca017c648acfc9b562",
+    "museumId": "6a95d97740e04cf66fa1966c",
     "technique": "Tubi d'acciaio, legno e tessuto"
   },
   {
@@ -313,13 +313,13 @@
         "description": "Una delle opere più affascinanti e ricche di allegorie del Rinascimento fiorentino."
       }
     ],
-    "_id": "6a6b97e7478a8542634450fe",
+    "_id": "6a95d97b40e04cf66fa196ec",
     "name": "Primavera",
-    "author": "6a8215f9bbd3642f8830b705",
-    "style": "6a821e97205d7c012f901e41",
+    "author": "6a95d97840e04cf66fa1967a",
+    "style": "6a95d97940e04cf66fa196a3",
     "year": "1482",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/400px-Botticelli-primavera.jpg",
-    "museumId": "696a65ca017c648acfc9b55d",
+    "museumId": "6a95d97740e04cf66fa1966a",
     "technique": "Tempera su tavola"
   },
   {
@@ -330,13 +330,13 @@
         "description": "Antica armatura completa da guerriero, testimonianza dell'arte militare del Giappone."
       }
     ],
-    "_id": "6a6b97e7478a854263445100",
+    "_id": "6a95d97b40e04cf66fa196ed",
     "name": "Armatura Samurai",
-    "author": "6a8215f9bbd3642f8830b707",
-    "style": "6a821c134d292854096c43fc",
+    "author": "6a95d97840e04cf66fa19689",
+    "style": "6a95d97940e04cf66fa1969e",
     "year": "XVII Secolo",
     "image": "https://museireali.beniculturali.it/wp-content/uploads/2022/08/Musei-Reali-Torino_Armeria-Reale_armatura_B59.jpg",
-    "museumId": "696a65ca017c648acfc9b560",
+    "museumId": "6a95d97740e04cf66fa19663",
     "technique": "Ferro, cuoio, lacca e seta"
   },
   {
@@ -347,13 +347,13 @@
         "description": "Il famoso dipinto divenuto l'emblema stesso della Rivoluzione e dei moti popolari."
       }
     ],
-    "_id": "6a6b97e7478a854263445101",
+    "_id": "6a95d97b40e04cf66fa196ee",
     "name": "La Libertà che guida il popolo",
-    "author": "6a8215f9bbd3642f8830b6f9",
-    "style": "6a821ea4205d7c012f901e72",
+    "author": "6a95d97840e04cf66fa19684",
+    "style": "6a95d97940e04cf66fa196a8",
     "year": "1830",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Eug%C3%A8ne_Delacroix_-_Le_28_Juillet._La_Libert%C3%A9_guidant_le_peuple.jpg/400px-Eug%C3%A8ne_Delacroix_-_Le_28_Juillet._La_Libert%C3%A9_guidant_le_peuple.jpg",
-    "museumId": "696a65ca017c648acfc9b559",
+    "museumId": "6a95d97740e04cf66fa19669",
     "technique": "Olio su tela"
   },
   {
@@ -364,13 +364,13 @@
         "description": "Antica scultura greca piena di pathos e movimento che ritrae la fine del sacerdote troiano."
       }
     ],
-    "_id": "6a6b97e7478a8542634450f6",
+    "_id": "6a95d97b40e04cf66fa196ef",
     "name": "Gruppo del Laocoonte",
-    "author": "6a8215f9bbd3642f8830b6f4",
-    "style": "6a821c134d292854096c43f9",
+    "author": "6a95d97840e04cf66fa1967e",
+    "style": "6a95d97940e04cf66fa1969f",
     "year": "40-20 a.C.",
     "image": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Laoco%C3%B6n_and_his_sons_group.jpg",
-    "museumId": "696a65ca017c648acfc9b55f",
+    "museumId": "6a95d97740e04cf66fa19667",
     "technique": "Scultura in marmo"
   },
   {
@@ -381,13 +381,13 @@
         "description": "Un ritratto inizialmente considerato scandaloso, diventato poi un'icona di eleganza."
       }
     ],
-    "_id": "6a6b97e7478a8542634450f4",
+    "_id": "6a95d97b40e04cf66fa196f0",
     "name": "Madame X",
-    "author": "6a8215f9bbd3642f8830b6ff",
-    "style": "6a821cdf4d292854096c4408",
+    "author": "6a95d97840e04cf66fa19685",
+    "style": "6a95d97940e04cf66fa196a2",
     "year": "1884",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "museumId": "696a65ca017c648acfc9b55a",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnailLana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "museumId": "6a95d97740e04cf66fa19666",
     "technique": "Olio su tela"
   },
   {
@@ -398,13 +398,13 @@
         "description": "La famosa stanza dell'artista dipinta con una prospettiva emotiva e colori vivaci."
       }
     ],
-    "_id": "6a6b97e7478a8542634450f2",
+    "_id": "6a95d97b40e04cf66fa196f1",
     "name": "Camera da letto ad Arles",
-    "author": "6a8215f9bbd3642f8830b706",
-    "style": "6a821c134d292854096c43fd",
+    "author": "6a95d97840e04cf66fa1967d",
+    "style": "6a95d97940e04cf66fa1969d",
     "year": "1888",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg/400px-Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg",
-    "museumId": "696a65ca017c648acfc9b561",
+    "museumId": "6a95d97740e04cf66fa1966b",
     "technique": "Olio su tela"
   },
   {
@@ -415,13 +415,13 @@
         "description": "Il primo velivolo a motore della storia ad aver compiuto un volo controllato."
       }
     ],
-    "_id": "6a6b97e7478a8542634450fa",
+    "_id": "6a95d97b40e04cf66fa196f2",
     "name": "Wright Flyer",
-    "author": "6a8215f9bbd3642f8830b6fc",
-    "style": "6a821c134d292854096c43fa",
+    "author": "6a95d97840e04cf66fa1968d",
+    "style": "6a95d97940e04cf66fa1969b",
     "year": "1903",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDA3HkSw4Glia31vE65rdB6Lzh8TSq6qiM9Q&s",
-    "museumId": "696a65ca017c648acfc9b562",
+    "museumId": "6a95d97740e04cf66fa1966c",
     "technique": "Legno, tessuto e motore a scoppio"
   },
   {
@@ -432,13 +432,13 @@
         "description": "Celebre dipinto patriottico americano che ritrae George Washington in un momento storico."
       }
     ],
-    "_id": "6a6b97e7478a8542634450f3",
+    "_id": "6a95d97b40e04cf66fa196f3",
     "name": "Washington attraversa il Delaware",
-    "author": "6a8215f9bbd3642f8830b6f8",
-    "style": "6a821e9c205d7c012f901e53",
+    "author": "6a95d97840e04cf66fa19680",
+    "style": "6a95d97940e04cf66fa196a5",
     "year": "1851",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg/400px-Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg",
-    "museumId": "696a65ca017c648acfc9b55a",
+    "museumId": "6a95d97740e04cf66fa19666",
     "technique": "Olio su tela"
   },
   {
@@ -449,13 +449,13 @@
         "description": "Le iconiche sculture classiche provenienti direttamente dall'Acropoli di Atene."
       }
     ],
-    "_id": "6a6b97e7478a8542634450f8",
+    "_id": "6a95d97b40e04cf66fa196f4",
     "name": "Marmi del Partenone",
-    "author": "6a8215f9bbd3642f8830b6fa",
-    "style": "6a821c134d292854096c43f8",
+    "author": "6a95d97840e04cf66fa19687",
+    "style": "6a95d97940e04cf66fa196a0",
     "year": "447-432 a.C.",
     "image": "https://cdn.finestresullarte.info/rivista/immagini/2022/1985/parte-meridionale-frontone-sud-bm.jpg",
-    "museumId": "696a65ca017c648acfc9b55b",
+    "museumId": "6a95d97740e04cf66fa19665",
     "technique": "Scultura in marmo pentelico"
   },
   {
@@ -485,14 +485,13 @@
         "exhaustive": "L'opera rappresenta l'apice della ricerca ottica e pittorica dell'artista. L'integrazione tra figura e paesaggio cosmico alle sue spalle sintetizza il microcosmo umano con il macrocosmo naturale, il tutto reso attraverso una complessa stratificazione di velature a olio."
       }
     },
-    "_id": "6a71f268d43150559b8099c5",
+    "_id": "6a95d97b40e04cf66fa196f5",
     "name": "La Gioconda",
-    "author": "6a8215f9bbd3642f8830b707",
-    "style": "6a821c134d292854096c43f1",
+    "author": "6a95d97840e04cf66fa19689",
+    "style": "6a95d97940e04cf66fa19694",
     "year": "1503",
     "image": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original",
-    "museumId": "6a71f268d43150559b8099b9",
-    "__v": 0,
+    "museumId": "6a95d97740e04cf66fa1966d",
     "roomId": "6a736c0f7e32a469378318db",
     "technique": "Olio su tavola di pioppo",
     "adoptionId": null,
@@ -528,14 +527,13 @@
         "exhaustive": "La statua incarna l'apoteosi della scultura fiorentina. L'alterazione intenzionale delle proporzioni, il trattamento superficiale del marmo atto ad assorbire la luce e la posa a contrapposto ne fanno un manifesto estetico senza precedenti nel primo Cinquecento."
       }
     },
-    "_id": "6a71f268d43150559b8099cb",
+    "_id": "6a95d97b40e04cf66fa196f6",
     "name": "David",
-    "author": "6a8215f9bbd3642f8830b707",
-    "style": "6a821ea7205d7c012f901e7b",
+    "author": "6a95d97840e04cf66fa19689",
+    "style": "6a95d97940e04cf66fa196a9",
     "year": "1504",
     "image": "https://upload.wikimedia.org/wikipedia/commons/8/80/Michelangelo%27s_David_-_right_view_2.jpg",
-    "museumId": "6a71f268d43150559b8099b9",
-    "__v": 0,
+    "museumId": "6a95d97740e04cf66fa1966d",
     "roomId": "6a736c0f7e32a469378318e2",
     "technique": "Scultura in marmo",
     "authorName": "Michelle Hunziker",
@@ -545,38 +543,35 @@
   },
   {
     "description": [],
-    "_id": "6a720536085cd7a85e49d9d5",
+    "_id": "6a95d97b40e04cf66fa196f7",
     "name": "opera 1",
-    "author": "6a8215f9bbd3642f8830b707",
+    "author": "6a95d97840e04cf66fa19689",
     "style": "6a821eaa205d7c012f901e84",
     "year": "2026",
     "image": "yes",
     "museumId": "6a720536085cd7a85e49d9c9",
-    "__v": 0,
     "technique": "Tecnica mista"
   },
   {
     "description": [],
-    "_id": "6a736cc97e32a46937831906",
+    "_id": "6a95d97b40e04cf66fa196f8",
     "name": "Museo prova - sezione1-opera1 22",
-    "author": "6a8215f9bbd3642f8830b707",
+    "author": "6a95d97840e04cf66fa19689",
     "style": "6a821ead205d7c012f901e8d",
     "year": "1234",
     "image": "Museo prova - sezione1-opera1",
     "museumId": "6a736cc97e32a46937831900",
-    "__v": 0,
     "technique": "Tecnica mista"
   },
   {
     "description": [],
-    "_id": "6a73703ee77df97525919c99",
+    "_id": "6a95d97b40e04cf66fa196f9",
     "name": "Museo prova - sezione1-opera1",
-    "author": "6a8215f9bbd3642f8830b707",
+    "author": "6a95d97840e04cf66fa19689",
     "style": "6a821ead205d7c012f901e8d",
     "year": "1234",
     "image": "Museo prova - sezione1-opera1",
     "museumId": "6a73703ee77df97525919c93",
-    "__v": 0,
     "technique": "Tecnica mista"
   },
   {
@@ -588,26 +583,24 @@
         "_id": "6a749510525b691e76b317fa"
       }
     ],
-    "_id": "6a749510525b691e76b317f9",
+    "_id": "6a95d97b40e04cf66fa196fa",
     "name": "nuova opera 2",
-    "author": "6a8215f9bbd3642f8830b707",
+    "author": "6a95d97840e04cf66fa19689",
     "style": "6a821eaa205d7c012f901e84",
     "year": "2026",
     "image": "yes",
     "museumId": "6a720536085cd7a85e49d9c9",
-    "__v": 0,
     "technique": "Tecnica mista"
   },
   {
-    "_id": "6a802b3d09f97186b7adef76",
+    "_id": "6a95d97b40e04cf66fa196fb",
     "name": "La Gioconda del Codice",
     "author": "6a71eaad1d50777ccbe3e75a",
     "technique": "Olio su Javascript",
     "year": "2024",
     "image": "https://dummyimage.com/300x300",
     "museumId": "6a802a3909f97186b7adef68",
-    "roomId": null,
-    "__v": 0
+    "roomId": null
   },
   {
     "description": {
@@ -636,16 +629,15 @@
         "exhaustive": "Il capolavoro nuenese di Vincent van Gogh, \"I mangiatori di patate\" (aprile 1885), si configura come un testo fondativo della modernità pittorica, collocandosi all'intersezione tra il realismo sociale di tardo Ottocento, la tradizione del genere rustico nordico e le future istanze espressioniste.\n\nAnalizzando la struttura morfo-sintattica dell'opera, emerge la complessa gestazione documentata dal ricco epistolario con il fratello Theo. Van Gogh persegue deliberatamente una \"bruttezza\" stilistica, rifiutando ogni accademismo o grazia compositiva per restituire la verità fenomenologica della classe subalterna. I corpi dei de Groot sono trattati come volumi plastici pesanti, scolpiti da una luce artificiale interna che agisce alla maniera di un caravaggismo popolare e terragno. L'uso di una tavolozza bituminosa e monocroma – dominata da bruni, terre d'ombra, ocra e verdi fangosi – risponde a una precisa necessità semantica: i contadini devono apparire come se fossero stati modellati con la stessa terra che dissodano.\n\nDal punto di vista storico-critico, l'opera rappresenta il tentativo di Van Gogh di fondare un'arte eticamente impegnata, una sorta di sacramento laico del lavoro e della fatica. La composizione circolare attorno al fuoco/lampada evoca una struttura totemica, quasi tribale, dove il cibo (le patate, simbolo primario di sussistenza proletaria) suggella un patto di solidarietà e resistenza umana contro le avversità dell'esistenza. Sebbene accolto con scetticismo dai contemporanei per i presunti errori anatomici, il dipinto racchiude già in nuce quella violenza espressiva e quella tensione spirituale che deflagreranno nella successiva stagione francese."
       }
     },
-    "_id": "6a817ba76102a42968f02ba7",
+    "_id": "6a95d97b40e04cf66fa196fc",
     "name": "I mangiatori di patate",
-    "author": "6a80391c493cd5ba5d203c1a",
+    "author": "6a95d97840e04cf66fa19676",
     "technique": "Olio su tela",
-    "style": "6a8076a05f86062810450280",
+    "style": "6a95d97840e04cf66fa19691",
     "year": "1500",
     "image": "yes",
-    "museumId": "696a65ca017c648acfc9b561",
+    "museumId": "6a95d97740e04cf66fa1966b",
     "roomId": "6a817b7f6102a42968f02b7d",
-    "__v": 0,
     "funFact": "Immagina di cenare in una cucina buia, con la luce soffusa di una sola lampada a petrolio, mentre mastichi patate rugose colturate con fatica. Questo è esattamente ciò che Vincent van Gogh ha immortalato nel 1885 ne I mangiatori di patate, considerato il suo primo vero capolavoro. Ma ecco il fun fact che non ti aspetti: Vincent voleva che la tela fosse volutamente cupa e \"sporca\", usando una palette di colori terrosi che ricordavano proprio il colore delle patate non lavate! Voleva mostrare la dignità brutale di contadini reali, non idealizzati, che mangiano con le stesse mani sporche con cui lavoravano la terra. Quando però mostrò l'opera al fratello Theo, la reazione fu gelida: a Parigi erano tutti affascinati dai colori brillanti degli Impressionisti, e quel quadro marrone e cupo sembrava semplicemente fuori tempo massimo. Oggi, ironia della sorte, è una delle icone più amate del Museo Van Gogh di Amsterdam. Insomma, un vero e proprio trionfo della bruttezza reso immortale dal genio.",
     "paraphrase": "Realizzato da Vincent van Gogh nella primavera del 1885 a Nuenen, questo dipinto rappresenta uno dei vertici assoluti del periodo olandese dell'artista e incarna la sua visione profondamente empatica verso le classi più umili. L'opera ritrae una famiglia di contadini riunita attorno a un tavolo spoglio nella penombra di una cucina rurale, intenta a consumare un pasto frugale a base di patate bollite, accompagnate unicamente da caffè nero. Van Gogh ha scelto deliberatamente di dipingere queste figure con una forte dose di realismo, esagerando i tratti somatici, le mani nodose e i volti scavati dalla fatica e dal lavoro nei campi, per dimostrare che quelle stesse mani che zappavano la terra erano le medesime che ora si nutrivano onestamente del frutto della propria fatica. La tavolozza cromatica è dominata da toni terrosi, scuri e cupi, con sfumature che vanno dal marrone al verde marcio, rischiarati soltanto dalla debole luce di una lampada a petrolio sospesa che proietta ombre taglienti sui commensali. Con questo lavoro, l'autore non intendeva realizzare una denuncia sociale, quanto piuttosto un omaggio sincero e dignitoso alla vita agreste, ritenuta da lui più autentica e vicina alla vera essenza umana rispetto a quella della modernità industriale."
   },
@@ -676,16 +668,15 @@
         "exhaustive": "Collocato al crocevia tra le istanze simboliste della fine del XIX secolo e la deflagrazione dell'Espressionismo storico, 'L'urlo' (Skrik) si configura come un testo visivo di ineguagliabile densità critica. L'opera formalizza il concetto di 'angoscia esistenziale' (Angst), anticipando le categorie filosofiche dell'esistenzialismo europeo. La costruzione spaziale rifiuta la verosimiglianza prospettica rinascimentale a favore di una distorsione espressiva: il parapetto del ponte agisce come una barriera liminale che separa la geometria artificiale della società dalla furia incontrollabile e fluida della natura.\n\nDal punto de vista iconografico e biografico, la genesi dell'opera riflette la profonda crisi neurale e spirituale dell'artista, segnata da lutti familiari e da un isolamento cronico. Tuttavia, il valore euristico del dipinto risiede nella sua capacità di universalizzare tale trauma privato. La figura androgina in primo piano, le cui fattezze ricordano una mummia peruviana esposta al Musée de l'Homme di Parigi, diviene il ricettacolo di un trauma transpersonale: il panico non è più un affetto individuale, ma una condizione ontologica.\n\nSotto il profilo tecnico-materiale, l'uso eclettico di mezzi misti (olio, tempera e pastello su cartone) testimonia l'urgenza esecutiva e il rifiuto dei canoni accademici tradizionali. Le pennellate ondulate, che richiamano le correnti di un'energia invisibile ma devastante, operano una decostruzione radicale della percezione visiva. In definitiva, 'L'urlo' non è la rappresentazione di un evento, ma la messa in scena della catastrofe della percezione, un monumento perenne alla vulnerabilità del soggetto di fronte all'abisso dell'essere."
       }
     },
-    "_id": "6a81bdc801de947766fe8343",
+    "_id": "6a95d97b40e04cf66fa196fd",
     "name": "L'urlo",
-    "author": "6a81c3e26872d6d52c13848e",
+    "author": "6a95d97840e04cf66fa19678",
     "technique": "Olio, tempera e pastello su cartone",
-    "style": "6a81c6af622833492a3be873",
+    "style": "6a95d97840e04cf66fa19692",
     "year": "1420",
     "image": "yes",
-    "museumId": "6a7622a872031acd0ee0a2d3",
+    "museumId": "6a95d97840e04cf66fa1966e",
     "roomId": "6a81bd8f01de947766fe830b",
-    "__v": 0,
     "paraphrase": "L'opera rappresenta la profonda angoscia e il panico interiore di un individuo attraverso la distorsione del paesaggio circostante. Non mostra una scena reale, ma traduce visivamente la paura e la solitudine che l'essere umano può provare dentro di sé."
   },
   {
@@ -715,16 +706,15 @@
         "exhaustive": "Eseguito a Ferrara nel 1918, l'anno conclusivo del soggiorno ferrarese e della fase aurea della Metafisica, \"Le muse inquietanti\" costituisce una delle formulazioni iconografiche più complesse e influenti del Novecento europeo. La costruzione spaziale tradisce un'ispirazione teatrale e architettonica: la piazza è un microcosmo sintetico in cui convergono la lezione prospettica quattrocentesca (da Piero della Francesca a Paolo Uccello) e le allucinazioni urbane della modernità.\n\nAl centro della composizione agiscono le tre muse: la figura stante a sinistra, la statua seduta al centro e la figura ieratica a destra. I loro corpi ibridi fondono la statuaria classica greco-romana con i manichini sartoriali e le strutture lignee da cantiere. La decapitazione e la sostituzione con volti aniconici o ovoidali (ispirati alle teste africane o alle forme industriali) denotano la volontà di azzerare l'umanesimo tradizionale. Il palazzo rosso sullo sfondo, identificabile con il prospetto del Castello di San Giorgio e i magazzini fluviali, è reso attraverso una volumetria severa e priva di aperture naturalistiche.\n\nSul piano semiotico, gli oggetti sparsi sul piano ligneo (la scatola colorata, la maschera, i bastoni) funzionano come enigmi visivi irrisolti. La luce radente, priva di una fonte coerente, genera ombre ortogonali che accentuano il carattere allucinato della visione. Sul piano socio-culturale, l'opera riflette lo Zeitgeist della prima guerra mondiale: un'Europa traumatizzata che, attraverso l'arte di de Chirico, sperimenta la fine della centralità antropocentrica, la mercificazione dell'individuo e l'atemporale nostalgia per un'antichità irrimediabilmente perduta, anticipando le inquietudini del Surrealismo e della Nouvelle Objectivité."
       }
     },
-    "_id": "6a81c25b1d096f7a8ace88c4",
+    "_id": "6a95d97b40e04cf66fa196fe",
     "name": "Le muse inquietanti",
-    "author": "6a81c5e6ad36d9e03b9ca11b",
+    "author": "6a95d97840e04cf66fa19679",
     "technique": "Olio su tela",
-    "style": "6a81c7abaac995cd638bd678",
+    "style": "6a95d97840e04cf66fa19693",
     "year": "1842",
     "image": "yes",
-    "museumId": "6a7622a872031acd0ee0a2d3",
+    "museumId": "6a95d97840e04cf66fa1966e",
     "roomId": "6a81bd8f01de947766fe830b",
-    "__v": 0,
     "paraphrase": "L'opera rappresenta un mondo silenzioso e immobile in cui il passato classico e il presente industriale si incontrano. Attraverso figure fredde e piazze deserte, l'artista esprime il senso di mistero, solitudine e attesa tipico dell'essere umano."
   },
   {
@@ -754,18 +744,17 @@
         "exhaustive": "Il manufatto artistico in oggetto rappresenta un apogeo ermeneutico all'interno della produzione di riferimento, offrendo un terreno d'indagine imprescindibile per la storiografia artistica. L'analisi paleografica e stilistica rivela un'adesione critica ma al contempo sovversiva rispetto ai canoni accademici vigenti, inserendosi nel solco di quella genealogia visiva che privilegia la rottura epistemologica.\n\nSul piano morfologico, la composizione opera una sintesi audace tra la volumetria di ascendenza classica e l'asystematicità delle spinte avanguardistiche. La pennellata, ora analitica ora gestuale, decostruisce la percezione ottica convenzionale, costringendo lo spettatore a un'attiva riconsiderazione dei confini tra figurazione e astrazione. Le velature e i sottofondi cromatici testimoniano un processo ideativo tormentato, in cui l'errore e il ripensamento diventano categorie estetiche costitutive.\n\nIn ultima analisi, l'opera trascende la contingenza della sua genesi per assurgere a paradigma visivo universale, capace di interrogare permanentemente lo statuto dell'immagine e le sue infinite possibilità di significazione nel tessuto socio-culturale d'appartenenza."
       }
     },
-    "_id": "6a871aa88629e24afc1cb4d2",
+    "_id": "6a95d97b40e04cf66fa196ff",
     "name": "nuova opera 5",
-    "author": "6a80391c493cd5ba5d203c1a",
+    "author": "6a95d97840e04cf66fa19676",
     "authorName": "Vincent Van Gogh",
     "technique": "olio",
-    "style": "6a81c6af622833492a3be873",
+    "style": "6a95d97840e04cf66fa19692",
     "styleName": "Impressionismo",
     "year": "2026",
     "image": "yes",
-    "museumId": "6a81cc550bf4fc3fd102cb31",
+    "museumId": "6a95d97840e04cf66fa19670",
     "roomId": "6a856a637dbf05bd4b707627",
-    "__v": 0,
     "funFact": "Spesso le opere d'arte nascondono sotto la superficie visibile altri disegni, chiamati 'pentimenti', che gli artisti hanno coperto perché preferivano cambiare idea durante il lavoro!",
     "paraphrase": "L'opera utilizza forme e colori per esprimere emozioni profonde e raccontare una storia visiva, invitando chi guarda a riflettere e a lasciarsi trasportare dalla propria immaginazione.",
     "adoptionId": null
@@ -797,18 +786,17 @@
         "exhaustive": "L'indagine ermeneutica di 'nuova opera con room' impone una ricognizione approfondita all'interno dei paradigmi della spazialità post-mediale e della fenomenologia merleau-pontyana. L'opera opera una sutura complessa tra il concetto di site-specificity e la tradizione della installazione immersiva, ridefinendo radicalmente il concetto di 'room' come spazio liminale tra interno ed esterno, tra visibile e invisibile.\n\nA livello macrostrutturale, l'intervento si appropria dei codici del minimalismo storico (si pensi alla literalness di Robert Morris o alle site-specific works di Bruce Nauman), ma li trascende attraverso una decostruzione ideo-critica del dispositivo espositivo. La stanza non è solo il luogo in cui l'opera si manifesta, ma coincide con l'opera stessa in un regime di tautologia spaziale. I vettori geometrici, la modulazione della luce ambientale e la gestione millimetrica dei flussi di movimento del pubblico costituiscono una sintassi visiva che mette in crisi la presunta neutralità del luogo museale.\n\nIn questa prospettiva, 'nuova opera con room' agisce come un eterotopia foucaultiana: uno spazio altro che riflette e al contempo inverte lo spazio sociale codificato. Il fruitore sperimenta una dislocazione sensoriale che decostruisce l'abituale habitus visivo, costringendolo a confrontarsi con l'irriducibilità della propria presenza corporea di fronte al vuoto strutturato. L'opera si rivela così non come un oggetto finito, bensì come un processo critico permanente, un'indagine spietata e poetica sulle condizioni di possibilità dell'esperienza estetica nel tardo capitalismo."
       }
     },
-    "_id": "6a8722d40ee9a0ad15b1cd1b",
+    "_id": "6a95d97b40e04cf66fa19700",
     "name": "nuova opera con room",
-    "author": "6a80391c493cd5ba5d203c1a",
+    "author": "6a95d97840e04cf66fa19676",
     "authorName": "Vincent Van Gogh",
     "technique": "olio",
-    "style": "6a81c6af622833492a3be873",
+    "style": "6a95d97840e04cf66fa19692",
     "styleName": "Impressionismo",
     "year": "2026",
     "image": "res",
-    "museumId": "6a7622a872031acd0ee0a2d3",
+    "museumId": "6a95d97840e04cf66fa1966e",
     "roomId": "6a856a637dbf05bd4b707627",
-    "__v": 0,
     "funFact": "Sapevi che la parola 'room' in questa installazione non indica solo una stanza fisica, ma è stata concepita dall'artista come un'entità vivente che si espande e si contrae a seconda di quante persone ci sono dentro? È come se l'arte respirasse insieme ai visitatori!",
     "paraphrase": "Questa opera d'arte trasforma una semplice stanza in un'esperienza visiva totale. Ci invita a entrare nello spazio e a guardare il mondo da una prospettiva completamente nuova, giocando con forme, luci e volumi.",
     "adoptionId": null
@@ -840,34 +828,32 @@
         "exhaustive": "L'indagine critica su quest'opera impone una ricognizione puntuale dei presupposti teorici ed epistemologici che ne hanno guidato l'ideazione. Collocata all'intersezione tra le derive delle neo-avanguardie e le successive istanze post-mediali, essa incarna una riflessione radicale sullo statuto dell'immagine e sulla crisi della rappresentazione mimetica. L'artista non si limita a produrre un oggetto estetico, ma istituisce un dispositivo visivo che interroga direttamente i meccanismi della visione e della ricezione critica.\n\nDal punto de vista morfologico, la composizione si regge su un'architettura sotterranea di tensioni vettoriali e contrappunti cromatici che sovvertono ogni aspettativa illusionistica. La materia viene indagata nella sua nuda essenza fenomenica: le opacità, le trasparenze e le scabrosità della superficie costituiscono il risultato di un processo sottrattivo e additivo che riflette l'angoscia e il rigore intellettuale del fare artistico. Ogni segno è il sedimento di un'operazione concettuale complessa, volta a smascherare le convenzioni percettive codificate dal sistema dell'arte.\n\nIn ultima analisi, l'opera si offre come un testo visivo altamente decifrabile solo attraverso l'adozione di griglie interpretative multidisciplinari, che spaziano dalla storia dell'arte comparata alla filosofia della percezione. Il suo valore storiografico risiede nella capacità di anticipare le future derive del dibattito critico, ponendosi come un imprescindibile termine di paragone per la comprensione delle mutazioni estetiche del tardo XX secolo e della transizione verso la contemporaneità."
       }
     },
-    "_id": "6a8dc6a97a0810a965acc160",
+    "_id": "6a95d97b40e04cf66fa19701",
     "name": "nuova opera",
-    "author": "6a8081285b91f8583b399214",
+    "author": "6a95d97840e04cf66fa19677",
     "authorName": "Leonardo Da Vinci",
     "technique": "plio",
-    "style": "6a81c6af622833492a3be873",
+    "style": "6a95d97840e04cf66fa19692",
     "styleName": "Impressionismo",
     "year": "2026",
     "image": "/uploads/1787676326247-57355100.png",
-    "museumId": "6a8c6dfa4ce9e1ef09aee754",
+    "museumId": "6a95d97840e04cf66fa19671",
     "roomId": "6a8dc6bc7a0810a965acc166",
-    "__v": 0,
     "funFact": "Spesso le opere d'arte contemporanea celano dettagli nascosti che l'artista ha inserito quasi come firma segreta, visibili solo sotto una particolare angolazione della luce.",
     "paraphrase": "L'opera utilizza forme e colori per esprimere emozioni profonde, invitando chi guarda a riflettere e a trovare un significato personale nella bellezza dell'arte."
   },
   {
-    "_id": "6a9464fbaca2e44927ced22c",
+    "_id": "6a95d97b40e04cf66fa19702",
     "name": "I mangiatori di patate",
-    "author": "6a8215f9bbd3642f8830b706",
+    "author": "6a95d97840e04cf66fa1967d",
     "authorName": "Vincent van Gogh",
     "technique": "pastelli 2",
-    "style": "6a81c6af622833492a3be873",
+    "style": "6a95d97840e04cf66fa19692",
     "styleName": "Impressionismo",
     "year": "2026",
     "image": "https://upload.wikimedia.org/wikipedia/commons/1/12/Vincent_van_Gogh_-_The_potato_eaters_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "museumId": "6a8c6dfa4ce9e1ef09aee754",
-    "roomId": "6a8dc6bc7a0810a965acc166",
-    "__v": 0
+    "museumId": "6a95d97840e04cf66fa19671",
+    "roomId": "6a8dc6bc7a0810a965acc166"
   },
   {
     "description": [
@@ -890,13 +876,12 @@
         "_id": "6a94682dd38404dfc005d664"
       }
     ],
-    "_id": "6a94682dd38404dfc005d661",
+    "_id": "6a95d97b40e04cf66fa19703",
     "name": "La Morte di Socrate",
     "year": "1787",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/8/8c/David_-_The_Death_of_Socrates_-_Google_Art_Project.jpg",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "roomId": "6a94682dd38404dfc005d65c",
-    "__v": 0
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/David_-_The_Death_of_Socrates.jpg/330px-David_-_The_Death_of_Socrates.jpg?utm_source=it.wikipedia.org&utm_campaign=parser&utm_content=thumbnail",
+    "museumId": "6a95d97840e04cf66fa19675",
+    "roomId": "6a94682dd38404dfc005d65c"
   },
   {
     "description": [
@@ -919,13 +904,12 @@
         "_id": "6a94682dd38404dfc005d668"
       }
     ],
-    "_id": "6a94682dd38404dfc005d665",
+    "_id": "6a95d97b40e04cf66fa19704",
     "name": "Perseo con la testa di Medusa",
     "year": "1804",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/2/23/Perseus_with_the_head_of_Medusa%2C_by_Antonio_Canova_%281757-1822%29_-_Metropolitan_Museum_of_Art_-_New_York_City_-_DSC01549.JPG",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "roomId": "6a94682dd38404dfc005d65c",
-    "__v": 0
+    "image": "https://www.visittuscany.com/export/shared/intoscana/immagini/generica/2013/10/16/9441d271278b7c7ebacf9b9aa68c396f.jpg",
+    "museumId": "6a95d97840e04cf66fa19675",
+    "roomId": "6a94682dd38404dfc005d65c"
   },
   {
     "description": [
@@ -948,13 +932,12 @@
         "_id": "6a94682dd38404dfc005d66c"
       }
     ],
-    "_id": "6a94682dd38404dfc005d669",
+    "_id": "6a95d97b40e04cf66fa19705",
     "name": "Lo stagno delle ninfee",
     "year": "1899",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Claude_Monet_Bridge_over_a_Pond_of_Water_Lilies_Google_Art_Project.jpg",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "roomId": "6a94682dd38404dfc005d65e",
-    "__v": 0
+    "image": "https://upload.wikimedia.org/wikipedia/commons/0/00/Claude_Monet-Waterlilies.jpg?utm_source=it.wikipedia.org&utm_campaign=index&utm_content=original",
+    "museumId": "6a95d97840e04cf66fa19675",
+    "roomId": "6a94682dd38404dfc005d65e"
   },
   {
     "description": [
@@ -977,13 +960,12 @@
         "_id": "6a94682dd38404dfc005d670"
       }
     ],
-    "_id": "6a94682dd38404dfc005d66d",
+    "_id": "6a95d97b40e04cf66fa19706",
     "name": "Autoritratto con cappello di paglia",
     "year": "1887",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Vincent_van_Gogh_-_Self-Portrait_with_Straw_Hat_-_Google_Art_Project.jpg",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "roomId": "6a94682dd38404dfc005d65e",
-    "__v": 0
+    "image": "https://www.arteworld.it/wp-content/uploads/2015/04/Autoritratto-cappello-di-paglia-verso-pelatore-patate-Van-Gogh.jpg",
+    "museumId": "6a95d97840e04cf66fa19675",
+    "roomId": "6a94682dd38404dfc005d65e"
   },
   {
     "description": [
@@ -1006,13 +988,12 @@
         "_id": "6a94682dd38404dfc005d674"
       }
     ],
-    "_id": "6a94682dd38404dfc005d671",
+    "_id": "6a95d97b40e04cf66fa19707",
     "name": "La Classe di Danza",
     "year": "1874",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/8/83/Edgar_Degas_-_The_Dance_Class_-_Google_Art_Project.jpg",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "roomId": "6a94682dd38404dfc005d65e",
-    "__v": 0
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Degas-_La_classe_de_danse_1874.jpg/1280px-Degas-_La_classe_de_danse_1874.jpg?utm_source=it.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+    "museumId": "6a95d97840e04cf66fa19675",
+    "roomId": "6a94682dd38404dfc005d65e"
   },
   {
     "description": [
@@ -1035,13 +1016,12 @@
         "_id": "6a94682dd38404dfc005d678"
       }
     ],
-    "_id": "6a94682dd38404dfc005d675",
+    "_id": "6a95d97b40e04cf66fa19708",
     "name": "Washington attraversa il Delaware",
     "year": "1851",
     "image": "https://upload.wikimedia.org/wikipedia/commons/9/95/Washington_Crossing_the_Delaware_by_Emanuel_Leutze%2C_MMA-NYC%2C_1851.jpg",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "roomId": "6a94682dd38404dfc005d660",
-    "__v": 0
+    "museumId": "6a95d97840e04cf66fa19675",
+    "roomId": "6a94682dd38404dfc005d660"
   },
   {
     "description": [
@@ -1064,13 +1044,12 @@
         "_id": "6a94682dd38404dfc005d67c"
       }
     ],
-    "_id": "6a94682dd38404dfc005d679",
+    "_id": "6a95d97c40e04cf66fa19709",
     "name": "Madame X",
     "year": "1884",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Madame_X_%2C_Madame_Pierre_Gautreau%2C_John_Singer_Sargent%2C_1884.jpg",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "roomId": "6a94682dd38404dfc005d660",
-    "__v": 0
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lana_Turner_-_Madame_X_publicity_photo.jpg/960px-Lana_Turner_-_Madame_X_publicity_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnailedia/commons/a/a4/Madame_X_%2C_Madame_Pierre_Gautreau%2C_John_Singer_Sargent%2C_1884.jpg",
+    "museumId": "6a95d97840e04cf66fa19675",
+    "roomId": "6a94682dd38404dfc005d660"
   },
   {
     "description": [
@@ -1093,12 +1072,11 @@
         "_id": "6a94682dd38404dfc005d680"
       }
     ],
-    "_id": "6a94682dd38404dfc005d67d",
+    "_id": "6a95d97c40e04cf66fa1970a",
     "name": "Max Schmitt in a Single Scull",
     "year": "1871",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Thomas_Eakins_-_Max_Schmitt_in_a_Single_Scull_-_Google_Art_Project.jpg",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "roomId": "6a94682dd38404dfc005d660",
-    "__v": 0
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Max_Schmitt_in_a_Single_Scull.jpg/500px-Max_Schmitt_in_a_Single_Scull.jpg?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail",
+    "museumId": "6a95d97840e04cf66fa19675",
+    "roomId": "6a94682dd38404dfc005d660"
   }
 ]
