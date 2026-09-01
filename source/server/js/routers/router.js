@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
 
 // ottiene il marketplace
 router.get('/marketplace', (req, res) => {
-  res.sendFile(path.join(__dirname,'..','..','html','index.html'));
+  res.sendFile(path.join(__dirname,'..','..','html','marketplace.html'));
 });
 
 // Favicon route
@@ -72,10 +72,6 @@ router.get('/edit-museum', auth.isCuratorPage, (req, res) => {
 router.get('/my-museums', auth.isCuratorPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'my-museums.html'));
 });
-
-router.get('/navigator/visits/:visitId', auth.isLoggedInPage, (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'react', 'museum-map', 'dist', 'index.html'));
-}); 
 
 // pagina dello storico deli ordini
 router.get('/my-orders', auth.isLoggedInPage, (req, res) => {
