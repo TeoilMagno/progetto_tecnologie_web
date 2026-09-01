@@ -110,18 +110,40 @@ router.post('/signup', async (req, res, next) => {
 // ─── Google ───────────────────────────────────────────────────────────────
 // Standard passport per il login con Google
 router.get('/login/federated/google', passport.authenticate('google'));
-router.get('/oauth2/redirect/google', passport.authenticate('google', {
-  successReturnToOrRedirect: '/',
-  failureRedirect: '/login'
-}));
+router.get('/oauth2/redirect/google', (req, res, next) => {
+  // SALVATAGGIO PREVENTIVO: Estraiamo il returnTo PRIMA della rigenerazione
+  const redirectTo = req.session.returnTo || '/';
+
+  passport.authenticate('google', (err, user, info) => {
+    if (err) return next(err);
+    if (!user) return res.redirect('/login');
+    
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      delete req.session.returnTo;
+      return res.redirect(redirectTo);
+    });
+  })(req, res, next);
+});
 
 // ─── GitHub ───────────────────────────────────────────────────────────────
 // Standard passport per il login con GitHub
 router.get('/login/federated/github', passport.authenticate('github'));
-router.get('/oauth2/redirect/github', passport.authenticate('github', {
-  successReturnToOrRedirect: '/',
-  failureRedirect: '/login'
-}));
+router.get('/oauth2/redirect/github', (req, res, next) => {
+  // SALVATAGGIO PREVENTIVO
+  const redirectTo = req.session.returnTo || '/';
+
+  passport.authenticate('github', (err, user, info) => {
+    if (err) return next(err);
+    if (!user) return res.redirect('/login');
+    
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      delete req.session.returnTo;
+      return res.redirect(redirectTo);
+    });
+  })(req, res, next);
+});
 
 // ─── Logout ───────────────────────────────────────────────────────────────
 router.post('/logout', (req, res, next) => {
