@@ -1,6 +1,7 @@
 // ==========================================
 // MODULO FILTRI AVANZATI (Booking Style)
 // ==========================================
+// Usato da: marketplace.js (home + dashboard museo). Non serve a my-museums.js.
 
 function initializeWorkFiltersDataFromApi(metadata) {
   if (!metadata) return;
@@ -195,7 +196,9 @@ async function applyMuseumFilters(isLoadMore = false) {
       if (!hasFilters) {
         pristineMuseumsCache = [...cachedMuseums];
         pristineCurrentPage = currentMuseumPage;
-        if (pristineMuseumsCache.length >= data.total) isEntireDbInCache = true;
+        // FIX: riassegnato sempre (non solo impostato a true) per evitare che il flag
+        // resti "vero" in modo scorretto se in futuro la cache viene invalidata altrove.
+        isEntireDbInCache = pristineMuseumsCache.length >= data.total;
       }
       
       // Disegna il blocco appena arrivato dal server
@@ -208,7 +211,8 @@ async function applyMuseumFilters(isLoadMore = false) {
         pristineMuseumsCache = [...cachedMuseums];
         pristineCurrentPage = currentMuseumPage;
         pristineTotalPages = totalMuseumPages;
-        if (pristineMuseumsCache.length >= data.total) isEntireDbInCache = true;
+        // FIX: vedi commento sul ramo isLoadMore qui sopra.
+        isEntireDbInCache = pristineMuseumsCache.length >= data.total;
       }
       
       if (currentMuseumPage === 1 && !search && selectedStyles.length === 0) {

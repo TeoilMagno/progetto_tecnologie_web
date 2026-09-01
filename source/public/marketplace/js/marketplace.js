@@ -1,4 +1,12 @@
 // le varie variabili globali sono in config.js
+//
+// QUESTO FILE CONTIENE SOLO:
+//  - la home del marketplace (lista musei paginata/filtrata)
+//  - la dashboard di un singolo museo (tab Opere / Bookshop / Visite)
+//
+// Tutto ciò che riguarda "I miei musei" (dashboard curatore/admin) è in my-museums.js
+// Tutto ciò che riguarda i filtri (musei, opere, items, visite) è in filters.js
+// Tutto ciò che riguarda il bookshop manager (CRUD articoli) è in bookshop-manager.js
 
 // 1. INIZIALIZZAZIONE
 document.addEventListener("DOMContentLoaded", async () => {
@@ -134,6 +142,10 @@ async function getMuseumItems(museumId, isHistoryPop = false) {
 }
 
 // 4. LOGICA RENDER
+
+// Disegna le card dei musei nella home (content-area). Usata solo qui: la versione
+// per "I miei musei" è una copia semplificata in my-museums.js (renderManagedMuseumsList),
+// perché lì il click porta sempre a /marketplace?museumId=... invece di aprire la dashboard inline.
 function renderMuseumsList(museums, containerId = "content-area", append = false) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -142,9 +154,6 @@ function renderMuseumsList(museums, containerId = "content-area", append = false
   if (!append) {
     container.innerHTML = "";
   }
-
-  // Capiamo se siamo nel marketplace (dove c'è content-area) o in I Miei Musei
-  const isMarketplace = containerId === "content-area";
 
   // 2. Messaggio se non ci sono risultati (e non stiamo scrollando)
   if (museums.length === 0 && !append) {
@@ -163,13 +172,9 @@ function renderMuseumsList(museums, containerId = "content-area", append = false
         .map((tag) => `<span class="badge badge-tag">${tag}</span>`)
         .join("");
 
-    const clickAction = isMarketplace 
-        ? `getMuseumItems('${museum._id}')` 
-        : `window.location.href='/marketplace?museumId=${museum._id}'`;
-
     htmlString += `
       <div class="col">
-        <div class="card h-100 custom-card cursor-pointer" onclick="${clickAction}" style="cursor: pointer;">
+        <div class="card h-100 custom-card cursor-pointer" onclick="getMuseumItems('${museum._id}')" style="cursor: pointer;">
           <img src="${museum.image}" class="card-img-top" alt="${museum.name}" style="height: 200px; object-fit: cover; opacity: 0.9;">
           <div class="card-body">
             <h5 class="card-title">${museum.name}</h5>
@@ -187,9 +192,7 @@ function renderMuseumsList(museums, containerId = "content-area", append = false
   }
   
   // Riassicuriamoci che la sentinella resti in fondo al container dei musei
-  if (isMarketplace) {
-    container.appendChild(globalSentinel);
-  }
+  container.appendChild(globalSentinel);
 }
 
 function renderMuseumDashboard(museumInfo) {
@@ -415,6 +418,8 @@ async function fetchAndRenderWorks(museumId, isLoadMore = false) {
   if (techniqueCbs.length > 0) params.append("technique", techniqueCbs.join(","));
   if (styleCbs.length > 0) params.append("workstyle", styleCbs.join(","));
 
+  const noFiltersActive = authorCbs.length === 0 && techniqueCbs.length === 0 && styleCbs.length === 0;
+
   try {
     const response = await fetch(`${API_BASE_URL}/museums/${museumId}/works?${params.toString()}`);
     if (!response.ok) throw new Error("Errore caricamento opere");
@@ -426,10 +431,12 @@ async function fetchAndRenderWorks(museumId, isLoadMore = false) {
       currentWorks = [...currentWorks, ...data.works];
       
       // Salva nella cache pulita delle opere se non ci sono filtri
-      if (authorCbs.length === 0 && techniqueCbs.length === 0 && styleCbs.length === 0) {
+      if (noFiltersActive) {
         pristineWorksCache = [...currentWorks];
         pristineWorkPage = currentWorkPage;
-        if (pristineWorksCache.length >= data.total) isEntireWorksDbInCache = true;
+        // FIX: riassegnata sempre (non solo quando true), altrimenti il flag resta
+        // "vero" da un museo precedente più piccolo anche quando qui non è più valido.
+        isEntireWorksDbInCache = pristineWorksCache.length >= data.total;
       }
 
       const nextChunk = currentWorks.slice(renderedWorksCount, renderedWorksCount + WORK_RENDER_CHUNK);
@@ -438,11 +445,12 @@ async function fetchAndRenderWorks(museumId, isLoadMore = false) {
     } else {
       currentWorks = data.works;
       
-      if (authorCbs.length === 0 && techniqueCbs.length === 0 && styleCbs.length === 0) {
+      if (noFiltersActive) {
         pristineWorksCache = [...currentWorks];
         pristineWorkPage = currentWorkPage;
         pristineTotalWorkPages = totalWorkPages;
-        if (pristineWorksCache.length >= data.total) isEntireWorksDbInCache = true;
+        // FIX: vedi commento sopra, stesso bug di invalidazione cache.
+        isEntireWorksDbInCache = pristineWorksCache.length >= data.total;
       }
 
       // Se il server ha restituito i metadati per la sidebar, inizializziamoli!
@@ -829,75 +837,4 @@ function renderItemsList(items, append = false) {
     setupItemsInfiniteScroll(currentMuseumId);
     updateItemsSentinelVisibility();
   }
-}
-
-async function loadManagedMuseums(isLoadMore = false) {
-  const container = document.getElementById("managed-museums-area");
-  if (!container) return;
-
-  if (!isLoadMore) {
-    container.innerHTML = `<div class="col-12 text-center mt-5"><div class="spinner-border text-info"></div></div>`;
-    myMuseumsAdminPage = 1;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/my-museums?page=${myMuseumsAdminPage}&limit=${RENDER_CHUNK}`);
-    const data = await response.json();
-
-    const isPaginated = !Array.isArray(data);
-    const fetchedMuseums = isPaginated ? data.museums : data;
-    const totalPages = isPaginated ? data.totalPages : 1;
-
-    if (fetchedMuseums.length === 0 && !isLoadMore) {
-      container.innerHTML = `
-        <div class="col-12 text-center py-5">
-            <p class="text-secondary">Non hai ancora musei assegnati.</p>
-            <a href="/add-museum" class="btn btn-primary">Aggiungi il tuo primo museo</a>
-        </div>`;
-      return;
-    }
-
-    // FIX CACHE: Iniettiamo i musei recuperati nella Cache Globale
-    if (fetchedMuseums && fetchedMuseums.length > 0) {
-      fetchedMuseums.forEach(newMus => {
-        if (!newMus) return;
-        const index = cachedMuseums.findIndex(m => m && m._id === newMus._id);
-        if (index === -1) cachedMuseums.push(newMus);
-        else cachedMuseums[index] = newMus; // Aggiorna dati se già presente
-      });
-    }
-
-    renderMuseumsList(fetchedMuseums, "managed-museums-area", isLoadMore);
-
-    if (isPaginated) {
-      container.appendChild(globalSentinel);
-      setupManagedMuseumsObserver(totalPages);
-      
-      if (myMuseumsAdminPage >= totalPages) {
-        globalSentinel.classList.add("d-none");
-      } else {
-        globalSentinel.classList.remove("d-none");
-      }
-    }
-  } catch (error) {
-    if (!isLoadMore) container.innerHTML = `<div class="alert alert-danger">Errore nel caricamento dei tuoi musei.</div>`;
-  }
-}
-
-function setupManagedMuseumsObserver(totalPages) {
-  if (!globalSentinel) return;
-  if (managedMuseumObserver) managedMuseumObserver.disconnect();
-
-  managedMuseumObserver = new IntersectionObserver((entries) => {
-    // Impediamo doppie chiamate controllando isFetchingMuseums
-    if (entries[0].isIntersecting && !isFetchingMuseums) {
-       if (myMuseumsAdminPage < totalPages) {
-          isFetchingMuseums = true;
-          myMuseumsAdminPage++;
-          loadManagedMuseums(true).finally(() => { isFetchingMuseums = false; });
-       }
-    }
-  }, { rootMargin: '100px' });
-
-  managedMuseumObserver.observe(globalSentinel);
 }
