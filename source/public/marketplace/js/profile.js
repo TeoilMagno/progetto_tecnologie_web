@@ -287,7 +287,12 @@ function renderCuratorStatus() {
 }
 
 async function requestCuratorRole() {
-  const isConfirmed = confirm("Vuoi inviare la richiesta per diventare curatore? Il team valuterà il tuo profilo.");
+  const isConfirmed = await window.showCustomConfirm(
+    "Diventa curatore", 
+    "Vuoi inviare la richiesta per diventare curatore? Il team valuterà il tuo profilo.", 
+    false
+  );
+  
   if (!isConfirmed) return;
   
   try {
