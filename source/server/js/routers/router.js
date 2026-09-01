@@ -113,4 +113,10 @@ router.get('/create-theme', auth.isCuratorPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'create-theme.html'));
 });
 
+// pagina del profilo personale
+router.get('/profile', auth.isLoggedInPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'profile.html'));
+});
+
+
 module.exports = router;

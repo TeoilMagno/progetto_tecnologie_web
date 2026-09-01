@@ -239,7 +239,7 @@ exports.deleteVisitById = async (visitId, user) => {
     query.creator = user._id;
   }
 
-  return await deleteVisitByQuery(query, "Visita non trovata o non sei autorizzato a eliminarla");
+  const deletedVisit = await deleteVisitByQuery(query, "Visita non trovata o non sei autorizzato a eliminarla");
 };
 
 // Elimina tutte le visite di un museo (inclusa la "visita libera" standard).

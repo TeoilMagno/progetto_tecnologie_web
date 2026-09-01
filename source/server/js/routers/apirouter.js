@@ -21,6 +21,7 @@ const Adoption = require("../models/adoptions");
 const Item = require("../models/items");
 const Visit = require("../models/visits");
 const QuizReport = require("../models/quizReport")
+const Order = require("../models/orders");
 
 // Controllers
 const museumController = require("../controllers/museums");
@@ -569,7 +570,11 @@ apiRouter.get("/current-user", (req, res) => {
         username: req.user.username || req.user.name,
         role: req.user.role,
         type: req.user.type || 'none',
-        expertiseLevel: req.user.preferences?.expertiseLevel || 'medium'
+        curator_status: req.user.curator_status,
+        expertiseLevel: req.user.preferences?.expertiseLevel || 'medium',
+        // Passiamo il nome reale se presente (OAuth)
+        name: req.user.name,
+        hasPassword: !!req.user.password
       });
     } else {
       res.json(null);
@@ -602,6 +607,100 @@ apiRouter.put("/current-user/type", auth.isLoggedIn, async (req, res) => {
     res.status(500).json({ error: "Errore interno del server" });
   }
 });
+
+// Aggiorna nome utente o password
+apiRouter.put("/current-user/profile", auth.isLoggedIn, async (req, res) => {
+  try {
+    const { username, newPassword, oldPassword, expertiseLevel } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (username) {
+      const existing = await User.findOne({ username });
+      if (existing && existing._id.toString() !== user._id.toString()) {
+        return res.status(400).json({ error: "Username già in uso." });
+      }
+      user.username = username;
+    }
+
+    if (expertiseLevel) {
+      // Modifica basata sul tuo schema
+      user.preferences.expertiseLevel = expertiseLevel;
+    }
+
+    if (newPassword) {
+      const crypto = require('crypto');
+
+      // Se ha GIÀ una password, esigi quella vecchia
+      if (user.password && user.salt) {
+        if (!oldPassword) {
+          return res.status(400).json({ error: "Devi inserire la password attuale." });
+        }
+        const oldHash = crypto.pbkdf2Sync(oldPassword, user.salt, 310000, 32, 'sha256');
+        if (!crypto.timingSafeEqual(user.password, oldHash)) {
+          return res.status(401).json({ error: "La password attuale non è corretta." });
+        }
+      }
+
+      // Genera nuova password (valido sia per cambio che per prima aggiunta OAuth)
+      const newSalt = crypto.randomBytes(16);
+      const newHash = crypto.pbkdf2Sync(newPassword, newSalt, 310000, 32, 'sha256');
+      
+      user.salt = newSalt;
+      user.password = newHash;
+    }
+
+    if (req.body.type) {
+      user.type = req.body.type;
+    }
+
+    if (req.body.requestCurator) {
+      if (user.curator_status === 'none' || user.curator_status === 'rejected') {
+        user.curator_status = 'pending';
+      }
+    }
+
+    await user.save();
+    res.json({ message: "Profilo aggiornato.", user });
+  } catch (error) {
+    res.status(500).json({ error: "Errore durante l'aggiornamento." });
+  }
+});
+
+// Elimina account e pulisci il database alla radice
+apiRouter.delete("/current-user/profile", auth.isLoggedIn, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    // 1. Elimina i musei del curatore a cascata
+    if (user.managed_museums && user.managed_museums.length > 0) {
+      for (const museumId of user.managed_museums) {
+        await museumController.deleteMuseumById(museumId);
+      }
+    }
+
+    // 2. Elimina le visite create dall'utente (innescando la pulizia immagini su disco)
+    const userVisits = await Visit.find({ creator: user._id });
+    for (const visit of userVisits) {
+      await visitController.deleteVisitById(visit._id, user);
+    }
+
+    // 3. Elimina fisicamente Ordini e Adozioni per mantenere pulito il DB
+    await Order.deleteMany({ userId: user._id });
+    await Adoption.deleteMany({ requestedBy: user._id });
+
+    // 4. Elimina l'utente e chiudi la sessione
+    await User.findByIdAndDelete(user._id);
+    
+    req.logout((err) => {
+      if (err) throw err;
+      res.json({ message: "Account eliminato definitivamente." });
+    });
+  } catch (error) {
+    console.error("Errore eliminazione account:", error);
+    res.status(500).json({ error: "Errore durante l'eliminazione dell'account." });
+  }
+});
+
 
 // Ottiene i musei gestiti dal curatore loggato
 apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
@@ -1159,7 +1258,6 @@ apiRouter.get('/my-quiz-results', auth.isLoggedIn, async (req, res) => {
     res.status(500).json({ error: 'Errore interno del server' });
   }
 });
-
 
 // ---------------- Gestione DB ---------------------
 apiRouter.get("/downloadDB", async (req, res) => {

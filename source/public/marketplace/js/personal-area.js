@@ -43,6 +43,7 @@ function renderUserArea() {
         <li><a class="dropdown-item ${isCurrent('/create-visit') ? 'text-info fw-bold' : 'text-white'}" href="/create-visit"><i class="bi bi-plus-lg me-2"></i>Crea visita</a></li>
         <li><a class="dropdown-item ${isCurrent('/my-orders') ? 'text-info fw-bold' : 'text-white'}" href="/my-orders"><i class="bi bi-receipt me-2"></i>I miei ordini</a></li>
         <li><a class="dropdown-item ${isCurrent('/quiz-reports') ? 'text-info fw-bold' : 'text-white'}" href="/quiz-reports"><i class="bi bi-file-text me-2"></i>I miei report</a></li>
+        <li><a class="dropdown-item ${isCurrent('/profile') ? 'text-info fw-bold' : 'text-white'}" href="/profile"><i class="bi bi-person-gear me-2"></i>Profilo</a></li>
       `;
 
     area.innerHTML = `
