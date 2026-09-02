@@ -105,6 +105,18 @@ export default function HighlyOptimizedMapView({
         transition: 'none'
       });
 
+      console.log("=== DEBUG MAPVIEW ===");
+      console.log("Active Section:", activeSection);
+      console.log("Active Section Works:", activeSection?.works);
+      console.log("Total Works passed:", works);
+      if (activeSection && activeSection.works && works) {
+        activeSection.works.forEach((sw, idx) => {
+          const swId = (sw.workId?._id || sw.workId)?.toString();
+          const match = works.find(w => (w._id?._id || w._id)?.toString() === swId);
+          console.log(`Opera ${idx}: ID=${swId}, Match Trovato=${Boolean(match)}, x=${sw.x}, y=${sw.y}`);
+        });
+      }
+
       // 3. Caduta morbida della vista globale
       setTimeout(() => {
         setAnimationStyle({
@@ -176,7 +188,10 @@ export default function HighlyOptimizedMapView({
               <svg viewBox={zoomViewBox} className="absolute inset-0 w-full h-full pointer-events-none">
                 {works.map((work) => {
                   const isActive = activeWorkId === work._id;
-                  const coords = activeSection.works?.find(sw => (sw.workId?._id || sw.workId) === work._id);
+                  const coords = activeSection.works?.find(sw => {
+                    const swId = (sw.workId?._id || sw.workId)?.toString();
+                    return swId && swId === work._id?.toString();
+                  });
                   if (!coords) return null;
 
                   return (

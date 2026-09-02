@@ -1,26 +1,24 @@
 import { useState, useEffect } from "react";
 
-export default function RoomLayer({ onBack, section, visitedWorks }) {
+export default function RoomLayer({ onBack, section, visitedWorks = null }) {
   const [works, setWorks] = useState([]);
   const [filteredWorks, setFilteredWorks] = useState([]);
 
   useEffect(() => {
-    console.log(section);
     fetch(`/api/sections/${section._id}/works`)
       .then((response) => response.json())
       .then((data) => {
-        setWorks(data); // Salviamo tutte le opere della sezione (per sicurezza/cache)
-        
-        // --- CONFRONTO E FILTRAGGIO ---
-        // Controlliamo quali opere della sezione sono presenti nella visita
-        console.log("sectionWork ",data, "visitedWorks ", visitedWorks);
-        const worksToShow = data.filter(fetchedWork => {
-          return visitedWorks.some(vw => vw._id === fetchedWork._id);
-        });
+        setWorks(data);
 
-        //associamo i lavori filtrati con le loro coordinate contenute in section.works
+        // Se visitedWorks è fornito (visita guidata), filtriamo solo quelle della visita.
+        // Se è null/undefined (visita libera), mostriamo TUTTE le opere presenti nella sezione!
+        const worksToShow = Array.isArray(visitedWorks) && visitedWorks.length > 0
+          ? data.filter(fetchedWork => visitedWorks.some(vw => (vw._id || vw) === fetchedWork._id))
+          : data;
+
+        // Associamo le opere con le coordinate definite in section.works
         const finalWorks = worksToShow.map(work => {
-          const coords = section.works.find(sw => sw.workId === work._id);
+          const coords = section.works ? section.works.find(sw => sw.workId === work._id || sw.workId?._id === work._id) : null;
           
           return {
             ...work,
@@ -37,14 +35,14 @@ export default function RoomLayer({ onBack, section, visitedWorks }) {
 
   return (
     <>
-      {/* 1. DISEGNO LE STANZE (il tuo codice originale) */}
-      {section.rooms.map((room) => {
+      {/* 1. DISEGNO LE STANZE */}
+      {section.rooms && section.rooms.map((room) => {
         if (room.shape.type === "polygon") {
           return (
             <polygon
-              key={room.id}
+              key={room.id || room._id}
               points={room.shape.points}
-              fill={section.color}
+              fill={section.color || "#475569"}
               stroke="#000"
               strokeWidth="6"
               onClick={() => alert(room.name)}
@@ -53,9 +51,9 @@ export default function RoomLayer({ onBack, section, visitedWorks }) {
         } else if (room.shape.type === "polyline") {
           return (
             <polyline
-              key={room.id}
+              key={room.id || room._id}
               points={room.shape.points}
-              fill={section.color}
+              fill={section.color || "#475569"}
               stroke="#000"
               strokeWidth="6"
               onClick={() => alert(room.name)}
@@ -64,9 +62,9 @@ export default function RoomLayer({ onBack, section, visitedWorks }) {
         } else if (room.shape.type === "path") {
           return (
             <path
-              key={room.id}
+              key={room.id || room._id}
               d={room.shape.d}
-              fill={section.color}
+              fill={section.color || "#475569"}
               stroke="#000"
               strokeWidth="6"
               onClick={() => alert(room.name)}
@@ -76,64 +74,65 @@ export default function RoomLayer({ onBack, section, visitedWorks }) {
         return null;
       })}
 
-      {/* 2. DISEGNO I WORK / OPERE D'ARTE (La novità!) */}
-      {/* Controllo se ci sono work nell'area, e li stampo */}
+      {/* 2. DISEGNO TUTTE LE OPERE D'ARTE */}
       {filteredWorks.map((work) => (
         <foreignObject
-        key={work._id}
-        x={work.x}
-        y={work.y}
-        width="120"
-        height="220" /* Rendiamolo bello grande, tanto il resto sarà trasparente! */
-        style={{ overflow: "visible" }}
+          key={work._id}
+          x={work.x}
+          y={work.y}
+          width="120"
+          height="220"
+          style={{ overflow: "visible" }}
         >
-        <div
-        style={{
-          width: "100%", 
-            height: "fit-content", /* LA MAGIA: il div si adatta al contenuto reale */
-            backgroundColor: "white",
-            border: "1px solid #ccc", /* Bordo applicato al contenitore principale */
-            borderRadius: "6px",
-            padding: "0px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            fontFamily: "sans-serif",
-            overflow: "hidden",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)", /* Un'ombreggiatura per farla staccare meglio dalla mappa */
-        }}
-        >
-        <img
-        src={work.image}
-        alt={work.name}
-        style={{
-          width: "100%",
-            height: "100px", /* Visto che il div si adatta, diamo un'altezza fissa in pixel all'immagine */
-            objectFit: "cover",
-        }}
-        />
+          <div
+            style={{
+              width: "100%", 
+              height: "fit-content",
+              backgroundColor: "white",
+              border: "1px solid #ccc",
+              borderRadius: "6px",
+              padding: "0px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              fontFamily: "sans-serif",
+              overflow: "hidden",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+              cursor: "pointer"
+            }}
+            onClick={() => alert(`${work.name || work.title}\nAutore: ${work.author || 'N/A'}`)}
+          >
+            <img
+              src={work.image || "/placeholder.jpg"}
+              alt={work.name || work.title}
+              style={{
+                width: "100%",
+                height: "100px",
+                objectFit: "cover",
+              }}
+            />
 
-        {/* Contenitore per il testo */}
-        <div style={{ padding: "6px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <strong style={{ fontSize: "11px", textAlign: "center", lineHeight: "1.2" }}>
-        {work.name}
-        </strong>
-        <span style={{ fontSize: "10px", color: "#666", marginTop: "2px", textAlign: "center" }}>
-        {work.author}
-        </span>
-        </div>
-        </div>
+            <div style={{ padding: "6px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <strong style={{ fontSize: "11px", textAlign: "center", lineHeight: "1.2", color: "#0f172a" }}>
+                {work.name || work.title}
+              </strong>
+              <span style={{ fontSize: "10px", color: "#64748b", marginTop: "2px", textAlign: "center" }}>
+                {work.author || "Autore sconosciuto"}
+              </span>
+            </div>
+          </div>
         </foreignObject>
       ))}
 
-      {/* 3. BOTTONE BACK (il tuo codice originale) */}
+      {/* 3. PULSANTE BACK */}
       <text
-        x="10"
-        y="40" /* Ho abbassato un po' la Y per renderlo più cliccabile */
+        x="20"
+        y="60"
         onClick={onBack}
-        style={{ cursor: "pointer", fontSize: "40px", fontWeight: "bold" }}
+        fill="#f59e0b"
+        style={{ cursor: "pointer", fontSize: "40px", fontWeight: "bold", userSelect: "none" }}
       >
-        ← Indietro
+        ← Sezioni
       </text>
     </>
   );
