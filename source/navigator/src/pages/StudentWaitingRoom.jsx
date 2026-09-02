@@ -45,7 +45,7 @@ export default function StudentWaitingRoom() {
   }, [roomCode, navigate, socket]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-white p-6 text-center relative overflow-hidden">
+    <div className="flex flex-col items-center justify-center min-h-screen text-white p-6 text-center relative overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img src="/img1.jpg" alt="Background" className="w-full h-full object-cover opacity-10" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/80 to-slate-950"></div>

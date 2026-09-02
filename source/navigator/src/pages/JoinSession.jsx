@@ -338,7 +338,7 @@ export default function JoinSession() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full min-h-screen bg-slate-950 text-white">
+      <div className="flex flex-col items-center justify-center h-full min-h-screen text-white">
         <Loader2 className="animate-spin text-amber-500 mb-2" size={36} />
         <span className="text-slate-400 text-sm">Verifica profilo in corso...</span>
       </div>
@@ -346,13 +346,8 @@ export default function JoinSession() {
   }
 
   return (
-    <div className="min-h-screen w-full relative bg-slate-950 text-white pb-24">
+    <div className="min-h-screen w-full relative text-white pb-24">
       
-      {/* BACKGROUND IMAGE FISSA SFUMATA */}
-      <div className="absolute inset-0 z-0 h-96">
-         <img src="/img1.jpg" alt="Background" className="w-full h-full object-cover opacity-15" />
-         <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to bottom, transparent 0%, rgba(14, 22, 42, 1) 90%, rgba(14, 22, 42, 1) 100%)'}}></div>
-      </div>
 
       <div className="relative z-10 flex flex-col items-center pt-8 px-4 md:px-6 w-full max-w-lg mx-auto">
         
@@ -506,7 +501,7 @@ export default function JoinSession() {
                 )}
               </div>
 
-              <div className="relative w-full aspect-square max-w-[240px] border border-slate-800 bg-slate-950 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center">
+              <div className="relative w-full aspect-square max-w-[240px] border border-slate-800 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center">
                 {/* Il video resta SEMPRE montato e visibile: su molti browser mobile,
                     un <video> con display:none al momento in cui riceve lo stream
                     non renderizza mai un frame valido, anche se poi lo si mostra */}
@@ -529,7 +524,7 @@ export default function JoinSession() {
 
                 {/* Overlay che COPRE il video (non lo nasconde) finché non è attivo */}
                 {(cameraStatus === 'idle' || cameraStatus === 'starting' || cameraStatus === 'error') && (
-                  <div className="absolute inset-0 bg-slate-950 flex flex-col items-center justify-center text-center p-6 text-slate-700 select-none z-20">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 text-slate-700 select-none z-20">
                     <QrCode size={64} className="opacity-10 mb-2 animate-pulse" />
                     <span className="text-[10px] uppercase font-bold tracking-wider opacity-20">
                       {cameraStatus === 'error' ? 'Fotocamera non disponibile' : 'In attesa di avvio'}
@@ -538,7 +533,7 @@ export default function JoinSession() {
                 )}
 
                 {cameraStatus === 'scanned' && (
-                  <div className="absolute inset-0 bg-slate-950/70 flex flex-col items-center justify-center z-20">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
                     <CheckCircle2 size={40} className="text-green-400 mb-2" />
                     <span className="text-white font-bold text-sm">Codice rilevato!</span>
                   </div>

@@ -68,20 +68,6 @@ const Home = ({ config }) => {
       
       {/* BACKGROUND IMAGE FISSA */}
       {/* L'immagine copre tutto lo sfondo ed è fissa */}
-      <div className="absolute inset-0 z-0">
-         <img 
-            src={config && config.backgroundImage ? config.backgroundImage : "/img1.jpg"} 
-            alt="Background" 
-            className="w-full h-full object-cover"
-         />
-         {/* Overlay sfumato scuro: trasparente in alto, graduale verso blu scuro in basso */}
-         <div 
-           className="absolute inset-0"
-           style={{ 
-             backgroundImage: 'linear-gradient(to bottom, transparent 0%, rgba(51, 65, 85, 0.6) 30%, rgba(14, 22, 42, 1) 75%, rgba(14, 22, 42, 1) 100%)'
-           }}
-         ></div>
-      </div>
 
       {/* CONTENUTO SCROLLABILE */}
       <div className="relative z-10 flex flex-col items-center pt-8 px-4 md:px-6 w-full max-w-lg mx-auto pb-20">
