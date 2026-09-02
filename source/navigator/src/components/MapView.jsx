@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Landmark, LogOut, CheckCircle2, Sparkles, ArrowRight, Loader2, Compass, Image as ImageIcon, QrCode, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -25,9 +25,17 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
 
   const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);
   const [detailsWork, setDetailsWork] = useState(null);
-  // playMode: usato per la sintesi vocale
+
+  // Audio e sintetizzatore vocale
   const [playMode, setPlayMode] = useState(false); 
   const [inputMode, setInputMode] = useState("speak");
+
+  // Riferimenti per gestione seek (+5s / -5s) e prevenzione Garbage Collection
+  const currentAudioTextRef = useRef("");
+  const audioCharIndexRef = useRef(0);
+  const isAudioActiveRef = useRef(false);
+  const currentUtteranceRef = useRef(null);
+
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
   const [visitQuiz, setVisitQuiz] = useState([]);
@@ -41,33 +49,26 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [expertiseLevel, setExpertiseLevel] = useState("medium");
   const [currentLength, setCurrentLength] = useState("medium");
 
-  //Domande per assistente vocale
+  // Domande per assistente vocale
   const [commandsMap, setCommandsMap] = useState(null);
 
-  //variabili temporali per suggerire opere extra
+  // Variabili temporali per suggerire opere extra
   const [visitBeginTime, setVisitBeginTime] = useState(null);
   const [visitEndTime, setVisitEndTime] = useState(null);
   const [visitDurationTime, setVisitDurationTime] = useState(null);
   const [maxDurationTime, setMaxDurationTime] = useState(null);
 
-  //usati per visualizzazione mappa
+  // Usati per visualizzazione mappa
   const [svgMapString, setSvgMapString] = useState(null);
-  const [activeSectionId, setActiveSectionId] = useState(null); // null = mappa intera
+  const [activeSectionId, setActiveSectionId] = useState(null);
 
   const isSharedSession = Boolean(roomCode);
-
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
-  
-  // Se non ci sono sezioni valide, attiviamo la modalità Fallback (Audioguida List Mode)
   const hasMap = sections && sections.length > 0;
 
   useEffect(() => {
     if (!roomCode || !socket) return;
 
-    // La socket è condivisa e già connessa (creata una sola volta nel
-    // SocketProvider): qui ci limitiamo a (ri)registrarci nella stanza,
-    // così il server aggiorna anche il teacherSocketId se siamo l'insegnante
-    // e ci allinea con l'opera corrente se stiamo rientrando in corsa.
     socket.emit('rejoin_room', {
       roomCode: roomCode.toUpperCase(),
       role: isTeacher ? 'teacher' : 'student'
@@ -77,7 +78,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   useEffect(() => {
     const fetchVisitData = async () => {
       try {
-        const queryParam = isSharedSession ? `?roomCode=${roomCode}` : ''
+        const queryParam = isSharedSession ? `?roomCode=${roomCode}` : '';
         
         const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}${queryParam}`, { credentials: 'include' });
         if (!visitResponse.ok) throw new Error("Visita non trovata");
@@ -87,53 +88,45 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         const userData = apiData.user;
 
         setVisitQuiz(visitData.quiz || []);
-
-        //salviamo i comandi vocali disponibili
         setCommandsMap(dictionary);
 
-        //setta il livello di difficoltà della visita
-        if(userData.preferences.expertiseLevel)
+        if (userData?.preferences?.expertiseLevel)
           setExpertiseLevel(userData.preferences.expertiseLevel || 'medium');
 
-        //setta la lunghezza delle descrizioni delle opere
-        if(visitData.preferredLength)
-            setCurrentLength(visitData.preferredLength || "medium");
+        if (visitData.preferredLength)
+          setCurrentLength(visitData.preferredLength || "medium");
         
-        if(visitData.maxDuration)
+        if (visitData.maxDuration)
           setMaxDurationTime(visitData.maxDuration || null);
 
-        // Controllo di sicurezza: ci assicuriamo che works sia un array
         const worksArray = Array.isArray(visitData.works) ? visitData.works : [];
         setVisitedWorks(worksArray);
 
-        // Se stiamo entrando in una sessione già in corso, ci allineiamo subito all'opera del prof
         if (apiData.currentArtworkId && worksArray.length > 0) {
           const activeIndex = worksArray.findIndex(
             (w) => (w._id?.toString() || w.toString()) === apiData.currentArtworkId.toString()
           );
           if (activeIndex !== -1) {
             setCurrentWorkIndex(activeIndex);
+            setDetailsWork(worksArray[activeIndex]);
           }
         }
         
         const museumId = visitData.museumId?._id || visitData.museumId;
         
         if (museumId) {
-          // Gestiamo il potenziale fallimento dell'API delle sezioni senza far crashare tutto
           try {
             const sectionsPromise = fetch(`${API_BASE_URL}/museums/${museumId}/sections`, { credentials: 'include' });
             const mapPromise = fetch(`${API_BASE_URL}/museums/${museumId}/map-svg`);
-            //facciamo entrambi i fetch in contemporanea
             const [sectionsResponse, mapResponse] = await Promise.all([sectionsPromise, mapPromise]);
-            //controlliamo sectionsResponse
+            
             if (sectionsResponse.ok) {
               const sectionsData = await sectionsResponse.json();
               setSections(Array.isArray(sectionsData) ? sectionsData : []);
             } else {
-              setSections([]); // Attiverà il fallback
+              setSections([]);
             }
 
-            //controlliamo mapResponse
             if (mapResponse.ok) {
               const textData = await mapResponse.text();
               setSvgMapString(textData);
@@ -162,18 +155,104 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     return () => window.speechSynthesis.cancel();
   }, []);
 
-  const speakText = (textToRead) => {
-    window.speechSynthesis.cancel();
-    if (!textToRead) {
+  // --- CONTROLLER AUDIO CON DIAGNOSTICA COMPLETA ---
+  const speakFromOffset = (text, startChar = 0) => {
+    console.log("--> [AUDIO DEBUG] speakFromOffset chiamata!");
+    console.log("--> [AUDIO DEBUG] Testo:", text);
+
+    if (!text || typeof text !== "string" || text.trim() === "") {
+      console.warn("--> [AUDIO DEBUG] Interrotto: il testo è nullo, non stringa o vuoto.");
       setPlayMode(false);
       return;
     }
-    setPlayMode(true);
-    const utterance = new SpeechSynthesisUtterance(textToRead);
+
+    if (window.speechSynthesis.paused) {
+      console.log("--> [AUDIO DEBUG] Rilevata pausa del browser, invoco resume()");
+      window.speechSynthesis.resume();
+    }
+    
+    window.speechSynthesis.cancel();
+
+    const safeStart = Math.max(0, Math.min(startChar, text.length - 1));
+    const subText = text.slice(safeStart);
+    console.log("--> [AUDIO DEBUG] Testo effettivo da riprodurre:", subText.slice(0, 60) + "...");
+
+    const utterance = new SpeechSynthesisUtterance(subText);
+    currentUtteranceRef.current = utterance; // Riferimento per bloccare il Garbage Collector
+
     utterance.lang = "it-IT";
-    utterance.rate = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
-    utterance.onend = () => setPlayMode(false);
+    const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
+    utterance.rate = speed;
+
+    utterance.onstart = () => {
+      console.log("--> [AUDIO DEBUG] EVENTO ONSTART: Inizio lettura.");
+      setPlayMode(true);
+      isAudioActiveRef.current = true;
+    };
+
+    utterance.onboundary = (event) => {
+      if (event.name === 'word') {
+        audioCharIndexRef.current = safeStart + event.charIndex;
+      }
+    };
+
+    utterance.onend = (e) => {
+      console.log("--> [AUDIO DEBUG] EVENTO ONEND: Lettura terminata.", e);
+      setPlayMode(false);
+      isAudioActiveRef.current = false;
+      audioCharIndexRef.current = 0;
+      currentUtteranceRef.current = null;
+    };
+
+    utterance.onerror = (e) => {
+      console.error("--> [AUDIO DEBUG] EVENTO ONERROR:", e.error, e);
+      if (e.error === 'interrupted' || e.error === 'canceled') return;
+      setPlayMode(false);
+      isAudioActiveRef.current = false;
+      currentUtteranceRef.current = null;
+    };
+
+    const voices = window.speechSynthesis.getVoices();
+    console.log("--> [AUDIO DEBUG] Voci nel sistema:", voices.length);
+    const itVoice = voices.find(v => v.lang.startsWith("it"));
+    if (itVoice) {
+      utterance.voice = itVoice;
+      console.log("--> [AUDIO DEBUG] Voce italiana associata:", itVoice.name);
+    }
+
+    console.log("--> [AUDIO DEBUG] Esecuzione window.speechSynthesis.speak()");
     window.speechSynthesis.speak(utterance);
+  };
+
+  const speakText = (textToRead) => {
+    console.log("--> [AUDIO DEBUG] speakText invocata");
+    if (!textToRead) {
+      handleStopAudio();
+      return;
+    }
+    currentAudioTextRef.current = textToRead;
+    audioCharIndexRef.current = 0;
+    speakFromOffset(textToRead, 0);
+  };
+
+  const handleStopAudio = () => {
+    console.log("--> [AUDIO DEBUG] handleStopAudio invocata");
+    window.speechSynthesis.cancel();
+    setPlayMode(false);
+    isAudioActiveRef.current = false;
+    audioCharIndexRef.current = 0;
+    currentUtteranceRef.current = null;
+  };
+
+  const handleSeekAudio = (seconds) => {
+    const fullText = currentAudioTextRef.current;
+    if (!fullText) return;
+
+    const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
+    const charsToShift = Math.round(15 * speed * seconds);
+    const targetChar = Math.max(0, Math.min(fullText.length - 1, audioCharIndexRef.current + charsToShift));
+
+    speakFromOffset(fullText, targetChar);
   };
 
   const selectSectionForWork = (work) => {
@@ -193,7 +272,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     if (isSharedSession && isTeacher && socket) {
       socket.on("teacher_dashboard_update", (payload) => {
         if (payload.type === 'interaction') {
-          setInteractionFeed(prev => [payload.data, ...prev].slice(0, 50)); // Tieni in memoria le ultime 50 interazioni
+          setInteractionFeed(prev => [payload.data, ...prev].slice(0, 50));
         } else if (payload.type === 'status') {
           setClassStatus(prev => ({
             ...prev,
@@ -215,15 +294,14 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         if (!data || !data.artworkId) return;
         const index = visitedWorks.findIndex(w => w._id === data.artworkId);
 
-        // Se lo studente non ha l'opera (perché l'insegnante ha accettato i suggerimenti IA), 
-        // la peschiamo da allMuseumWorks e gliela aggiungiamo in tempo reale!
         if (index === -1 && allMuseumWorks.length > 0) {
           const newWork = allMuseumWorks.find(w => w._id === data.artworkId);
           if (newWork) {
             setVisitedWorks(prev => {
               const updated = [...prev, newWork];
               setCurrentWorkIndex(updated.length - 1);
-              setShowEndModal(false); // Chiude il modale di fine visita
+              setDetailsWork(newWork);
+              setShowEndModal(false);
               if (hasMap) selectSectionForWork(newWork);
               return updated;
             });
@@ -231,9 +309,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           }
         }
 
-        if (index != -1) {
+        if (index !== -1) {
           setCurrentWorkIndex(index);
-          showEndModal(false);
+          setDetailsWork(visitedWorks[index]);
+          setShowEndModal(false);
           if (hasMap) selectSectionForWork(visitedWorks[index]);
         }
       });
@@ -262,20 +341,18 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         });
       };
 
-      // 1. Invia stato attivo iniziale
       sendStatus('active');
 
-      // 2. Gestori per la perdita di focus (cambio app, schermo spento, cambio tab)
       const handleVisibilityChange = () => {
         sendStatus(document.hidden ? 'away' : 'active');
       };
 
       const handleBlur = () => {
-        sendStatus('away'); // Ha cliccato fuori dalla finestra o abbassato la tendina delle notifiche
+        sendStatus('away');
       };
 
       const handleFocus = () => {
-        sendStatus('active'); // È tornato sull'app
+        sendStatus('active');
       };
 
       document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -294,11 +371,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     }
   }, [isSharedSession, isTeacher, visitedWorks, socket, navigate, roomCode, hasMap]);
 
-  // --- SEGNALA USCITA DALLA MAPPA (Cambio pagina nel Navigator) ---
   useEffect(() => {
     if (isSharedSession && !isTeacher && socket && roomCode) {
       return () => {
-        // Questa funzione di cleanup scatta solo quando lo studente esce definitivamente dalla MapView
         socket.emit('student_status_update', {
           roomCode,
           studentName: localStorage.getItem('student_name') || 'Studente',
@@ -308,42 +383,35 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     }
   }, [isSharedSession, isTeacher, socket, roomCode]);
 
-  // SINCRONIZZAZIONE AUTOMATICA TELECAMERA
   useEffect(() => {
     if (currentWorkIndex >= 0 && visitedWorks.length > 0 && hasMap) {
       const activeWork = visitedWorks[currentWorkIndex];
-      
-      // Troviamo la sezione che contiene quest'opera
       const targetSection = sections.find(sec => 
         sec.works && sec.works.some(sw => (sw.workId?._id || sw.workId) === activeWork._id)
       );
 
-      // Se cambia sezione, effettuiamo lo zoom
       if (targetSection && targetSection._id !== selectedSection?._id) {
         setSelectedSection(targetSection);
       }
     }
   }, [currentWorkIndex, visitedWorks, sections, hasMap]);
 
+  // Gestione Successiva con apertura automatica del banner
   const handleNext = () => {
     if (currentWorkIndex < visitedWorks.length - 1) {
+      handleStopAudio();
       const nextIndex = currentWorkIndex + 1;
       setCurrentWorkIndex(nextIndex);
       const activeWork = visitedWorks[nextIndex];
+      setDetailsWork(activeWork);
       
       if (hasMap) {
         const currentSection = selectedSection;
         const result = selectSectionForWork(activeWork);
         const nextSection = result ? result.section : null;
         
-        if (nextSection) {
-          // Se la nuova opera si trova in una sezione DIVERSA da quella attuale, 
-          // diamo un piccolo avviso (opzionale, ma utile per l'orientamento)
-          if (currentSection && nextSection._id !== currentSection._id) {
-            alert(`Stiamo passando alla sezione: ${nextSection.name}`);
-          }
-        } else {
-           console.warn("Attenzione: Impossibile determinare la posizione sulla mappa della prossima opera.");
+        if (nextSection && currentSection && nextSection._id !== currentSection._id) {
+          alert(`Stiamo passando alla sezione: ${nextSection.name}`);
         }
       }
 
@@ -353,24 +421,22 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     }
   };
 
+  // Gestione Precedente con apertura automatica del banner
   const handlePrev = () => {
     if (currentWorkIndex > 0) {
+      handleStopAudio();
       const prevIndex = currentWorkIndex - 1;
       setCurrentWorkIndex(prevIndex);
       const activeWork = visitedWorks[prevIndex];
+      setDetailsWork(activeWork);
       
       if (hasMap) {
         const currentSection = selectedSection;
         const result = selectSectionForWork(activeWork);
         const prevSection = result ? result.section : null;
         
-        if (prevSection) {
-          // Se la precedente opera si trova in una sezione DIVERSA
-          if (currentSection && prevSection._id !== currentSection._id) {
-            alert(`Torniamo alla sezione: ${prevSection.name}`);
-          }
-        } else {
-           console.warn("Attenzione: Impossibile determinare la posizione sulla mappa della prossima opera.");
+        if (prevSection && currentSection && prevSection._id !== currentSection._id) {
+          alert(`Torniamo alla sezione: ${prevSection.name}`);
         }
       }
 
@@ -378,30 +444,29 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         socket.emit("change_artwork", { roomCode, artworkId: activeWork._id });
       }
     } else if (currentWorkIndex === 0) {
+      handleStopAudio();
       setCurrentWorkIndex(-1);
       setSelectedSection(null);
+      setDetailsWork(null);
     }
   };
 
   const handleEndVisit = async () => {
-    // Apriamo subito la schermata finale!
     setShowEndModal(true);
     setSuggestedWorks([]);
+    handleStopAudio();
     
     if (isSharedSession && isTeacher && socket) {
       socket.emit("end_shared_visit", { roomCode });
     }
 
-    // 1. Calcolo del tempo
     const endTime = Date.now();
     setVisitEndTime(endTime);
     const elapsedMilliseconds = endTime - visitBeginTime;
     const elapsedMinutes = Math.floor(elapsedMilliseconds / 1000 / 60);
-
-    // 2. Troviamo le opere rimanenti
     const remainingWorks = allMuseumWorks.filter(w => !visitedWorks.some(vw => vw._id === w._id));
 
-    if (remainingWorks.length > 0 && remainingTime > 0 && maxDurationTime) {
+    if (remainingWorks.length > 0 && maxDurationTime) {
       setIsSuggestingWorks(true);
       const READING_TIMES = {
         short: 3 / 60,
@@ -418,38 +483,30 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       };
 
       try {
-        //Chiamata API ad AI per richiedere delle opere da visionare inerti alla visita volta
         const aiResponse = await fetch(`${API_BASE_URL}/ai/suggested-works`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ payloadForAI }) // Assicurati che backend legga req.body.payloadForAI
+          body: JSON.stringify({ payloadForAI })
         });
 
-        if (!aiResponse.ok) {
-          throw new Error(suggestedWorksData.error || "Il server ha risposto con un errore");
-        }
+        if (!aiResponse.ok) throw new Error("Il server ha risposto con un errore");
         
         const suggestedWorksData = await aiResponse.json();
-
         const recomendedIds = suggestedWorksData.works;
-
         const finalSuggestedWorks = remainingWorks.filter(work => 
           recomendedIds.includes(work._id.toString())
         );
         
-        if(finalSuggestedWorks.length > 0) {
-          console.log("Opere complete suggerite:", finalSuggestedWorks);
-          //operazione di spread per aggiungere il lavori suggeriti a visitedWorks in modo da riutilizzare gli altri componenti
+        if (finalSuggestedWorks.length > 0) {
           setVisitedWorks(prevWorks => [...prevWorks, ...finalSuggestedWorks]);
           alert(`Dato che hai ancora ${maxDurationTime - elapsedMinutes} minuti prima della conclusione della visita, suggeriamo di visionare altre ${finalSuggestedWorks.length} opere inerenti alla visita eseguita. Premi "Prossima" per continuare!`);
         } else {
           alert('Siamo spiacenti, ma non abbiamo altre opere di cui consigliare la visione');
         }
-      } catch (error) { //c'è stato qualche problema con la richiesta all'AI
+      } catch (error) {
         alert("Non ci sono altre opere da vedere inerenti alla visita fatta. " + error.message);
       }
     } else {
-      // Se l'utente ha visto letteralmente tutto il museo
       alert("Complimenti! Hai visto tutte le opere del museo.");
     }
   };
@@ -476,12 +533,12 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   }
 
   return (
-    // 1. fixed inset-0 blocca lo schermo ed evita lo scorrimento dell'intera pagina
     <div className="fixed inset-0 flex flex-col bg-[#09090b] text-white overflow-hidden">
-      {/* TODO: magari deve rimandare al my-visit del navigator? */}
-      {/* Tasto Esci Fluttuante */}
       <button 
-        onClick={() => navigate("/my-visits")} 
+        onClick={() => {
+          handleStopAudio();
+          navigate("/my-visits");
+        }} 
         className="absolute top-4 right-4 z-[9999] flex items-center justify-center gap-2 px-4 py-2 bg-slate-900/80 backdrop-blur-md border border-slate-700 rounded-full text-slate-300 hover:bg-slate-800 hover:text-white text-sm transition-colors shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
       >
         <LogOut size={16} /> Esci
@@ -496,7 +553,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         </button>
       )}
 
-      {/* 3. Mappa o Fallback (Prende tutto lo spazio rimanente con flex-1) */}
+      {/* Mappa o Fallback */}
       <div className="w-full h-full relative overflow-hidden flex-1">
         {hasMap && svgMapString ? (
           <HighlyOptimizedMapView 
@@ -507,7 +564,11 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
             onBack={() => setSelectedSection(null)}
             works={visitedWorks}
             activeWorkId={currentWork?._id}
-            onWorkClick={(work) => setDetailsWork(work)}
+            onWorkClick={(work) => {
+              const idx = visitedWorks.findIndex(w => (w._id?.toString() || w.toString()) === (work._id?.toString() || work.toString()));
+              if (idx !== -1) setCurrentWorkIndex(idx);
+              setDetailsWork(work);
+            }}
           />
         ) : hasMap && !svgMapString ? (
           <div className="w-full h-full flex items-center justify-center text-white">
@@ -522,7 +583,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                 </div>
                 <h2 className="text-2xl font-bold mb-2">Visita Guidata</h2>
                 <p className="text-slate-400 max-w-sm mx-auto text-sm leading-relaxed">
-                  Non sono presenti planimetrie per questo museo. Nessun problema, ti guideremo attraverso le opere con la nostra modalità audioguida!
+                  Non sono presenti planimetrie per questo museo. Ti guideremo attraverso le opere con la nostra modalità audioguida!
                 </p>
                 <div className="mt-8 flex justify-center animate-bounce">
                   <ArrowRight className="text-cyan-400 rotate-90" size={24} />
@@ -556,7 +617,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         )}
       </div>
 
-      {/* 4. Barra Inferiore di controllo (ora non è più sovrapposta, ma impilata perfettamente) */}
+      {/* Barra Inferiore di controllo */}
       <NavigationControlBar
         currentWorkIndex={currentWorkIndex}
         visitedWorks={visitedWorks}
@@ -567,6 +628,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           setVisitBeginTime(Date.now());
           if (visitedWorks.length > 0) {
             setCurrentWorkIndex(0);
+            setDetailsWork(visitedWorks[0]);
             if (hasMap) {
               const result = selectSectionForWork(visitedWorks[0]);
               if (result?.section) {
@@ -583,6 +645,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         inputMode={inputMode}       
         setInputMode={setInputMode}
         onSpeak={speakText}
+        onStopAudio={handleStopAudio}
+        onSeekAudio={handleSeekAudio}
         isSharedSession={isSharedSession}
         isTeacher={isTeacher}
         currentLength={currentLength}
@@ -596,18 +660,15 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         roomCode={roomCode}
       />
 
-      {/* Modali e Bottom Sheet */}
+      {/* Modale Finale */}
       {showEndModal && (
         <div className="fixed inset-0 bg-black/85 z-[10000] flex items-center justify-center p-4">
           <div className="w-full max-w-[560px] bg-[#121218] border border-white/10 rounded-3xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.8)] text-white text-center flex flex-col max-h-[90vh]">
-            
             <h3 className="flex items-center justify-center gap-2 text-cyan-400 text-xl font-extrabold mb-5 shrink-0">
               <CheckCircle2 className="text-green-500" size={24} /> Visita completata!
             </h3>
             
             <div className="overflow-y-auto custom-scrollbar flex-1 px-1 pb-2">
-              
-              {/* BOX INTELLIGENZA ARTIFICIALE (Sopra ai controlli base) */}
               {isSuggestingWorks ? (
                  <div className="bg-slate-800/40 border border-slate-700 rounded-2xl p-5 mb-6 flex flex-col items-center animate-fadeIn">
                     <Loader2 size={28} className="animate-spin text-amber-500 mb-3" />
@@ -637,7 +698,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                  </div>
               ) : null}
 
-              {/* LOGICA INSEGNANTE: Sceglie cosa fare */}
               {isSharedSession && isTeacher ? (
                 <>
                   <p className="text-slate-400 text-sm mb-4">
@@ -667,7 +727,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                   </div>
                 </>
               ) : isSharedSession && !isTeacher ? (
-                /* LOGICA STUDENTE: Attende il comando del prof */
                 <>
                   <p className="text-slate-400 text-sm mb-6">
                     Il percorso è terminato. Resta in attesa, l'insegnante potrebbe avviare un quiz!
@@ -679,7 +738,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                   </div>
                 </>
               ) : (
-                /* LOGICA VISITATORE NORMALE (Navigazione Libera) */
                 <>
                   <p className="text-slate-400 text-sm mb-4">
                     Cosa desideri fare ora?
@@ -698,11 +756,21 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         </div>
       )}
 
+      {/* Sheet Dettagli Opera */}
       {hasMap && (
         <WorkDetailsSheet
           work={detailsWork}
-          onClose={() => setDetailsWork(null)}
+          onClose={() => {
+            handleStopAudio();
+            setDetailsWork(null);
+          }}
           onSpeak={speakText}
+          onStopAudio={handleStopAudio}
+          onSeekAudio={handleSeekAudio}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          hasPrev={currentWorkIndex > 0}
+          hasNext={currentWorkIndex < visitedWorks.length - 1}
           commandsMap={commandsMap}
           currentExpertise={expertiseLevel}
           setCurrentExpertise={setExpertiseLevel}
@@ -716,11 +784,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         />
       )}
 
-      {/* Modale Codice Stanza (Solo Insegnante) */}
+      {/* Modale Codice Stanza */}
       {showJoinModal && (
         <div className="fixed inset-0 bg-black/85 z-[10000] flex items-center justify-center p-4 animate-fadeIn">
           <div className="w-full max-w-sm bg-[#121218] border border-white/10 rounded-3xl p-6 shadow-2xl relative text-center">
-            
             <button 
               onClick={() => setShowJoinModal(false)}
               className="absolute top-4 right-4 p-2 bg-slate-800 text-slate-400 rounded-full hover:bg-slate-700 hover:text-white cursor-pointer transition-colors"
@@ -735,7 +802,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
             <h3 className="text-xl font-bold text-white mb-2">Codice Stanza</h3>
             <p className="text-slate-400 text-sm mb-6">Fai inquadrare questo codice o comunicalo agli utenti in ritardo.</p>
             
-            {/* Il nostro nuovo componente riutilizzabile! */}
             <div className="mb-6">
               <RoomQRCode roomCode={roomCode} />
             </div>
@@ -743,7 +809,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
             <div className="bg-slate-900 border border-slate-700 py-4 rounded-2xl mb-2">
               <span className="text-4xl font-mono font-bold text-cyan-400 tracking-widest">{roomCode}</span>
             </div>
-            
           </div>
         </div>
       )}

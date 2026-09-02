@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Loader2, AlertCircle } from "lucide-react";
 import { API_BASE_URL } from "../config";
 import HighlyOptimizedMapView from "../components/HighlyOptimizedMapView";
@@ -12,11 +12,20 @@ export default function FreeVisitMap({ selectedMuseum }) {
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState(false);
 
-  // Dettagli opera cliccata
+  // Indice e Dettagli dell'opera selezionata
+  const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);
   const [detailsWork, setDetailsWork] = useState(null);
+
+  // Audio e sintetizzatore vocale
   const [playMode, setPlayMode] = useState(false);
   const [expertiseLevel, setExpertiseLevel] = useState("medium");
   const [currentLength, setCurrentLength] = useState("medium");
+
+  // Riferimenti persistenti per prevenire il Garbage Collection e gestire il seek (+5s / -5s)
+  const currentAudioTextRef = useRef("");
+  const audioCharIndexRef = useRef(0);
+  const isAudioActiveRef = useRef(false);
+  const currentUtteranceRef = useRef(null);
 
   const museumId = selectedMuseum?._id;
   const hasMap = sections && sections.length > 0;
@@ -59,10 +68,9 @@ export default function FreeVisitMap({ selectedMuseum }) {
     fetchMapAndSections();
   }, [museumId]);
 
-  // 2. Quando una sezione viene selezionata, scarichiamo le sue opere tramite l'endpoint dedicato!
+  // 2. Quando una sezione viene selezionata, scarichiamo le sue opere
   const handleSelectSection = async (section) => {
     setSelectedSection(section);
-
     if (!section || !section._id) return;
 
     try {
@@ -71,13 +79,11 @@ export default function FreeVisitMap({ selectedMuseum }) {
         const worksData = await res.json();
         const loadedWorks = Array.isArray(worksData) ? worksData : [];
 
-        // Normalizziamo _id per garantire il match
         const normalized = loadedWorks.map(w => ({
           ...w,
           _id: w._id?.toString() || w._id
         }));
 
-        // Aggiorniamo lo stato allWorks aggregando le opere della sezione
         setAllWorks(prev => {
           const map = new Map(prev.map(w => [w._id?.toString(), w]));
           normalized.forEach(w => map.set(w._id?.toString(), w));
@@ -93,18 +99,120 @@ export default function FreeVisitMap({ selectedMuseum }) {
     return () => window.speechSynthesis.cancel();
   }, []);
 
-  const speakText = (textToRead) => {
-    window.speechSynthesis.cancel();
-    if (!textToRead) {
+  // --- CONTROLLER AUDIO ROBUSTO (PLAY, STOP, +5s, -5s) ---
+  const speakFromOffset = (text, startChar = 0) => {
+    console.log("--> [AUDIO DEBUG - FREEMAP] Avvio riproduzione.");
+
+    if (!text || typeof text !== "string" || text.trim() === "") {
       setPlayMode(false);
+      isAudioActiveRef.current = false;
+      currentUtteranceRef.current = null;
       return;
     }
-    setPlayMode(true);
-    const utterance = new SpeechSynthesisUtterance(textToRead);
+
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+    
+    window.speechSynthesis.cancel();
+
+    const safeStart = Math.max(0, Math.min(startChar, text.length - 1));
+    const subText = text.slice(safeStart);
+
+    const utterance = new SpeechSynthesisUtterance(subText);
+    currentUtteranceRef.current = utterance; // Impedisce al GC del browser di killare l'audio!
+
     utterance.lang = "it-IT";
-    utterance.rate = parseFloat(localStorage.getItem("audioSpeed")) || 1.0;
-    utterance.onend = () => setPlayMode(false);
+    const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
+    utterance.rate = speed;
+
+    utterance.onstart = () => {
+      console.log("--> [AUDIO DEBUG - FREEMAP] Voce partita regolarmente.");
+      setPlayMode(true);
+      isAudioActiveRef.current = true;
+    };
+
+    utterance.onboundary = (event) => {
+      if (event.name === 'word') {
+        audioCharIndexRef.current = safeStart + event.charIndex;
+      }
+    };
+
+    utterance.onend = () => {
+      console.log("--> [AUDIO DEBUG - FREEMAP] Lettura completata.");
+      setPlayMode(false);
+      isAudioActiveRef.current = false;
+      audioCharIndexRef.current = 0;
+      currentUtteranceRef.current = null;
+    };
+
+    utterance.onerror = (e) => {
+      if (e.error === 'interrupted' || e.error === 'canceled') return;
+      console.error("Errore TTS:", e);
+      setPlayMode(false);
+      isAudioActiveRef.current = false;
+      currentUtteranceRef.current = null;
+    };
+
+    const voices = window.speechSynthesis.getVoices();
+    const itVoice = voices.find(v => v.lang.startsWith("it"));
+    if (itVoice) {
+      utterance.voice = itVoice;
+    }
+
     window.speechSynthesis.speak(utterance);
+  };
+
+  const speakText = (textToRead) => {
+    if (!textToRead) {
+      handleStopAudio();
+      return;
+    }
+    currentAudioTextRef.current = textToRead;
+    audioCharIndexRef.current = 0;
+    speakFromOffset(textToRead, 0);
+  };
+
+  const handleStopAudio = () => {
+    window.speechSynthesis.cancel();
+    setPlayMode(false);
+    isAudioActiveRef.current = false;
+    audioCharIndexRef.current = 0;
+    currentUtteranceRef.current = null;
+  };
+
+  const handleSeekAudio = (seconds) => {
+    const fullText = currentAudioTextRef.current;
+    if (!fullText) return;
+
+    const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
+    const charsToShift = Math.round(15 * speed * seconds);
+    const targetChar = Math.max(0, Math.min(fullText.length - 1, audioCharIndexRef.current + charsToShift));
+
+    speakFromOffset(fullText, targetChar);
+  };
+
+  // Navigazione opere Successiva / Precedente all'interno della sezione corrente
+  const currentSectionWorks = selectedSection?.works
+    ? allWorks.filter(w => selectedSection.works.some(sw => (sw.workId?._id || sw.workId)?.toString() === w._id?.toString()))
+    : allWorks;
+
+  const handleNextWork = () => {
+    if (currentWorkIndex < currentSectionWorks.length - 1) {
+      handleStopAudio();
+      const nextIdx = currentWorkIndex + 1;
+      setCurrentWorkIndex(nextIdx);
+      setDetailsWork(currentSectionWorks[nextIdx]);
+    }
+  };
+
+  const handlePrevWork = () => {
+    if (currentWorkIndex > 0) {
+      handleStopAudio();
+      const prevIdx = currentWorkIndex - 1;
+      setCurrentWorkIndex(prevIdx);
+      setDetailsWork(currentSectionWorks[prevIdx]);
+    }
   };
 
   if (!selectedMuseum) {
@@ -148,12 +256,19 @@ export default function FreeVisitMap({ selectedMuseum }) {
             sections={sections}
             onSelectSection={handleSelectSection}
             onBack={() => {
+              handleStopAudio();
               setSelectedSection(null);
               setDetailsWork(null);
+              setCurrentWorkIndex(-1);
             }}
             works={allWorks}
             activeWorkId={detailsWork?._id}
-            onWorkClick={(work) => setDetailsWork(work)}
+            onWorkClick={(work) => {
+              handleStopAudio();
+              const idx = currentSectionWorks.findIndex(w => w._id?.toString() === work._id?.toString());
+              setCurrentWorkIndex(idx !== -1 ? idx : 0);
+              setDetailsWork(work);
+            }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-white">
@@ -165,8 +280,17 @@ export default function FreeVisitMap({ selectedMuseum }) {
       {hasMap && (
         <WorkDetailsSheet
           work={detailsWork}
-          onClose={() => setDetailsWork(null)}
+          onClose={() => {
+            handleStopAudio();
+            setDetailsWork(null);
+          }}
           onSpeak={speakText}
+          onStopAudio={handleStopAudio}
+          onSeekAudio={handleSeekAudio}
+          onPrev={handlePrevWork}
+          onNext={handleNextWork}
+          hasPrev={currentWorkIndex > 0}
+          hasNext={currentWorkIndex < currentSectionWorks.length - 1}
           commandsMap={null}
           currentExpertise={expertiseLevel}
           setCurrentExpertise={setExpertiseLevel}
