@@ -12,6 +12,7 @@ export default function WorkDetailsSheet({
   onStopAudio, 
   onSeekAudio, 
   audioProgressRatio = 0,
+  audioDuration = 0,
   onPrev, 
   onNext, 
   hasPrev, 
@@ -43,12 +44,42 @@ export default function WorkDetailsSheet({
   const lengthLevels = ["short", "medium", "long", "exhaustive"];
   const expertiseLevels = ["simple", "medium", "professional", "expert"];
 
+  // STATO INTERNO DEL PLAYER AUDIO (Durata, Posizione in secondi e Play/Pausa reale)
   const currentText = work?.description?.[currentExpertise]?.[currentLength] || "";
   const totalWords = currentText.trim().split(/\s+/).filter(Boolean).length || 1;
   const audioSpeed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
-  const totalDuration = Math.max(1, Math.round(totalWords / (2.2 * audioSpeed)));
+  
+  const totalDuration = audioDuration > 0 ? audioDuration : Math.max(1, Math.round(totalWords / (2.2 * audioSpeed)));
 
-  const progressRatio = audioProgressRatio >= 1 ? 1 : Math.min(1, Math.max(0, audioProgressRatio));
+  // Stato interno che gestisce l'animazione fluida
+  const [internalRatio, setInternalRatio] = useState(0);
+
+  // 1. Allinea il timer interno immediatamente quando il padre invia un salto (-5s/+5s) o un onboundary
+  useEffect(() => {
+    setInternalRatio(audioProgressRatio);
+  }, [audioProgressRatio]);
+
+  // 2. Azzera l'animazione al cambio opera o testo
+  useEffect(() => {
+    setInternalRatio(0);
+  }, [work, currentExpertise, currentLength]);
+
+  // 3. Motore fluido: avanza in autonomia partendo dall'ultimo ratio noto se l'audio è in play
+  useEffect(() => {
+    let timer = null;
+    if (playMode && totalDuration > 0) {
+      timer = setInterval(() => {
+        setInternalRatio(prev => {
+          const step = 0.1 / totalDuration;
+          return Math.min(1, prev + step);
+        });
+      }, 100);
+    }
+    return () => clearInterval(timer);
+  }, [playMode, totalDuration]);
+
+  // Calcoli UI finali
+  const progressRatio = Math.max(0, Math.min(1, internalRatio));
   const currentTime = Math.min(totalDuration, Math.round(progressRatio * totalDuration));
   const progressPercentage = (progressRatio * 100).toFixed(1);
 
@@ -69,15 +100,15 @@ export default function WorkDetailsSheet({
     if (now - lastToggleClickRef.current < 250) return;
     lastToggleClickRef.current = now;
 
-    if (!playMode && !isPaused) {
-      setIsPaused(false);
-      if (currentText) onSpeak(currentText);
-    } else if (playMode && !isPaused) {
-      setIsPaused(true);
+    if (playMode) {
       if (onPauseAudio) onPauseAudio();
-    } else if (isPaused) {
-      setIsPaused(false);
-      if (onResumeAudio) onResumeAudio();
+    } else {
+      // Controlla lo stato nativo del browser invece della variabile locale
+      if (window.speechSynthesis.paused) {
+        if (onResumeAudio) onResumeAudio();
+      } else {
+        if (currentText) onSpeak(currentText);
+      }
     }
   };
 

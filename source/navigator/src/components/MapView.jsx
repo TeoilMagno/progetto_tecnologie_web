@@ -35,6 +35,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const audioCharIndexRef = useRef(0);
   const isAudioActiveRef = useRef(false);
   const currentUtteranceRef = useRef(null);
+  const [audioProgressRatio, setAudioProgressRatio] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
 
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
@@ -193,6 +195,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     utterance.onboundary = (event) => {
       if (event.name === 'word') {
         audioCharIndexRef.current = safeStart + event.charIndex;
+        // AGGIUNTA: Calcola e salva il progresso
+        setAudioProgressRatio(audioCharIndexRef.current / text.length); 
       }
     };
 
@@ -202,6 +206,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       isAudioActiveRef.current = false;
       audioCharIndexRef.current = 0;
       currentUtteranceRef.current = null;
+      setAudioProgressRatio(0);
+      setAudioDuration(0);
     };
 
     utterance.onerror = (e) => {
@@ -210,6 +216,8 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       setPlayMode(false);
       isAudioActiveRef.current = false;
       currentUtteranceRef.current = null;
+      setAudioProgressRatio(0);
+      setAudioDuration(0);
     };
 
     const voices = window.speechSynthesis.getVoices();
@@ -221,7 +229,9 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     }
 
     console.log("--> [AUDIO DEBUG] Esecuzione window.speechSynthesis.speak()");
-    window.speechSynthesis.speak(utterance);
+    setTimeout(() => {
+      window.speechSynthesis.speak(utterance);
+    }, 50);
   };
 
   const speakText = (textToRead) => {
@@ -232,6 +242,13 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     }
     currentAudioTextRef.current = textToRead;
     audioCharIndexRef.current = 0;
+
+    // Calcolo durata stimata (circa 2.2 parole al secondo corrette per la velocità)
+    const words = textToRead.trim().split(/\s+/).filter(Boolean).length || 1;
+    const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
+    const calculatedDuration = Math.max(1, Math.round(words / (2.2 * speed)));
+    setAudioDuration(calculatedDuration);
+
     speakFromOffset(textToRead, 0);
   };
 
@@ -242,6 +259,18 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     isAudioActiveRef.current = false;
     audioCharIndexRef.current = 0;
     currentUtteranceRef.current = null;
+    setAudioProgressRatio(0);
+    setAudioDuration(0);
+  };
+
+  const handlePauseAudio = () => {
+    window.speechSynthesis.pause();
+    setPlayMode(false);
+  };
+
+  const handleResumeAudio = () => {
+    window.speechSynthesis.resume();
+    setPlayMode(true);
   };
 
   const handleSeekAudio = (seconds) => {
@@ -249,9 +278,17 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     if (!fullText) return;
 
     const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
-    const charsToShift = Math.round(15 * speed * seconds);
-    const targetChar = Math.max(0, Math.min(fullText.length - 1, audioCharIndexRef.current + charsToShift));
+    // Stima di caratteri per secondo letti
+    const charsPerSecond = 15 * speed; 
+    const charShift = Math.round(charsPerSecond * seconds);
 
+    // Calcola il nuovo target a partire dall'indice reale e salvato
+    const targetChar = Math.max(0, Math.min(fullText.length - 1, audioCharIndexRef.current + charShift));
+    
+    // FORZA l'aggiornamento immediato dello stato per la UI e per la reference
+    audioCharIndexRef.current = targetChar;
+    setAudioProgressRatio(targetChar / fullText.length);
+    
     speakFromOffset(fullText, targetChar);
   };
 
@@ -767,6 +804,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
           onSpeak={speakText}
           onStopAudio={handleStopAudio}
           onSeekAudio={handleSeekAudio}
+          onPauseAudio={handlePauseAudio}   // <-- AGGIUNTO
+          onResumeAudio={handleResumeAudio} // <-- AGGIUNTO
+          audioProgressRatio={audioProgressRatio}
+          audioDuration={audioDuration}
           onPrev={handlePrev}
           onNext={handleNext}
           hasPrev={currentWorkIndex > 0}

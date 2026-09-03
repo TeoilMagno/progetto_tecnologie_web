@@ -299,7 +299,7 @@ io.on('connection', (socket) => {
 
 // Navigator
 app.use("/navigator", (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', '..', 'navigator', 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'navigator', 'dist', 'index.html'));
 });
 
 // ─── 404 Handler ───────────────────────────────────────────────────────────

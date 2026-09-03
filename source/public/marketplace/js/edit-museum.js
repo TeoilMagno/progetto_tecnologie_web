@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // edit-museum.js — CORE della pagina di modifica museo.
 // Contiene SOLO: anagrafica museo, sezioni e opere (CRUD + drag&drop) ed eliminazione museo.
 //
@@ -13,32 +12,19 @@
 // work-text-manager.js) — non l'ho aggiunta qui per non rischiare una doppia
 // dichiarazione a runtime se config.js la definisce già.
 
-=======
->>>>>>> lex
 let currentMuseumData = null;
 let museumSections = [];
 let workModalInstance = null;
 let sectionModalInstance = null;
 let deleteMuseumModalInstance = null;
-<<<<<<< HEAD
 
 // Cache globale per tenere in memoria i dati delle opere della pagina corrente
-=======
-let currentFetchedAuthor = null;
-let currentFetchedStyle = null;
-
-// Cache globale per tenere in memoria i dati
->>>>>>> lex
 let worksCache = {};
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("workModal")) workModalInstance = new bootstrap.Modal(document.getElementById("workModal"));
   if (document.getElementById("sectionModal")) sectionModalInstance = new bootstrap.Modal(document.getElementById("sectionModal"));
   if (document.getElementById("deleteMuseumModal")) deleteMuseumModalInstance = new bootstrap.Modal(document.getElementById("deleteMuseumModal"));
-<<<<<<< HEAD
-=======
-  if (document.getElementById("authorDataModal")) authorDataModalInstance = new bootstrap.Modal(document.getElementById("authorDataModal"));
->>>>>>> lex
 
   await fetchCurrentUser();
 
@@ -80,19 +66,12 @@ async function loadMuseumDetails() {
       clearImageWidget("museum-image");
     }
 
-<<<<<<< HEAD
     // Spunta le checkbox dei servizi (Adattato al nuovo Schema Mongoose)
     if (currentMuseumData.services) {
       currentMuseumData.services.forEach(s => {
         // Estrae la stringa sia che arrivi come oggetto { services: 'cafe' } sia come stringa pura
         const serviceName = s.services || s; 
         const cb = document.querySelector(`.srv-cb[value="${serviceName}"]`);
-=======
-    // Spunta le checkbox dei servizi
-    if (currentMuseumData.services) {
-      currentMuseumData.services.forEach(s => {
-        const cb = document.querySelector(`.srv-cb[value="${s}"]`);
->>>>>>> lex
         if (cb) cb.checked = true;
       });
     }
@@ -321,7 +300,6 @@ async function deleteSection(sectionId) {
 
 // ------------------- GESTIONE OPERE -------------------
 async function openWorkModal(sectionId, workId = null) {
-<<<<<<< HEAD
   // Helper di sicurezza: non crasha mai anche se rimuovi un id dall'HTML
   const safeSetValue = (id, value) => {
     const el = document.getElementById(id);
@@ -354,38 +332,11 @@ async function openWorkModal(sectionId, workId = null) {
     safeSetValue("work-technique", w.technique || "");
     safeSetValue("work-year", w.year || "");
     safeSetValue("work-image", w.image || "");
-=======
-  document.getElementById("work-section-id").value = sectionId;
-  document.getElementById("work-id").value = workId || "";
-
-  if (workId && worksCache[workId]) {
-    const w = worksCache[workId];
-    document.getElementById("workModalLabel").innerText = "Modifica Opera";
-    document.getElementById("save-work-btn").innerText = "Aggiorna Opera";
-    document.getElementById("work-name").value = w.name || "";
-    
-    // Recupero Dati Autore
-    const authorId = w.author?._id || w.author || "";
-    const authorName = w.author?.name || (authorId ? "Autore Selezionato" : ""); 
-    document.getElementById("work-author-id").value = authorId;
-    document.getElementById("work-author-search").value = authorName; 
-    
-    // Recupero Dati Stile
-    const styleId = w.style?._id || w.style || "";
-    const styleName = w.style?.name || (styleId ? "Stile Selezionato" : ""); 
-    document.getElementById("work-style-id").value = styleId;
-    document.getElementById("work-style-search").value = styleName; 
-    
-    document.getElementById("work-technique").value = w.technique || "";
-    document.getElementById("work-year").value = w.year || "";
-    document.getElementById("work-image").value = w.image || "";
->>>>>>> lex
     
     let desc = "";
     if (w.description && w.description.simple && w.description.simple.medium) {
       desc = w.description.simple.medium;
     }
-<<<<<<< HEAD
     safeSetValue("work-description", desc);
 
     if (authorId) selectAuthor(authorId, authorName);
@@ -428,41 +379,6 @@ async function openWorkModal(sectionId, workId = null) {
   }
   
   if (workModalInstance) workModalInstance.show();
-=======
-    document.getElementById("work-description").value = desc;
-
-    // --- LA MAGIA: Inneschiamo le card visive! ---
-    if (authorId) selectAuthor(authorId, authorName);
-    else document.getElementById("author-cards-container").style.display = "none";
-
-    if (styleId) selectStyle(styleId, styleName);
-    else document.getElementById("style-cards-container").style.display = "none";
-    // ---------------------------------------------
-
-    if (w.image) {
-      document.getElementById("work-image-url-input").value = w.image; // Extra visivo opzionale
-      setFinalImage("work-image", w.image);
-    }
-  } else {
-    document.getElementById("workModalLabel").innerText = "Nuova Opera";
-    document.getElementById("save-work-btn").innerText = "Crea Opera";
-    document.getElementById("work-form").reset();
-    
-    // Pulizia campi nascosti
-    document.getElementById("work-author-id").value = "";
-    document.getElementById("work-style-id").value = "";
-    document.getElementById("work-author-data-id").value = "";
-    document.getElementById("work-style-data-id").value = "";
-    
-    // Nascondiamo gli slider delle card se l'opera è nuova
-    document.getElementById("author-cards-container").style.display = "none";
-    document.getElementById("style-cards-container").style.display = "none";
-
-    clearImageWidget("work-image"); // Pulisce il widget per la nuova opera
-  }
-  
-  workModalInstance.show();
->>>>>>> lex
 }
 
 async function saveWorkFromModal() {
