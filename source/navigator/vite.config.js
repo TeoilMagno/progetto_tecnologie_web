@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/navigator', // FONDAMENTALE per il routing del backend Express
   build: {
-    outDir: path.resolve(__dirname, '../public/navigator/'),
+    outDir: 'dist',
     
     // poiché la cartella di destinazione è fuori dalla root 
     // del progetto Vite, dobbiamo dirgli esplicitamente che va bene 
