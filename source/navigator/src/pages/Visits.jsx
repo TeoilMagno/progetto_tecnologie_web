@@ -99,7 +99,7 @@ export default function Visits({ selectedMuseum }) {
 
   if (!selectedMuseum) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-slate-500 bg-slate-950 p-6 text-center">
+      <div className="flex flex-col items-center justify-center h-full text-slate-500 p-6 text-center">
         <div className="bg-slate-900 p-6 rounded-full mb-4">
           <AlertCircle size={48} className="text-amber-500" />
         </div>
@@ -112,21 +112,7 @@ export default function Visits({ selectedMuseum }) {
   const visitsToShow = activeTab === 'all' ? allVisits : myVisits;
 
   return (
-    <div className="min-h-screen w-full relative bg-slate-950 text-white pb-36">
-      {/* BACKGROUND IMAGE FISSA SFUMATA */}
-      <div className="absolute inset-0 z-0 h-96">
-         <img 
-            src="/img1.jpg" 
-            alt="Background" 
-            className="w-full h-full object-cover opacity-20"
-         />
-         <div 
-           className="absolute inset-0"
-           style={{ 
-             backgroundImage: 'linear-gradient(to bottom, transparent 0%, rgba(14, 22, 42, 1) 90%, rgba(14, 22, 42, 1) 100%)'
-           }}
-         ></div>
-      </div>
+    <div className="min-h-screen w-full relative text-white pb-36">
 
       <div className="relative z-10 flex flex-col items-center pt-8 px-4 md:px-6 w-full max-w-lg mx-auto">
         

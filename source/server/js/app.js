@@ -44,7 +44,7 @@ app.use((req, res, next) => {
 });
 
 // ─── Middleware base ───────────────────────────────────────────────────────
-app.use(cors({ credentials: true }));
+app.use(cors({ credentials: true, origin: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
