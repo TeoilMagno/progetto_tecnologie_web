@@ -5,12 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { useSocket } from "../context/SocketContext";
 import { Activity } from "react";
+import { useWorkGuide } from "../hooks/useWorkGuide"
 import HighlyOptimizedMapView from "./HighlyOptimizedMapView";
-import GlobalMapView from "./GlobalMapView";
+import GlobalMapView from "./GlobalMapView"; // ?
 import WorkDetailsSheet from "./WorkDetailsSheet";
 import NavigationControlBar from "./NavigationControlBar";
 import RoomQRCode from "./RoomQRCode";
 import TeacherDashboard from "./TeacherDashboard";
+import WorkDetailsContent from "./WorkDetailsContent"
 
 export default function MapView({ visitId, roomCode, isTeacher }) {
   const navigate = useNavigate();
@@ -22,21 +24,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [allMuseumWorks, setAllMuseumWorks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState(false);
+  const [commandsMap, setCommandsMap] = useState(null);
 
   const [currentWorkIndex, setCurrentWorkIndex] = useState(-1);
   const [detailsWork, setDetailsWork] = useState(null);
-
-  // Audio e sintetizzatore vocale
-  const [playMode, setPlayMode] = useState(false); 
-  const [inputMode, setInputMode] = useState("speak");
-
-  // Riferimenti per gestione seek (+5s / -5s) e prevenzione Garbage Collection
-  const currentAudioTextRef = useRef("");
-  const audioCharIndexRef = useRef(0);
-  const isAudioActiveRef = useRef(false);
-  const currentUtteranceRef = useRef(null);
-  const [audioProgressRatio, setAudioProgressRatio] = useState(0);
-  const [audioDuration, setAudioDuration] = useState(0);
 
   const [showEndModal, setShowEndModal] = useState(false);
   const [suggestedWorks, setSuggestedWorks] = useState([]);
@@ -46,13 +37,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const [classStatus, setClassStatus] = useState({});
   const [interactionFeed, setInteractionFeed] = useState([]);
   const [isSuggestingWorks, setIsSuggestingWorks] = useState(false);
-
-  // Livello di dettaglio della descrizione
-  const [expertiseLevel, setExpertiseLevel] = useState("medium");
-  const [currentLength, setCurrentLength] = useState("medium");
-
-  // Domande per assistente vocale
-  const [commandsMap, setCommandsMap] = useState(null);
 
   // Variabili temporali per suggerire opere extra
   const [visitBeginTime, setVisitBeginTime] = useState(null);
@@ -67,6 +51,15 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const isSharedSession = Boolean(roomCode);
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
   const hasMap = sections && sections.length > 0;
+
+  const workGuide = useWorkGuide({
+    work: detailsWork,
+    commandsMap: commandsMap,
+    socket: socket,
+    roomCode: roomCode,
+    isSharedSession: isSharedSession,
+    isTeacher: isTeacher
+  });
 
   useEffect(() => {
     if (!roomCode || !socket) return;
@@ -93,10 +86,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         setCommandsMap(dictionary);
 
         if (userData?.preferences?.expertiseLevel)
-          setExpertiseLevel(userData.preferences.expertiseLevel || 'medium');
+          workGuide.setCurrentExpertise(userData.preferences.expertiseLevel || 'medium');
 
         if (visitData.preferredLength)
-          setCurrentLength(visitData.preferredLength || "medium");
+          workGuide.setCurrentLength(visitData.preferredLength || "medium");
         
         if (visitData.maxDuration)
           setMaxDurationTime(visitData.maxDuration || null);
@@ -156,159 +149,6 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   useEffect(() => {
     return () => window.speechSynthesis.cancel();
   }, []);
-
-  // --- CONTROLLER AUDIO CON DIAGNOSTICA COMPLETA ---
-  const speakFromOffset = (text, startChar = 0) => {
-    console.log("--> [AUDIO DEBUG] speakFromOffset chiamata!");
-    console.log("--> [AUDIO DEBUG] Testo:", text);
-
-    if (!text || typeof text !== "string" || text.trim() === "") {
-      console.warn("--> [AUDIO DEBUG] Interrotto: il testo è nullo, non stringa o vuoto.");
-      setPlayMode(false);
-      return;
-    }
-
-    if (window.speechSynthesis.paused) {
-      console.log("--> [AUDIO DEBUG] Rilevata pausa del browser, invoco resume()");
-      window.speechSynthesis.resume();
-    }
-    
-    window.speechSynthesis.cancel();
-
-    const safeStart = Math.max(0, Math.min(startChar, text.length - 1));
-    const subText = text.slice(safeStart);
-    console.log("--> [AUDIO DEBUG] Testo effettivo da riprodurre:", subText.slice(0, 60) + "...");
-
-    const utterance = new SpeechSynthesisUtterance(subText);
-    currentUtteranceRef.current = utterance; // Riferimento per bloccare il Garbage Collector
-
-    utterance.lang = "it-IT";
-    const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
-    utterance.rate = speed;
-
-    utterance.onstart = () => {
-      console.log("--> [AUDIO DEBUG] EVENTO ONSTART: Inizio lettura.");
-      setPlayMode(true);
-      isAudioActiveRef.current = true;
-    };
-
-    utterance.onboundary = (event) => {
-      if (event.name === 'word') {
-        audioCharIndexRef.current = safeStart + event.charIndex;
-        // AGGIUNTA: Calcola e salva il progresso
-        setAudioProgressRatio(audioCharIndexRef.current / text.length); 
-      }
-    };
-
-    utterance.onend = (e) => {
-      console.log("--> [AUDIO DEBUG] EVENTO ONEND: Lettura terminata.", e);
-      setPlayMode(false);
-      isAudioActiveRef.current = false;
-      audioCharIndexRef.current = 0;
-      currentUtteranceRef.current = null;
-      setAudioProgressRatio(0);
-      setAudioDuration(0);
-    };
-
-    utterance.onerror = (e) => {
-      console.error("--> [AUDIO DEBUG] EVENTO ONERROR:", e.error, e);
-      if (e.error === 'interrupted' || e.error === 'canceled') return;
-      setPlayMode(false);
-      isAudioActiveRef.current = false;
-      currentUtteranceRef.current = null;
-      setAudioProgressRatio(0);
-      setAudioDuration(0);
-    };
-
-    const voices = window.speechSynthesis.getVoices();
-    console.log("--> [AUDIO DEBUG] Voci nel sistema:", voices.length);
-    const itVoice = voices.find(v => v.lang.startsWith("it"));
-    if (itVoice) {
-      utterance.voice = itVoice;
-      console.log("--> [AUDIO DEBUG] Voce italiana associata:", itVoice.name);
-    }
-
-    console.log("--> [AUDIO DEBUG] Esecuzione window.speechSynthesis.speak()");
-    setTimeout(() => {
-      window.speechSynthesis.speak(utterance);
-    }, 50);
-  };
-
-  const speakText = (textToRead) => {
-    console.log("--> [AUDIO DEBUG] speakText invocata");
-    if (!textToRead) {
-      handleStopAudio();
-      return;
-    }
-    currentAudioTextRef.current = textToRead;
-    audioCharIndexRef.current = 0;
-
-    // Calcolo durata stimata (circa 2.2 parole al secondo corrette per la velocità)
-    const words = textToRead.trim().split(/\s+/).filter(Boolean).length || 1;
-    const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
-    const calculatedDuration = Math.max(1, Math.round(words / (2.2 * speed)));
-    setAudioDuration(calculatedDuration);
-
-    speakFromOffset(textToRead, 0);
-  };
-
-  const handleStopAudio = () => {
-    console.log("--> [AUDIO DEBUG] handleStopAudio invocata");
-    window.speechSynthesis.cancel();
-    setPlayMode(false);
-    isAudioActiveRef.current = false;
-    audioCharIndexRef.current = 0;
-    currentUtteranceRef.current = null;
-    setAudioProgressRatio(0);
-    setAudioDuration(0);
-  };
-
-  const handlePauseAudio = (visualRatio) => {
-    // Interrompiamo brutalmente il motore invece di usare la pausa nativa buggata
-    window.speechSynthesis.cancel();
-    setPlayMode(false);
-    
-    const fullText = currentAudioTextRef.current;
-    if (fullText && visualRatio !== undefined) {
-      audioCharIndexRef.current = Math.round(fullText.length * visualRatio);
-      setAudioProgressRatio(visualRatio);
-    }
-  };
-
-  const handleResumeAudio = (visualRatio) => {
-    const fullText = currentAudioTextRef.current;
-    let targetChar = audioCharIndexRef.current;
-    
-    if (visualRatio !== undefined && fullText) {
-      targetChar = Math.round(fullText.length * visualRatio);
-    }
-    
-    // Riavvia l'audio simulando la ripresa dall'esatto punto di interruzione
-    speakFromOffset(fullText, targetChar);
-  };
-
-  const handleSeekAudio = (seconds, visualRatio) => {
-    const fullText = currentAudioTextRef.current;
-    if (!fullText) return;
-
-    const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
-    const charsPerSecond = 15 * speed;
-    const charShift = Math.round(charsPerSecond * seconds);
-
-    // Usa la linea grafica come ancoraggio assoluto
-    let currentIndex = audioCharIndexRef.current;
-    if (visualRatio !== undefined) {
-      currentIndex = Math.round(fullText.length * visualRatio);
-    }
-
-    const targetChar = Math.max(0, Math.min(fullText.length - 1, currentIndex + charShift));
-
-    audioCharIndexRef.current = targetChar;
-    // Un microscopico offset forza il re-render di React anche per salti minimi
-    setAudioProgressRatio((targetChar / fullText.length) + 0.00001);
-
-    speakFromOffset(fullText, targetChar);
-  };
 
   const selectSectionForWork = (work) => {
     if (!work || !hasMap) return null;
@@ -454,7 +294,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   // Gestione Successiva con apertura automatica del banner
   const handleNext = () => {
     if (currentWorkIndex < visitedWorks.length - 1) {
-      handleStopAudio();
+      workGuide.handleStopAudio();
       const nextIndex = currentWorkIndex + 1;
       setCurrentWorkIndex(nextIndex);
       const activeWork = visitedWorks[nextIndex];
@@ -479,7 +319,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   // Gestione Precedente con apertura automatica del banner
   const handlePrev = () => {
     if (currentWorkIndex > 0) {
-      handleStopAudio();
+      workGuide.handleStopAudio();
       const prevIndex = currentWorkIndex - 1;
       setCurrentWorkIndex(prevIndex);
       const activeWork = visitedWorks[prevIndex];
@@ -499,7 +339,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         socket.emit("change_artwork", { roomCode, artworkId: activeWork._id });
       }
     } else if (currentWorkIndex === 0) {
-      handleStopAudio();
+      workGuide.handleStopAudio();
       setCurrentWorkIndex(-1);
       setSelectedSection(null);
       setDetailsWork(null);
@@ -509,7 +349,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   const handleEndVisit = async () => {
     setShowEndModal(true);
     setSuggestedWorks([]);
-    handleStopAudio();
+    workGuide.handleStopAudio();
     
     if (isSharedSession && isTeacher && socket) {
       socket.emit("end_shared_visit", { roomCode });
@@ -534,7 +374,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         seen: visitedWorks.map(w => ({ name: w.name, author: w.authorName, style: w.styleName })),
         available: remainingWorks.map(w => ({ id: w._id, name: w.name, author: w.authorName, style: w.styleName })),
         remaining_time: maxDurationTime - elapsedMinutes,
-        duration: READING_TIMES[currentLength]
+        duration: READING_TIMES[workGuide.currentLength]
       };
 
       try {
@@ -591,7 +431,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     <div className="fixed inset-0 flex flex-col bg-[#09090b] text-white overflow-hidden">
       <button 
         onClick={() => {
-          handleStopAudio();
+          workGuide.handleStopAudio();
           navigate("/my-visits");
         }} 
         className="absolute top-4 right-4 z-[9999] flex items-center justify-center gap-2 px-4 py-2 bg-slate-900/80 backdrop-blur-md border border-slate-700 rounded-full text-slate-300 hover:bg-slate-800 hover:text-white text-sm transition-colors shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
@@ -630,45 +470,19 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
               <Loader2 className="animate-spin text-cyan-400 mr-2" size={24} /> Caricamento planimetria...
           </div>
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-slate-950">
-            {currentWorkIndex < 0 ? (
-              <div className="text-center animate-fadeIn">
-                <div className="w-24 h-24 mx-auto bg-slate-900 rounded-full flex items-center justify-center border border-white/5 shadow-2xl mb-6">
-                  <Compass size={40} className="text-cyan-400" />
-                </div>
-                <h2 className="text-2xl font-bold mb-2">Visita Guidata</h2>
-                <p className="text-slate-400 max-w-sm mx-auto text-sm leading-relaxed">
-                  Non sono presenti planimetrie per questo museo. Ti guideremo attraverso le opere con la nostra modalità audioguida!
-                </p>
-                <div className="mt-8 flex justify-center animate-bounce">
-                  <ArrowRight className="text-cyan-400 rotate-90" size={24} />
-                </div>
-              </div>
-            ) : (
-              <div className="w-full max-w-lg bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden flex flex-col max-h-full shadow-2xl animate-fadeIn">
-                <div className="relative w-full h-56 shrink-0 bg-slate-800 flex items-center justify-center">
-                  {currentWork?.image ? (
-                    <img src={currentWork.image} alt={currentWork.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <ImageIcon className="text-slate-600" size={48} />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
-                </div>
-                
-                <div className="p-6 overflow-y-auto flex-1">
-                  <h3 className="font-extrabold text-2xl mb-1">{currentWork?.name}</h3>
-                  <p className="text-cyan-400 font-semibold mb-6">
-                    {currentWork?.authorName || 'Autore Sconosciuto'} • {currentWork?.year} {currentWork?.styleName ? `• ${currentWork.styleName}` : ''}
-                  </p>
-                  
-                  <h6 className="text-white/50 uppercase tracking-wider mb-2 text-xs font-bold">Descrizione</h6>
-                  <p className="leading-relaxed text-slate-300 text-sm pb-8">
-                    {currentWork?.description?.[expertiseLevel]?.[currentLength] || "Nessuna descrizione disponibile per quest'opera."}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
+             <WorkDetailsContent 
+                work={currentWork} 
+                guide={workGuide} 
+                onPrev={handlePrev} 
+                onNext={handleNext} 
+                hasPrev={currentWorkIndex > 0}
+                hasNext={currentWorkIndex < visitedWorks.length - 1}
+                onClose={() => {
+                  workGuide.handleStopAudio();
+                  setDetailsWork(null);
+                  setCurrentWorkIndex(-1);
+                }}
+              />
         )}
       </div>
 
@@ -695,24 +509,13 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
             }
           }
         }}
-        playMode={playMode}
-        setPlayMode={setPlayMode}
-        inputMode={inputMode}       
-        setInputMode={setInputMode}
-        onSpeak={speakText}
-        onStopAudio={handleStopAudio}
-        onSeekAudio={handleSeekAudio}
         isSharedSession={isSharedSession}
         isTeacher={isTeacher}
-        currentLength={currentLength}
-        expertiseLevel={expertiseLevel}
         onShowJoinModal={() => setShowJoinModal(true)}
         hasMap={hasMap}
-        commandsMap={commandsMap}
-        setCurrentLength={setCurrentLength}
-        setCurrentExpertise={setExpertiseLevel}
         socket={socket}
         roomCode={roomCode}
+        guide={workGuide}
       />
 
       {/* Modale Finale */}
@@ -815,31 +618,19 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       {hasMap && (
         <WorkDetailsSheet
           work={detailsWork}
+          guide={workGuide}
           onClose={() => {
-            handleStopAudio();
+            workGuide.handleStopAudio();
             setDetailsWork(null);
           }}
-          onSpeak={speakText}
-          onStopAudio={handleStopAudio}
-          onSeekAudio={handleSeekAudio}
-          onPauseAudio={handlePauseAudio}   // <-- AGGIUNTO
-          onResumeAudio={handleResumeAudio} // <-- AGGIUNTO
-          audioProgressRatio={audioProgressRatio}
-          audioDuration={audioDuration}
           onPrev={handlePrev}
           onNext={handleNext}
           hasPrev={currentWorkIndex > 0}
           hasNext={currentWorkIndex < visitedWorks.length - 1}
-          commandsMap={commandsMap}
-          currentExpertise={expertiseLevel}
-          setCurrentExpertise={setExpertiseLevel}
-          currentLength={currentLength}
-          setCurrentLength={setCurrentLength}
           socket={socket}
           roomCode={roomCode}
           isSharedSession={isSharedSession}
           isTeacher={isTeacher}
-          playMode={playMode}
         />
       )}
 
