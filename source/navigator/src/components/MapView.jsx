@@ -263,32 +263,50 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     setAudioDuration(0);
   };
 
-  const handlePauseAudio = () => {
-    window.speechSynthesis.pause();
+  const handlePauseAudio = (visualRatio) => {
+    // Interrompiamo brutalmente il motore invece di usare la pausa nativa buggata
+    window.speechSynthesis.cancel();
     setPlayMode(false);
+    
+    const fullText = currentAudioTextRef.current;
+    if (fullText && visualRatio !== undefined) {
+      audioCharIndexRef.current = Math.round(fullText.length * visualRatio);
+      setAudioProgressRatio(visualRatio);
+    }
   };
 
-  const handleResumeAudio = () => {
-    window.speechSynthesis.resume();
-    setPlayMode(true);
+  const handleResumeAudio = (visualRatio) => {
+    const fullText = currentAudioTextRef.current;
+    let targetChar = audioCharIndexRef.current;
+    
+    if (visualRatio !== undefined && fullText) {
+      targetChar = Math.round(fullText.length * visualRatio);
+    }
+    
+    // Riavvia l'audio simulando la ripresa dall'esatto punto di interruzione
+    speakFromOffset(fullText, targetChar);
   };
 
-  const handleSeekAudio = (seconds) => {
+  const handleSeekAudio = (seconds, visualRatio) => {
     const fullText = currentAudioTextRef.current;
     if (!fullText) return;
 
     const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
-    // Stima di caratteri per secondo letti
-    const charsPerSecond = 15 * speed; 
+    const charsPerSecond = 15 * speed;
     const charShift = Math.round(charsPerSecond * seconds);
 
-    // Calcola il nuovo target a partire dall'indice reale e salvato
-    const targetChar = Math.max(0, Math.min(fullText.length - 1, audioCharIndexRef.current + charShift));
-    
-    // FORZA l'aggiornamento immediato dello stato per la UI e per la reference
+    // Usa la linea grafica come ancoraggio assoluto
+    let currentIndex = audioCharIndexRef.current;
+    if (visualRatio !== undefined) {
+      currentIndex = Math.round(fullText.length * visualRatio);
+    }
+
+    const targetChar = Math.max(0, Math.min(fullText.length - 1, currentIndex + charShift));
+
     audioCharIndexRef.current = targetChar;
-    setAudioProgressRatio(targetChar / fullText.length);
-    
+    // Un microscopico offset forza il re-render di React anche per salti minimi
+    setAudioProgressRatio((targetChar / fullText.length) + 0.00001);
+
     speakFromOffset(fullText, targetChar);
   };
 

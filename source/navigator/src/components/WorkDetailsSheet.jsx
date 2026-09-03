@@ -101,11 +101,11 @@ export default function WorkDetailsSheet({
     lastToggleClickRef.current = now;
 
     if (playMode) {
-      if (onPauseAudio) onPauseAudio();
+      if (onPauseAudio) onPauseAudio(internalRatio);
     } else {
-      // Controlla lo stato nativo del browser invece della variabile locale
-      if (window.speechSynthesis.paused) {
-        if (onResumeAudio) onResumeAudio();
+      // Se avevamo interrotto la riproduzione, passiamo il ratio per riprendere da lì
+      if (internalRatio > 0 && internalRatio < 1) {
+        if (onResumeAudio) onResumeAudio(internalRatio);
       } else {
         if (currentText) onSpeak(currentText);
       }
@@ -119,7 +119,8 @@ export default function WorkDetailsSheet({
 
   const handleSeek = (seconds) => {
     if (!currentText) return;
-    if (onSeekAudio) onSeekAudio(seconds);
+    // Passiamo l'internalRatio per informare MapView dell'esatta posizione grafica
+    if (onSeekAudio) onSeekAudio(seconds, internalRatio);
     if (isPaused) setIsPaused(false);
   };
 
