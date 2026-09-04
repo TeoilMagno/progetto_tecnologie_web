@@ -8,6 +8,14 @@ let currentQuiz = [];
 let expertiseSelectInstance = null;
 let prefLengthSelectInstance = null;
 
+// Alias globali per agganciare nativamente filters_2.js e search-bar.js
+window.renderWorksList = function(works, append = false) { renderCatalog(works, append); };
+window.fetchAndRenderWorks = async function(museumId, append) { await fetchCatalogChunk(museumId, append); };
+window.updateWorksSentinelVisibility = function() { updateCatalogSentinel(); };
+
+// Informiamo il sistema globale che ci troviamo nella vista delle opere
+currentView = 'works';
+
 document.addEventListener("DOMContentLoaded", async () => {
   // Inizializza il widget immagine
   initImageWidget("edit-visit-image-widget", "visit-image", "Scegli un'immagine di copertina per la visita");
@@ -98,6 +106,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+
+  populateFilters("works");
 
   // Gestione bozza
   if (editingVisitId) {
@@ -343,6 +353,16 @@ function updateQuizQuestion(qIndex, field, value, optIndex = null) {
 
 async function loadMuseumWorks(museumId) {
   const catalogArea = document.getElementById("works-catalog-area");
+  
+  if (currentMuseumId === museumId && pristineWorksCache.length > 0 && isEntireWorksDbInCache) {
+    document.getElementById("current-museum-name").innerText = "Catalogo caricato (da cache)";
+    catalogArea.innerHTML = "";
+    catalogArea.parentNode.appendChild(globalSentinel);
+    renderCatalog(pristineWorksCache, false);
+    setupCatalogInfiniteScroll(museumId);
+    return;
+  }
+
   catalogArea.innerHTML = ""; 
 
   try {
@@ -402,12 +422,23 @@ async function fetchCatalogChunk(museumId, isLoadMore = false) {
 
     if (isLoadMore) {
       allMuseumWorks = [...allMuseumWorks, ...fetchedWorks];
-      if (!hasFilters) pristineWorksCache = [...allMuseumWorks];
-      renderCatalog(fetchedWorks, true); // Appendiamo solo il nuovo blocco
+      if (!hasFilters) {
+        pristineWorksCache = [...allMuseumWorks];
+        currentWorks = [...pristineWorksCache]; // Sincronizza per search-bar.js
+      }
+      renderCatalog(fetchedWorks, true);
     } else {
       allMuseumWorks = fetchedWorks;
-      if (!hasFilters) pristineWorksCache = [...allMuseumWorks];
-      renderCatalog(allMuseumWorks, false); // Rirenderizziamo da zero
+      if (!hasFilters) {
+        pristineWorksCache = [...allMuseumWorks];
+        currentWorks = [...pristineWorksCache]; // Sincronizza per search-bar.js
+        
+        // Passa i dati univoci (autori, stili, tecniche) alla sidebar
+        if (typeof initializeWorkFiltersData === "function") {
+           initializeWorkFiltersData(pristineWorksCache);
+        }
+      }
+      renderCatalog(allMuseumWorks, false);
     }
 
     if (!hasFilters && pristineWorksCache.length >= data.total) {
@@ -457,7 +488,8 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
     if (!sectionContainer) {
       sectionContainer = document.createElement("div");
       sectionContainer.id = safeSecId;
-      sectionContainer.className = "col-12 mb-4";
+      // Forza esplicitamente la larghezza al 100% in modo che le sezioni si incolonnino verticalmente
+      sectionContainer.className = "col-12 w-100 mb-4"; 
       sectionContainer.innerHTML = `
         <div class="glass-panel p-3 position-relative overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
           <h4 class="text-info mb-3 border-bottom border-secondary border-opacity-25 pb-2" style="font-size: 1.15rem;">
@@ -466,6 +498,7 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
           <div style="position: absolute; bottom: 10px; right: 10px; width: 80px; height: 80px; opacity: 0.15; pointer-events: none; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
             <img src="${secImg}" style="width: 100%; height: 100%; object-fit: cover;">
           </div>
+          <!-- Qui le opere si disporranno nella griglia -->
           <div class="row g-3" id="works-container-${safeSecId}"></div>
         </div>
       `;
@@ -482,11 +515,12 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
       : `<button class="btn btn-sm btn-outline-light mt-auto w-100" id="btn-add-${work._id}" onclick="addToVisit('${work._id}', '${work.name.replace(/'/g, "\\'")}')"><i class="bi bi-plus"></i> Aggiungi alla visita</button>`;
 
     const workHtml = `
-      <div class="col" id="work-card-${work._id}">
+      <div class="col-12 col-md-6 col-xxl-4" id="work-card-${work._id}">
         <div class="card custom-card h-100" style="background: rgba(255,255,255,0.01); border-color: rgba(255,255,255,0.05);">
           <div class="row g-0 h-100">
             <div class="col-4">
-              <img src="${workImage}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 100px; width: 100%;">
+              <!-- Aspect ratio 1/1 impedisce alle foto alte o larghe di deformare l'allineamento della card -->
+              <img src="${workImage}" class="img-fluid rounded-start w-100" style="object-fit: cover; aspect-ratio: 1/1;">
             </div>
             <div class="col-8">
               <div class="card-body p-2 d-flex flex-column h-100">
@@ -612,6 +646,25 @@ function renderVisitCart() {
             </li>
         `;
   });
+
+  // Floating Bar per UI Mobile che permette di scorrere al carrello con un tap
+  let mobileCartBtn = document.getElementById("mobile-floating-cart");
+  if (!mobileCartBtn) {
+    mobileCartBtn = document.createElement("div");
+    mobileCartBtn.id = "mobile-floating-cart";
+    mobileCartBtn.className = "d-md-none fixed-bottom bg-dark p-3 border-top border-secondary z-3 d-flex justify-content-between align-items-center shadow-lg";
+    document.body.appendChild(mobileCartBtn);
+  }
+
+  if (currentVisitCart.length === 0) {
+    mobileCartBtn.classList.add("d-none");
+  } else {
+    mobileCartBtn.classList.remove("d-none");
+    mobileCartBtn.innerHTML = `
+      <span class="text-white fw-bold"><i class="bi bi-cart me-2"></i>${currentVisitCart.length} opere</span>
+      <button class="btn btn-info btn-sm fw-bold" onclick="document.getElementById('visit-cart-list').scrollIntoView({behavior: 'smooth', block: 'center'})">Vai al Carrello</button>
+    `;
+  }
 }
 
 // Aggiunto il parametro isSavingAsDraft (di default false)
