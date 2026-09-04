@@ -191,7 +191,7 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
       return res.status(404).json({ error: "Opera non trovata" });
     
     invalidateCache(["/items"]);
-    
+
     res.json({ message: "Salvato con successo", item: updatedItem });
   } catch (error) {
     console.error(error);
@@ -800,6 +800,9 @@ apiRouter.get("/my-visits", auth.isLoggedIn, async (req, res) => {
 apiRouter.post("/visits", auth.isLoggedIn, async (req, res) => {
   try {
     const savedVisit = await visitController.createVisit(req.body, req.user);
+    
+    invalidateCache(["/visits"]);
+
     res.status(201).json({
       message: "Visita creata con successo!",
       visit: savedVisit,
@@ -814,7 +817,7 @@ apiRouter.post("/visits", auth.isLoggedIn, async (req, res) => {
 });
 
 // Recupera tutte le visite **pubbliche** per il marketplace
-apiRouter.get("/visits", async (req, res) => {
+apiRouter.get("/visits", cacheMiddleware(60), async (req, res) => {
   try {
     const visits = await visitController.getPublicVisits();
     res.status(200).json(visits);
@@ -889,6 +892,8 @@ apiRouter.put("/visits/:id", auth.isLoggedIn, async (req, res) => {
       req.user,
     );
 
+    invalidateCache(["/visits"]);
+
     res.status(200).json(updatedVisit);
   } catch (error) {
     console.error("Errore durante l'aggiornamento della visita:", error);
@@ -903,6 +908,9 @@ apiRouter.put("/visits/:id", auth.isLoggedIn, async (req, res) => {
 apiRouter.delete("/visits/:id", auth.isLoggedIn, async (req, res) => {
   try {
     await visitController.deleteVisitById(req.params.id, req.user);
+
+    invalidateCache(["/visits"]);
+    
     res.json({ message: "Visita eliminata con successo" });
   } catch (error) {
     console.error("Errore eliminazione visita:", error);

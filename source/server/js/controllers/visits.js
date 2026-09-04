@@ -99,20 +99,18 @@ exports.createVisit = async (visitPayload, user) => {
 };
 
 exports.getVisits = async (userId) => {
-  // Trova le visite create dall'utente
-  const created = await Visit.find({ creator: userId })
-    .populate('museumId')
-    .populate({ path: 'works', populate: { path: 'adoptionId' } });
+  const [created, user] = await Promise.all([
+    // Trova le visite create dall'utente
+    Visit.find({ creator: userId })
+      .populate('museumId')
+      .populate({ path: 'works', populate: { path: 'adoptionId' } }),
 
-  // Trova l'utente per prenderne le visite acquistate/salvate
-  const { User } = require('../models/users');
-  const user = await User.findById(userId).populate({
-    path: 'purchased_visits',
-    populate: [
-      { path: 'museumId' },
-      { path: 'works' }
-    ]
-  });
+    // Trova l'utente per prenderne le visite acquistate/salvate
+    User.findById(userId).populate({
+      path: 'purchased_visits',
+      populate: [{ path: 'museumId' }, { path: 'works' }]
+    })
+  ]);
 
   const purchased = user?.purchased_visits || [];
 
@@ -128,8 +126,8 @@ exports.getVisits = async (userId) => {
 };
 
 exports.getVisitById = async (visitId, user, isShared = false) => {
-  const visit = await Visit.findById(visitId).populate('museumId')
-    .populate('works')
+  const visit = await Visit.findById(visitId)
+    .populate('museumId')
     .populate('creator', 'username email')
     .populate({ path: 'works', populate: { path: 'adoptionId' } }); 
 
@@ -140,7 +138,8 @@ exports.getVisitById = async (visitId, user, isShared = false) => {
   }
 
   // Passa se è pubblica, o se l'utente è il creatore/admin
-  if (isShared || visit.isPublic || user?.role === "admin" || visit.creator.toString() === user?._id?.toString() ) {
+  const creatorId = visit.creator?._id ? visit.creator._id.toString() : visit.creator?.toString();
+  if (isShared || visit.isPublic || user?.role === "admin" || creatorId === user?._id?.toString()) {
     return visit;
   } else {
     const error = new Error("Accesso negato: questa visita è privata");
@@ -217,8 +216,8 @@ exports.getPublicVisits = async () => {
   // Cerchiamo le visite completate (non bozze) e pubbliche
   const visits = await Visit.find({ isPublic: true, isDraft: false })
     .populate('museumId')
-    .populate('works')
-    .populate({ path: 'works', populate: { path: 'adoptionId' } });
+    .populate({ path: 'works', populate: { path: 'adoptionId' } })
+    .lean();
 
   return visits;
 };

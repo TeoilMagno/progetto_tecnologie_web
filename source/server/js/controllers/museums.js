@@ -103,7 +103,7 @@ exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=nul
          usiamo una query classica e poi calcoliamo la distanza sui risultati in memoria.
          (Su qualche migliaio di musei è fulmineo).
       */
-      const allFiltered = await Museum.find(query); // Mongoose model (es. Museum)
+      const allFiltered = await Museum.find(query).lean(); // Mongoose model (es. Museum)
       const userLat = parseFloat(lat);
       const userLon = parseFloat(lon);
       const maxDist = parseInt(maxDistance) || 500;
@@ -111,7 +111,7 @@ exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=nul
       // Calcola distanza, filtra e ordina dal più vicino
       const sorted = allFiltered.map(m => {
         const d = getDistanceFromLatLonInKm(userLat, userLon, m.latitude, m.longitude);
-        return { ...m.toObject(), tempDistance: d };
+        return { ...m, tempDistance: d };
       })
       .filter(m => maxDist >= 500 || m.tempDistance <= maxDist)
       .sort((a, b) => (a.tempDistance || 0) - (b.tempDistance || 0));
@@ -130,7 +130,8 @@ exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=nul
       museums = await Museum.find(query)
                             .sort({ createdAt: -1, _id: 1 }) // AGGIUNTO IL TIE-BREAKER!
                             .skip((page - 1) * limit)
-                            .limit(Number(limit));
+                            .limit(Number(limit))
+                            .lean();
     }
 
     // 4. Risposta al frontend con metadati per l'infinite scroll

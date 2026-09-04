@@ -2,7 +2,7 @@
 const NodeCache = require("node-cache");
 
 // stdTTL in secondi, checkperiod = ogni quanto pulisce le entry scadute
-const apiCache = new NodeCache({ stdTTL: 60, checkperiod: 90 });
+const apiCache = new NodeCache({ stdTTL: 60, checkperiod: 90, useClones: false });
 
 // Middleware: se la risposta per questo esatto URL (query string inclusa) è in cache, la serve subito
 function cacheMiddleware(ttlSeconds = 60) {
