@@ -420,6 +420,18 @@ async function fetchAndRenderWorks(museumId, isLoadMore = false) {
 
   const noFiltersActive = authorCbs.length === 0 && techniqueCbs.length === 0 && styleCbs.length === 0;
 
+  if (!isLoadMore && noFiltersActive && isEntireWorksDbInCache
+      && pristineWorksCache[0]?.museumId === museumId) {
+    currentWorks = [...pristineWorksCache];
+    currentWorkPage = pristineWorkPage;
+    totalWorkPages = pristineTotalWorkPages;
+    renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
+    renderWorksList(currentWorks.slice(0, renderedWorksCount), false);
+    isFetchingWorks = false;
+    updateWorksSentinelVisibility();
+    return; // salta la fetch
+  }
+  
   try {
     const response = await fetch(`${API_BASE_URL}/museums/${museumId}/works?${params.toString()}`);
     if (!response.ok) throw new Error("Errore caricamento opere");
