@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Headphones, Building2, Shield, Trash2, ChevronRight, User, GraduationCap, Lock, KeyRound, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Headphones, Building2, Shield, Trash2, ChevronRight, User, GraduationCap, Lock, KeyRound, AlertTriangle, ChevronDown, CheckCircle2, Clock, Star } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
 export default function SettingsPage() {
@@ -17,6 +17,7 @@ export default function SettingsPage() {
   const [pwdError, setPwdError] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [showCuratorModal, setShowCuratorModal] = useState(false);
 
   // Salvataggio audio nel local storage
   useEffect(() => {
@@ -118,6 +119,26 @@ export default function SettingsPage() {
     }
   };
 
+  const handleCuratorRequest = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/current-user/profile`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestCurator: true }),
+        credentials: 'include'
+      });
+      if (res.ok) {
+        alert("Richiesta inviata con successo!");
+        setUserData(prev => ({ ...prev, curator_status: 'pending' }));
+        setShowCuratorModal(false); // Chiude il modale
+      } else {
+        alert("Errore durante l'invio della richiesta.");
+      }
+    } catch (e) {
+      alert("Errore di connessione.");
+    }
+  };
+
   if (loading) return <div className="min-h-[100dvh] bg-[#09090b] text-white p-6 flex items-center justify-center">Caricamento in corso...</div>;
 
   return (
@@ -134,30 +155,12 @@ export default function SettingsPage() {
 
         <div className="space-y-8">
 
-          {/* SEZIONE 1: AUDIO & NAVIGATORE */}
+          {/* 0. SEZIONE: NAVIGAZIONE (Specifica Navigator) */}
           <section>
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Headphones size={14} /> Preferenze Navigazione
+              <Building2 size={14} /> Navigazione Locale
             </h3>
-            <div className="bg-slate-900/60 border border-white/5 rounded-2xl overflow-hidden divide-y divide-white/5">
-              
-              <div className="flex items-center justify-between p-4">
-                <div>
-                  <p className="font-semibold text-slate-200 text-sm">Velocità Voce</p>
-                  <p className="text-xs text-slate-500 mt-0.5">Regola la velocità dell'audioguida</p>
-                </div>
-                <select 
-                  value={playbackSpeed}
-                  onChange={(e) => setPlaybackSpeed(e.target.value)}
-                  className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-500 cursor-pointer"
-                >
-                  <option value="0.75">Lenta (0.75x)</option>
-                  <option value="1.0">Normale (1x)</option>
-                  <option value="1.25">Veloce (1.25x)</option>
-                  <option value="1.5">Molto Veloce (1.5x)</option>
-                </select>
-              </div>
-
+            <div className="bg-slate-900/60 border border-white/5 rounded-2xl overflow-hidden">
               <button 
                 onClick={() => {
                   localStorage.removeItem('selected_museum_id'); 
@@ -177,15 +180,14 @@ export default function SettingsPage() {
                 </div>
                 <ChevronRight size={18} className="text-slate-600" />
               </button>
-
             </div>
           </section>
 
-          {/* SEZIONE 2: PROFILO & AI (Solo se l'utente è loggato) */}
+          {/* 1. SEZIONE: DATI PERSONALI */}
           {userData && (
             <section>
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                <User size={14} /> Dati Profilo e IA
+                <User size={14} /> Dati Personali
               </h3>
               <div className="bg-slate-900/60 border border-white/5 rounded-2xl overflow-hidden divide-y divide-white/5">
                 
@@ -197,7 +199,7 @@ export default function SettingsPage() {
                 )}
 
                 <div className="p-4">
-                  <p className="text-xs text-slate-500 mb-1">Username pubblico</p>
+                  <p className="text-xs text-slate-500 mb-2">Username pubblico</p>
                   <div className="flex gap-2">
                      <input 
                         type="text" 
@@ -208,76 +210,135 @@ export default function SettingsPage() {
                      />
                      <button 
                         onClick={() => handleUpdateProfile('username', document.getElementById('nav-username-input').value)} 
-                        className="px-4 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-white text-sm font-semibold transition-colors shrink-0"
+                        className="px-4 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-white text-sm font-semibold transition-colors shrink-0 cursor-pointer"
                      >
                        Salva
                      </button>
                   </div>
                 </div>
 
-                <div className="p-4">
-                   <p className="text-xs text-slate-500 mb-1">Livello di Esperienza (IA)</p>
-                   <select 
-                     value={userData.expertiseLevel || "medium"}
-                     onChange={(e) => handleUpdateProfile('expertiseLevel', e.target.value)}
-                     className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
-                   >
-                      <option value="simple">Semplice - Per principianti e bambini</option>
-                      <option value="medium">Medio - Appassionato ma non esperto</option>
-                      <option value="professional">Professionale - Focus su storia e tecnica</option>
-                      <option value="expert">Esperto - Analisi critica e accademica</option>
-                   </select>
-                </div>
+              </div>
+            </section>
+          )}
 
-                <div className="p-4">
-                   <p className="text-xs text-slate-500 mb-1">Ruolo Classe</p>
-                   <select 
-                     value={userData.type || "none"}
-                     onChange={(e) => handleUpdateProfile('type', e.target.value)}
-                     className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
-                   >
-                      <option value="none">Visitatore Standard</option>
-                      <option value="student">Studente</option>
-                      <option value="teacher">Insegnante</option>
-                   </select>
-                </div>
+          {/* 2. SEZIONE: SICUREZZA E ACCESSO */}
+          {userData && (
+            <section>
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <KeyRound size={14} /> Sicurezza e Accesso
+              </h3>
+              <div className="bg-slate-900/60 border border-white/5 rounded-2xl overflow-hidden">
+                
+                {userData.hasPassword !== false ? (
+                  <button onClick={() => setShowPasswordModal(true)} className="w-full flex items-center justify-between p-4 hover:bg-slate-800 transition-colors cursor-pointer text-left">
+                    <div className="flex items-center gap-3">
+                       <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0 text-slate-400">
+                         <KeyRound size={16} />
+                       </div>
+                       <p className="font-semibold text-slate-200 text-sm">Cambia Password</p>
+                    </div>
+                    <ChevronRight size={18} className="text-slate-600" />
+                  </button>
+                ) : (
+                  <button onClick={() => setShowPasswordModal(true)} className="w-full flex items-center justify-between p-4 hover:bg-cyan-500/10 transition-colors cursor-pointer text-left">
+                    <div className="flex items-center gap-3">
+                       <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center shrink-0 text-cyan-400">
+                         <Plus size={16} />
+                       </div>
+                       <p className="font-semibold text-cyan-400 text-sm">Aggiungi Password</p>
+                    </div>
+                    <ChevronRight size={18} className="text-slate-600" />
+                  </button>
+                )}
 
               </div>
             </section>
           )}
 
-          {/* SEZIONE 3: SICUREZZA & PRIVACY */}
+          {/* 3. SEZIONE: PREFERENZE ESPERIENZA */}
           <section>
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Shield size={14} /> Sicurezza
+              <Headphones size={14} /> Preferenze Esperienza
             </h3>
             <div className="bg-slate-900/60 border border-white/5 rounded-2xl overflow-hidden divide-y divide-white/5">
               
               {userData && (
-                 <>
-                  {userData.hasPassword !== false ? (
-                    <button onClick={() => setShowPasswordModal(true)} className="w-full flex items-center justify-between p-4 hover:bg-slate-800 transition-colors cursor-pointer text-left">
-                      <div className="flex items-center gap-3">
-                         <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0 text-slate-400">
-                           <KeyRound size={16} />
-                         </div>
-                         <p className="font-semibold text-slate-200 text-sm">Cambia Password</p>
-                      </div>
-                      <ChevronRight size={18} className="text-slate-600" />
-                    </button>
-                  ) : (
-                    <button onClick={() => setShowPasswordModal(true)} className="w-full flex items-center justify-between p-4 hover:bg-cyan-500/10 transition-colors cursor-pointer text-left">
-                      <div className="flex items-center gap-3">
-                         <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center shrink-0 text-cyan-400">
-                           <Plus size={16} />
-                         </div>
-                         <p className="font-semibold text-cyan-400 text-sm">Aggiungi Password</p>
-                      </div>
-                      <ChevronRight size={18} className="text-slate-600" />
-                    </button>
-                  )}
-                 </>
+                <>
+                  <div className="p-4">
+                     <p className="text-xs text-slate-500 mb-2">Registro Linguistico (IA)</p>
+                     <div className="relative w-full">
+                       <select 
+                         value={userData.expertiseLevel || "medium"}
+                         onChange={(e) => handleUpdateProfile('expertiseLevel', e.target.value)}
+                         className="appearance-none w-full bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all cursor-pointer"
+                       >
+                          <option value="simple">Semplice - Per principianti e bambini</option>
+                          <option value="medium">Medio - Appassionato ma non esperto</option>
+                          <option value="professional">Professionale - Focus su storia e tecnica</option>
+                          <option value="expert">Esperto - Analisi critica e accademica</option>
+                       </select>
+                       <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                          <ChevronDown size={18} />
+                       </div>
+                     </div>
+                  </div>
+
+                  <div className="p-4">
+                     <p className="text-xs text-slate-500 mb-2">Qualifica / Ruolo</p>
+                     <div className="relative w-full">
+                       <select 
+                         value={userData.type || "none"}
+                         onChange={(e) => handleUpdateProfile('type', e.target.value)}
+                         className="appearance-none w-full bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all cursor-pointer"
+                       >
+                          <option value="none">Visitatore Standard</option>
+                          <option value="student">Studente</option>
+                          <option value="teacher">Insegnante</option>
+                       </select>
+                       <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                          <ChevronDown size={18} />
+                       </div>
+                     </div>
+                  </div>
+                </>
               )}
+
+              <div className="p-4">
+                <p className="text-xs text-slate-500 mb-2">Velocità di Riproduzione Audio</p>
+                <div className="relative w-full">
+                  <select 
+                    value={playbackSpeed}
+                    onChange={(e) => setPlaybackSpeed(e.target.value)}
+                    className="appearance-none w-full bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all cursor-pointer"
+                  >
+                    <option value="0.75">Lenta (0.75x)</option>
+                    <option value="1.0">Normale (1x)</option>
+                    <option value="1.25">Veloce (1.25x)</option>
+                    <option value="1.5">Molto Veloce (1.5x)</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                    <ChevronDown size={18} />
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          {/* 4. SEZIONE: DATI E PRIVACY */}
+          <section>
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+              <Shield size={14} /> Dati e Privacy
+            </h3>
+            <div className="bg-slate-900/60 border border-white/5 rounded-2xl overflow-hidden divide-y divide-white/5">
+              
+              <button 
+                onClick={() => alert("Qui andrà il link alla tua Privacy Policy.")}
+                className="w-full flex items-center justify-between p-4 hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <p className="font-semibold text-slate-300 text-sm">Termini e Privacy</p>
+                <ChevronRight size={18} className="text-slate-600" />
+              </button>
 
               <button 
                 onClick={clearCache}
@@ -299,16 +360,62 @@ export default function SettingsPage() {
                    <AlertTriangle size={16} className="text-red-500/70" />
                  </button>
               )}
-
             </div>
           </section>
+
+          {/* 5. SEZIONE: AREA CURATORE */}
+          {userData && (
+            <section>
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <Star size={14} /> Area Curatore
+              </h3>
+              <div className="bg-slate-900/60 border border-white/5 rounded-2xl p-1">
+                {(userData.role === 'admin' || userData.role === 'curator' || userData.curator_status === 'approved') ? (
+                  <div className="flex items-center gap-4 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl m-1">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                      <CheckCircle2 size={20} />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-emerald-400 text-sm">Curatore Abilitato</p>
+                      <p className="text-xs text-slate-400 mt-0.5">Hai l'accesso per aggiungere e gestire musei.</p>
+                    </div>
+                  </div>
+                ) : userData.curator_status === 'pending' ? (
+                  <div className="flex items-center gap-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl m-1">
+                    <div className="w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                      <Clock size={20} />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-amber-400 text-sm">In attesa di approvazione</p>
+                      <p className="text-xs text-slate-400 mt-0.5">Gli amministratori stanno valutando la tua richiesta.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => setShowCuratorModal(true)}
+                    className="w-full flex items-center justify-between p-4 hover:bg-slate-800 rounded-xl transition-colors cursor-pointer text-left"
+                  >
+                    <div className="flex items-center gap-4">
+                       <div className="w-10 h-10 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                         <Star size={20} />
+                       </div>
+                       <div>
+                         <p className="font-semibold text-cyan-400 text-sm">Diventa Curatore</p>
+                         <p className="text-xs text-slate-400 mt-0.5">Richiedi l'abilitazione per gestire un museo</p>
+                       </div>
+                    </div>
+                    <ChevronRight size={18} className="text-slate-600" />
+                  </button>
+                )}
+              </div>
+            </section>
+          )}
 
         </div>
 
         <div className="mt-auto pt-8 pb-4 text-center">
           <p className="text-xs text-slate-600 font-mono">ArtAround Navigator v1.0.0</p>
         </div>
-
       </div>
 
       {/* --- MODALE PASSWORD --- */}
@@ -354,8 +461,8 @@ export default function SettingsPage() {
               {pwdError && <p className="text-red-400 text-xs mt-3">{pwdError}</p>}
 
               <div className="flex gap-3 mt-6">
-                 <button onClick={() => setShowPasswordModal(false)} className="flex-1 px-4 py-2 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm font-semibold transition-colors">Annulla</button>
-                 <button onClick={handlePasswordSubmit} className="flex-1 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition-colors">Salva</button>
+                 <button onClick={() => setShowPasswordModal(false)} className="flex-1 px-4 py-2 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm font-semibold transition-colors cursor-pointer">Annulla</button>
+                 <button onClick={handlePasswordSubmit} className="flex-1 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition-colors cursor-pointer">Salva</button>
               </div>
            </div>
         </div>
@@ -389,6 +496,31 @@ export default function SettingsPage() {
                    className="flex-1 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-50 disabled:hover:bg-red-600 text-white text-sm font-semibold transition-colors cursor-pointer"
                  >
                    Elimina
+                 </button>
+              </div>
+           </div>
+        </div>
+      )}
+
+      {/* --- MODALE DIVENTA CURATORE --- */}
+      {showCuratorModal && (
+        <div className="fixed inset-0 bg-black/80 z-[10000] flex items-center justify-center p-4">
+           <div className="w-full max-w-sm bg-[#121218] border border-cyan-500/30 rounded-3xl p-6 shadow-2xl relative text-center animate-fadeIn">
+              <div className="w-16 h-16 bg-cyan-500/10 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                 <Star size={32} />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Diventa Curatore</h3>
+              <p className="text-slate-400 text-sm mb-6">Vuoi inviare la richiesta per diventare curatore? Il team valuterà il tuo profilo.</p>
+              
+              <div className="flex gap-3">
+                 <button onClick={() => setShowCuratorModal(false)} className="flex-1 px-4 py-2 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm font-semibold transition-colors cursor-pointer">
+                   Annulla
+                 </button>
+                 <button 
+                   onClick={submitCuratorRequest} 
+                   className="flex-1 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition-colors cursor-pointer"
+                 >
+                   Invia Richiesta
                  </button>
               </div>
            </div>
