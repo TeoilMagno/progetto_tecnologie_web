@@ -41,7 +41,7 @@ export default function MenuPage() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-slate-950 text-white p-6 flex flex-col items-center animate-fadeIn">
+    <div className="min-h-[100dvh] text-white p-6 flex flex-col items-center animate-fadeIn">
       <div className="w-full max-w-lg mt-4 flex flex-col h-full">
         
         <h1 className="text-3xl font-bold mb-8 text-white">Menu</h1>

@@ -680,6 +680,17 @@ apiRouter.get("/visits", async (req, res) => {
   }
 });
 
+// per l'apertura dei dettagli di una visita (compatibilità con Matteo)
+apiRouter.get("/visits/:visitId/museum", async (req, res) => {
+  try {
+    const visit = await visitController.getVisitById(req.params.visitId, req.user);
+    if (!visit) return res.status(404).json({ error: "visita non trovata" });
+    res.json(visit);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // per l'apertura dei dettagli di una visita
 apiRouter.get("/visits/:id", async (req, res) => {
   try {

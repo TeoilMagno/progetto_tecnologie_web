@@ -25,40 +25,53 @@
   </header>
 
   <div class="container py-4" style="max-width: 900px;">
-  
+    
+    <!-- ANTEPRIMA MAPPA ATTUALE -->
     <div class="glass-panel p-4 mb-4">
       <h2 class="h5 text-white mb-3 d-flex align-items-center gap-2">
         <i class="bi bi-map text-info"></i> Mappa Attuale (Vista Globale)
       </h2>
       <div id="mapPreviewContainer" class="map-preview-box">
-        <div class="spinner-border text-info" role="status"><span class="visually-hidden">Caricamento...</span></div>
+        <div class="spinner-border text-info" role="status">
+          <span class="visually-hidden">Caricamento...</span>
+        </div>
       </div>
     </div>
 
+    <!-- FORM DI CARICAMENTO E DEFINIZIONE SEZIONI -->
     <form id="mapForm" class="glass-panel p-4">
       <h1 class="aura-title h4 mb-4">Configura Mappa e Sezioni</h1>
 
+      <!-- UPLOAD FILE SVG -->
       <div class="mb-4">
-        <div id="map-svg-widget-container"></div>
-        <div class="form-text text-white-50 mt-2">
+        <label for="svgFileInput" class="form-label text-white fw-semibold">
+          Carica nuovo file Planimetria (SVG)
+        </label>
+        <input class="form-control input-aura" type="file" id="svgFileInput" accept=".svg" />
+        <div class="form-text text-white-50">
           Il file SVG deve contenere i gruppi <code>vista-globale</code> e <code>vista-dettaglio</code>.
-        </div>:width
+        </div>
       </div>
 
       <hr class="border-white-50 my-4" />
 
+      <!-- ELENCO DELLE SEZIONI -->
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="h5 text-white mb-0">Sezioni del Museo</h3>
-
-        <button type="button" class="btn btn-sm btn-outline-info rounded-pill" onclick="openSectionModal()">
+        <button type="button" class="btn btn-sm btn-outline-info rounded-pill" onclick="addNewSectionCard()">
           <i class="bi bi-plus-lg me-1"></i> Aggiungi Sezione
         </button>
       </div>
 
-      <div id="sectionsContainer"></div>
+      <div id="sectionsContainer">
+        <!-- Le card delle sezioni vengono iniettate dinamicamente via JS -->
+      </div>
 
       <div class="d-flex gap-3 pt-3 mt-4 border-top border-secondary">
-        <button type="button" class="btn btn-gradient px-5" onclick="handleSaveMapAndSections(event)">Salva Configurazione</button>
+        <button type="button" class="btn btn-gradient px-5" onclick="handleSaveMapAndSections(event)">
+          Salva Configurazione
+        </button>
+        <button type="reset" class="btn btn-glass" onclick="location.reload()">Ripristina</button>
       </div>
     </form>
   </div>

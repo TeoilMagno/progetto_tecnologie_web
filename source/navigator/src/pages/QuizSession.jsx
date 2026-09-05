@@ -103,7 +103,7 @@ export default function QuizSession() {
   // --- RENDER INSEGNANTE (DASHBOARD) ---
   if (role === 'teacher') {
     return (
-      <div className="fixed inset-0 z-[100] bg-slate-950 text-white flex flex-col items-center p-6 overflow-y-auto">
+      <div className="fixed inset-0 z-[100] text-white flex flex-col items-center p-6 overflow-y-auto">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-purple-900/20 to-slate-950 pointer-events-none"></div>
         <div className="relative z-10 w-full max-w-2xl mt-4">
           <div className="text-center mb-8">
@@ -197,7 +197,7 @@ export default function QuizSession() {
   // --- RENDER STUDENTE (QUIZ) ---
   if (quizFinished) {
     return (
-      <div className="fixed inset-0 z-[100] bg-slate-950 text-white flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
+      <div className="fixed inset-0 z-[100] text-white flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
         <Trophy size={64} className="text-amber-500 mb-4 animate-bounce" />
         <h1 className="text-3xl font-extrabold mb-2">Quiz Terminato!</h1>
         <p className="text-slate-400 mb-8">Hai completato il percorso didattico.</p>
@@ -232,7 +232,7 @@ export default function QuizSession() {
   const currentSelectedOption = studentAnswers[currentQuestionIndex];
 
   return (
-    <div className="min-h-[100dvh] w-full bg-slate-950 text-white flex flex-col justify-center p-4 relative">
+    <div className="min-h-[100dvh] w-full text-white flex flex-col justify-center p-4 relative">
       <div className="relative z-10 w-full max-w-lg mx-auto flex flex-col">
         
         {/* HEADER SENZA PUNTEGGIO */}

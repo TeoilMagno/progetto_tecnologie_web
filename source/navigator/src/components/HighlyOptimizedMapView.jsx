@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { ZoomIn, ZoomOut, Maximize } from "lucide-react";
 
 export default function HighlyOptimizedMapView({ 
   svgString, 
@@ -28,7 +29,7 @@ export default function HighlyOptimizedMapView({
     `viewBox="${zoomViewBox}"`
   );
 
-  // GESTIONE DEL CLICK CON ANIMAZIONE TIPO "HOLLOW KNIGHT"
+  // GESTIONE DEL CLICK CON ANIMAZIONE
   const handleMapClick = (e) => {
     if (activeSection) return; 
 
@@ -38,34 +39,29 @@ export default function HighlyOptimizedMapView({
       const targetSection = sections.find(s => s.svgGroupId === sectionGroupId);
       
       if (targetSection) {
-        // 1. Calcoliamo il punto esatto del click per centrare lì lo zoom!
         const rect = e.currentTarget.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
         const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-        // 2. FASE 1: "Tuffo" dentro la mappa (Zoom In rapido, Fade e Blur)
         setAnimationStyle({
           transformOrigin: `${x}% ${y}%`,
-          transform: 'scale(3)', // Ingrandisce tantissimo verso il punto cliccato
+          transform: 'scale(3)',
           opacity: 0,
           filter: 'blur(8px)',
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
         });
 
-        // 3. FASE 2: Dopo 400ms cambiamo i dati sottostanti mentre la mappa è invisibile
         setTimeout(() => {
           onSelectSection(targetSection);
 
-          // Resettiamo i parametri (senza transizione) pronti per l'entrata della nuova mappa
           setAnimationStyle({
             transformOrigin: 'center',
-            transform: 'scale(0.8)', // Parte leggermente rimpicciolita
+            transform: 'scale(0.8)',
             opacity: 0,
             filter: 'blur(4px)',
             transition: 'none'
           });
 
-          // 4. FASE 3: Anima l'entrata della vista dettaglio morbida
           setTimeout(() => {
             setAnimationStyle({
               transformOrigin: 'center',
@@ -84,7 +80,6 @@ export default function HighlyOptimizedMapView({
   const handleBackClick = (e) => {
     e.stopPropagation();
 
-    // 1. Allontanamento (Scala indietro e svanisce)
     setAnimationStyle({
       transformOrigin: 'center',
       transform: 'scale(0.8)',
@@ -96,7 +91,6 @@ export default function HighlyOptimizedMapView({
     setTimeout(() => {
       onBack();
 
-      // 2. Prepara la vista globale (parte ingrandita)
       setAnimationStyle({
         transformOrigin: 'center',
         transform: 'scale(1.2)',
@@ -105,7 +99,6 @@ export default function HighlyOptimizedMapView({
         transition: 'none'
       });
 
-      // 3. Caduta morbida della vista globale
       setTimeout(() => {
         setAnimationStyle({
           transformOrigin: 'center',
@@ -121,7 +114,7 @@ export default function HighlyOptimizedMapView({
   return (
     <div className="w-full h-full relative overflow-hidden bg-slate-900">
       
-      {/* TASTO INDIETRO MODIFICATO */}
+      {/* TASTO INDIETRO */}
       {activeSection && (
         <button 
           onClick={handleBackClick}
@@ -131,7 +124,7 @@ export default function HighlyOptimizedMapView({
         </button>
       )}
 
-      {/* MAGIA CSS PER LA GESTIONE LIVELLI (Con supporto per typo "visita") */}
+      {/* GESTIONE LIVELLI CSS */}
       <style>
         {`
           g[id="vista-globale"] { display: block; }
@@ -149,63 +142,94 @@ export default function HighlyOptimizedMapView({
         `}
       </style>
 
-      {/* WRAPPER ZOOM E ANIMAZIONE */}
+      {/* WRAPPER ZOOM CON CONTROLLI FLUTTUANTI */}
       <TransformWrapper 
         initialScale={1} 
         minScale={0.5} 
         maxScale={4} 
         centerOnInit={true}
       >
-        <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }} contentStyle={{ width: "100%", height: "100%" }}>
-          
-          {/* APPLICHIAMO L'ANIMAZIONE DIRETTAMENTE A QUESTO DIV */}
-          <div 
-            className="relative w-full h-full" 
-            onClick={handleMapClick} 
-            style={animationStyle}
-          >
-            
-            {/* Livello 1: Mappa SVG */}
-            <div 
-              className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full"
-              dangerouslySetInnerHTML={{ __html: modifiedSvgString }} 
-            />
+        {({ zoomIn, zoomOut, resetTransform }) => (
+          <>
+            <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }} contentStyle={{ width: "100%", height: "100%" }}>
+              <div 
+                className="relative w-full h-full" 
+                onClick={handleMapClick} 
+                style={animationStyle}
+              >
+                {/* Livello 1: Mappa SVG */}
+                <div 
+                  className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full"
+                  dangerouslySetInnerHTML={{ __html: modifiedSvgString }} 
+                />
 
-            {/* Livello 2: Opere d'arte */}
-            {activeSection && (
-              <svg viewBox={zoomViewBox} className="absolute inset-0 w-full h-full pointer-events-none">
-                {works.map((work) => {
-                  const isActive = activeWorkId === work._id;
-                  const coords = activeSection.works?.find(sw => (sw.workId?._id || sw.workId) === work._id);
-                  if (!coords) return null;
+                {/* Livello 2: Opere d'arte */}
+                {activeSection && (
+                  <svg viewBox={zoomViewBox} className="absolute inset-0 w-full h-full pointer-events-none">
+                    {works.map((work) => {
+                      const isActive = activeWorkId === work._id;
+                      const coords = activeSection.works?.find(sw => {
+                        const swId = (sw.workId?._id || sw.workId)?.toString();
+                        return swId && swId === work._id?.toString();
+                      });
+                      if (!coords) return null;
 
-                  return (
-                    <foreignObject key={work._id} x={coords.x} y={coords.y} width="120" height="220" style={{ overflow: "visible", pointerEvents: "auto" }}>
-                      <div
-                        onClick={() => onWorkClick(work)}
-                        style={{
-                          cursor: "pointer", width: "100%", height: "fit-content",
-                          backgroundColor: isActive ? "rgba(126, 20, 255, 0.1)" : "white",
-                          border: isActive ? "3px solid #7e14ff" : "1px solid #ccc",
-                          borderRadius: "6px", display: "flex", flexDirection: "column", alignItems: "center",
-                          boxShadow: isActive ? "0 0 20px rgba(126, 20, 255, 0.6)" : "0 2px 4px rgba(0,0,0,0.1)",
-                          transform: isActive ? "scale(1.1)" : "scale(1)", transition: "all 0.3s ease",
-                          zIndex: isActive ? 100 : 1
-                        }}
-                      >
-                        <img src={work.image} alt={work.name} loading="lazy" style={{ width: "100%", height: "100px", objectFit: "cover" }} />
-                        <div style={{ padding: "6px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                          <strong style={{ fontSize: "11px", textAlign: "center", lineHeight: "1.2", color: isActive ? "#fff" : "#000" }}>{work.name}</strong>
-                        </div>
-                      </div>
-                    </foreignObject>
-                  );
-                })}
-              </svg>
-            )}
-          </div>
-          
-        </TransformComponent>
+                      return (
+                        <foreignObject key={work._id} x={coords.x} y={coords.y} width="120" height="220" style={{ overflow: "visible", pointerEvents: "auto" }}>
+                          <div
+                            onClick={() => onWorkClick(work)}
+                            style={{
+                              cursor: "pointer", width: "100%", height: "fit-content",
+                              backgroundColor: isActive ? "rgba(126, 20, 255, 0.1)" : "white",
+                              border: isActive ? "3px solid #7e14ff" : "1px solid #ccc",
+                              borderRadius: "6px", display: "flex", flexDirection: "column", alignItems: "center",
+                              boxShadow: isActive ? "0 0 20px rgba(126, 20, 255, 0.6)" : "0 2px 4px rgba(0,0,0,0.1)",
+                              transform: isActive ? "scale(1.1)" : "scale(1)", transition: "all 0.3s ease",
+                              zIndex: isActive ? 100 : 1
+                            }}
+                          >
+                            <img src={work.image} alt={work.name} loading="lazy" style={{ width: "100%", height: "100px", objectFit: "cover" }} />
+                            <div style={{ padding: "6px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                              <strong style={{ fontSize: "11px", textAlign: "center", lineHeight: "1.2", color: isActive ? "#fff" : "#000" }}>{work.name}</strong>
+                            </div>
+                          </div>
+                        </foreignObject>
+                      );
+                    })}
+                  </svg>
+                )}
+              </div>
+            </TransformComponent>
+
+            {/* PULSANTI ZOOM (+), ZOOM (-) E RESET ADATTAMENTO SCHERMO */}
+            <div className="absolute bottom-6 right-6 z-40 flex flex-col gap-2.5">
+              <button 
+                type="button"
+                onClick={() => zoomIn(0.3)}
+                className="w-11 h-11 bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700/80 rounded-2xl flex items-center justify-center shadow-xl backdrop-blur-md active:scale-95 transition-all cursor-pointer"
+                title="Ingrandisci"
+              >
+                <ZoomIn size={20} />
+              </button>
+              <button 
+                type="button"
+                onClick={() => zoomOut(0.3)}
+                className="w-11 h-11 bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700/80 rounded-2xl flex items-center justify-center shadow-xl backdrop-blur-md active:scale-95 transition-all cursor-pointer"
+                title="Rimpicciolisci"
+              >
+                <ZoomOut size={20} />
+              </button>
+              <button 
+                type="button"
+                onClick={() => resetTransform()}
+                className="w-11 h-11 bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700/80 rounded-2xl flex items-center justify-center shadow-xl backdrop-blur-md active:scale-95 transition-all cursor-pointer"
+                title="Ripristina visualizzazione a schermo intero"
+              >
+                <Maximize size={20} />
+              </button>
+            </div>
+          </>
+        )}
       </TransformWrapper>
     </div>
   );

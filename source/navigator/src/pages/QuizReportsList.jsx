@@ -21,10 +21,10 @@ export default function QuizReportsList() {
       });
   }, []);
 
-  if (loading) return <div className="min-h-[100dvh] flex justify-center items-center bg-slate-950"><Loader2 className="animate-spin text-purple-500" size={32} /></div>;
+  if (loading) return <div className="min-h-[100dvh] flex justify-center items-center"><Loader2 className="animate-spin text-purple-500" size={32} /></div>;
 
   return (
-    <div className="min-h-[100dvh] bg-slate-950 text-white p-6 flex flex-col items-center">
+    <div className="min-h-[100dvh] text-white p-6 flex flex-col items-center">
       <div className="w-full max-w-2xl mt-4">
         <h1 className="text-2xl font-bold text-purple-400 mb-2 flex items-center gap-2">
           <FileText size={24} /> Storico Report

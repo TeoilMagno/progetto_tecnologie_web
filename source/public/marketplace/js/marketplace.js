@@ -730,22 +730,22 @@ function renderWorksList(works, append = false) {
 
     htmlString += `
       <div class="col-12 col-lg-6">
-        <div class="card custom-card h-100">
+        <div class="card custom-card overflow-hidden" style="height: 220px;">
           <div class="row g-0 h-100">
-            <div class="col-4">
-              <img src="${work.image}" class="img-fluid rounded-start h-100"
-                style="object-fit: cover; min-height: 180px" alt="${work.name}"/>
+            <div class="col-4 h-100">
+              <img src="${work.image}" class="img-fluid rounded-start h-100 w-100"
+                style="object-fit: cover; height: 100%;" alt="${work.name}"/>
             </div>
-            <div class="col-8">
-              <div class="card-body d-flex flex-column h-100 py-3 px-3">
+            <div class="col-8 h-100">
+              <div class="card-body d-flex flex-column h-100 py-3 px-3 overflow-hidden">
                 <h5 class="card-title mb-1 text-truncate text-info">${work.name}</h5>
                 
-                <p class="small text-secondary mb-2">
+                <p class="small text-secondary mb-2 text-truncate">
                   <i class="bi bi-person-fill me-1"></i> ${work.authorName || 'Autore ignoto'} <br>
                   <i class="bi bi-calendar3 me-1"></i> ${work.year || ''} &bull; ${work.styleName || ''}
                 </p>
                 
-                <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8">
+                <p class="card-text small text-truncate-3 mb-0" style="flex-grow: 1; opacity: 0.8; overflow: hidden;">
                   ${primaryDesc}
                 </p>
               </div>
@@ -796,17 +796,17 @@ function renderItemsList(items, append = false) {
 
     htmlString += `
       <div class="col-12 col-lg-6">
-        <div class="card custom-card h-100">
+        <div class="card custom-card overflow-hidden" style="height: 220px;">
           <div class="row g-0 h-100">
-            <div class="col-4">
-              <img src="${item.image}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 180px" alt="${item.name}"/>
+            <div class="col-4 h-100">
+              <img src="${item.image}" class="img-fluid rounded-start h-100 w-100" style="object-fit: cover; height: 100%;" alt="${item.name}"/>
             </div>
-            <div class="col-8">
-              <div class="card-body d-flex flex-column h-100 py-3 px-3">
+            <div class="col-8 h-100">
+              <div class="card-body d-flex flex-column h-100 py-3 px-3 overflow-hidden">
                 <div class="d-flex justify-content-between align-items-start">
                   <h5 class="card-title mb-1 text-truncate">${item.name}</h5>
                 </div>
-                <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8">${item.description}</p>
+                <p class="card-text small text-truncate-3 mb-3" style="flex-grow: 1; opacity: 0.8; overflow: hidden;">${item.description}</p>
                 <div class="d-flex justify-content-between align-items-end mt-auto pt-2 border-top border-secondary border-opacity-25">
                   <div class="fw-bold text-white fs-5">€ ${item.price.toFixed(2)}</div>
                   <div class="d-flex gap-2">
