@@ -1,9 +1,8 @@
 const express = require('express');
 const passport = require('passport');
-const crypto = require('crypto');
 const path = require('path');
-const { User } = require('../models/users');
 const router = express.Router();
+const userController = require('../controllers/users'); 
 
 // Funzione di supporto per salvare la pagina di provenienza sicura
 function saveReturnTo(req) {
@@ -71,40 +70,22 @@ router.post('/login/password', (req, res, next) => {
 
 // ─── Local signup ─────────────────────────────────────────────────────────
 router.post('/signup', async (req, res, next) => {
-  // SALVATAGGIO PREVENTIVO
   const redirectTo = req.session.returnTo || '/';
-
   try {
-    const salt = crypto.randomBytes(16); 
-    crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', async (err, hash) => { 
-      if (err) return next(err);
-
-      try {
-        const requestedRole = req.body.requested_role;
-        const initialCuratorStatus = requestedRole === 'curator' ? 'pending' : 'none';
-
-        const user = await User.create({
-          username: req.body.username,
-          password: hash,
-          salt: salt,
-          role: 'visitor', 
-          curator_status: initialCuratorStatus 
-        });
-
-        req.logIn(user, (err) => {
-          if (err) return next(err);
-          delete req.session.returnTo;
-          // Redirect intelligente
-          return res.redirect(redirectTo);
-        });
-      } catch (dbErr) {
-        if (dbErr.code === 11000) {
-          return res.redirect('/signup?error=username_taken');
-        }
-        return next(dbErr);
-      }
+    const user = await userController.createLocalUser({
+      username: req.body.username,
+      password: req.body.password,
+      requestedRole: req.body.requested_role
     });
-  } catch (err) { next(err); }
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      delete req.session.returnTo;
+      return res.redirect(redirectTo);
+    });
+  } catch (dbErr) {
+    if (dbErr.code === 11000) return res.redirect('/signup?error=username_taken');
+    return next(dbErr);
+  }
 });
 
 // ─── Google ───────────────────────────────────────────────────────────────

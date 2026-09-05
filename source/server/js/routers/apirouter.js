@@ -801,7 +801,7 @@ apiRouter.post("/visits", auth.isLoggedIn, async (req, res) => {
   try {
     const savedVisit = await visitController.createVisit(req.body, req.user);
     
-    invalidateCache(["/visits"]);
+     if (savedVisit.isPublic) invalidateCache(["/visits"]);
 
     res.status(201).json({
       message: "Visita creata con successo!",
@@ -892,7 +892,7 @@ apiRouter.put("/visits/:id", auth.isLoggedIn, async (req, res) => {
       req.user,
     );
 
-    invalidateCache(["/visits"]);
+     if (savedVisit.isPublic) invalidateCache(["/visits"]);
 
     res.status(200).json(updatedVisit);
   } catch (error) {

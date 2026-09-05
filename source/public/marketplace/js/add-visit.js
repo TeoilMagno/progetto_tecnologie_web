@@ -24,12 +24,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cartListElement = document.getElementById("visit-cart-list");
 
   // Ascoltatori per l'autosalvataggio sui campi di testo
-  document
-    .getElementById("visit-title")
-    ?.addEventListener("input", triggerAutoSave);
-  document
-    .getElementById("visit-desc")
-    ?.addEventListener("input", triggerAutoSave);
+  const cartListElement = document.getElementById("visit-cart-list");
+  document.getElementById("visit-title")?.addEventListener("input", triggerAutoSave);
+  document.getElementById("visit-desc")?.addEventListener("input", triggerAutoSave);
 
   if (cartListElement) {
     new Sortable(cartListElement, {
@@ -59,8 +56,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   } else if (!editingVisitId) {
     showMuseumSelector();
   }
-
-  await checkUserRole();
 
   // Inizializzazione barra di ricerca
   const searchContainer = document.getElementById("search-container");
@@ -212,6 +207,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Errore nel caricamento della bozza", e);
     }
   }
+
+  await checkUserRole();
 });
 
 // controlla se lo user gestisce il museo attuale per sbloccare la pubblicazione
@@ -241,31 +238,16 @@ async function checkUserRole() {
       }
 
       // Se è un curatore, sblocchiamo le opzioni SOLO se gestisce questo specifico museo
-      if (user?.role === "curator") {
+      if (user?.role === "curator" && currentMuseumId) {
         const museumsRes = await fetch(`${API_BASE_URL}/my-museums`);
-        
         if (museumsRes.ok) {
           const managedMuseums = await museumsRes.json();
-          
-          // Usiamo un interval perché se stiamo caricando una bozza, 
-          // currentMuseumId potrebbe impiegare qualche millisecondo in più a valorizzarsi
-          const checkInterval = setInterval(() => {
-            if (currentMuseumId) {
-              clearInterval(checkInterval); // Trovato l'ID, fermiamo il loop
-              
-              // Controlla se l'ID del museo in cui ci troviamo è nella lista dei suoi musei
-              const isManaged = managedMuseums.some(m => (m._id || m).toString() === currentMuseumId.toString());
-              
-              if (isManaged) {
-                // Bingo! È roba sua, sblocchiamo prezzo e pubblicazione
-                document.getElementById("curator-options-area").classList.remove("d-none");
-              } else {
-                // Non è roba sua: il div resta invisibile (classe d-none)
-                // e la visita verrà salvata forzatamente come privata e a prezzo 0.
-                console.log("Creazione visita come visitatore standard (museo non gestito).");
-              }
-            }
-          }, 100);
+          const isManaged = managedMuseums.some(m => (m._id || m).toString() === currentMuseumId.toString());
+          if (isManaged) {
+            document.getElementById("curator-options-area").classList.remove("d-none");
+          } else {
+            console.log("Creazione visita come visitatore standard (museo non gestito).");
+          }
         }
       }
     }
@@ -280,14 +262,14 @@ async function checkUserRole() {
 
 function renderQuizBuilder() {
   const container = document.getElementById("quiz-questions-container");
-  if (!container) return; // Se l'HTML non ha l'area, esci.
-
-  container.innerHTML = "";
+  if (!container) return;
 
   if (currentQuiz.length === 0) {
     container.innerHTML = `<p class="text-secondary small mb-3">Nessuna domanda inserita. Aggiungine una per creare un quiz finale.</p>`;
+    return;
   }
 
+  let html = "";
   currentQuiz.forEach((q, qIndex) => {
     let optionsHtml = "";
     q.options.forEach((opt, optIndex) => {
@@ -302,7 +284,7 @@ function renderQuizBuilder() {
       `;
     });
 
-    container.innerHTML += `
+    html += `
       <div class="card custom-card p-3 mb-3 border-secondary bg-dark bg-opacity-25">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h6 class="text-info mb-0">Domanda ${qIndex + 1}</h6>
@@ -320,6 +302,8 @@ function renderQuizBuilder() {
       </div>
     `;
   });
+
+  container.innerHTML = html;
 }
 
 function addQuizQuestion() {
@@ -458,9 +442,7 @@ async function fetchCatalogChunk(museumId, isLoadMore = false) {
         pristineWorksCache = [...allMuseumWorks];
         currentWorks = [...pristineWorksCache];
         // Popoliamo i filtri SOLO se non stiamo attualmente filtrando!
-        if (typeof initializeWorkFiltersData === "function") {
-           initializeWorkFiltersData(pristineWorksCache);
-        }
+        initializeWorkFiltersData(pristineWorksCache);
       }
       renderCatalog(allMuseumWorks, false);
     }
@@ -688,35 +670,36 @@ function renderVisitCart() {
   const emptyMsg = document.getElementById("empty-cart-msg");
   const saveBtn = document.getElementById("save-visit-btn");
 
-  cartList.innerHTML = "";
-
   if (currentVisitCart.length === 0) {
+    cartList.innerHTML = "";
     emptyMsg.classList.remove("d-none");
     saveBtn.classList.add("disabled");
-    if (typeof renderCatalog === "function" && allMuseumWorks.length > 0) {
-      renderCatalog();
-    }
+    if (allMuseumWorks.length > 0) renderCatalog(); // rimosso il typeof superfluo
+
+    const mobileCartBtn = document.getElementById("mobile-floating-cart");
+    if (mobileCartBtn) mobileCartBtn.classList.add("d-none");
     return;
   }
 
   emptyMsg.classList.add("d-none");
   saveBtn.classList.remove("disabled");
 
+  let html = "";
   currentVisitCart.forEach((item) => {
-    cartList.innerHTML += `
-            <li class="list-group-item bg-transparent text-white d-flex justify-content-between align-items-center border-secondary border-opacity-25" data-id="${item.id}">
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-list drag-handle text-secondary me-3 fs-5"></i>
-                    <span class="text-truncate" style="max-width: 180px;">${item.name}</span>
-                </div>
-                <button class="btn btn-sm btn-outline-danger border-0 rounded-circle" onclick="removeFromVisit('${item.id}')">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </li>
-        `;
+    html += `
+      <li class="list-group-item bg-transparent text-white d-flex justify-content-between align-items-center border-secondary border-opacity-25" data-id="${item.id}">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-list drag-handle text-secondary me-3 fs-5"></i>
+          <span class="text-truncate" style="max-width: 180px;">${item.name}</span>
+        </div>
+        <button class="btn btn-sm btn-outline-danger border-0 rounded-circle" onclick="removeFromVisit('${item.id}')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </li>
+    `;
   });
+  cartList.innerHTML = html;
 
-  // Floating Bar per UI Mobile che permette di scorrere al carrello con un tap
   let mobileCartBtn = document.getElementById("mobile-floating-cart");
   if (!mobileCartBtn) {
     mobileCartBtn = document.createElement("div");
@@ -725,15 +708,11 @@ function renderVisitCart() {
     document.body.appendChild(mobileCartBtn);
   }
 
-  if (currentVisitCart.length === 0) {
-    mobileCartBtn.classList.add("d-none");
-  } else {
-    mobileCartBtn.classList.remove("d-none");
-    mobileCartBtn.innerHTML = `
-      <span class="text-white fw-bold"><i class="bi bi-cart me-2"></i>${currentVisitCart.length} opere</span>
-      <button class="btn btn-info btn-sm fw-bold" onclick="document.getElementById('visit-cart-list').scrollIntoView({behavior: 'smooth', block: 'center'})">Vai al Carrello</button>
-    `;
-  }
+  mobileCartBtn.classList.remove("d-none");
+  mobileCartBtn.innerHTML = `
+    <span class="text-white fw-bold"><i class="bi bi-cart me-2"></i>${currentVisitCart.length} opere</span>
+    <button class="btn btn-info btn-sm fw-bold" onclick="document.getElementById('visit-cart-list').scrollIntoView({behavior: 'smooth', block: 'center'})">Vai al Carrello</button>
+  `;
 }
 
 // Aggiunto il parametro isSavingAsDraft (di default false)

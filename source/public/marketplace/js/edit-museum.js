@@ -108,7 +108,6 @@ async function loadMuseumDetails() {
 // CARICAMENTO GERARCHICO: Sezioni -> Stanze -> Opere
 async function loadSectionsAndWorks() {
   const container = document.getElementById("sectionsAccordion");
-  container.innerHTML = "";
   worksCache = {};
 
   try {
@@ -120,18 +119,21 @@ async function loadSectionsAndWorks() {
       return;
     }
 
-    for (let index = 0; index < museumSections.length; index++) {
-      const section = museumSections[index];
-      
-      // Carichiamo le opere della sezione
-      const worksRes = await fetch(`${API_BASE_URL}/sections/${section._id}/works`);
-      const works = await worksRes.json();
+    // Le opere di ogni sezione sono indipendenti tra loro: fetch in parallelo
+    const worksPerSection = await Promise.all(
+      museumSections.map(section =>
+        fetch(`${API_BASE_URL}/sections/${section._id}/works`).then(r => r.json())
+      )
+    );
+
+    let html = "";
+    museumSections.forEach((section, index) => {
+      const works = worksPerSection[index];
       works.forEach(w => worksCache[w._id] = w);
+      html += renderSectionAccordionItem(section, works, index);
+    });
+    container.innerHTML = html;
 
-      container.innerHTML += renderSectionAccordionItem(section, works, index);
-    }
-
-    // Inizializza il Drag and Drop dopo aver generato l'HTML
     setTimeout(initSortableWorks, 100);
   } catch (error) {
     console.error("Errore sezioni:", error);
@@ -590,19 +592,21 @@ async function confirmDeleteMuseum() {
           "Eliminazione museo",
           `Attenzione! Hai ${activeImports.length} opere in prestito da altri musei.\n\nVuoi restituirle tutte automaticamente prima di eliminare il museo? (Se annulli, l'eliminazione verrà interrotta).`
         );
-        
-        if(!isConfirmed) {
+
+        if (!isConfirmed) {
           deleteMuseumModalInstance.hide();
-          return; 
+          return;
         }
 
-        // Restituiamo le opere una per una
-        for (let ad of activeImports) {
-          await fetch(`${API_BASE_URL}/adoptions/${ad._id}/complete`, { 
-            method: "PUT",
-            headers: { "Content-Type": "application/json" }
-          });
-        }
+        // Le restituzioni sono indipendenti tra loro: eseguile in parallelo
+        await Promise.all(
+          activeImports.map(ad =>
+            fetch(`${API_BASE_URL}/adoptions/${ad._id}/complete`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" }
+            })
+          )
+        );
       }
     }
 

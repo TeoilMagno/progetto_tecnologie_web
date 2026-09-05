@@ -91,11 +91,11 @@ function updateCartUI() {
   cartBadge.classList.toggle('d-none', totalItems === 0);
 
   // Aggiorna lista
-  cartList.innerHTML = '';
+  let html = "";
   let totalPrice = 0;
 
   if (cart.length === 0) {
-    cartList.innerHTML = `<div class="text-center text-secondary mt-5"><i class="bi bi-cart-x fs-1"></i><p>Il carrello è vuoto</p></div>`;
+    html = `<div class="text-center text-secondary mt-5"><i class="bi bi-cart-x fs-1"></i><p>Il carrello è vuoto</p></div>`;
   } else {
     cart.forEach(item => {
       totalPrice += item.price * item.quantity;
@@ -110,7 +110,7 @@ function updateCartUI() {
            </div>`
         : `<span class="small text-secondary d-block mt-1"><i class="bi bi-person-fill"></i> Singolo accesso</span>`;
       
-      cartList.innerHTML += `
+      html += `
         <div class="d-flex align-items-center mb-3 border-bottom border-secondary border-opacity-25 pb-2">
           <img src="${item.image || '/img/fallback-work.jpg'}" style="width: 55px; height: 55px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" class="rounded me-3 shadow-sm">
           <div class="flex-grow-1">
@@ -128,7 +128,7 @@ function updateCartUI() {
       `;
     });
   }
-
+  cartList.innerHTML = html;
   cartTotal.innerText = `€ ${totalPrice.toFixed(2)}`;
 }
 

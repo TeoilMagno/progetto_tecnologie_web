@@ -37,7 +37,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/visits/${visitId}`);
+    const [response, userRes] = await Promise.all([
+      fetch(`${API_BASE_URL}/visits/${visitId}`),
+      fetch(`${API_BASE_URL}/current-user`).catch(() => null) // non deve mai bloccare la pagina
+    ]);
+    
     if (!response.ok) {
       if (response.status === 403) {
         alert("Questa visita è privata o richiede il login per essere visualizzata.");
@@ -62,13 +66,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // recuperiamo l'utente corrente
     let currentUser = null;
-    try {
-      const userRes = await fetch(`${API_BASE_URL}/current-user`);
-      if (userRes.ok) {
-        currentUser = await userRes.json();
-      }
-    } catch (e) {
-      console.warn("Utente non autenticato", e);
+    if (userRes && userRes.ok) {
+      try { currentUser = await userRes.json(); } catch (e) { console.warn("Utente non autenticato", e); }
     }
 
     // se l'utente è il creatore della visita o un admin, mostriamo il tasto Modifica
@@ -94,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const sidebarImg = document.getElementById("visit-sidebar-img");
       if (sidebarImg) sidebarImg.src = bgImage;
     } else {
-      banner.style.background = "linear-gradient(135px, #1e1e2f, #11111d)";
+      banner.style.background = "linear-gradient(135deg, #1e1e2f, #11111d)";
       const sidebarImg = document.getElementById("visit-sidebar-img");
       if (sidebarImg) sidebarImg.src = "/marketplace/favicon.svg";
     }
@@ -201,7 +200,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // generiamo la timeline delle opere
     const timeline = document.getElementById("visit-timeline");
-    timeline.innerHTML = "";
+    let html = "";
 
     if (!visit.works || visit.works.length === 0) {
       timeline.innerHTML = `<p class="text-secondary">Questa visita non contiene ancora nessuna opera.</p>`;
@@ -209,64 +208,65 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     visit.works.forEach((work, index) => {
-            if (!work) {
-              timeline.innerHTML += `
-                  <li class="timeline-work">
-                      <div class="card custom-card p-3 border-danger bg-danger bg-opacity-10" style="border-radius: 12px;">
-                          <div class="row align-works-center g-3">
-                              <div class="col">
-                                  <span class="badge bg-danger border border-danger mb-1"><i class="bi bi-trash-fill me-1"></i> Tappa ${index + 1} - Opera Rimossa</span>
-                                  <h5 class="h6 mb-1 text-danger">Contenuto non disponibile</h5>
-                                  <p class="small text-danger opacity-75 mb-0">Quest'opera è stata eliminata definitivamente dal database e non è più visitabile.</p>
-                              </div>
-                          </div>
-                      </div>
-                  </li>
-              `;
-              return; // Salta il resto del ciclo per questa specifica opera e passa alla successiva
-            }
-            
-            const descText = (work.description && work.description.length > 0) 
-              ? work.description[0].description 
-              : '';
-              
-            // LOGICA ADOZIONE: Mostriamo il warning se l'opera è in prestito o in transito
-            let adoptionWarning = "";
-            const adoption = work.adoptionId || work.adoption; // Dipende da come lo popoli nel backend
-            
-            if (adoption && (adoption.status === 'accepted' || adoption.status === 'active')) {
-              const beginDate = new Date(adoption.beginDate).toLocaleDateString('it-IT');
-              const endDate = new Date(adoption.endDate).toLocaleDateString('it-IT');
-              
-              adoptionWarning = `
-                <div class="alert alert-warning mt-2 mb-0 py-1 px-2 small border-warning text-dark d-flex align-items-center gap-1" style="border-radius: 8px;">
-                  <i class="bi bi-exclamation-triangle-fill text-warning fs-6"></i>
-                  <span><strong>Prestito:</strong> non disponibile dal <strong>${beginDate}</strong> al <strong>${endDate}</strong>.</span>
-                </div>
-              `;
-            }
-
-            timeline.innerHTML += `
-                <li class="timeline-work">
-                    <div class="card custom-card p-3" style="border-radius: 14px;">
-                        <div class="row align-items-center g-3">
-                            ${work.image ? `
-                            <div class="col-3 col-md-2 text-center">
-                                <img src="${work.image}" class="img-fluid rounded shadow-sm" 
-                                     style="max-height: 80px; object-fit: cover; width: 100%; border: 1px solid rgba(255,255,255,0.05);">
-                            </div>
-                            ` : ''}
-                            <div class="col">
-                                <span class="badge bg-dark bg-opacity-50 border border-secondary border-opacity-20 text-info mb-1" style="font-size: 0.75rem; font-weight: 600;">Tappa ${index + 1}</span>
-                                <h5 class="h6 mb-1 text-white fw-bold">${work.name}</h5>
-                                <p class="small text-white-50 mb-0" style="font-size: 0.85rem; line-height: 1.4;">${descText}</p>
-                                ${adoptionWarning}
-                            </div>
+      if (!work) {
+        html += `
+            <li class="timeline-work">
+                <div class="card custom-card p-3 border-danger bg-danger bg-opacity-10" style="border-radius: 12px;">
+                    <div class="row align-works-center g-3">
+                        <div class="col">
+                            <span class="badge bg-danger border border-danger mb-1"><i class="bi bi-trash-fill me-1"></i> Tappa ${index + 1} - Opera Rimossa</span>
+                            <h5 class="h6 mb-1 text-danger">Contenuto non disponibile</h5>
+                            <p class="small text-danger opacity-75 mb-0">Quest'opera è stata eliminata definitivamente dal database e non è più visitabile.</p>
                         </div>
                     </div>
-                </li>
-            `;
-        });
+                </div>
+            </li>
+        `;
+        return; // Salta il resto del ciclo per questa specifica opera e passa alla successiva
+      }
+      
+      const level = work.description?.[visit.expertiseLevel] ? visit.expertiseLevel : 'medium';
+      const lengthKey = work.description?.[level]?.[visit.preferredLength] ? visit.preferredLength : 'medium';
+      const descText = work.description?.[level]?.[lengthKey] || '';
+        
+      // LOGICA ADOZIONE: Mostriamo il warning se l'opera è in prestito o in transito
+      let adoptionWarning = "";
+      const adoption = work.adoptionId || work.adoption; // Dipende da come lo popoli nel backend
+      
+      if (adoption && (adoption.status === 'accepted' || adoption.status === 'active')) {
+        const beginDate = new Date(adoption.beginDate).toLocaleDateString('it-IT');
+        const endDate = new Date(adoption.endDate).toLocaleDateString('it-IT');
+        
+        adoptionWarning = `
+          <div class="alert alert-warning mt-2 mb-0 py-1 px-2 small border-warning text-dark d-flex align-items-center gap-1" style="border-radius: 8px;">
+            <i class="bi bi-exclamation-triangle-fill text-warning fs-6"></i>
+            <span><strong>Prestito:</strong> non disponibile dal <strong>${beginDate}</strong> al <strong>${endDate}</strong>.</span>
+          </div>
+        `;
+      }
+
+      html += `
+          <li class="timeline-work">
+              <div class="card custom-card p-3" style="border-radius: 14px;">
+                  <div class="row align-items-center g-3">
+                      ${work.image ? `
+                      <div class="col-3 col-md-2 text-center">
+                          <img src="${work.image}" class="img-fluid rounded shadow-sm" 
+                                style="max-height: 80px; object-fit: cover; width: 100%; border: 1px solid rgba(255,255,255,0.05);">
+                      </div>
+                      ` : ''}
+                      <div class="col">
+                          <span class="badge bg-dark bg-opacity-50 border border-secondary border-opacity-20 text-info mb-1" style="font-size: 0.75rem; font-weight: 600;">Tappa ${index + 1}</span>
+                          <h5 class="h6 mb-1 text-white fw-bold">${work.name}</h5>
+                          <p class="small text-white-50 mb-0" style="font-size: 0.85rem; line-height: 1.4;">${descText}</p>
+                          ${adoptionWarning}
+                      </div>
+                  </div>
+              </div>
+          </li>
+      `;
+    });
+    timeline.innerHTML = html;
   } catch (error) {
     console.error(error);
     document.getElementById("visit-main-title").innerText =

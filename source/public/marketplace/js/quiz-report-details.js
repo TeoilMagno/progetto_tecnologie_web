@@ -32,7 +32,7 @@ function renderReportDetails(report) {
   subtitle.innerHTML = `Stanza: <span class="text-white font-monospace">${report.roomCode}</span> &bull; ${dateStr}`;
 
   const quizData = report.visitId?.quiz || [];
-  container.innerHTML = "";
+  let html = "";
 
   if (!report.results || report.results.length === 0) {
     container.innerHTML = `<div class="text-center text-secondary py-4">Nessuno studente ha ancora completato il quiz in questa sessione.</div>`;
@@ -42,7 +42,7 @@ function renderReportDetails(report) {
   report.results.forEach((student, idx) => {
     const isMax = student.score === quizData.length;
     
-    container.innerHTML += `
+    html += `
       <div class="col-12">
         <div class="card custom-card p-3 cursor-pointer" onclick="openStudentReview(${idx})" style="cursor: pointer;">
           <div class="d-flex justify-content-between align-items-center">
@@ -60,6 +60,8 @@ function renderReportDetails(report) {
         </div>
       </div>`;
   });
+
+  container.innerHTML = html;
 }
 
 function openStudentReview(studentIndex) {
@@ -72,7 +74,7 @@ function openStudentReview(studentIndex) {
   document.getElementById("modal-student-score").innerText = `Punteggio: ${student.score} / ${quizData.length}`;
 
   const bodyContainer = document.getElementById("modal-review-body");
-  bodyContainer.innerHTML = "";
+  let html = "";
 
   quizData.forEach((q, idx) => {
     const studentAnswer = student.answers.find(h => h.qIndex === idx);
@@ -98,7 +100,7 @@ function openStudentReview(studentIndex) {
       ? `<i class="bi bi-check-circle-fill text-success fs-5 me-2 flex-shrink-0"></i>`
       : `<i class="bi bi-x-circle-fill text-danger fs-5 me-2 flex-shrink-0"></i>`;
 
-    bodyContainer.innerHTML += `
+    html += `
       <div class="card bg-dark border ${isCorrect ? 'border-success border-opacity-25 bg-success bg-opacity-10' : 'border-danger border-opacity-25 bg-danger bg-opacity-10'} p-3 mb-3">
         <div class="d-flex align-items-start mb-2">
           ${iconHtml}
@@ -110,6 +112,8 @@ function openStudentReview(studentIndex) {
         </div>
       </div>`;
   });
+
+  bodyContainer.innerHTML = html;
 
   reviewModalInstance.show();
 }

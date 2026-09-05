@@ -61,7 +61,7 @@ async function loadMuseumSections(museumId) {
 // RENDERIZZA LA LISTA COMPATTA DELLE SEZIONI
 function renderSectionsList() {
   const container = document.getElementById("sectionsContainer");
-  container.innerHTML = "";
+  let html = "";
 
   if (localSections.length === 0) {
     container.innerHTML = `<div class="text-white-50 small mb-3">Nessuna sezione registrata. Clicca su "Aggiungi Sezione" per definirne una.</div>`;
@@ -69,7 +69,7 @@ function renderSectionsList() {
   }
 
   localSections.forEach((sec, index) => {
-    container.innerHTML += `
+    html += `
       <div class="glass-panel p-3 mb-3 d-flex align-items-center justify-content-between" style="border-radius: 12px;">
         <div class="d-flex align-items-center gap-3">
           <img src="${sec.image || '/img/default-section.jpg'}" alt="${sec.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
@@ -85,6 +85,7 @@ function renderSectionsList() {
       </div>
     `;
   });
+  container.innerHTML = html;
 }
 
 // APRE IL MODALE (Sia per creazione che per modifica)

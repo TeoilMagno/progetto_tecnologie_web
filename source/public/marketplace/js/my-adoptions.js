@@ -146,7 +146,7 @@ function renderAdoptionsList(list, container, isIncoming) {
     return;
   }
 
-  container.innerHTML = "";
+  let html = "";
 
   list.forEach(a => {
     const workName = a.workId ? a.workId.name : "Opera non specificata";
@@ -216,7 +216,7 @@ function renderAdoptionsList(list, container, isIncoming) {
       actionButtons = ""; 
     }
 
-    container.innerHTML += `
+    html += `
       <div class="col">
         <div class="card custom-card h-100 border border-secondary border-opacity-25">
           <div class="card-body p-3">
@@ -239,6 +239,7 @@ function renderAdoptionsList(list, container, isIncoming) {
         </div>
       </div>`;
   });
+  container.innerHTML = html;
 }
 
 // Azione: Accetta / Rifiuta richiesta

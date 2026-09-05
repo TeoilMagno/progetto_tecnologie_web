@@ -17,12 +17,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    container.innerHTML = "";
+    let html = "";
     reports.forEach(report => {
       const visitTitle = report.visitId?.title || 'Visita Eliminata';
       const dateStr = new Date(report.date).toLocaleDateString('it-IT');
 
-      container.innerHTML += `
+      html += `
         <div class="col-12">
           <div class="card custom-card p-3 cursor-pointer" onclick="window.location.href='/quiz-report-details?id=${report._id}'" style="cursor: pointer;">
             <div class="d-flex justify-content-between align-items-center">
@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         </div>`;
     });
+    container.innerHTML = html;
   } catch (error) {
     console.error(error);
     container.innerHTML = `<div class="col-12 text-center text-danger">Impossibile caricare i report.</div>`;

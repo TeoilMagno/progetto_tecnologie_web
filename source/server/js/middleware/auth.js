@@ -4,6 +4,7 @@ const GoogleStrategy = require("passport-google-oidc");
 const GitHubStrategy = require('passport-github2').Strategy;
 const crypto = require("crypto");
 const { User, FederatedCredential } = require("../models/users");
+const userController = require('../controllers/users');
 
 // ─── Serialize / Deserialize ───────────────────────────────────────────────
 /*
@@ -24,23 +25,18 @@ passport.deserializeUser(async (id, cb) => {
 });
 
 // ─── Local Strategy ────────────────────────────────────────────────────────
-passport.use(
-  new LocalStrategy(async (username, password, cb) => {
-    try {
-      const user = await User.findOne({ username });
-      if (!user) return cb(null, false, { message: "username_not_found" });
+passport.use(new LocalStrategy(async (username, password, cb) => {
+  try {
+    const user = await User.findOne({ username });
+    if (!user) return cb(null, false, { message: "username_not_found" });
 
-      crypto.pbkdf2(password, user.salt, 310000, 32, "sha256", (err, hash) => {
-        if (err) return cb(err);
-        if (!crypto.timingSafeEqual(hash, user.password))
-          return cb(null, false, { message: "incorrect_password" });
-        return cb(null, user);
-      });
-    } catch (err) {
-      cb(err);
-    }
-  })
-);
+    const isValid = await userController.verifyPassword(user, password);
+    if (!isValid) return cb(null, false, { message: "incorrect_password" });
+    return cb(null, user);
+  } catch (err) {
+    cb(err);
+  }
+}));
 
 // ─── Google Strategy ───────────────────────────────────────────────────────
 /*
@@ -63,25 +59,12 @@ passport.use(
     },
     async (issuer, profile, cb) => {
       try {
-        const cred = await FederatedCredential.findOne({
-          provider: issuer,
-          subject: profile.id,
-        });
-        if (!cred) { // e' un utente nuovo, lo creo
-          const user = await User.create({ name: profile.displayName });
-          await FederatedCredential.create({
-            user_id: user._id,
-            provider: issuer,
-            subject: profile.id,
-          });
-          return cb(null, user);
-        } // utente gia' registrato
-        const user = await User.findById(cred.user_id);
+        const user = await userController.findOrCreateFederatedUser(
+          issuer, profile.id, { name: profile.displayName }
+        );
         if (!user) return cb(null, false);
         return cb(null, user);
-      } catch (err) {
-        cb(err);
-      }
+      } catch (err) { cb(err); }
     }
   )
 );
@@ -94,35 +77,13 @@ passport.use(new GitHubStrategy({
   },
   async function(accessToken, refreshToken, profile, done) {
     try {
-      const providerName = "https://github.com"; 
-      
-      // Cerchiamo se esiste già un ponte (credenziale) per questo ID GitHub
-      const cred = await FederatedCredential.findOne({
-        provider: providerName,
-        subject: profile.id,
-      });
-
-      if (!cred) { 
-        // L'utente è nuovo: su GitHub displayName può essere vuoto, quindi cadiamo in piedi con l'username
-        const userName = profile.displayName || profile.username;
-        const user = await User.create({ username: userName, role: 'visitor', curator_status: 'none' }); 
-        
-        await FederatedCredential.create({
-          user_id: user._id,
-          provider: providerName,
-          subject: profile.id,
-        });
-        return done(null, user);
-      } 
-      
-      // L'utente è già registrato, lo cerchiamo nel nostro DB
-      const user = await User.findById(cred.user_id);
+      const userName = profile.displayName || profile.username;
+      const user = await userController.findOrCreateFederatedUser(
+        "https://github.com", profile.id, { username: userName, role: 'visitor', curator_status: 'none' }
+      );
       if (!user) return done(null, false);
-      
       return done(null, user);
-    } catch (err) {
-      done(err);
-    }
+    } catch (err) { done(err); }
   }
 ));
 

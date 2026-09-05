@@ -256,49 +256,38 @@ exports.deleteMuseumById = async (museumId) => {
 
   if (museum.image) await deleteLocalFile(museum.image);
 
-  // Deleghiamo l'eliminazione di ogni sezione (e a cascata delle sue opere) a deleteSectionById.
-  // Se una sezione fosse già sparita dal DB (es. rimossa a mano), non blocchiamo l'eliminazione
-  // dell'intero museo: logghiamo e proseguiamo con le altre.
+  // Le sezioni sono indipendenti tra loro: le eliminiamo in parallelo.
+  // allSettled invece di all() perché, come nel codice originale, il fallimento
+  // di una sezione non deve bloccare l'eliminazione delle altre.
   if (museum.sections && museum.sections.length > 0) {
-    for (const sectionId of museum.sections) {
-      try {
-        await deleteSectionById(sectionId, museumId);
-      } catch (err) {
-        console.warn(`Impossibile eliminare la sezione ${sectionId} durante la cascata: ${err.message}`);
+    const results = await Promise.allSettled(
+      museum.sections.map(sectionId => deleteSectionById(sectionId, museumId))
+    );
+    results.forEach((result, i) => {
+      if (result.status === 'rejected') {
+        console.warn(`Impossibile eliminare la sezione ${museum.sections[i]} durante la cascata: ${result.reason.message}`);
       }
-    }
+    });
   }
 
-  // Eliminiamo anche gli articoli del bookshop e tutte le visite (inclusa quella standard) del museo
-  try {
-    await deleteAllItemsByMuseum(museumId);
-  } catch (err) {
-    console.warn(`Errore durante l'eliminazione degli articoli del museo ${museumId}: ${err.message}`);
+  // Items e visite sono due rami indipendenti: via in parallelo
+  const [itemsResult, visitsResult] = await Promise.allSettled([
+    deleteAllItemsByMuseum(museumId),
+    deleteAllVisitsByMuseum(museumId)
+  ]);
+  if (itemsResult.status === 'rejected') {
+    console.warn(`Errore durante l'eliminazione degli articoli del museo ${museumId}: ${itemsResult.reason.message}`);
+  }
+  if (visitsResult.status === 'rejected') {
+    console.warn(`Errore durante l'eliminazione delle visite del museo ${museumId}: ${visitsResult.reason.message}`);
   }
 
-  try {
-    await deleteAllVisitsByMuseum(museumId);
-  } catch (err) {
-    console.warn(`Errore durante l'eliminazione delle visite del museo ${museumId}: ${err.message}`);
-  }
-
-  // rimuoviamo il museo dai musei gestiti dagli utenti
-  await User.updateMany(
-    { managed_museums: museumId },
-    { $pull: { managed_museums: museumId } }
-  );
-
-  // rimuove museumId da tutte le descrizioni degli autori
-  await Author.updateMany(
-    { "data.museumId": museumId },
-    { $pull: { "data.$[].museumId": museumId } }
-  );
-
-  // rimuove museumId da tutte le descrizioni degli stili
-  await Style.updateMany(
-    { "data.museumId": museumId },
-    { $pull: { "data.$[].museumId": museumId } }
-  );
+  // Le tre pulizie referenziali finali sono indipendenti: qui va bene Promise.all (nessuna deve "tollerare" il fallimento delle altre)
+  await Promise.all([
+    User.updateMany({ managed_museums: museumId }, { $pull: { managed_museums: museumId } }),
+    Author.updateMany({ "data.museumId": museumId }, { $pull: { "data.$[].museumId": museumId } }),
+    Style.updateMany({ "data.museumId": museumId }, { $pull: { "data.$[].museumId": museumId } })
+  ]);
 
   return museum;
 };

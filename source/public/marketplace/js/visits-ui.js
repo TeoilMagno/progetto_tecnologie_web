@@ -58,7 +58,7 @@ async function getMyVisits() {
 function renderVisitsList(visits, containerId = "managed-visits-area") {
   const container = document.getElementById(containerId);
   if (!container) return;
-  container.innerHTML = "";
+  let html = "";
 
   const targetMap = { kids: 'Bambini', families: 'Famiglie', adults: 'Adulti', schools: 'Scuole' };
   const accMap = { wheelchair_accessible: '♿', blind_friendly: '👁️', deaf_friendly: '👂', dsa_friendly: '🧠', sensory_friendly: '🧘' };
@@ -137,7 +137,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
 
     const museumName = visit.museumId ? visit.museumId.name : "<span class='text-danger fw-bold'><i class='bi bi-exclamation-octagon-fill'></i> Museo Chiuso/Eliminato</span>";
 
-    container.innerHTML += `
+    html += `
       <div class="col">
         <div class="card h-100 custom-card" onclick="window.location.href='/visit-details?id=${visit._id}'">
           <div class="card-body d-flex flex-column" style="cursor: pointer">
@@ -168,6 +168,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
         </div>
       </div>`;
   });
+  container.innerHTML = html;
 }
 
 // 1. Ora deleteVisit è correttamente ASINCRONA
@@ -189,7 +190,8 @@ async function deleteVisit(visitId) {
     }
 
     alert("Visita o bozza eliminata con successo!");
-    getMyVisits();
+    cachedVisits = cachedVisits.filter(v => v._id !== visitId);
+    renderVisitsList(cachedVisits, "managed-visits-area");
   } catch (error) {
     console.error("Errore eliminazione visita:", error);
     alert("Impossibile eliminare la visita: " + error.message);

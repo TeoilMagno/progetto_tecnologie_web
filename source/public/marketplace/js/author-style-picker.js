@@ -75,10 +75,9 @@ async function fetchAuthors(query) {
 // Stampa i risultati nella tendina
 function renderAuthorDropdown(authors, query) {
   const resultsContainer = document.getElementById("author-search-results");
-  resultsContainer.innerHTML = "";
-  
+  let html = "";
   if (authors.length === 0) {
-    resultsContainer.innerHTML = `
+    html = `
       <li class="px-3 py-2 small text-secondary">Nessun autore trovato.</li>
       <li><hr class="dropdown-divider border-secondary border-opacity-25"></li>
       <li><button type="button" class="dropdown-item text-info small" onclick="createNewAuthor('${query.replace(/'/g, "\\'")}')"><i class="bi bi-plus-circle me-1"></i> Crea nuovo autore: "${query}"</button></li>
@@ -87,12 +86,12 @@ function renderAuthorDropdown(authors, query) {
     authors.forEach(author => {
       const safeId = author._id;
       const safeName = author.name.replace(/'/g, "\\'");
-      resultsContainer.innerHTML += `
+      html += `
         <li><button type="button" class="dropdown-item text-white small" onclick="selectAuthor('${safeId}', '${safeName}')">${author.name}</button></li>
       `;
     });
   }
-  
+  resultsContainer.innerHTML = html;
   resultsContainer.style.display = "block";
 }
 
@@ -118,8 +117,8 @@ async function selectAuthor(authorId, authorName) {
     currentFetchedAuthor = author;
 
     document.getElementById("work-author-search").value = author.name;
-    slider.innerHTML = "";
-    
+    let html = "";
+
     // Cerchiamo se il nostro museo ha già una descrizione pre-selezionata
     let preselectedDataId = "";
     if (author.data && author.data.length > 0) {
@@ -156,7 +155,7 @@ async function selectAuthor(authorId, authorName) {
         const borderClass = isSelected ? "border-success bg-success bg-opacity-25" : "border-secondary bg-dark bg-opacity-50";
         const checkIcon = isSelected ? `<i class="bi bi-check-circle-fill text-success position-absolute top-0 end-0 m-2 fs-5 author-check-icon"></i>` : "";
 
-        slider.innerHTML += `
+        html += `
           <div class="card ${borderClass} author-card-item flex-shrink-0 position-relative" 
                style="width: 280px; scroll-snap-align: start; cursor: pointer; transition: all 0.2s;" 
                id="author-card-${d._id}"
@@ -181,6 +180,7 @@ async function selectAuthor(authorId, authorName) {
           </div>
         `;
       });
+    slider.innerHTML = html;
     } else {
       slider.innerHTML = `<p class="small text-secondary m-2">Nessuna biografia presente.</p>`;
     }
@@ -323,19 +323,20 @@ async function fetchStyles(query) {
 
 function renderStyleDropdown(styles, query) {
   const container = document.getElementById("style-search-results");
-  container.innerHTML = "";
+  let html = "";
   if (styles.length === 0) {
-    container.innerHTML = `
-      <li class="px-3 py-2 small text-secondary">Nessuno stile trovato.</li>
-      <li><hr class="dropdown-divider border-secondary border-opacity-25"></li>
-      <li><button type="button" class="dropdown-item text-info small" onclick="createNewStyle('${query.replace(/'/g, "\\'")}')"><i class="bi bi-plus-circle me-1"></i> Crea nuovo: "${query}"</button></li>
+    html = `
+    <li class="px-3 py-2 small text-secondary">Nessuno stile trovato.</li>
+    <li><hr class="dropdown-divider border-secondary border-opacity-25"></li>
+    <li><button type="button" class="dropdown-item text-info small" onclick="createNewStyle('${query.replace(/'/g, "\\'")}')"><i class="bi bi-plus-circle me-1"></i> Crea nuovo: "${query}"</button></li>
     `;
   } else {
     styles.forEach(s => {
       const safeName = s.name.replace(/'/g, "\\'");
-      container.innerHTML += `<li><button type="button" class="dropdown-item text-white small" onclick="selectStyle('${s._id}', '${safeName}')">${s.name}</button></li>`;
+      hmtl += `<li><button type="button" class="dropdown-item text-white small" onclick="selectStyle('${s._id}', '${safeName}')">${s.name}</button></li>`;
     });
   }
+  container.innerHTML = html;
   container.style.display = "block";
 }
 
@@ -358,7 +359,7 @@ async function selectStyle(styleId, styleName) {
     currentFetchedStyle = style;
 
     document.getElementById("work-style-search").value = style.name;
-    slider.innerHTML = "";
+    let html = "";
 
     // Troviamo se c'è una definizione già selezionata dal nostro museo
     let preselectedDataId = "";
@@ -395,7 +396,7 @@ async function selectStyle(styleId, styleName) {
         const borderClass = isSelected ? "border-success bg-success bg-opacity-25" : "border-secondary bg-dark bg-opacity-50";
         const checkIcon = isSelected ? `<i class="bi bi-check-circle-fill text-success position-absolute top-0 end-0 m-2 fs-5 style-check-icon"></i>` : "";
 
-        slider.innerHTML += `
+        html += `
           <div class="card ${borderClass} style-card-item flex-shrink-0 position-relative" 
                style="width: 280px; scroll-snap-align: start; cursor: pointer; transition: all 0.2s;" 
                id="style-card-${d._id}"
@@ -418,6 +419,7 @@ async function selectStyle(styleId, styleName) {
           </div>
         `;
       });
+    slider.innerHTML = html;
     } else {
       slider.innerHTML = `<p class="small text-secondary m-2">Nessuna definizione presente.</p>`;
     }

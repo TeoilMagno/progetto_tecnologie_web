@@ -27,12 +27,12 @@ async function loadPendingCurators() {
       return;
     }
 
-    listContainer.innerHTML = "";
+    let html = "";
 
     users.forEach(user => {
       const nameDisplay = user.name ? `${user.name} (@${user.username})` : `@${user.username}`;
       
-      listContainer.innerHTML += `
+      html += `
         <li class="list-group-item bg-transparent text-white d-flex flex-column flex-md-row justify-content-between align-items-md-center py-3 border-secondary border-opacity-25">
           <div class="mb-3 mb-md-0">
             <h6 class="mb-1 text-info fw-bold"><i class="bi bi-person-badge me-2"></i>${nameDisplay}</h6>
@@ -49,6 +49,7 @@ async function loadPendingCurators() {
         </li>
       `;
     });
+    listContainer.innerHTML = html;
   } catch (error) {
     console.error(error);
     listContainer.innerHTML = `<li class="list-group-item bg-transparent text-center text-danger border-0">Errore di connessione.</li>`;

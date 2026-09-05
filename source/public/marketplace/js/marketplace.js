@@ -655,7 +655,7 @@ async function loadMuseumSubView(view, museumId) {
 function renderVisitsListForMuseum(visits) {
   const container = document.getElementById("museum-display-area");
   if (!container) return;
-  container.innerHTML = "";
+  let html = "";
 
   if (visits.length === 0) {
     container.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessuna visita guidata disponibile per questo museo.</div>';
@@ -689,7 +689,7 @@ function renderVisitsListForMuseum(visits) {
       });
     }
 
-    container.innerHTML += `
+    html += `
       <div class="col-12 col-md-6 col-lg-4">
         <div class="card h-100 custom-card cursor-pointer overflow-hidden" onclick="window.location.href='/visit-details?id=${visit._id}'">
           
@@ -725,6 +725,7 @@ function renderVisitsListForMuseum(visits) {
         </div>
       </div>`;
   });
+  container.innerHTML = html;
 }
 
 function renderWorksList(works, append = false) {

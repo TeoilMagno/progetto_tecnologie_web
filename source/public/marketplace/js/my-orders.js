@@ -14,7 +14,7 @@ function renderOrdersList(ordersToRender) {
     return;
   }
 
-  container.innerHTML = ""; 
+  let html = ""; 
 
   ordersToRender.forEach((order) => {
     const orderDate = new Date(order.createdAt).toLocaleDateString('it-IT', {
@@ -52,7 +52,7 @@ function renderOrdersList(ordersToRender) {
     }
 
     // Card Ordine con Glassmorphism
-    container.innerHTML += `
+    html += `
       <div class="card mb-4 border-0" style="background: transparent;">
         <div class="glass-modal rounded-4 border border-secondary border-opacity-25 overflow-hidden shadow-lg">
           
@@ -77,6 +77,7 @@ function renderOrdersList(ordersToRender) {
         </div>
       </div>`;
   });
+  container.innerHTML = html;
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

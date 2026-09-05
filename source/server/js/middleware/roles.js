@@ -45,28 +45,14 @@ exports.isAdminPage = (req, res, next) => {
 
 // non c'e' il controllo sullo user perche' va abbinato a iscurator
 exports.isMuseumOwner = async (req, res, next) => {
-  if (req.user.role === 'admin') {
-    return next();
-  }
+  if (req.user.role === 'admin') return next();
 
   const museumId = req.body.museumId || req.params.id;
-
-  if (!museumId) {
-    return res.status(400).json({ error: "ID museo non specificato per la verifica permessi" });
-  }
+  if (!museumId) return res.status(400).json({ error: "ID museo non specificato per la verifica permessi" });
 
   try {
-    // Ignoriamo la sessione e andiamo a prendere i dati VINTAGE DIRETTAMENTE DAL DB
-    const { User } = require('../models/users'); 
-    const freshUser = await User.findById(req.user._id);
-
-    const managed = freshUser.managed_museums || [];
-    const isOwner = managed.some(id => id.toString() === museumId.toString());
-
-    if (isOwner) {
-      return next();
-    }
-  
+    const isOwner = await userController.isManagingMuseum(req.user._id, museumId);
+    if (isOwner) return next();
     return res.status(403).json({ error: "Non sei autorizzato a gestire questo museo" });
   } catch (error) {
     console.error("Errore verifica permessi proprietario: ", error);
