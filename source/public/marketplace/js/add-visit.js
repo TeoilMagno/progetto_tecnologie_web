@@ -392,27 +392,46 @@ async function fetchCatalogChunk(museumId, isLoadMore = false) {
   isFetchingWorks = true;
 
   const searchInput = document.getElementById("catalog-search-input")?.value.trim().toLowerCase() || "";
-  const hasFilters = searchInput !== "";
+  
+  // 1. LEGGIAMO LO STATO DEI FILTRI AVANZATI
+  const authorCbs = Array.from(document.querySelectorAll('.author-cb:checked')).map(cb => cb.value);
+  const techniqueCbs = Array.from(document.querySelectorAll('.technique-cb:checked')).map(cb => cb.value);
+  const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
 
-  // 1. Filtraggio Locale Ultra-Veloce (Se il DB del museo è interamente in RAM)
+  // 2. AGGIORNIAMO IL FLAG (Se c'è anche solo una spunta, siamo in modalità filtro)
+  const hasFilters = searchInput !== "" || authorCbs.length > 0 || techniqueCbs.length > 0 || styleCbs.length > 0;
+
+  // 3. Filtraggio Locale Ultra-Veloce (Se il DB è interamente in RAM)
   if (isEntireWorksDbInCache && hasFilters && !isLoadMore) {
-    const filtered = pristineWorksCache.filter(work =>
-      fuzzySearch(searchInput, work.name || "") ||
-      (work.authorName && fuzzySearch(searchInput, work.authorName || ""))
-    );
+    let filtered = pristineWorksCache.filter(work => {
+      let match = true;
+      if (searchInput) {
+        match = fuzzySearch(searchInput, work.name || "") || (work.authorName && fuzzySearch(searchInput, work.authorName || ""));
+      }
+      if (match && authorCbs.length > 0 && !authorCbs.includes(work.authorName || "")) match = false;
+      if (match && techniqueCbs.length > 0 && !techniqueCbs.includes(work.technique || "")) match = false;
+      if (match && styleCbs.length > 0 && !styleCbs.includes(work.styleName || "")) match = false;
+      return match;
+    });
+    
+    currentWorks = filtered;
     renderCatalog(filtered, false);
     isFetchingWorks = false;
     updateCatalogSentinel();
     return;
   }
 
-  // 2. Fetch dal Server
+  // 4. Fetch dal Server (Se il DB non è in memoria)
   if (isLoadMore) globalSentinel.classList.remove("d-none");
 
+  // Costruiamo i parametri per il backend nativo
   const params = new URLSearchParams();
   params.append("page", currentWorkPage);
   params.append("limit", WORK_RENDER_CHUNK || 12);
   if (searchInput) params.append("search", searchInput);
+  if (authorCbs.length > 0) params.append("author", authorCbs.join(","));
+  if (techniqueCbs.length > 0) params.append("technique", techniqueCbs.join(","));
+  if (styleCbs.length > 0) params.append("workstyle", styleCbs.join(","));
 
   try {
     const res = await fetch(`${API_BASE_URL}/museums/${museumId}/works?${params.toString()}`);
@@ -424,16 +443,15 @@ async function fetchCatalogChunk(museumId, isLoadMore = false) {
       allMuseumWorks = [...allMuseumWorks, ...fetchedWorks];
       if (!hasFilters) {
         pristineWorksCache = [...allMuseumWorks];
-        currentWorks = [...pristineWorksCache]; // Sincronizza per search-bar.js
+        currentWorks = [...pristineWorksCache];
       }
       renderCatalog(fetchedWorks, true);
     } else {
       allMuseumWorks = fetchedWorks;
       if (!hasFilters) {
         pristineWorksCache = [...allMuseumWorks];
-        currentWorks = [...pristineWorksCache]; // Sincronizza per search-bar.js
-        
-        // Passa i dati univoci (autori, stili, tecniche) alla sidebar
+        currentWorks = [...pristineWorksCache];
+        // Popoliamo i filtri SOLO se non stiamo attualmente filtrando!
         if (typeof initializeWorkFiltersData === "function") {
            initializeWorkFiltersData(pristineWorksCache);
         }
