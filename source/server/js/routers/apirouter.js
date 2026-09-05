@@ -21,6 +21,7 @@ const Adoption = require("../models/adoptions");
 const Item = require("../models/items");
 const Visit = require("../models/visits");
 const QuizReport = require("../models/quizReport")
+const Order = require("../models/orders");
 
 // Controllers
 const museumController = require("../controllers/museums");
@@ -36,12 +37,13 @@ const aiController = require("../controllers/ai");
 
 // Middleware
 const auth = require("../middleware/roles");
+const { cacheMiddleware, invalidateCache } = require("../utils/cache");
 
 // Gestione immagini
 // 1. Configurazione Multer per i caricamenti locali
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
-    const dir = path.join(__dirname, '..', '..', '..', 'uploads');
+    const dir = path.join(__dirname, '..', '..', '..', 'public', 'uploads');
     // Crea la cartella se non esiste
     await fs.mkdir(dir, { recursive: true }).catch(console.error);
     cb(null, dir);
@@ -59,7 +61,8 @@ const apiRouter = express.Router();
 //--------------- museums -----------------------
 
 // ritorna tutti i musei del db
-apiRouter.get("/museums", async (req, res) => {
+apiRouter.get("/museums", cacheMiddleware(60), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=60");
   try {
     const {
       search, tags, freeEntry, maxPrice, services, day,
@@ -78,7 +81,8 @@ apiRouter.get("/museums", async (req, res) => {
 });
 
 // Ritorna SOLO id e nome di tutti i musei (Ottimizzato per i menu a tendina)
-apiRouter.get("/museums-list", async (req, res) => {
+apiRouter.get("/museums-list",cacheMiddleware(60), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=60");
   try {
     // Il secondo parametro di find() seleziona i campi da restituire. 
     // sort({ name: 1 }) li mette in ordine alfabetico
@@ -107,6 +111,8 @@ apiRouter.put("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (req, 
         .json({ error: "Museo non trovato o non autorizzato" });
     }
 
+    invalidateCache(["/museums"]);
+
     res.json({
       message: "Museo aggiornato con successo",
       museum: updatedMuseum,
@@ -118,7 +124,8 @@ apiRouter.put("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (req, 
 });
 
 // Recupera un museo
-apiRouter.get("/museums/:id", async (req, res) => {
+apiRouter.get("/museums/:id", cacheMiddleware(60), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=60");
   try {
     const museumId = req.params.id;
     const museum = await Museum.findById(museumId);
@@ -139,6 +146,9 @@ apiRouter.delete("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (re
   try {
     const museumId = req.params.id;
     await museumController.deleteMuseumById(museumId);
+    
+    invalidateCache(["/museums"])
+
     res.json({ message: "Museo eliminato con successo" });
   } catch (error) {
     console.error("Errore eliminazione museo:", error);
@@ -149,7 +159,8 @@ apiRouter.delete("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (re
 //--------------- items -----------------------
 
 // ritorna prodotti (items) di un museo specifico
-apiRouter.get("/museums/:id/items", async (req, res) => {
+apiRouter.get("/museums/:id/items", cacheMiddleware(60), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=60");
   try {
     const { page = 1, limit = 12, search } = req.query;
     const museumId = req.params.id;
@@ -175,8 +186,11 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
       updateData,
     );
 
+    
     if (!updatedItem)
       return res.status(404).json({ error: "Opera non trovata" });
+    
+    invalidateCache(["/items"]);
 
     res.json({ message: "Salvato con successo", item: updatedItem });
   } catch (error) {
@@ -203,6 +217,8 @@ apiRouter.put("/items/:id/add-stock", auth.isCurator, async (req, res) => {
 
     if (!updatedItem) return res.status(404).json({ error: "Articolo non trovato" });
 
+    invalidateCache(["/items"]);
+
     res.json({ message: "Stock aggiornato con successo", item: updatedItem });
   } catch (error) {
     console.error("Errore aggiornamento stock:", error);
@@ -223,6 +239,9 @@ apiRouter.post("/museums/:museumId/items", auth.isCurator, async (req, res) => {
     });
 
     await newItem.save();
+
+    invalidateCache(["/items"]);
+
     res.status(201).json({ message: "Articolo creato con successo!", item: newItem });
   } catch (error) {
     console.error("Errore creazione articolo:", error);
@@ -233,7 +252,8 @@ apiRouter.post("/museums/:museumId/items", auth.isCurator, async (req, res) => {
 //--------------- sections -----------------------
 
 // ritorna tutte le opere di una sezione specifica
-apiRouter.get("/sections/:id/works", async (req, res) => {
+apiRouter.get("/sections/:id/works", cacheMiddleware(60), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=60");
   try {
     const works = await sectionController.getWorksBySection(
       req.params.id,
@@ -248,7 +268,8 @@ apiRouter.get("/sections/:id/works", async (req, res) => {
 });
 
 // ritorna tutte le sezioni di un museo specifico
-apiRouter.get("/museums/:id/sections", async (req, res) => {
+apiRouter.get("/museums/:id/sections", cacheMiddleware(60), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=60");
   try {
     const sections = await sectionController.getSectionsByMuseum(req.params.id);
 
@@ -265,6 +286,9 @@ apiRouter.put("/sections/:id", [auth.isCurator, auth.isMuseumOwner], async (req,
   try {
     const { museumId, ...updateData } = req.body;
     const updatedSection = await sectionController.updateSectionById(req.params.id, updateData, museumId);
+    
+    invalidateCache(["/sections"])
+
     res.json({ message: "Sezione aggiornata", section: updatedSection });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -286,6 +310,9 @@ apiRouter.delete("/sections/:id", [auth.isCurator, auth.isMuseumOwner], async (r
       await museumController.removeSectionFromMuseum(museumId, sectionId);
     }
 
+    invalidateCache(["/sections"])
+    invalidateCache(["/works"])
+
     res.json({ message: "Sezione eliminata con successo" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -296,7 +323,8 @@ apiRouter.delete("/sections/:id", [auth.isCurator, auth.isMuseumOwner], async (r
 
 // ? ha senso dato che c'e' gia' la rotta per ottenere le opere di ogni sezione e ogni sezione di un museo
 // ottiene le opere di un museo
-apiRouter.get("/museums/:id/works", async (req, res) => {
+apiRouter.get("/museums/:id/works", cacheMiddleware(60), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=60");
   try {
     const { search, author, technique, workstyle, page = 1, limit = 12, fetchMetadata } = req.query;
     const museumId = req.params.id;
@@ -317,7 +345,8 @@ apiRouter.get("/museums/:id/works", async (req, res) => {
 });
 
 // Ritorna SOLO info base delle opere (Ottimizzato per le tendine delle adozioni)
-apiRouter.get("/museums/:id/works-list", async (req, res) => {
+apiRouter.get("/museums/:id/works-list", cacheMiddleware(60), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=60");
   try {
     // Selezioniamo solo _id, name, autore e immagine
     const worksList = await Work.find({ museumId: req.params.id }, '_id name authorName image').sort({ name: 1 });
@@ -334,6 +363,9 @@ apiRouter.put("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, res
   try {
     const { museumId, ...updateData } = req.body;
     const updatedWork = await workController.updateWorkById(req.params.id, updateData, museumId);
+    
+    invalidateCache(["/works"]);
+
     res.json({ message: "Opera aggiornata", work: updatedWork });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -354,6 +386,8 @@ apiRouter.delete("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, 
     if (sectionId) {
       await sectionController.removeWorkFromSection(sectionId, workId);
     }
+
+    invalidateCache(["/works"]);
 
     res.json({ message: "Opera eliminata con successo" });
   } catch (error) {
@@ -376,6 +410,9 @@ apiRouter.put("/works/:id/move", [auth.isCurator, auth.isMuseumOwner], async (re
       await sectionController.addWorkToSection(newSectionId, workId);
     }
 
+    // ? va messo ?
+    invalidateCache(["/works"]);
+
     res.json({ message: "Opera spostata con successo" });
   } catch (error) {
     console.error("Errore spostamento opera:", error);
@@ -386,12 +423,12 @@ apiRouter.put("/works/:id/move", [auth.isCurator, auth.isMuseumOwner], async (re
 //------------------ form ------------------------
 
 // Rotta per creare e aggiungere un'opera sul db
-// * il frontend deve inviare museumId e roomId (se l'opera è in una stanza)
+// * il frontend deve inviare museumId e sectionId
 apiRouter.post("/add-work", [auth.isCurator, auth.isMuseumOwner], async (req, res) => {
   try {
     const { work, sectionId, museumId } = req.body;
 
-    // Salviamo la nuova opera inserendo esplicitamente il roomId e il museumId verificato
+    // Salviamo la nuova opera inserendo esplicitamente il sectionId e il museumId verificato
     const newWork = new Work({
       ...work,
       museumId: museumId, // Evitiamo che l'utente si inventi cose
@@ -412,6 +449,8 @@ apiRouter.post("/add-work", [auth.isCurator, auth.isMuseumOwner], async (req, re
     // Collega l'ID dell'opera alla sezione tramite il controller
     await sectionController.addWorkToSection(sectionId, savedWork._id);
 
+    invalidateCache(["/works"])
+
     res
       .status(201)
       .json({ message: "Opera salvata e aggiunta!", work: savedWork });
@@ -430,6 +469,9 @@ apiRouter.post("/save-section", [auth.isCurator, auth.isMuseumOwner], async (req
       $push: { sections: sectionId },
     });
 
+    invalidateCache(["/sections"])
+    invalidateCache(["/museums"])
+
     res.status(201).json(sectionId);
   } catch (error) {
     console.error("Errore nel salvataggio sezione:", error);
@@ -445,6 +487,8 @@ apiRouter.post("/save-museum", auth.isCurator, async (req, res) => {
     const museumData = req.body;
     const userId = req.user ? req.user._id : null;
     const museumId = await museumController.saveMuseum(museumData, userId);
+
+    invalidateCache(["/museums"])
 
     res.status(201).json({
       success: true,
@@ -465,6 +509,8 @@ apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
     const mapData = req.body;
     const map = await sectionController.uploadMap(mapData);
 
+    invalidateCache(["/map-svg"]);
+
     res.status(201).json({
       success: true,
       message: "Mappa salvata correttamente",
@@ -480,6 +526,8 @@ apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
 });
 
 apiRouter.get("/museums/:id/map-svg", async (req, res) => {
+  res.set("Cache-Control", "public, max-age=3600");
+
   const { id } = req.params;
   console.log(id);
   try {
@@ -569,7 +617,11 @@ apiRouter.get("/current-user", (req, res) => {
         username: req.user.username || req.user.name,
         role: req.user.role,
         type: req.user.type || 'none',
-        expertiseLevel: req.user.preferences?.expertiseLevel || 'medium'
+        curator_status: req.user.curator_status,
+        expertiseLevel: req.user.preferences?.expertiseLevel || 'medium',
+        // Passiamo il nome reale se presente (OAuth)
+        name: req.user.name,
+        hasPassword: !!req.user.password
       });
     } else {
       res.json(null);
@@ -603,12 +655,106 @@ apiRouter.put("/current-user/type", auth.isLoggedIn, async (req, res) => {
   }
 });
 
+// Aggiorna nome utente o password
+apiRouter.put("/current-user/profile", auth.isLoggedIn, async (req, res) => {
+  try {
+    const { username, newPassword, oldPassword, expertiseLevel } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (username) {
+      const existing = await User.findOne({ username });
+      if (existing && existing._id.toString() !== user._id.toString()) {
+        return res.status(400).json({ error: "Username già in uso." });
+      }
+      user.username = username;
+    }
+
+    if (expertiseLevel) {
+      // Modifica basata sul tuo schema
+      user.preferences.expertiseLevel = expertiseLevel;
+    }
+
+    if (newPassword) {
+      const crypto = require('crypto');
+
+      // Se ha GIÀ una password, esigi quella vecchia
+      if (user.password && user.salt) {
+        if (!oldPassword) {
+          return res.status(400).json({ error: "Devi inserire la password attuale." });
+        }
+        const oldHash = crypto.pbkdf2Sync(oldPassword, user.salt, 310000, 32, 'sha256');
+        if (!crypto.timingSafeEqual(user.password, oldHash)) {
+          return res.status(401).json({ error: "La password attuale non è corretta." });
+        }
+      }
+
+      // Genera nuova password (valido sia per cambio che per prima aggiunta OAuth)
+      const newSalt = crypto.randomBytes(16);
+      const newHash = crypto.pbkdf2Sync(newPassword, newSalt, 310000, 32, 'sha256');
+      
+      user.salt = newSalt;
+      user.password = newHash;
+    }
+
+    if (req.body.type) {
+      user.type = req.body.type;
+    }
+
+    if (req.body.requestCurator) {
+      if (user.curator_status === 'none' || user.curator_status === 'rejected') {
+        user.curator_status = 'pending';
+      }
+    }
+
+    await user.save();
+    res.json({ message: "Profilo aggiornato.", user });
+  } catch (error) {
+    res.status(500).json({ error: "Errore durante l'aggiornamento." });
+  }
+});
+
+// Elimina account e pulisci il database alla radice
+apiRouter.delete("/current-user/profile", auth.isLoggedIn, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    // 1. Elimina i musei del curatore a cascata
+    if (user.managed_museums && user.managed_museums.length > 0) {
+      for (const museumId of user.managed_museums) {
+        await museumController.deleteMuseumById(museumId);
+      }
+    }
+
+    // 2. Elimina le visite create dall'utente (innescando la pulizia immagini su disco)
+    const userVisits = await Visit.find({ creator: user._id });
+    for (const visit of userVisits) {
+      await visitController.deleteVisitById(visit._id, user);
+    }
+
+    // 3. Elimina fisicamente Ordini e Adozioni per mantenere pulito il DB
+    await Order.deleteMany({ userId: user._id });
+    await Adoption.deleteMany({ requestedBy: user._id });
+
+    // 4. Elimina l'utente e chiudi la sessione
+    await User.findByIdAndDelete(user._id);
+    
+    req.logout((err) => {
+      if (err) throw err;
+      res.json({ message: "Account eliminato definitivamente." });
+    });
+  } catch (error) {
+    console.error("Errore eliminazione account:", error);
+    res.status(500).json({ error: "Errore durante l'eliminazione dell'account." });
+  }
+});
+
+
 // Ottiene i musei gestiti dal curatore loggato
 apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
   try {
     // Se è Admin, restituiamo TUTTI i musei del DB
     if (req.user.role === "admin") {
-      const allMuseums = await museumController.getMuseums();
+      const allMuseums = await museumController.getMuseums(null, null, null, null, null, null, null, null, null);
       return res.json(allMuseums);
     }
 
@@ -654,6 +800,9 @@ apiRouter.get("/my-visits", auth.isLoggedIn, async (req, res) => {
 apiRouter.post("/visits", auth.isLoggedIn, async (req, res) => {
   try {
     const savedVisit = await visitController.createVisit(req.body, req.user);
+    
+    invalidateCache(["/visits"]);
+
     res.status(201).json({
       message: "Visita creata con successo!",
       visit: savedVisit,
@@ -668,7 +817,7 @@ apiRouter.post("/visits", auth.isLoggedIn, async (req, res) => {
 });
 
 // Recupera tutte le visite **pubbliche** per il marketplace
-apiRouter.get("/visits", async (req, res) => {
+apiRouter.get("/visits", cacheMiddleware(60), async (req, res) => {
   try {
     const visits = await visitController.getPublicVisits();
     res.status(200).json(visits);
@@ -743,6 +892,8 @@ apiRouter.put("/visits/:id", auth.isLoggedIn, async (req, res) => {
       req.user,
     );
 
+    invalidateCache(["/visits"]);
+
     res.status(200).json(updatedVisit);
   } catch (error) {
     console.error("Errore durante l'aggiornamento della visita:", error);
@@ -757,6 +908,9 @@ apiRouter.put("/visits/:id", auth.isLoggedIn, async (req, res) => {
 apiRouter.delete("/visits/:id", auth.isLoggedIn, async (req, res) => {
   try {
     await visitController.deleteVisitById(req.params.id, req.user);
+
+    invalidateCache(["/visits"]);
+    
     res.json({ message: "Visita eliminata con successo" });
   } catch (error) {
     console.error("Errore eliminazione visita:", error);
@@ -1170,7 +1324,6 @@ apiRouter.get('/my-quiz-results', auth.isLoggedIn, async (req, res) => {
     res.status(500).json({ error: 'Errore interno del server' });
   }
 });
-
 
 // ---------------- Gestione DB ---------------------
 apiRouter.get("/downloadDB", async (req, res) => {

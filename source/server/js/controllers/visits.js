@@ -99,20 +99,18 @@ exports.createVisit = async (visitPayload, user) => {
 };
 
 exports.getVisits = async (userId) => {
-  // Trova le visite create dall'utente
-  const created = await Visit.find({ creator: userId })
-    .populate('museumId')
-    .populate({ path: 'works', populate: { path: 'adoptionId' } });
+  const [created, user] = await Promise.all([
+    // Trova le visite create dall'utente
+    Visit.find({ creator: userId })
+      .populate('museumId')
+      .populate({ path: 'works', populate: { path: 'adoptionId' } }),
 
-  // Trova l'utente per prenderne le visite acquistate/salvate
-  const { User } = require('../models/users');
-  const user = await User.findById(userId).populate({
-    path: 'purchased_visits',
-    populate: [
-      { path: 'museumId' },
-      { path: 'works' }
-    ]
-  });
+    // Trova l'utente per prenderne le visite acquistate/salvate
+    User.findById(userId).populate({
+      path: 'purchased_visits',
+      populate: [{ path: 'museumId' }, { path: 'works' }]
+    })
+  ]);
 
   const purchased = user?.purchased_visits || [];
 
@@ -128,8 +126,8 @@ exports.getVisits = async (userId) => {
 };
 
 exports.getVisitById = async (visitId, user, isShared = false) => {
-  const visit = await Visit.findById(visitId).populate('museumId')
-    .populate('works')
+  const visit = await Visit.findById(visitId)
+    .populate('museumId')
     .populate('creator', 'username email')
     .populate({ path: 'works', populate: { path: 'adoptionId' } }); 
 
@@ -140,7 +138,8 @@ exports.getVisitById = async (visitId, user, isShared = false) => {
   }
 
   // Passa se è pubblica, o se l'utente è il creatore/admin
-  if (isShared || visit.isPublic || user?.role === "admin" || visit.creator.toString() === user?._id?.toString() ) {
+  const creatorId = visit.creator?._id ? visit.creator._id.toString() : visit.creator?.toString();
+  if (isShared || visit.isPublic || user?.role === "admin" || creatorId === user?._id?.toString()) {
     return visit;
   } else {
     const error = new Error("Accesso negato: questa visita è privata");
@@ -217,11 +216,30 @@ exports.getPublicVisits = async () => {
   // Cerchiamo le visite completate (non bozze) e pubbliche
   const visits = await Visit.find({ isPublic: true, isDraft: false })
     .populate('museumId')
-    .populate('works')
-    .populate({ path: 'works', populate: { path: 'adoptionId' } });
+    .populate({ path: 'works', populate: { path: 'adoptionId' } })
+    .lean();
 
   return visits;
 };
+
+// Funzione interna condivisa: cancella la visita individuata dalla query e ripulisce
+// la copertina se presente. Usata sia dall'eliminazione diretta (con controllo sul
+// creatore) sia dalla cascata da museo (dove l'autorizzazione è già verificata a monte).
+async function deleteVisitByQuery(query, notFoundMessage) {
+  const deletedVisit = await Visit.findOneAndDelete(query);
+
+  if (!deletedVisit) {
+    const error = new Error(notFoundMessage);
+    error.statusCode = 403;
+    throw error;
+  }
+
+  if (deletedVisit.coverImage) {
+    await deleteLocalFile(deletedVisit.coverImage);
+  }
+
+  return deletedVisit;
+}
 
 exports.deleteVisitById = async (visitId, user) => {
   const query = { _id: visitId };
@@ -231,20 +249,22 @@ exports.deleteVisitById = async (visitId, user) => {
     query.creator = user._id;
   }
 
-  const visitToDelete = await Visit.findOne(query);
-  if (visitToDelete && visitToDelete.coverimage) {
-    await deleteLocalFile(visitToDelete.coverImage);
+  const deletedVisit = await deleteVisitByQuery(query, "Visita non trovata o non sei autorizzato a eliminarla");
+};
+
+// Elimina tutte le visite di un museo (inclusa la "visita libera" standard).
+// Usata in cascata da deleteMuseumById: nessun controllo sul creatore, perché
+// l'autorizzazione è già stata verificata a monte sul museo stesso.
+exports.deleteAllVisitsByMuseum = async (museumId) => {
+  const visits = await Visit.find({ museumId: museumId }).select('_id');
+
+  for (const visit of visits) {
+    try {
+      await deleteVisitByQuery({ _id: visit._id, museumId: museumId }, "Visita non trovata");
+    } catch (err) {
+      console.warn(`Impossibile eliminare la visita ${visit._id} durante la cascata: ${err.message}`);
+    }
   }
-
-  const deletedVisit = await Visit.findOneAndDelete(query);
-
-  if (!deletedVisit) {
-    const error = new Error("Visita non trovata o non sei autorizzato a eliminarla");
-    error.statusCode = 403;
-    throw error;
-  }
-
-  return deletedVisit;
 };
 
 exports.estimateDuration = async (workIds, preferredLength) => {

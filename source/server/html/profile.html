@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArtAround - Impostazioni Profilo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="/marketplace/css/style.css"/>
+  <link rel="stylesheet" href="/marketplace/css/forms-style.css"/>
+  <style>
+    /* Stili aggiuntivi per il layout a lista in stile iOS/Tailwind */
+    .settings-group { background-color: rgba(30, 30, 36, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden; }
+    .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; transition: background 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .settings-item:last-child { border-bottom: none; }
+    .settings-item:hover { background-color: rgba(255,255,255,0.05); }
+    .settings-label { font-size: 0.75rem; font-weight: 700; color: #6c757d; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  </style>
+</head>
+<body class="artaround-theme d-flex flex-column align-items-center pt-4" style="min-height: 100vh;">
+  
+  <div class="w-100 px-4 mb-4" style="max-width: 600px;">
+    <!-- HEADER -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <button onclick="window.history.back()" class="btn btn-glass text-secondary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+        <i class="bi bi-arrow-left fs-5"></i>
+      </button>
+      <h3 class="text-white fw-bold mb-0">Impostazioni</h3>
+    </div>
+
+    <!-- SEZIONE 1: PROFILO -->
+    <section class="mb-4">
+      <div class="settings-label"><i class="bi bi-person"></i> Dati Personali</div>
+      <div class="settings-group">
+        
+        <!-- RIGA NOME SOCIAL (Gestita via JS se l'utente proviene da OAuth) -->
+        <div class="settings-item d-none" id="social-name-row">
+          <div>
+            <p class="fw-semibold text-light mb-0" style="font-size: 0.9rem;">Nome Reale</p>
+            <p class="text-secondary mb-0" style="font-size: 0.8rem;">Ereditato dal Social Login</p>
+          </div>
+          <div class="d-flex gap-2 align-items-center">
+            <input type="text" id="profile-real-name" class="form-control form-control-sm glass-input text-white text-end border-0 bg-transparent shadow-none w-auto opacity-75" disabled>
+          </div>
+        </div>
+
+        <!-- RIGA USERNAME (Sempre visibile/modificabile) -->
+        <div class="settings-item">
+          <div>
+            <p class="fw-semibold text-light mb-0" style="font-size: 0.9rem;">Nome Utente</p>
+            <p class="text-secondary mb-0" style="font-size: 0.8rem;">Il nome visibile nel marketplace</p>
+          </div>
+          <div class="d-flex gap-2 align-items-center">
+            <input type="text" id="profile-username" class="form-control form-control-sm glass-input text-white text-end border-0 bg-transparent shadow-none w-auto" style="max-width: 150px;">
+            <button class="btn btn-sm btn-outline-info rounded-pill px-3" onclick="updateUsername()">Salva</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SEZIONE 2: SICUREZZA -->
+    <section class="mb-4">
+      <div class="settings-label"><i class="bi bi-shield-lock"></i> Sicurezza e Accesso</div>
+      <div class="settings-group" id="security-options-container">
+        <!-- Verrà popolato dinamicamente da JS a seconda del tipo di account -->
+      </div>
+    </section>
+
+    <!-- SEZIONE: PREFERENZE -->
+    <section class="mb-4">
+      <div class="settings-label"><i class="bi bi-sliders"></i> Preferenze Esperienza</div>
+      <div class="settings-group">
+        <div class="settings-item">
+          <div>
+            <p class="fw-semibold text-light mb-0" style="font-size: 0.9rem;">Registro Linguistico</p>
+            <p class="text-secondary mb-0" style="font-size: 0.8rem;">Complessità delle descrizioni</p>
+          </div>
+          <select id="profile-expertise" class="form-select form-select-sm glass-input text-white border-secondary w-auto" onchange="updateExpertise()">
+            <option value="simple" class="bg-dark text-white">Semplice</option>
+            <option value="medium" class="bg-dark text-white">Medio</option>
+            <option value="professional" class="bg-dark text-white">Professionale</option>
+            <option value="expert" class="bg-dark text-white">Esperto</option>
+          </select>
+        </div>
+
+        <div class="settings-item border-top border-secondary border-opacity-10">
+          <div>
+            <p class="fw-semibold text-light mb-0" style="font-size: 0.9rem;">Qualifica</p>
+            <p class="text-secondary mb-0" style="font-size: 0.8rem;">Per fini statistici</p>
+          </div>
+          <select id="profile-type" class="form-select form-select-sm glass-input text-white border-secondary w-auto" onchange="updateUserType()">
+            <option value="none" class="bg-dark text-white">Nessuna</option>
+            <option value="student" class="bg-dark text-white">Studente</option>
+            <option value="teacher" class="bg-dark text-white">Insegnante</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEZIONE 3: PRIVACY E DATI -->
+    <section class="mb-4">
+      <div class="settings-label"><i class="bi bi-database-exclamation"></i> Dati e Privacy</div>
+      <div class="settings-group">
+        <button class="btn w-100 settings-item text-start border-0 rounded-0" onclick="alert('Qui andrà il link alla tua Privacy Policy.')">
+          <span class="fw-semibold text-light" style="font-size: 0.9rem;">Termini e Privacy</span>
+          <i class="bi bi-chevron-right text-secondary"></i>
+        </button>
+        <button class="btn w-100 settings-item text-start border-0 rounded-0" onclick="openDeleteUserModal()">
+          <span class="fw-semibold text-danger" style="font-size: 0.9rem;">Elimina Account</span>
+          <i class="bi bi-trash text-danger opacity-75"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- SEZIONE: GESTIONE MUSEI -->
+    <section class="mb-4">
+      <div class="settings-label"><i class="bi bi-bank"></i> Area Curatore</div>
+      <div class="settings-group" id="curator-status-container">
+        <!-- Verrà popolato da JS in base allo stato (curatore, in attesa, o richiedi) -->
+      </div>
+    </section>
+  </div>
+
+  <!-- MODALE CAMBIO/AGGIUNTA PASSWORD -->
+  <div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-modal text-white">
+        <div class="modal-header border-bottom-custom">
+          <h5 class="modal-title" id="passwordModalLabel">Gestisci Password</h5>
+          <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
+        </div>
+        
+        <div class="modal-body p-4">
+          <div id="password-error-alert" class="alert alert-danger d-none small py-2 mb-3 border-danger bg-danger bg-opacity-10 text-danger"></div>
+          
+          <div class="row g-3">
+            <div class="col-12" id="old-password-container">
+              <label class="form-label small text-secondary">Password Attuale *</label>
+              <input type="password" id="old-password" class="form-control glass-input">
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label small text-secondary">Nuova Password *</label>
+              <input type="password" id="new-password" class="form-control glass-input">
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label small text-secondary">Conferma Nuova *</label>
+              <input type="password" id="confirm-password" class="form-control glass-input">
+            </div>
+            
+            <!-- Checkbox Mostra Password -->
+            <div class="col-12 mt-2">
+              <div class="form-check">
+                <input class="form-check-input bg-secondary border-secondary shadow-none cursor-pointer" type="checkbox" id="show-password-toggle" onclick="toggleProfilePasswords()">
+                <label class="form-check-label text-secondary small cursor-pointer" for="show-password-toggle">
+                  Mostra password in chiaro
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer border-top-custom">
+          <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+          <button type="button" id="save-pwd-btn" class="btn btn-gradient px-3" onclick="updatePassword()">Salva Password</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE ELIMINAZIONE ACCOUNT -->
+  <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-modal border-danger text-white">
+        <div class="modal-header border-bottom-custom">
+          <h5 class="modal-title text-danger fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>Elimina Account</h5>
+          <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="small text-white-50">
+            Questa azione è <strong class="text-danger">irreversibile</strong>. Tutti i tuoi dati, i musei gestiti e le visite create verranno eliminati in modo permanente.
+          </p>
+          <p class="small text-white mb-2">
+            Per confermare, digita esattamente <code id="delete-target-text" class="text-warning"></code> nel campo sottostante:
+          </p>
+          <input type="text" id="delete-confirm-input" class="form-control glass-input text-white border-danger" placeholder="Scrivi qui..." autocomplete="off">
+        </div>
+        <div class="modal-footer border-top-custom">
+          <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+          <!-- Ora c'è solo il pulsante di eliminazione corretto -->
+          <button type="button" id="confirm-delete-user-btn" class="btn btn-danger px-3" disabled onclick="confirmDeleteUser()">Conferma ed Elimina</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/marketplace/js/config.js"></script>
+  <script src="/marketplace/js/profile.js"></script>
+</body>
+</html>

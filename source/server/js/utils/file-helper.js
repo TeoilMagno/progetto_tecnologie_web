@@ -7,7 +7,7 @@ const deleteLocalFile = async (imageUrl) => {
   try {
     const filename = imageUrl.split('/').pop();
     // Assicurati che i '..' portino dalla cartella attuale alla root del progetto
-    const filePath = path.join(__dirname, '..', '..', '..', 'uploads', filename); 
+    const filePath = path.join(__dirname, '..', '..', '..', 'public', 'uploads', filename); 
     await fs.unlink(filePath);
     console.log(`File eliminato dal disco: ${filename}`);
   } catch (err) {

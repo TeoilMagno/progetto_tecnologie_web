@@ -5,7 +5,7 @@ const { deleteLocalFile } = require('../utils/file-helper');
 
 exports.getAllWorks = async () => {
   try {
-    return await Work.find();
+    return await Work.find().lean();
   } catch (err) {
     throw err;
   }
@@ -51,21 +51,22 @@ exports.getMuseumWorks = async (museumIdStr, search, author, technique, workstyl
     }
 
     // Paginazione e query con Tie-Breaker per lo scroll infinito
-    const Work = require("../models/works"); // Assicurati che il percorso sia corretto
     const total = await Work.countDocuments(query);
     const works = await Work.find(query)
                             .sort({ createdAt: -1, _id: 1 }) // Tie-Breaker
                             .skip((page - 1) * limit)
-                            .limit(Number(limit));
+                            .limit(Number(limit))
+                            .lean();
 
     // Estrazione dei metadati unici per popolare i filtri nella sidebar
     let metadata = null;
     if (fetchMetadata === 'true') {
-       const uniqueAuthors = await Work.distinct("authorName", { museumId: museumObjectId, authorName: { $ne: null } });
-       const uniqueTechniques = await Work.distinct("technique", { museumId: museumObjectId, technique: { $ne: null } });
-       const uniqueStyles = await Work.distinct("styleName", { museumId: museumObjectId, styleName: { $ne: null } });
-       
-       metadata = { uniqueAuthors, uniqueTechniques, uniqueStyles };
+      const [uniqueAuthors, uniqueTechniques, uniqueStyles] = await Promise.all([
+        Work.distinct("authorName", { museumId: museumObjectId, authorName: { $ne: null } }),
+        Work.distinct("technique", { museumId: museumObjectId, technique: { $ne: null } }),
+        Work.distinct("styleName", { museumId: museumObjectId, styleName: { $ne: null } }),
+      ]);
+      metadata = { uniqueAuthors, uniqueTechniques, uniqueStyles };
     }
 
     return {
@@ -116,16 +117,9 @@ exports.updateWorkById = async (workId, updateData, museumId) => {
 
 // Elimina un'opera
 exports.deleteWorkById = async (workId, museumId) => {
-  const workToDelete = await Work.findOne({
-    _id: workId,
-    museumId: museumId,
-    $or: [{ adoptionId: null }, { adoptionId: { $exists: false } }]
-  });
-
-  if (workToDelete && workToDelete.image) {
-    await deleteLocalFile(workToDelete.image);
-  }
-
+  // Un solo findOneAndDelete atomico: cancella e restituisce il documento in un'unica query,
+  // niente più findOne "di controllo" prima, quindi niente più rischio di null-dereference
+  // se l'opera fosse già stata rimossa (a mano o da una cascata precedente).
   const deletedWork = await Work.findOneAndDelete({
     _id: workId,
     museumId: museumId,
@@ -137,7 +131,11 @@ exports.deleteWorkById = async (workId, museumId) => {
     error.statusCode = 403;
     throw error;
   }
-  
+
+  if (deletedWork.image) {
+    await deleteLocalFile(deletedWork.image);
+  }
+
   await Visit.findOneAndUpdate(
     { museumId: museumId, visitType: 'standard' },
     { $pull: { works: workId } } 

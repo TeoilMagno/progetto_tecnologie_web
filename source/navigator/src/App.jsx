@@ -8,6 +8,7 @@ import HomePage from './pages/Home';
 import Visits from './pages/Visits';
 import JoinSession from './pages/JoinSession';
 import StudentWaitingRoom from './pages/StudentWaitingRoom';
+import FreeVisitMap from './pages/FreeVisitMap';
 import MuseumSelectorOverlay from './components/MuseumSelectorOverlay';
 import MapView from './components/MapView';
 import QuizSession from './pages/QuizSession';

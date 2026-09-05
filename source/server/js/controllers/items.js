@@ -1,4 +1,5 @@
 const Item = require('../models/items');
+const { deleteLocalFile } = require('../utils/file-helper');
 
 exports.getAllItems = async () => {
   try {
@@ -65,3 +66,39 @@ exports.modifyItemById = async (itemId, updateData) => {
     throw err;
   }
 }
+
+// Elimina un articolo del bookshop (stesso pattern di deleteWorkById/deleteSectionById:
+// findOneAndDelete atomico filtrato su _id + museumId, per verificare in un colpo solo
+// esistenza e proprietà)
+exports.deleteItemById = async (itemId, museumId) => {
+  const deletedItem = await Item.findOneAndDelete({ _id: itemId, museumId: museumId });
+
+  if (!deletedItem) {
+    const error = new Error("Articolo non trovato o non sei autorizzato a eliminarlo");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  // Se in futuro gli articoli avranno un'immagine locale caricata, questo la ripulisce già;
+  // se il campo non esiste sul modello, la condizione è semplicemente falsa e non fa nulla.
+  if (deletedItem.image) {
+    await deleteLocalFile(deletedItem.image);
+  }
+
+  return deletedItem;
+};
+
+// Elimina tutti gli articoli di un museo. Usata in cascata da deleteMuseumById:
+// non richiede un controllo di proprietà separato perché l'autorizzazione
+// è già stata verificata a monte sul museo stesso.
+exports.deleteAllItemsByMuseum = async (museumId) => {
+  const items = await Item.find({ museumId: museumId }).select('_id');
+
+  for (const item of items) {
+    try {
+      await exports.deleteItemById(item._id, museumId);
+    } catch (err) {
+      console.warn(`Impossibile eliminare l'articolo ${item._id} durante la cascata: ${err.message}`);
+    }
+  }
+};

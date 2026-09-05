@@ -177,25 +177,30 @@ exports.generateAndSaveStyleDescription = async (styleId, museumId, styleName, u
 // Classificazione eta' bookshop
 exports.generateAndSaveItemTargetAge = async (itemId, itemName, itemDescription) => {
   try {
-    // Rendiamo anche questa funzione indipendente e strettamente JSON
     const model = genAI.getGenerativeModel({ 
       model: AImodel,
-      systemInstruction: "Sei un analista di marketing per bookshop museali. Determina il target di età dei prodotti. Rispondi solo con un Array JSON di stringhe.",
+      // 1. Rimosso "Array JSON" dalle istruzioni di sistema
+      systemInstruction: "Sei un analista di marketing per bookshop museali. Determina il target di età dei prodotti. Rispondi esclusivamente in formato JSON strutturato.",
       generationConfig: { responseMimeType: "application/json" }
     });
 
+    // 2. Chiesto esplicitamente un oggetto JSON per evitare ambiguità
     const prompt = `
       Nome Articolo: ${itemName}
       Descrizione: ${itemDescription}
       
-      Seleziona una o più fasce d'età da questa lista esatta: ["0-3", "4-7", "8-12", "teens", "adults", "all"]
-      Restituisci solo l'array JSON. Esempio: ["8-12", "teens"]
+      Seleziona un'unica fascia d'età da questa lista esatta: ["kids", "teens", "adults", "all"]
+      Restituisci SOLO un oggetto JSON con questa struttura esatta: 
+      {"targetAge": "la_tua_scelta"}
     `;
 
     const result = await model.generateContent(prompt);
-    const ageArray = JSON.parse(result.response.text());
+    
+    // 3. Estraiamo la stringa dall'oggetto JSON
+    const parsedData = JSON.parse(result.response.text());
+    const finalTargetAge = parsedData.targetAge;
 
-    await Item.findByIdAndUpdate(itemId, { targetAge: ageArray });
+    await Item.findByIdAndUpdate(itemId, { targetAge: finalTargetAge });
     console.log(`✅ [AI SUCCESS] Target età calcolato per: ${itemName}`);
   } catch (error) {
     console.error(`❌ [AI ERROR] Fallito target età per ${itemName}:`, error);

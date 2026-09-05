@@ -28,7 +28,6 @@ app.set('trust proxy', 1);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*", // Permette a React di connettersi da un'altra porta (es. 5173) in dev
     methods: ["GET", "POST"]
   }
 });

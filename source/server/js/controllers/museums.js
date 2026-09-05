@@ -103,7 +103,7 @@ exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=nul
          usiamo una query classica e poi calcoliamo la distanza sui risultati in memoria.
          (Su qualche migliaio di musei è fulmineo).
       */
-      const allFiltered = await Museum.find(query); // Mongoose model (es. Museum)
+      const allFiltered = await Museum.find(query).lean(); // Mongoose model (es. Museum)
       const userLat = parseFloat(lat);
       const userLon = parseFloat(lon);
       const maxDist = parseInt(maxDistance) || 500;
@@ -111,7 +111,7 @@ exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=nul
       // Calcola distanza, filtra e ordina dal più vicino
       const sorted = allFiltered.map(m => {
         const d = getDistanceFromLatLonInKm(userLat, userLon, m.latitude, m.longitude);
-        return { ...m.toObject(), tempDistance: d };
+        return { ...m, tempDistance: d };
       })
       .filter(m => maxDist >= 500 || m.tempDistance <= maxDist)
       .sort((a, b) => (a.tempDistance || 0) - (b.tempDistance || 0));
@@ -130,7 +130,8 @@ exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=nul
       museums = await Museum.find(query)
                             .sort({ createdAt: -1, _id: 1 }) // AGGIUNTO IL TIE-BREAKER!
                             .skip((page - 1) * limit)
-                            .limit(Number(limit));
+                            .limit(Number(limit))
+                            .lean();
     }
 
     // 4. Risposta al frontend con metadati per l'infinite scroll
@@ -243,21 +244,42 @@ exports.removeSectionFromMuseum = async (museumId, sectionId) => {
 
 exports.deleteMuseumById = async (museumId) => {
   const { deleteSectionById } = require('./sections');
+  const { deleteAllItemsByMuseum } = require('./items');
+  const { deleteAllVisitsByMuseum } = require('./visits');
 
-  const museum = await Museum.findById(museumId);
+  const museum = await Museum.findByIdAndDelete(museumId);
   if (!museum) {
     const error = new Error("Museo non trovato");
     error.statusCode = 404;
     throw error;
   }
 
-  if(museum?.image) await deleteLocalFile(museum.image);
+  if (museum.image) await deleteLocalFile(museum.image);
 
-  // eliminiamo tutte le sezioni (e relative opere) collegate a questo museo
+  // Deleghiamo l'eliminazione di ogni sezione (e a cascata delle sue opere) a deleteSectionById.
+  // Se una sezione fosse già sparita dal DB (es. rimossa a mano), non blocchiamo l'eliminazione
+  // dell'intero museo: logghiamo e proseguiamo con le altre.
   if (museum.sections && museum.sections.length > 0) {
     for (const sectionId of museum.sections) {
-      await deleteSectionById(sectionId, museumId);
+      try {
+        await deleteSectionById(sectionId, museumId);
+      } catch (err) {
+        console.warn(`Impossibile eliminare la sezione ${sectionId} durante la cascata: ${err.message}`);
+      }
     }
+  }
+
+  // Eliminiamo anche gli articoli del bookshop e tutte le visite (inclusa quella standard) del museo
+  try {
+    await deleteAllItemsByMuseum(museumId);
+  } catch (err) {
+    console.warn(`Errore durante l'eliminazione degli articoli del museo ${museumId}: ${err.message}`);
+  }
+
+  try {
+    await deleteAllVisitsByMuseum(museumId);
+  } catch (err) {
+    console.warn(`Errore durante l'eliminazione delle visite del museo ${museumId}: ${err.message}`);
   }
 
   // rimuoviamo il museo dai musei gestiti dagli utenti
@@ -278,5 +300,5 @@ exports.deleteMuseumById = async (museumId) => {
     { $pull: { "data.$[].museumId": museumId } }
   );
 
-  return await Museum.findByIdAndDelete(museumId);
+  return museum;
 };

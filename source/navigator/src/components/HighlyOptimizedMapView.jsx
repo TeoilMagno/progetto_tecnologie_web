@@ -10,7 +10,8 @@ export default function HighlyOptimizedMapView({
   onBack,
   works,
   activeWorkId,
-  onWorkClick
+  onWorkClick,
+  disablePanZoom
 }) {
   // STATO PER LE ANIMAZIONI DI TRANSIZIONE
   const [animationStyle, setAnimationStyle] = useState({
