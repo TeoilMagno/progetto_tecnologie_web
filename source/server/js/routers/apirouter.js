@@ -35,6 +35,9 @@ const authorController = require("../controllers/authors");
 const styleController = require("../controllers/styles");
 const aiController = require("../controllers/ai");
 
+//usato per cancellare file locali dal file system del server
+const { deleteLocalFile } = require('../utils/file-helper');
+
 // Middleware
 const auth = require("../middleware/roles");
 const { cacheMiddleware, invalidateCache } = require("../utils/cache");
@@ -54,7 +57,36 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage: storage });
-const { deleteLocalFile } = require('../utils/file-helper');
+
+const mapStorage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    // Il tuo percorso specifico per le mappe!
+    const dir = path.join(__dirname, '..', '..', '..', 'public', 'shared', 'maps');
+    
+    // Crea la cartella se non esiste (usando la stessa logica della tua compagna)
+    await fs.mkdir(dir, { recursive: true }).catch(console.error);
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    // Prendiamo l'ID del museo direttamente dai parametri della rotta
+    const museumId = req.params.id; 
+    // Salviamo il file forzando il nome ID_MUSEO.svg
+    cb(null, `${museumId}.svg`);
+  }
+});
+
+// Creiamo un middleware separato per le mappe
+const uploadMap = multer({ 
+  storage: mapStorage,
+  // Aggiungiamo un filtro per sicurezza: accettiamo solo SVG!
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'image/svg+xml') {
+      cb(null, true);
+    } else {
+      cb(new Error("Per favore carica solo file in formato SVG."), false);
+    }
+  }
+});
 
 const apiRouter = express.Router();
 
@@ -504,17 +536,42 @@ apiRouter.post("/save-museum", auth.isCurator, async (req, res) => {
   }
 });
 
-apiRouter.put("/museums/:museumId/upload-map", async (req,res) => {
+apiRouter.post("/museums/:id/upload-map-svg", auth.isCurator, uploadMap.single("mapSvg"), async (req,res) => {
   try {
-    const mapData = req.body;
-    const map = await sectionController.uploadMap(mapData);
+    const { id } = req.params;
 
-    invalidateCache(["/map-svg"]);
+    if (!req.file) {
+      return res.status(400).json({ error: "Nessun file SVG caricato." });
+    }
+
+    invalidateCache([`/museums/${id}/map-svg`]);
 
     res.status(201).json({
       success: true,
       message: "Mappa salvata correttamente",
-      map: map,
+      mapUrl: `/shared/maps/${id}.svg`
+    });
+  } catch (error) {
+    console.error("Errore validazione o salvataggio:", error);
+    res.status(400).json({
+      error: "Dati incompleti o errati",
+      details: error.message,
+    });
+  }
+});
+
+apiRouter.put("/museums/:id/sections/bulk-update", auth.isCurator, async (req,res) => {
+  try {
+    const { id } = req.params;
+    const sectionsData = req.body.sections;
+    const updatedSections = await sectionController.updateSections(id, sectionsData);
+
+    invalidateCache([`/museums/${id}/map-svg`]);
+
+    res.status(201).json({
+      success: true,
+      message: "Configurazione sezioni salvata correttamente",
+      sections: updatedSections,
     });
   } catch (error) {
     console.error("Errore validazione o salvataggio:", error);

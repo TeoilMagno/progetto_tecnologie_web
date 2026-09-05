@@ -1,191 +1,129 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Art Around - Gestione Mappa Museo</title>
-  <link rel="icon" type="image/svg+xml" href="/shared/img/artaround-logo.svg">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="/marketplace/css/style.css" />
-  <link rel="stylesheet" href="/marketplace/css/forms-style.css" />
-  <style>
-    .map-preview-box {
-      width: 100%;
-      height: 380px;
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .map-preview-box svg {
-      width: 100%;
-      height: 100%;
-    }
-    .map-preview-box svg g[id="vista-globale"] {
-      display: block !important;
-    }
-    .map-preview-box svg g[id="vista-dettaglio"],
-    .map-preview-box svg g[id="visita-dettaglio"] {
-      display: none !important;
-    }
-    .section-card {
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-    }
-  </style>
-</head>
-<body class="artaround-theme">
-
-  <header class="navbar site-header sticky-top px-3 mb-4">
-    <div class="d-flex align-items-center">
-      <a class="navbar-brand d-flex align-items-center" href="/my-museums">
-        <i class="bi bi-bank me-2 text-white"></i>
-        <span class="brand-text">ArtAround</span>
-        <span class="brand-subtitle ms-1 text-white opacity-75">Curator</span>
-      </a>
-    </div>
-    <a href="/my-museums" class="btn btn-sm btn-glass rounded-pill px-3">
-      <i class="bi bi-x-lg me-1"></i> Annulla
-    </a>
-  </header>
-
-  <div class="container py-4" style="max-width: 900px;">
-<<<<<<< HEAD
-  
-=======
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Art Around - Gestione Mappa Museo</title>
+    <link rel="icon" type="image/svg+xml" href="/shared/img/artaround-logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/marketplace/css/style.css" />
+    <link rel="stylesheet" href="/marketplace/css/forms-style.css" />
     
-    <!-- ANTEPRIMA MAPPA ATTUALE -->
->>>>>>> lex
-    <div class="glass-panel p-4 mb-4">
-      <h2 class="h5 text-white mb-3 d-flex align-items-center gap-2">
-        <i class="bi bi-map text-info"></i> Mappa Attuale (Vista Globale)
-      </h2>
-      <div id="mapPreviewContainer" class="map-preview-box">
-<<<<<<< HEAD
-        <div class="spinner-border text-info" role="status"><span class="visually-hidden">Caricamento...</span></div>
+    <!-- STILI RIPRISTINATI: Fondamentali per l'anteprima della mappa! -->
+    <style>
+      .map-preview-box { width: 100%; height: 380px; background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+      .map-preview-box svg { width: 100%; height: 100%; }
+      .map-preview-box svg g[id="vista-globale"] { display: block !important; }
+      .map-preview-box svg g[id="vista-dettaglio"], .map-preview-box svg g[id="visita-dettaglio"] { display: none !important; }
+    </style>
+  </head>
+  <body class="artaround-theme">
+
+    <header class="navbar site-header sticky-top px-3 mb-4">
+      <div class="d-flex align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="/my-museums">
+          <i class="bi bi-bank me-2 text-white"></i>
+          <span class="brand-text">ArtAround</span>
+          <span class="brand-subtitle ms-1 text-white opacity-75">Curator</span>
+        </a>
+      </div>
+      <a href="/my-museums" class="btn btn-sm btn-glass rounded-pill px-3">
+        <i class="bi bi-x-lg me-1"></i> Annulla
+      </a>
+    </header>
+
+    <!-- Aggiunto pb-5 qui per evitare che il contenuto si appiccichi in fondo -->
+    <div class="container pb-5" style="max-width: 900px;">
+
+      <div class="glass-panel p-4 mb-4">
+        <h2 class="h5 text-white mb-3 d-flex align-items-center gap-2">
+          <i class="bi bi-map text-info"></i> Mappa Attuale (Vista Globale)
+        </h2>
+        <div id="mapPreviewContainer" class="map-preview-box">
+          <div class="spinner-border text-info" role="status"><span class="visually-hidden">Caricamento...</span></div>
+        </div>
+      </div>
+
+      <!-- FORM DI CARICAMENTO E DEFINIZIONE SEZIONI (Conflitti rimossi) -->
+      <form id="mapForm" class="glass-panel p-4 mb-5">
+        <h1 class="aura-title h4 mb-4">Configura Mappa e Sezioni</h1>
+
+        <!-- UPLOAD FILE SVG TRAMITE WIDGET -->
+        <div class="mb-4">
+          <div id="map-svg-widget-container"></div>
+          <div class="form-text text-white-50 mt-2">
+            Il file SVG deve contenere i gruppi <code>vista-globale</code> e <code>vista-dettaglio</code>.
+          </div>
+        </div>
+
+        <hr class="border-white-50 my-4" />
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="h5 text-white mb-0">Sezioni del Museo</h3>
+          <button type="button" class="btn btn-sm btn-outline-info rounded-pill" onclick="openSectionModal()">
+            <i class="bi bi-plus-lg me-1"></i> Aggiungi Sezione
+          </button>
+        </div>
+
+        <div id="sectionsContainer"></div>
+
+        <div class="d-flex gap-3 pt-3 mt-4 border-top border-secondary">
+          <button type="button" class="btn btn-gradient px-5" onclick="handleSaveMapAndSections(event)">
+            Salva Configurazione
+          </button>
+          <button type="reset" class="btn btn-glass" onclick="location.reload()">
+            Ripristina
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- MODALE SEZIONE -->
+    <div class="modal fade" id="sectionModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content glass-modal text-white">
+          <div class="modal-header border-bottom-custom">
+            <h5 class="modal-title" id="sectionModalLabel">Gestisci Sezione</h5>
+            <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="section-form">
+              <input type="hidden" id="section-id-input" data-index="-1" />
+
+              <div class="mb-3">
+                <label class="form-label small text-secondary">Nome Sezione *</label>
+                <input type="text" class="form-control glass-input" id="section-name-input" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-secondary">SVG Group ID (senza prefisso dettaglio) *</label>
+                <input type="text" class="form-control glass-input" id="section-svg-id-input" placeholder="Es: section-greek-art" required />
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-12"><span class="text-info small fw-semibold">Coordinate ViewBox per Zoom:</span></div>
+                <div class="col-3"><label class="form-label text-white-50 small">X</label><input type="number" class="form-control glass-input" id="sec-v-x" required /></div>
+                <div class="col-3"><label class="form-label text-white-50 small">Y</label><input type="number" class="form-control glass-input" id="sec-v-y" required /></div>
+                <div class="col-3"><label class="form-label text-white-50 small">Width</label><input type="number" class="form-control glass-input" id="sec-v-w" required /></div>
+                <div class="col-3"><label class="form-label text-white-50 small">Height</label><input type="number" class="form-control glass-input" id="sec-v-h" required /></div>
+              </div>
+
+              <div class="mb-3" id="edit-section-image-widget"></div>
+
+            </form>
+          </div>
+          <div class="modal-footer border-top-custom">
+            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+            <button type="button" class="btn btn-gradient px-3" onclick="saveSectionFromModal()">Conferma Dati</button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <form id="mapForm" class="glass-panel p-4">
-      <h1 class="aura-title h4 mb-4">Configura Mappa e Sezioni</h1>
-
-      <div class="mb-4">
-        <div id="map-svg-widget-container"></div>
-        <div class="form-text text-white-50 mt-2">
-          Il file SVG deve contenere i gruppi <code>vista-globale</code> e <code>vista-dettaglio</code>.
-        </div>:width
-=======
-        <div class="spinner-border text-info" role="status">
-          <span class="visually-hidden">Caricamento...</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- FORM DI CARICAMENTO E DEFINIZIONE SEZIONI -->
-    <form id="mapForm" class="glass-panel p-4">
-      <h1 class="aura-title h4 mb-4">Configura Mappa e Sezioni</h1>
-
-      <!-- UPLOAD FILE SVG -->
-      <div class="mb-4">
-        <label for="svgFileInput" class="form-label text-white fw-semibold">
-          Carica nuovo file Planimetria (SVG)
-        </label>
-        <input class="form-control input-aura" type="file" id="svgFileInput" accept=".svg" />
-        <div class="form-text text-white-50">
-          Il file SVG deve contenere i gruppi <code>vista-globale</code> e <code>vista-dettaglio</code>.
-        </div>
->>>>>>> lex
-      </div>
-
-      <hr class="border-white-50 my-4" />
-
-<<<<<<< HEAD
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="h5 text-white mb-0">Sezioni del Museo</h3>
-
-        <button type="button" class="btn btn-sm btn-outline-info rounded-pill" onclick="openSectionModal()">
-=======
-      <!-- ELENCO DELLE SEZIONI -->
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="h5 text-white mb-0">Sezioni del Museo</h3>
-        <button type="button" class="btn btn-sm btn-outline-info rounded-pill" onclick="addNewSectionCard()">
->>>>>>> lex
-          <i class="bi bi-plus-lg me-1"></i> Aggiungi Sezione
-        </button>
-      </div>
-
-<<<<<<< HEAD
-      <div id="sectionsContainer"></div>
-
-      <div class="d-flex gap-3 pt-3 mt-4 border-top border-secondary">
-        <button type="button" class="btn btn-gradient px-5" onclick="handleSaveMapAndSections(event)">Salva Configurazione</button>
-=======
-      <div id="sectionsContainer">
-        <!-- Le card delle sezioni vengono iniettate dinamicamente via JS -->
-      </div>
-
-      <div class="d-flex gap-3 pt-3 mt-4 border-top border-secondary">
-        <button type="button" class="btn btn-gradient px-5" onclick="handleSaveMapAndSections(event)">
-          Salva Configurazione
-        </button>
-        <button type="reset" class="btn btn-glass" onclick="location.reload()">Ripristina</button>
->>>>>>> lex
-      </div>
-    </form>
-  </div>
-
-  <div class="modal fade" id="sectionModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content glass-modal text-white">
-        <div class="modal-header border-bottom-custom">
-          <h5 class="modal-title" id="sectionModalLabel">Gestisci Sezione</h5>
-          <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <form id="section-form">
-
-            <input type="hidden" id="section-id-input" data-index="-1" />
-            
-            <div class="mb-3">
-              <label class="form-label small text-secondary">Nome Sezione *</label>
-              <input type="text" class="form-control glass-input" id="section-name-input" required />
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label small text-secondary">SVG Group ID (senza prefisso dettaglio) *</label>
-              <input type="text" class="form-control glass-input" id="section-svg-id-input" placeholder="Es: section-greek-art" required />
-            </div>
-
-            <div class="row g-2 mb-3">
-              <div class="col-12"><span class="text-info small fw-semibold">Coordinate ViewBox per Zoom:</span></div>
-              <div class="col-3"><label class="form-label text-white-50 small">X</label><input type="number" class="form-control glass-input" id="sec-v-x" required /></div>
-              <div class="col-3"><label class="form-label text-white-50 small">Y</label><input type="number" class="form-control glass-input" id="sec-v-y" required /></div>
-              <div class="col-3"><label class="form-label text-white-50 small">Width</label><input type="number" class="form-control glass-input" id="sec-v-w" required /></div>
-              <div class="col-3"><label class="form-label text-white-50 small">Height</label><input type="number" class="form-control glass-input" id="sec-v-h" required /></div>
-            </div>
-
-            <div class="mb-3" id="edit-section-image-widget"></div>
-            
-          </form>
-        </div>
-        <div class="modal-footer border-top-custom">
-          <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
-          <button type="button" class="btn btn-gradient px-3" onclick="saveSectionFromModal()">Conferma Dati</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/marketplace/js/config.js"></script>
-  <script src="/marketplace/js/image-manager.js"></script> 
-  <script src="/marketplace/js/upload-map.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/marketplace/js/config.js"></script>
+    <script src="/marketplace/js/image-manager.js"></script> 
+    <script src="/marketplace/js/upload-map.js"></script>
+  </body>
 </html>

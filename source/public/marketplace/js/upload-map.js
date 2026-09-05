@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function loadCurrentMap(museumId) {
   const container = document.getElementById("mapPreviewContainer");
   try {
-    const response = await fetch(`/api/museums/${museumId}/map-svg`);
+    const response = await fetch(`${API_BASE_URL}/museums/${museumId}/map-svg`);
     
     if (response.status === 404) {
       container.innerHTML = `
@@ -48,7 +48,7 @@ async function loadCurrentMap(museumId) {
 // CARICA LE SEZIONI DAL DATABASE NEL NOSTRO ARRAY LOCALE
 async function loadMuseumSections(museumId) {
   try {
-    const response = await fetch(`/api/museums/${museumId}/sections`);
+    const response = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`);
     if (!response.ok) throw new Error("Errore nel recupero delle sezioni");
     
     localSections = await response.json();
@@ -195,7 +195,7 @@ async function handleSaveMapAndSections(event) {
       const formData = new FormData();
       formData.append("mapSvg", svgFile);
 
-      const uploadSvgRes = await fetch(`/api/museums/${currentMuseumId}/upload-map-svg`, {
+      const uploadSvgRes = await fetch(`${API_BASE_URL}/museums/${currentMuseumId}/upload-map-svg`, {
         method: "POST",
         body: formData
       });
@@ -204,7 +204,7 @@ async function handleSaveMapAndSections(event) {
     }
 
     // 2. Invio dell'array delle sezioni al Database
-    const updateSectionsRes = await fetch(`/api/museums/${currentMuseumId}/sections/bulk-update`, {
+    const updateSectionsRes = await fetch(`${API_BASE_URL}/museums/${currentMuseumId}/sections/bulk-update`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sections: sectionsPayload })

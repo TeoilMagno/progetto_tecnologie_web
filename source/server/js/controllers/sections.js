@@ -1,5 +1,6 @@
 const Section = require('../models/sections');
 const Work = require('../models/works');
+const Museum = require('../models/museums');
 
 const { getWorksById, deleteWorkById } = require('./works');
 const { deleteLocalFile } = require('../utils/file-helper')
@@ -82,7 +83,7 @@ exports.updateSectionById = async (sectionId, updateData, museumId) => {
 
   const updatedSection = await Section.findOneAndUpdate(
     { _id: sectionId, museumId: museumId},
-    updateData, 
+    updateData,
     { returnDocument: 'after', runValidators: true }
   );
 
@@ -95,47 +96,42 @@ exports.updateSectionById = async (sectionId, updateData, museumId) => {
   return updatedSection;
 }
 
-exports.uploadMap = async (mapData) => {
-  const {sections} = mapData;
-  
-  if(!sections || !Array.isArray(sections) || sections.lenght === 0) {
-    throw new Error("Nessuna sezione fornita nel payload");
-  }
+exports.updateSections = async (museumId, sectionsData) => {
+  const validSectionIds = [];
 
-  const updatedSections = [];
-
-  for (const section of sections) {
-    const {_id, color, works, shape} = section;
-
-    if(!_id) {
-      console.warn("Ricevuta una sezione senza _id, ignorata.");
-      continue;
-    }
-
-    const updatedSection = await Section.findByIdAndUpdate(
-      _id,
-      {
-        $set: {
-          color: color,
-          shape: shape,
-          works: works
-        }
-      },
-      {
-        returnDocument: 'after',
-        runValidators: true
+  for (const s of sectionsData) {
+    if (s._id) {
+      // CASO A: LA SEZIONE ESISTE -> Riutilizzo updateSectionById
+      try {
+        const updatedSection = await exports.updateSectionById(s._id, s, museumId);
+        validSectionIds.push(updatedSection._id);
+      } catch (err) {
+        console.warn(`Impossibile aggiornare la sezione ${s._id}:`, err.message);
       }
-    );
+    } else {
+      // CASO B: LA SEZIONE E' NUOVA -> La creiamo
+      const newSection = new Section({
+        name: s.name,
+        svgGroupId: s.svgGroupId,
+        image: s.image,
+        museumId: museumId,
+        viewBox: s.viewBox,
+        works: [], 
+        rooms: []  
+      });
 
-    if(!updatedSection) {
-      throw new Error(`Impossibile trovare e aggiornare le sezioni con id ${_id}`);
+      const savedSection = await newSection.save();
+      validSectionIds.push(savedSection._id);
     }
-
-    updatedSections.push(updatedSection);
   }
 
-  return updatedSections;
-}
+  // AGGIORNIAMO IL MUSEO ALLA FINE
+  await Museum.findByIdAndUpdate(museumId, {
+    sections: validSectionIds
+  });
+
+  return validSectionIds;
+};
 
 // Rimuove l'opera dall'array della sezione
 exports.removeWorkFromSection = async (sectionId, workId) => {
