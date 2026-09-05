@@ -2,6 +2,7 @@ const Work = require('../models/works');
 const Visit = require('../models/visits');
 
 const { deleteLocalFile } = require('../utils/file-helper');
+const { removeWorkFromSection } = require('./sections')
 
 exports.getAllWorks = async () => {
   try {
@@ -140,6 +141,8 @@ exports.deleteWorkById = async (workId, museumId) => {
     { museumId: museumId, visitType: 'standard' },
     { $pull: { works: workId } } 
   );
+
+  await removeWorkFromSection(deletedWork.sectionId, workId); 
 
   return deletedWork;
 };

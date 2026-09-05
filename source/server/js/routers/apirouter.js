@@ -663,6 +663,16 @@ apiRouter.delete("/delete-image", auth.isLoggedIn, async (req, res) => {
   }
 });
 
+apiRouter.post("/delete-image-beacon", async (req, res) => {
+  try {
+    const { imageUrl } = req.body;
+    if (imageUrl) await deleteLocalFile(imageUrl);
+  } catch (e) {
+    console.error("Errore pulizia beacon:", e);
+  }
+  res.sendStatus(204);
+});
+
 //------------------ user ------------------------
 
 // restituisce l'utente loggato, o null se non autenticato

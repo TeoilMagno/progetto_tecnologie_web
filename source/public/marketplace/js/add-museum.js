@@ -43,7 +43,7 @@ async function museumHandleSave(event) {
 
     if (response.ok) {
       const data = await response.json();
-      
+      markImageConfirmed(payload.image);
       // La magia! Redirigiamo l'utente direttamente all'editor del nuovo museo
       window.location.replace(`/edit-museum?id=${data.id}`);
       

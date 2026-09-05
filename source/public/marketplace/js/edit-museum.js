@@ -26,6 +26,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("sectionModal")) sectionModalInstance = new bootstrap.Modal(document.getElementById("sectionModal"));
   if (document.getElementById("deleteMuseumModal")) deleteMuseumModalInstance = new bootstrap.Modal(document.getElementById("deleteMuseumModal"));
 
+  // pulizia immagine se la modale viene chiusa senza salvare
+  document.getElementById("workModal")?.addEventListener('hidden.bs.modal', () => {
+    discardImage(document.getElementById("work-image")?.value);
+  });
+  document.getElementById("sectionModal")?.addEventListener('hidden.bs.modal', () => {
+    discardImage(document.getElementById("section-image-input")?.value);
+  });
+
   await fetchCurrentUser();
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -241,6 +249,7 @@ async function saveSectionFromModal() {
       });
       
       if (res.ok) {
+        markImageConfirmed(sectionImage);
         sectionModalInstance.hide();
         // Aggiorniamo lo stato in memoria locale
         const secIndex = museumSections.findIndex(s => s._id === sectionId);
@@ -263,6 +272,7 @@ async function saveSectionFromModal() {
       });
       
       if (res.ok) {
+        markImageConfirmed(sectionImage);
         const newSectionId = await res.json();
         sectionModalInstance.hide();
         
@@ -447,6 +457,8 @@ async function saveWorkFromModal() {
     }
 
     if (res.ok) {
+      markImageConfirmed(workData.image);
+
       // Estraiamo la risposta del server (che contiene i dati salvati dal DB)
       const responseData = await res.json();
       
@@ -485,6 +497,7 @@ async function saveWorkFromModal() {
           setTimeout(initSortableWorks, 100);
         }
       }
+
     } else {
       const errorData = await res.json();
       alert("Errore salvataggio: " + (errorData.error || "Riprova."));
@@ -522,6 +535,7 @@ async function saveAllMuseumChanges() {
     });
 
     if (res.ok) {
+      markImageConfirmed(updatedMuseum.image);
       alert("Museo aggiornato con successo!");
       window.location.replace("/my-museums"); 
     } else {

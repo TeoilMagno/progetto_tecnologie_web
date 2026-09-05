@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cartListElement = document.getElementById("visit-cart-list");
 
   // Ascoltatori per l'autosalvataggio sui campi di testo
-  const cartListElement = document.getElementById("visit-cart-list");
   document.getElementById("visit-title")?.addEventListener("input", triggerAutoSave);
   document.getElementById("visit-desc")?.addEventListener("input", triggerAutoSave);
 
@@ -835,6 +834,7 @@ async function submitVisit(isSavingAsDraft = false) {
 
     // Recuperiamo l'ID univoco della visita (sia in caso di modifica che di nuova creazione)
     const finalVisitId = editingVisitId || (data.visit ? data.visit._id : data._id);
+    markImageConfirmed(imageUrl); 
 
     currentVisitCart = [];
     localStorage.setItem("visitsChanged", "true");
@@ -932,6 +932,7 @@ async function autoSaveDraft() {
 
     if (response.ok) {
       const data = await response.json();
+      markImageConfirmed(imageUrl); 
 
       // Se era la PRIMA volta che salvavamo in automatico (POST)...
       // CORREZIONE: Andiamo a leggere l'ID dentro data.visit._id !

@@ -1,3 +1,32 @@
+// set delle immagini inserite ma il cui contenitore non e' salvato (es opera prima di salva)
+// serve per tenere traccia del fatto che l'utente scelga di annullare l'operazione oppure ricarichi la pagina
+window._pendingUploads = window._pendingUploads || new Set();
+
+window.addEventListener("pagehide", () => {
+  window._pendingUploads.forEach(url => {
+    const blob = new Blob([JSON.stringify({ imageUrl: url })], { type: 'application/json' });
+    navigator.sendBeacon(`${API_BASE_URL}/delete-image-beacon`, blob);
+  });
+});
+
+function markImageConfirmed(url) {
+  window._pendingUploads.delete(url);
+}
+
+async function discardImage(url) {
+  if (!url || !window._pendingUploads.has(url)) return; // già salvata o mai caricata da noi: non tocchiamo nulla
+  window._pendingUploads.delete(url);
+  try {
+    await fetch(`${API_BASE_URL}/delete-image`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageUrl: url })
+    });
+  } catch (e) {
+    console.error("Errore pulizia immagine orfana:", e);
+  }
+}
+
 // Aggiunto il parametro opzionale 'uploadOnly' (di default è falso)
 function initImageWidget(containerId, hiddenInputId, labelText, uploadOnly = false) {
   const container = document.getElementById(containerId);
@@ -81,6 +110,7 @@ async function handleImageUpload(fileInput, targetId) {
     if (res.ok) {
       const data = await res.json();
       setFinalImage(targetId, data.url);
+      window._pendingUploads.add(data.url);
     } else {
       alert("Errore durante il caricamento del file.");
       if (labelEl) labelEl.innerText = "Scegli un'immagine dal dispositivo";
