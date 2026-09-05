@@ -366,10 +366,16 @@ async function loadMuseumWorks(museumId) {
   catalogArea.innerHTML = ""; 
 
   try {
-    const sectionsRes = await fetch(`${API_BASE_URL}/museums/${museumId}/sections`);
+    const [sectionsRes, mapRes] = await Promise.all([
+      fetch(`${API_BASE_URL}/museums/${museumId}/sections`),
+      fetch(`${API_BASE_URL}/museums/${museumId}/map-svg`)
+    ]);
+    
     allMuseumSections = await sectionsRes.json();
+    window.cachedMapSvgString = mapRes.ok ? await mapRes.text() : null;
   } catch (e) { 
     allMuseumSections = []; 
+    window.cachedMapSvgString = null;
   }
 
   document.getElementById("current-museum-name").innerText = "Catalogo in caricamento...";
@@ -501,6 +507,43 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
 
     const safeSecId = `sec-${secId}`;
 
+    // Costruzione dinamica dell'HTML della mappa
+    let mapHtml = `<img src="${secImg}" style="width: 100%; height: 100%; object-fit: cover;">`;
+
+    if (window.cachedMapSvgString) {
+      const parser = new DOMParser();
+      const svgDoc = parser.parseFromString(window.cachedMapSvgString, "image/svg+xml");
+      const svgEl = svgDoc.querySelector("svg");
+
+      if (svgEl) {
+        svgEl.classList.add("dynamic-museum-map");
+        svgEl.removeAttribute("width");
+        svgEl.removeAttribute("height");
+        svgEl.style.width = "100%";
+        svgEl.style.height = "100%";
+
+        // 2. Ricerca della Stanza e Tolleranza (Fallback)
+        const normalizedId = "section-" + secName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        let targetGroup = svgEl.querySelector(`#${normalizedId}`);
+        
+        // Se il nome preciso fallisce, cerca una parola chiave rilevante del nome tra i gruppi disponibili
+        if (!targetGroup) {
+           const keywords = secName.toLowerCase().split(/[^\w]+/).filter(w => w.length > 3);
+           const allSections = svgEl.querySelectorAll('g[id^="section-"]');
+           targetGroup = Array.from(allSections).find(g => keywords.some(k => g.id.includes(k)));
+        }
+
+        // 3. Accensione e Ordine di Sovrapposizione
+        if (targetGroup) {
+            targetGroup.classList.add("active-section");
+            // Spostiamo il gruppo alla fine del documento SVG per farlo renderizzare visivamente "sopra" agli altri
+            svgEl.appendChild(targetGroup); 
+        }
+
+        mapHtml = svgEl.outerHTML;
+      }
+    }
+
     // Crea la Sezione se non esiste
     let sectionContainer = document.getElementById(safeSecId);
     if (!sectionContainer) {
@@ -508,15 +551,23 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
       sectionContainer.id = safeSecId;
       // Forza esplicitamente la larghezza al 100% in modo che le sezioni si incolonnino verticalmente
       sectionContainer.className = "col-12 w-100 mb-4"; 
+      // Sostituzione dell'innerHTML del sectionContainer
       sectionContainer.innerHTML = `
         <div class="glass-panel p-3 position-relative overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
-          <h4 class="text-info mb-3 border-bottom border-secondary border-opacity-25 pb-2" style="font-size: 1.15rem;">
-            <i class="bi bi-tag-fill me-2"></i>${secName}
-          </h4>
-          <div style="position: absolute; bottom: 10px; right: 10px; width: 80px; height: 80px; opacity: 0.15; pointer-events: none; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-            <img src="${secImg}" style="width: 100%; height: 100%; object-fit: cover;">
+          
+          <!-- Header con Flexbox: Titolo a sinistra, Mappa a destra -->
+          <div class="d-flex justify-content-between align-items-start border-bottom border-secondary border-opacity-25 mb-3 pb-2">
+            <h4 class="text-info mb-0 mt-2" style="font-size: 1.15rem;">
+              <i class="bi bi-tag-fill me-2"></i>${secName}
+            </h4>
+            
+            <!-- Contenitore Mappa cliccabile con indicatore visivo -->
+            <div class="map-thumbnail cursor-pointer position-relative" onclick="openMapModal('${safeSecId}')" id="thumb-${safeSecId}" title="Clicca per ingrandire la mappa" style="width: 70px; height: 70px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); transition: transform 0.2s;">
+              ${mapHtml}
+            </div>
           </div>
-          <!-- Qui le opere si disporranno nella griglia -->
+          
+          <!-- Contenitore delle opere -->
           <div class="row g-3" id="works-container-${safeSecId}"></div>
         </div>
       `;
@@ -1130,3 +1181,137 @@ function updateCatalogSentinel() {
     globalSentinel.classList.add("d-none");
   }
 }
+
+// Funzione globale per aprire l'anteprima ingrandita della mappa con Pan & Zoom
+window.openMapModal = function(sectionId) {
+  let modalEl = document.getElementById("map-zoom-modal");
+  
+  // Variabili globali per tracciare trasformazioni
+  window.currentMapZoom = 1;
+  window.mapTranslateX = 0;
+  window.mapTranslateY = 0;
+  
+  if (!modalEl) {
+    const modalHtml = `
+      <div class="modal fade" id="map-zoom-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content bg-dark border-secondary border-opacity-50 shadow-lg overflow-hidden" style="background: rgba(20, 20, 30, 0.95) !important; backdrop-filter: blur(10px);">
+            
+            <!-- Controlli Lente di Ingrandimento (Stile Glass Navigator) -->
+            <div class="position-absolute top-0 start-0 m-3 z-3 d-flex flex-column gap-2">
+              <button class="btn rounded-circle d-flex justify-content-center align-items-center shadow-sm" onclick="changeMapZoom(0.4)" title="Ingrandisci" style="width: 44px; height: 44px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                <i class="bi bi-plus-lg fs-5"></i>
+              </button>
+              <button class="btn rounded-circle d-flex justify-content-center align-items-center shadow-sm" onclick="changeMapZoom(-0.4)" title="Riduci" style="width: 44px; height: 44px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                <i class="bi bi-dash-lg fs-5"></i>
+              </button>
+              <button class="btn rounded-circle d-flex justify-content-center align-items-center shadow-sm" onclick="resetMapZoom()" title="Resetta Visuale" style="width: 44px; height: 44px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                <i class="bi bi-arrows-angle-contract fs-6"></i>
+              </button>
+            </div>
+
+            <!-- Chiusura -->
+            <div class="modal-header border-0 pb-0 justify-content-end position-absolute top-0 end-0 z-3 p-3">
+              <button type="button" class="btn-close btn-close-white custom-close shadow" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgba(0,0,0,0.5);"></button>
+            </div>
+            
+            <!-- Area Mappa Zoomabile e Draggabile -->
+            <div class="modal-body p-0 m-0 overflow-hidden" id="map-drag-container" style="height: 80vh; position: relative; cursor: grab;">
+              <div id="map-zoom-body" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transform-origin: center center; will-change: transform;">
+                <!-- L'SVG ingrandito apparirà qui -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML("beforeend", modalHtml);
+    modalEl = document.getElementById("map-zoom-modal");
+
+    // Funzioni di manipolazione
+    window.changeMapZoom = function(step) {
+      window.currentMapZoom = Math.max(0.5, Math.min(window.currentMapZoom + step, 5)); 
+      applyZoom();
+    };
+    
+    window.resetMapZoom = function() {
+      window.currentMapZoom = 1;
+      window.mapTranslateX = 0;
+      window.mapTranslateY = 0;
+      applyZoom();
+    };
+    
+    window.applyZoom = function() {
+      const body = document.getElementById("map-zoom-body");
+      if (body) {
+        body.style.transition = "transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)";
+        body.style.transform = `translate(${window.mapTranslateX}px, ${window.mapTranslateY}px) scale(${window.currentMapZoom})`;
+      }
+    };
+
+    // Logica di Trascinamento (Pan)
+    const dragContainer = document.getElementById("map-drag-container");
+    let isDragging = false;
+    let startX, startY;
+
+    dragContainer.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      dragContainer.style.cursor = "grabbing";
+      document.getElementById("map-zoom-body").style.transition = "none"; // Disabilita l'animazione per un drag fluido
+      startX = e.clientX - window.mapTranslateX;
+      startY = e.clientY - window.mapTranslateY;
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      window.mapTranslateX = e.clientX - startX;
+      window.mapTranslateY = e.clientY - startY;
+      document.getElementById("map-zoom-body").style.transform = `translate(${window.mapTranslateX}px, ${window.mapTranslateY}px) scale(${window.currentMapZoom})`;
+    });
+
+    const stopDrag = () => {
+      if (isDragging) {
+        isDragging = false;
+        dragContainer.style.cursor = "grab";
+        document.getElementById("map-zoom-body").style.transition = "transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)";
+      }
+    };
+
+    document.addEventListener("mouseup", stopDrag);
+    modalEl.addEventListener("hidden.bs.modal", stopDrag); // Previene blocchi se si chiude la modale mentre si trascina
+
+    // Logica di Zoom con Rotellina del Mouse (Wheel)
+    dragContainer.addEventListener("wheel", (e) => {
+      e.preventDefault(); // Previene lo scroll fisico della pagina o della modale
+
+      // deltaY negativo significa scroll verso l'alto (zoom in), positivo verso il basso (zoom out)
+      const zoomStep = e.deltaY < 0 ? 0.2 : -0.2; 
+      
+      // Sfruttiamo la funzione già esistente per mantenere i limiti (0.5x - 5x) e l'animazione
+      changeMapZoom(zoomStep);
+    }, { passive: false }); // passive: false è necessario per permettere a e.preventDefault() di bloccare lo scroll nativo
+  }
+
+  // Preleva e inietta l'SVG corrente
+  const thumbMapHtml = document.getElementById(`thumb-${sectionId}`).innerHTML;
+  const zoomBody = document.getElementById("map-zoom-body");
+  zoomBody.innerHTML = thumbMapHtml;
+  
+  // Ripristina centratura
+  window.resetMapZoom();
+
+  // Ottimizzazione SVG nella modale
+  const svgInsideModal = zoomBody.querySelector("svg, img");
+  if (svgInsideModal) {
+    svgInsideModal.style.width = "100%";
+    svgInsideModal.style.height = "100%";
+    svgInsideModal.style.maxHeight = "75vh";
+    svgInsideModal.style.objectFit = "contain";
+    // Evita che il trascinamento dell'immagine nativa interferisca con il pan personalizzato
+    svgInsideModal.setAttribute("draggable", "false"); 
+  }
+
+  const bsModal = new bootstrap.Modal(modalEl);
+  bsModal.show();
+};
