@@ -162,6 +162,27 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
     return null;
   };
 
+  // Riporta l'utente all'opera corrente da qualsiasi punto della mappa in cui
+  // si sia "perso" (es. panoramica generale): se serve cambia prima sezione
+  // (zoom), poi apre la scheda dell'opera con un breve ritardo per rendere
+  // visibile la sequenza invece di far scattare tutto insieme.
+  const returnToCurrentWork = () => {
+    if (!currentWork) return;
+
+    if (hasMap) {
+      const alreadyOnRightSection = selectedSection?.works?.some(
+        sw => (sw.workId?._id || sw.workId) === currentWork._id
+      );
+      if (!alreadyOnRightSection) {
+        selectSectionForWork(currentWork);
+        setTimeout(() => setDetailsWork(currentWork), 450);
+        return;
+      }
+    }
+
+    setDetailsWork(currentWork);
+  };
+
   // --- ASCOLTO EVENTI INSEGNANTE (DASHBOARD) ---
   useEffect(() => {
     if (isSharedSession && isTeacher && socket) {
@@ -461,6 +482,15 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
             activeWorkId={currentWork?._id}
             onWorkClick={(work) => {
               const idx = visitedWorks.findIndex(w => (w._id?.toString() || w.toString()) === (work._id?.toString() || work.toString()));
+
+              // In una sessione condivisa, solo l'insegnante decide quale opera
+              // si sta visitando: lo studente può comunque esplorare liberamente
+              // la mappa, ma toccare un'opera diversa da quella corrente non
+              // apre nulla. Può però riaprire la scheda di quella corrente.
+              if (isSharedSession && !isTeacher && idx !== currentWorkIndex) {
+                return;
+              }
+
               if (idx !== -1) setCurrentWorkIndex(idx);
               setDetailsWork(work);
             }}
@@ -520,6 +550,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
         socket={socket}
         roomCode={roomCode}
         guide={workGuide}
+        onReturnToCurrentWork={returnToCurrentWork}
       />
 
       {/* Modale Finale */}

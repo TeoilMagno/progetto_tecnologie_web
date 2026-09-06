@@ -255,7 +255,10 @@ export default function Visits({ selectedMuseum }) {
 
           {/* TAB: MY VISITS */}
           <button
-            onClick={() => setActiveTab('my')}
+            onClick={() => {
+              setActiveTab('my');
+              setLoading(true);
+            }}
             className={`flex-1 text-center py-2 rounded-full font-bold text-xs transition-all ${activeTab === 'my' ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/10' : 'text-slate-400 hover:text-white'}`}
           >
             My visits

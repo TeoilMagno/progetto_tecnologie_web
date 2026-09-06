@@ -3,7 +3,7 @@ import { ChevronLeft, Play, ChevronRight, BookOpen, Volume2, QrCode } from 'luci
 
 export default function NavigationControlBar({
   currentWorkIndex, visitedWorks, onPrev, onNext, onEndVisit, onStartVisit,
-  isSharedSession, isTeacher, onShowJoinModal, guide 
+  isSharedSession, isTeacher, onShowJoinModal, guide, onReturnToCurrentWork
 }) {
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
 
@@ -68,14 +68,20 @@ export default function NavigationControlBar({
             <button 
               type="button" 
               className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors cursor-pointer ${guide.playMode === false ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
-              onClick={() => guide.handleStopAudio()}
+              onClick={() => {
+                onReturnToCurrentWork?.();
+                guide.handleStopAudio();
+              }}
             >
               <BookOpen size={14} /> Leggi
             </button>
             <button 
               type="button" 
               className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors cursor-pointer ${guide.playMode === true ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
-              onClick={() => guide.speakText(currentWork?.description?.[guide.currentExpertise]?.[guide.currentLength])}
+              onClick={() => {
+                onReturnToCurrentWork?.();
+                guide.speakText(currentWork?.description?.[guide.currentExpertise]?.[guide.currentLength]);
+              }}
             >
               <Volume2 size={14} /> Ascolta
             </button>
