@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { ZoomIn, ZoomOut, Maximize } from "lucide-react";
 
@@ -25,9 +25,9 @@ export default function HighlyOptimizedMapView({
     ? `${activeSection.viewBox.x} ${activeSection.viewBox.y} ${activeSection.viewBox.width} ${activeSection.viewBox.height}`
     : "0 0 2000 1200";
 
-  const modifiedSvgString = svgString.replace(
-    /viewBox="[^"]*"/, 
-    `viewBox="${zoomViewBox}"`
+  const modifiedSvgString = useMemo(
+    () => svgString.replace(/viewBox="[^"]*"/, `viewBox="${zoomViewBox}"`),
+    [svgString, zoomViewBox]
   );
 
   // GESTIONE DEL CLICK CON ANIMAZIONE

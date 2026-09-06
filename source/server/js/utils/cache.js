@@ -39,4 +39,15 @@ function invalidateCache(prefixes = []) {
   });
 }
 
-module.exports = { cacheMiddleware, invalidateCache };
+// Accesso diretto alla cache per le rotte che non rispondono con res.json
+// (es. file di testo/SVG inviati con res.send), dove cacheMiddleware non basta
+// perché intercetta solo res.json.
+function getCache(key) {
+  return apiCache.get(key);
+}
+
+function setCache(key, value, ttlSeconds) {
+  apiCache.set(key, value, ttlSeconds);
+}
+
+module.exports = { cacheMiddleware, invalidateCache, getCache, setCache };

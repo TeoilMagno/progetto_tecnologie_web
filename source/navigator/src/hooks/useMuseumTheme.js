@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BASE_URL } from '../config';
 
 export default function useMuseumTheme(selectedMuseum) {
   const [config, setConfig] = useState(null);
@@ -7,7 +8,7 @@ export default function useMuseumTheme(selectedMuseum) {
   useEffect(() => {
     async function loadDefaultConfig() {
       try {
-        const response = await fetch('http://localhost:8000/api/config/default');
+        const response = await fetch(`${BASE_URL}/api/config/default`);
         if (response.ok) {
           const defaultData = await response.json();
           setConfig(defaultData);
@@ -34,7 +35,7 @@ export default function useMuseumTheme(selectedMuseum) {
 
     async function fetchMuseumConfig() {
       try {
-        const response = await fetch(`http://localhost:8000/api/config/by-museum/${encodeURIComponent(selectedMuseum.name)}`);
+        const response = await fetch(`${BASE_URL}/api/config/by-museum/${encodeURIComponent(selectedMuseum.name)}`);
         if (response.ok) {
           const museumData = await response.json();
           console.log(`Configurazione specifica trovata nel DB per: ${selectedMuseum.name}`);

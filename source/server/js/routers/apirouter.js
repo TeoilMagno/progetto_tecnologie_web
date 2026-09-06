@@ -40,7 +40,12 @@ const { deleteLocalFile } = require('../utils/file-helper');
 
 // Middleware
 const auth = require("../middleware/roles");
-const { cacheMiddleware, invalidateCache } = require("../utils/cache");
+const { cacheMiddleware, invalidateCache, getCache, setCache } = require("../utils/cache");
+
+// Il dizionario dei comandi vocali è statico: lo carichiamo una sola volta
+// all'avvio del server invece di rileggerlo da disco ad ogni /visits/:id
+// (Node cachea automaticamente i moduli richiesti con require).
+const commandsDictionary = require(path.join(__dirname, '..', '..', '..', 'navigator', 'src', 'data', 'dictionary.json'));
 
 // Gestione immagini
 // 1. Configurazione Multer per i caricamenti locali
@@ -600,20 +605,27 @@ apiRouter.put("/museums/:id/sections/bulk-update", auth.isCurator, async (req,re
 });
 
 apiRouter.get("/museums/:id/map-svg", async (req, res) => {
-  res.set("Cache-Control", "public, max-age=3600");
-
   const { id } = req.params;
-  console.log(id);
+  const cacheKey = req.originalUrl;
+
+  res.set("Cache-Control", "public, max-age=3600");
+  res.set("Content-Type", "image/svg+xml");
+
+  const cached = getCache(cacheKey);
+  if (cached) {
+    return res.status(200).send(cached);
+  }
+
   try {
-    const { id } = req.params;
-    // Supponiamo che tu abbia salvato mappa-completa.svg nella cartella 'public' o 'assets' del backend
-    console.log(id);
-    const svgPath = path.join(__dirname, '..', '..', '..', 'public', 'shared', 'maps', `${id}.svg`)
-    console.log(svgPath);
-    // Leggiamo il file come semplice testo (utf-8)
+    const svgPath = path.join(__dirname, '..', '..', '..', 'public', 'shared', 'maps', `${id}.svg`);
     const svgString = await fs.readFile(svgPath, 'utf8');
-    
-    // Lo spediamo al frontend!
+
+    // Cache dedicata: cacheMiddleware non si applica qui perché intercetta
+    // solo res.json, mentre questa rotta risponde con res.send di testo puro.
+    // Così le invalidateCache già presenti su upload-map-svg e
+    // sections/bulk-update tornano ad avere effetto reale.
+    setCache(cacheKey, svgString, 3600);
+
     res.status(200).send(svgString);
   } catch (error) {
     console.error("Errore lettura mappa SVG:", error);
@@ -939,12 +951,11 @@ apiRouter.get("/visits/:id", async (req, res) => {
 
     if(!visit) return res.status(404).json({ error: "visita non trovata" });
 
-    const dictPath = path.join(__dirname, '..', '..', '..', 'navigator', 'src', 'data', 'dictionary.json');
-    const dictRaw = await fs.readFile(dictPath, 'utf8');
-    const dictionary = JSON.parse(dictRaw);
-    //conversione in oggetto standard
-    //Se "visit" è un documento Mongoose, bisogna convertirlo prima di poterci aggiungere roba, 
-    //altrimenti la fusione con lo spread operator (...) fallirà
+    // NB: niente fs.readFile qui, il dizionario è già in memoria (vedi require
+    // in cima al file). E NB: questa rotta non va MAI messa dietro
+    // cacheMiddleware: la risposta include req.user e lo stato live della
+    // sessione condivisa, quindi cachearla per URL mescolerebbe i dati di
+    // utenti diversi che aprono la stessa visita.
     const visitObj = visit.toObject ? visit.toObject() : visit;
 
     const isLogged = req.isAuthenticated();
@@ -957,7 +968,7 @@ apiRouter.get("/visits/:id", async (req, res) => {
 
     res.status(200).json({
       visit: visitObj,
-      commands_map: dictionary,
+      commands_map: commandsDictionary,
       user: userData,
       currentArtworkId: currentArtworkId // <-- Invia l'opera corrente attiva
     });
@@ -1505,7 +1516,8 @@ apiRouter.post('/uploadDB', async (req,res) => {
 });
 
 // --- CONFIGURAZIONE MUSEI DINAMICA ---
-apiRouter.get("/config/default", async (req, res) => {
+apiRouter.get("/config/default", cacheMiddleware(60), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=60");
   try {
     const db = mongoose.connection.db;
     const configCollection = db.collection('config');
@@ -1519,7 +1531,8 @@ apiRouter.get("/config/default", async (req, res) => {
   }
 });
 
-apiRouter.get("/config/by-museum/:museumName", async (req, res) => {
+apiRouter.get("/config/by-museum/:museumName", cacheMiddleware(60), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=60");
   try {
     const museumName = req.params.museumName;
     const db = mongoose.connection.db;

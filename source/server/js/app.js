@@ -48,6 +48,16 @@ app.use(cors({ credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+// I file compilati da Vite hanno nomi hashati (es. index-a1b2c3.js): a parità
+// di URL il contenuto non cambia mai, quindi possiamo cachearli in modo
+// aggressivo e "immutable". Va registrato PRIMA dello static generico qui
+// sotto, altrimenti quest'ultimo servirebbe gli stessi file senza header di
+// cache dedicati.
+app.use('/navigator/assets', express.static(
+  path.join(__dirname, '..', '..', 'public', 'navigator', 'assets'),
+  { maxAge: '1y', immutable: true }
+));
+
 app.use("/", express.static(path.join(__dirname, '..', '..', 'public')));
 
 // ─── Sessione e Passport ───────────────────────────────────────────────────
@@ -298,7 +308,16 @@ io.on('connection', (socket) => {
 });
 
 // Navigator
+// L'index.html va preso da dove vite.config.js scrive davvero la build
+// (outDir: '../public/navigator/', relativo a source/navigator) — NON da
+// source/navigator/dist, che era il vecchio outDir di default e non viene
+// più aggiornato da nessuna build.
+// Cache-Control esplicito: questo file referenzia i nomi hashati dei bundle
+// (cachati sopra in modo aggressivo), quindi DEVE essere sempre rivalidato,
+// altrimenti dopo un deploy il browser continuerebbe a servire una index.html
+// vecchia che punta ad asset non più presenti.
 app.use("/navigator", (req, res) => {
+  res.set("Cache-Control", "no-cache");
   res.sendFile(path.join(__dirname, '..', '..', 'public', 'navigator', 'index.html'));
 });
 

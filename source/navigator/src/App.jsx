@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
-import { Home, Compass, MapPin, Map as MapIcon, Menu, Settings, Users } from 'lucide-react';
+import { Home, Compass, Map as MapIcon, Menu, Users } from 'lucide-react';
 import { SocketProvider } from './context/SocketContext';
 
 // Importazione pagine e componenti centralizzati
@@ -20,17 +20,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 // Importiamo l'hook modulare per i temi dei musei
 import useMuseumTheme from './hooks/useMuseumTheme';
-
-// Placeholder per le pagine future
-const Placeholder = ({ title }) => (
-  <div className="flex flex-col items-center justify-center h-full text-slate-500 bg-slate-950 p-6 text-center">
-    <div className="bg-slate-900 p-6 rounded-full mb-4">
-      <Settings size={48} className="text-slate-700" />
-    </div>
-    <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
-    <p className="max-w-md text-sm text-slate-400">Questa sezione verrà sviluppata nei prossimi step del progetto.</p>
-  </div>
-);
 
 function MapRouteWrapper() {
   const [searchParams] = useSearchParams();

@@ -28,7 +28,7 @@ export default function MenuPage() {
   // Funzione di logout che fa la chiamata API e reindirizza alla home del Navigator
   const handleLogout = async () => {
     try {
-      await fetch(`${API_BASE_URL.replace('/api', '')}/logout`, { 
+      await fetch(`${BASE_URL}/logout`, { 
         method: 'POST', // o GET, a seconda di come l'hai definito in auth.js nel backend
         credentials: 'include' 
       });

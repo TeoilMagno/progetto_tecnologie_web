@@ -168,7 +168,7 @@ export default function Visits({ selectedMuseum }) {
                 <div className="relative h-32 w-full bg-gradient-to-r from-slate-800 to-slate-900 overflow-hidden shrink-0">
                   {visit.coverImage ? (
                     <img 
-                      src={visit.coverImage.startsWith('http') ? visit.coverImage : `http://localhost:8000${visit.coverImage}`} 
+                      src={visit.coverImage.startsWith('http') ? visit.coverImage : `${BASE_URL}${visit.coverImage}`} 
                       alt={visit.title} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -255,10 +255,7 @@ export default function Visits({ selectedMuseum }) {
 
           {/* TAB: MY VISITS */}
           <button
-            onClick={() => {
-              setActiveTab('my');
-              setLoading(true);
-            }}
+            onClick={() => setActiveTab('my')}
             className={`flex-1 text-center py-2 rounded-full font-bold text-xs transition-all ${activeTab === 'my' ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/10' : 'text-slate-400 hover:text-white'}`}
           >
             My visits

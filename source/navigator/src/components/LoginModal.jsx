@@ -16,7 +16,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE_URL.replace('/api', '')}/login/password`, {
+      const response = await fetch(`${BASE_URL}/login/password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
