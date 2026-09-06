@@ -2,7 +2,6 @@ const Section = require('../models/sections');
 const Work = require('../models/works');
 const Museum = require('../models/museums');
 
-const { getWorksById, deleteWorkById } = require('./works');
 const { deleteLocalFile } = require('../utils/file-helper')
 
 exports.getAllSections = async () => {
@@ -66,11 +65,11 @@ exports.getSectionsByMuseum = async (museumId) => {
 }
 
 exports.getWorksBySection = async (sectionId) => {
+  const { getWorksById } = require('./works'); // require differito: evita la dipendenza circolare con works.js
   const section = await Section.findById(sectionId);
   if (!section) throw new Error("Sezione non trovata");
 
   const workIds = section.works.map(w => w.workId);
-
   return await getWorksById(workIds);
 }
 
@@ -144,6 +143,7 @@ exports.removeWorkFromSection = async (sectionId, workId) => {
 
 // Elimina una sezione e tutte le opere contenute al suo interno
 exports.deleteSectionById = async (sectionId, museumId) => {
+  const { deleteWorkById } = require('./works'); // require differito
   const deletedSection = await Section.findOneAndDelete({ _id: sectionId, museumId: museumId });
 
   if (!deletedSection) {
@@ -152,13 +152,8 @@ exports.deleteSectionById = async (sectionId, museumId) => {
     throw error;
   }
 
-  if (deletedSection.image) {
-    await deleteLocalFile(deletedSection.image);
-  }
+  if (deletedSection.image) await deleteLocalFile(deletedSection.image);
 
-  // Deleghiamo l'eliminazione di ogni opera a deleteWorkById (gestisce lei stessa
-  // immagine, visita libera, ecc). Se un'opera fosse già sparita dal DB, non blocchiamo
-  // l'eliminazione dell'intera sezione: logghiamo e proseguiamo con le altre.
   if (deletedSection.works && deletedSection.works.length > 0) {
     for (const w of deletedSection.works) {
       if (!w.workId) continue;

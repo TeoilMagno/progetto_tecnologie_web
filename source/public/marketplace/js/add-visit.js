@@ -669,14 +669,20 @@ function renderVisitCart() {
   const emptyMsg = document.getElementById("empty-cart-msg");
   const saveBtn = document.getElementById("save-visit-btn");
 
+  // 1. Aggiorna sempre il contatore del bottone mobile fisso
+  const mobileCartCount = document.getElementById("mobile-cart-count");
+  if (mobileCartCount) {
+    mobileCartCount.innerHTML = `<i class="bi bi-cart me-2"></i>${currentVisitCart.length} opere`;
+  }
+
+  // 2. Se il carrello è vuoto, ferma la renderizzazione ma NON nascondere il bottone
   if (currentVisitCart.length === 0) {
     cartList.innerHTML = "";
     emptyMsg.classList.remove("d-none");
     saveBtn.classList.add("disabled");
-    if (allMuseumWorks.length > 0) renderCatalog(); // rimosso il typeof superfluo
-
-    const mobileCartBtn = document.getElementById("mobile-floating-cart");
-    if (mobileCartBtn) mobileCartBtn.classList.add("d-none");
+    if (allMuseumWorks.length > 0) renderCatalog();
+    
+    // RISOLTO ALLA RADICE: Rimossa l'istruzione che applicava d-none al bottone mobile
     return;
   }
 
@@ -698,20 +704,6 @@ function renderVisitCart() {
     `;
   });
   cartList.innerHTML = html;
-
-  let mobileCartBtn = document.getElementById("mobile-floating-cart");
-  if (!mobileCartBtn) {
-    mobileCartBtn = document.createElement("div");
-    mobileCartBtn.id = "mobile-floating-cart";
-    mobileCartBtn.className = "d-md-none fixed-bottom bg-dark p-3 border-top border-secondary z-3 d-flex justify-content-between align-items-center shadow-lg";
-    document.body.appendChild(mobileCartBtn);
-  }
-
-  mobileCartBtn.classList.remove("d-none");
-  mobileCartBtn.innerHTML = `
-    <span class="text-white fw-bold"><i class="bi bi-cart me-2"></i>${currentVisitCart.length} opere</span>
-    <button class="btn btn-info btn-sm fw-bold" onclick="document.getElementById('visit-cart-list').scrollIntoView({behavior: 'smooth', block: 'center'})">Vai al Carrello</button>
-  `;
 }
 
 // Aggiunto il parametro isSavingAsDraft (di default false)

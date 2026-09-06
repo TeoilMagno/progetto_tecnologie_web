@@ -47,7 +47,7 @@
 
     <div class="container-fluid px-4"> 
       <div class="row g-4 mt-2">        
-        <div class="col-12 col-lg-8">
+        <div class="col-12 col-md-7 col-lg-8">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="h4 text-white fw-bold mb-0">Catalogo Opere</h3>
             <span class="text-secondary" id="current-museum-name">Seleziona un museo...</span>
@@ -61,125 +61,108 @@
           </div>
         </div> 
 
-        <!-- Card Stima Durata (Da inserire sopra o sotto il carrello delle opere in create-visit.html) -->
-        <!--
-        <div class="card custom-card glass-panel mb-4 border-info border-opacity-50">
-          <div class="card-body">
-            <h6 class="card-title text-info mb-3"><i class="bi bi-stopwatch me-2"></i>Stima della Visita</h6>
+        <div class="col-12 col-md-5 col-lg-4">
+          
+          <!-- WRAPPER OFFCANVAS (Diventa un menu laterale scuro solo su smartphone) -->
+          <div class="offcanvas-md offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel" style="background-color: var(--bg-dark);">
             
-            <div class="mb-3 border-top border-secondary border-opacity-25 pt-3 mt-3">
-              <label class="form-label small text-secondary"><i class="bi bi-translate me-1"></i>Registro Linguistico</label>
-              <select id="visit-expertise-level" class="form-select glass-input text-white">
-                <option value="simple">Semplice (Bambini / Principianti)</option>
-                <option value="medium" selected>Medio (Divulgativo)</option>
-                <option value="professional">Professionale (Appassionati)</option>
-                <option value="expert">Esperto (Storici dell'arte)</option>
-              </select>
-              <small class="text-secondary mt-1 d-block" style="font-size: 0.7rem;">Questa scelta aggiornerà le tue preferenze globali.</small>
+            <!-- HEADER OFFCANVAS: Visibile SOLO su smartphone -->
+            <div class="offcanvas-header border-bottom border-secondary border-opacity-25 d-md-none">
+              <h5 class="offcanvas-title text-white fw-bold" id="cartOffcanvasLabel"><i class="bi bi-map me-2"></i>La tua Visita</h5>
+              <button type="button" class="btn-close btn-close-white custom-close" data-bs-dismiss="offcanvas" data-bs-target="#cartOffcanvas" aria-label="Chiudi"></button>
             </div>
 
-            <div class="mb-3">
-              <label class="form-label small text-secondary"><i class="bi bi-speedometer2 me-1"></i>Ritmo e Approfondimento</label>
-              <select id="visit-pref-length" class="form-select glass-input text-white">
-                <option value="short">Scorrevole (Opere spiegate in sintesi)</option>
-                <option value="medium" selected>Medio (Esperienza standard)</option>
-                <option value="long">Approfondito (Dettagli storici)</option>
-                <option value="exhaustive">Esaustivo (Per esperti/critici)</option>
-              </select>
-            </div>
-
-            <!-- Sezione Alternativa: Calcolo inverso --> <!--
-            <div class="mb-3 border-top border-secondary border-opacity-25 pt-3 mt-3">
-              <label class="form-label small text-info fw-bold"><i class="bi bi-hourglass-split me-1"></i>Oppure... hai i minuti contati?</label>
-              <div class="input-group input-group-sm mb-1">
-                <input type="number" id="available-minutes-input" class="form-control glass-input text-white" placeholder="Es. 45" min="1">
-                <button class="btn btn-outline-info" type="button" onclick="autoSelectLength()">Calcola Ritmo</button>
-              </div>
-              <small class="text-secondary" style="font-size: 0.7rem;">Inserisci i minuti e sceglieremo l'approfondimento perfetto per te.</small>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center border-top border-secondary border-opacity-25 pt-3 mt-2">
-              <span class="text-secondary small fw-bold text-uppercase">Tempo Stimato Totale:</span>
-              <span class="badge bg-info text-dark fs-6 px-3 py-2" id="tour-duration-badge">0 min</span>
-            </div>
-          </div>
-        </div>
-        -->
-
-        <div class="col-12 col-lg-4">
-          <div class="card custom-card sticky-top" style="top: 80px">
-            <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25 pt-3 pb-2">
-              <h5 class="text-white fw-bold mb-0"><i class="bi bi-map me-2"></i>La tua Visita</h5>
-              <p class="small text-secondary mb-0 mt-1">
-                Trascina l'icona <i class="bi bi-list"></i> per riordinare.
-              </p>
-            </div>
-
-            <div class="card-body p-0">
-              <ul id="visit-cart-list" class="list-group list-group-flush bg-transparent"></ul>
-
-              <div id="empty-cart-msg" class="text-center p-4 text-secondary">
-                <i class="bi bi-basket fs-1 mb-2 opacity-50"></i>
-                <p class="small">Non hai ancora aggiunto opere alla tua visita.</p>
-              </div>
-            </div>
-
-            <div class="card-footer bg-transparent border-top border-secondary border-opacity-25 p-3">
-              <!-- Configurazione Percorso -->
-              <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
-                <p class="small text-info fw-bold mb-3"><i class="bi bi-sliders me-1"></i>Configurazione Percorso</p>
+            <!-- BODY OFFCANVAS -->
+            <div class="offcanvas-body p-0 p-md-0 d-block overflow-visible">
+              
+              <!-- LA TUA CARD ORIGINALE (Perfettamente intatta nel suo stile e nei bordi) -->
+              <div class="card custom-card sticky-top" style="top: 80px">
                 
-                <div class="row g-2 mb-3">
-                  <div class="col-6">
-                    <label class="form-label text-secondary mb-1" style="font-size: 0.75rem;"><i class="bi bi-translate me-1"></i>Registro</label>
-                    <select id="visit-expertise-level" class="form-select form-select-sm glass-input text-white">
-                      <option value="simple">Semplice (Principianti)</option>
-                      <option value="medium" selected>Medio (Divulgativo)</option>
-                      <option value="professional">Pro (Appassionati)</option>
-                      <option value="expert">Esperto (Storici)</option>
-                    </select>
-                  </div>
-                  <div class="col-6">
-                    <label class="form-label text-secondary mb-1" style="font-size: 0.75rem;"><i class="bi bi-speedometer2 me-1"></i>Ritmo</label>
-                    <select id="visit-pref-length" class="form-select form-select-sm glass-input text-white">
-                      <option value="short">Scorrevole (Sintesi)</option>
-                      <option value="medium" selected>Medio (Standard)</option>
-                      <option value="long">Approfondito (Dettagli)</option>
-                      <option value="exhaustive">Esaustivo (Critico)</option>
-                    </select>
+                <!-- HEADER CARD: Nascosto su smartphone per non fare il doppione col titolo offcanvas -->
+                <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25 pt-3 pb-2 d-none d-md-block">
+                  <h5 class="text-white fw-bold mb-0"><i class="bi bi-map me-2"></i>La tua Visita</h5>
+                  <p class="small text-secondary mb-0 mt-1">
+                    Trascina l'icona <i class="bi bi-list"></i> per riordinare.
+                  </p>
+                </div>
+
+                <div class="card-body p-0">
+                  <ul id="visit-cart-list" class="list-group list-group-flush bg-transparent"></ul>
+
+                  <div id="empty-cart-msg" class="text-center p-4 text-secondary">
+                    <i class="bi bi-basket fs-1 mb-2 opacity-50"></i>
+                    <p class="small">Non hai ancora aggiunto opere alla tua visita.</p>
                   </div>
                 </div>
 
-                <!-- Minuti contati -->
-                <div class="mb-3">
-                  <label for="available-minutes-input" class="form-label text-secondary mb-1" style="font-size: 0.75rem;"><i class="bi bi-hourglass-split me-1"></i>Hai i minuti contati? (Opzionale)</label>
-                  <div class="input-group input-group-sm">
-                    <input type="number" id="available-minutes-input" class="form-control glass-input text-white" placeholder="Es. 45 min..." min="1">
-                    <button class="btn btn-outline-info" type="button" onclick="autoSelectLength()">Adatta Ritmo</button>
-                  </div>
-                </div>
+                <div class="card-footer bg-transparent border-top border-secondary border-opacity-25 p-3">
+                  <!-- Configurazione Percorso -->
+                  <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                    <p class="small text-info fw-bold mb-3"><i class="bi bi-sliders me-1"></i>Configurazione Percorso</p>
+                    
+                    <div class="row g-2 mb-3">
+                      <div class="col-6">
+                        <label class="form-label text-secondary mb-1" style="font-size: 0.75rem;"><i class="bi bi-translate me-1"></i>Registro</label>
+                        <select id="visit-expertise-level" class="form-select form-select-sm glass-input text-white">
+                          <option value="simple">Semplice (Principianti)</option>
+                          <option value="medium" selected>Medio (Divulgativo)</option>
+                          <option value="professional">Pro (Appassionati)</option>
+                          <option value="expert">Esperto (Storici)</option>
+                        </select>
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label text-secondary mb-1" style="font-size: 0.75rem;"><i class="bi bi-speedometer2 me-1"></i>Ritmo</label>
+                        <select id="visit-pref-length" class="form-select form-select-sm glass-input text-white">
+                          <option value="short">Scorrevole (Sintesi)</option>
+                          <option value="medium" selected>Medio (Standard)</option>
+                          <option value="long">Approfondito (Dettagli)</option>
+                          <option value="exhaustive">Esaustivo (Critico)</option>
+                        </select>
+                      </div>
+                    </div>
 
-                <!-- Badge Tempo Stimato (dentro la modale) -->
-                <div class="d-flex justify-content-between align-items-center mb-3 p-2 rounded" style="background: rgba(0, 204, 255, 0.05); border: 1px solid rgba(0, 204, 255, 0.2);">
-                  <span class="small text-info fw-bold"><i class="bi bi-stopwatch me-1"></i>Tempo Stimato:</span>
-                  <span class="badge bg-info text-dark fs-6" id="tour-duration-badge">0 min</span>
+                    <!-- Minuti contati -->
+                    <div class="mb-3">
+                      <label for="available-minutes-input" class="form-label text-secondary mb-1" style="font-size: 0.75rem;"><i class="bi bi-hourglass-split me-1"></i>Hai i minuti contati? (Opzionale)</label>
+                      <div class="input-group input-group-sm">
+                        <input type="number" id="available-minutes-input" class="form-control glass-input text-white" placeholder="Es. 45 min..." min="1">
+                        <button class="btn btn-outline-info" type="button" onclick="autoSelectLength()">Adatta Ritmo</button>
+                      </div>
+                    </div>
+
+                    <!-- Badge Tempo Stimato -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-2 rounded" style="background: rgba(0, 204, 255, 0.05); border: 1px solid rgba(0, 204, 255, 0.2);">
+                      <span class="small text-info fw-bold"><i class="bi bi-stopwatch me-1"></i>Tempo Stimato:</span>
+                      <span class="badge bg-info text-dark fs-6" id="tour-duration-badge">0 min</span>
+                    </div>
+                  </div>
+
+                  <button
+                    id="save-visit-btn"
+                    class="btn btn-gradient w-100 disabled"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#saveVisitModal"
+                  >
+                    Procedi e Salva
+                  </button>
                 </div>
               </div>
 
-              <button
-                id="save-visit-btn"
-                class="btn btn-gradient w-100 disabled"
-                data-bs-toggle="modal" 
-                data-bs-target="#saveVisitModal"
-              >
-                Procedi e Salva
-              </button>
             </div>
           </div>
         </div>
 
       </div>
     </div> 
+
+    <!-- Questo blocco "Apri Carrello" è visibile SOLO su smartphone grazie a d-md-none -->
+    <!-- Barra mobile per il carrello: resa interamente cliccabile -->
+    <div id="mobile-floating-cart" class="d-md-none fixed-bottom z-3 shadow-lg p-0">
+      <button class="btn btn-dark w-100 p-3 d-flex justify-content-between align-items-center rounded-0 border-top border-secondary border-opacity-50" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+        <span class="text-white fw-bold" id="mobile-cart-count"><i class="bi bi-cart me-2"></i>0 opere</span>
+        <span class="badge bg-info text-dark p-2" style="font-size: 0.85rem;">Apri Carrello <i class="bi bi-chevron-up ms-1"></i></span>
+      </button>
+    </div>
     
     <div class="modal fade" id="saveVisitModal" tabindex="-1" aria-labelledby="saveVisitModalLabel" aria-hidden="true">
       <div class="modal-dialog">

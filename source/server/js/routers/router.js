@@ -31,29 +31,24 @@ router.get('/favicon.ico', (req, res) => {
 // Per aggiungere un museo
 router.get('/add-museum', auth.isCuratorPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'add-museum.html');
-  console.log("Percorso generato per add-museum:", filePath);
   res.sendFile(filePath);
 });
 
 // ottiene il form per caricare i dati vettoriali per la visualizzazione della mappa
 router.get('/museums/:museumId/upload-map', (req, res) => {
   const filePath = path.join(__dirname,'..','..','html','upload-map.html');
-
-  console.log("Percorso generato per upload-map: ", filePath);
   res.sendFile(filePath);
 });
 
 // per la pagina di creazione visita
 router.get('/create-visit', auth.isLoggedInPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'create-visit.html');
-  console.log("Percorso generato per create-visit:", filePath);
   res.sendFile(filePath);
 });
 
 // pagina my-visits
 router.get('/my-visits', auth.isLoggedInPage, (req, res) => {
   const filePath = path.join(__dirname, '..', '..', 'html', 'my-visits.html');
-  console.log("Percorso generato: ", filePath);
   res.sendFile(filePath);
 });
 

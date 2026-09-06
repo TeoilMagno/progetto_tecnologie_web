@@ -2,7 +2,6 @@ const Work = require('../models/works');
 const Visit = require('../models/visits');
 
 const { deleteLocalFile } = require('../utils/file-helper');
-const { removeWorkFromSection } = require('./sections')
 
 exports.getAllWorks = async () => {
   try {
@@ -118,6 +117,7 @@ exports.updateWorkById = async (workId, updateData, museumId) => {
 
 // Elimina un'opera
 exports.deleteWorkById = async (workId, museumId) => {
+  const { removeWorkFromSection } = require('./sections'); // require differito: evita la dipendenza circolare con sections.js
   // Un solo findOneAndDelete atomico: cancella e restituisce il documento in un'unica query,
   // niente più findOne "di controllo" prima, quindi niente più rischio di null-dereference
   // se l'opera fosse già stata rimossa (a mano o da una cascata precedente).
