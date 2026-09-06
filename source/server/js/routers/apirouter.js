@@ -1541,11 +1541,19 @@ apiRouter.get("/config/by-museum/:museumName", cacheMiddleware(60), async (req, 
     // Cerchiamo un config che abbia lo stesso nome del museo nel campo "config.name"
     const configDoc = await configCollection.findOne({ "config.name": museumName });
     
-    if (!configDoc) {
-      return res.status(404).json({ error: "Configurazione specifica non trovata per questo museo" });
+    // Se trova il tema specifico, lo restituisce
+    if (configDoc) {
+      return res.json(configDoc.config);
     }
     
-    res.json(configDoc.config);
+    // Fallback lato server: se non trova quello specifico, cerca e restituisce il default
+    const defaultDoc = await configCollection.findOne({ filename: "defaultconfig.json" });
+    
+    if (!defaultDoc) {
+      return res.status(404).json({ error: "Nessuna configurazione trovata nel database" });
+    }
+    
+    res.json(defaultDoc.config);
   } catch (err) {
     res.status(500).json({ error: "Errore del server: " + err.message });
   }

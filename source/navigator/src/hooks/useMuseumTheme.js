@@ -4,72 +4,28 @@ import { BASE_URL } from '../config';
 export default function useMuseumTheme(selectedMuseum) {
   const [config, setConfig] = useState(null);
 
-  // 1. Carica la configurazione di default all'avvio dal database
+  // 1 e 2. Recupera la configurazione (specifica o default) direttamente dal database
   useEffect(() => {
-    async function loadDefaultConfig() {
+    async function fetchTheme() {
       try {
-        const response = await fetch(`${BASE_URL}/api/config/default`);
-        if (response.ok) {
-          const defaultData = await response.json();
-          setConfig(defaultData);
-        } else {
-          console.error("Impossibile caricare la configurazione di default dal database. Provo fallback locale...");
-          // Fallback locale nel caso il server non risponda
-          try {
-            const localDefault = await import('../assets/default-config.json');
-            setConfig(localDefault.default || localDefault);
-          } catch (e) {
-            console.error("Errore fallback locale:", e);
-          }
-        }
-      } catch (err) {
-        console.error("Errore durante il recupero della configurazione di default:", err);
-      }
-    }
-    loadDefaultConfig();
-  }, []);
-
-  // 2. Cerca la configurazione del museo specifico quando viene selezionato
-  useEffect(() => {
-    if (!selectedMuseum) return;
-
-    async function fetchMuseumConfig() {
-      try {
-        const response = await fetch(`${BASE_URL}/api/config/by-museum/${encodeURIComponent(selectedMuseum.name)}`);
-        if (response.ok) {
-          const museumData = await response.json();
-          console.log(`Configurazione specifica trovata nel DB per: ${selectedMuseum.name}`);
-          setConfig(museumData);
-        } else {
-          console.log(`Nessuna configurazione specifica nel DB per il museo ${selectedMuseum.name}. Provo fallback locale...`);
+        const endpoint = selectedMuseum 
+          ? `${BASE_URL}/api/config/by-museum/${encodeURIComponent(selectedMuseum.name)}`
+          : `${BASE_URL}/api/config/default`;
           
-          // Fallback locale basato su file per rendere tutto robusto
-          try {
-            let localData = null;
-            if (selectedMuseum.name.includes("Gradara") || selectedMuseum.name.includes("Medievale")) {
-              localData = await import('../assets/castello-config.json');
-            } else if (selectedMuseum.name.includes("Fumetto")) {
-              localData = await import('../assets/fumettistico-config.json');
-            } else if (selectedMuseum.name.includes("Scienza") || selectedMuseum.name.includes("Tecnologico")) {
-              localData = await import('../assets/tecnologico-config.json');
-            }
-            
-            if (localData) {
-              console.log(`Configurazione caricata correttamente dal fallback locale.`);
-              setConfig(localData.default || localData);
-            } else {
-              console.log(`Nessuna configurazione locale trovata per questo museo, mantengo quella di default.`);
-            }
-          } catch (e) {
-            console.error("Errore nel caricamento del fallback locale:", e);
-          }
+        const response = await fetch(endpoint);
+        
+        if (response.ok) {
+          const data = await response.json();
+          setConfig(data);
+        } else {
+          console.error("Errore dal server durante il recupero del tema");
         }
       } catch (err) {
-        console.error("Errore durante il recupero della configurazione specifica del museo:", err);
+        console.error("Errore di rete durante il recupero del tema:", err);
       }
     }
 
-    fetchMuseumConfig();
+    fetchTheme();
   }, [selectedMuseum]);
 
   // 3. Applica dinamicamente le proprietà CSS personalizzate all'elemento :root

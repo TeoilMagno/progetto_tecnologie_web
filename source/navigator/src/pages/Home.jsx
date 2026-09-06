@@ -35,15 +35,6 @@ const Home = ({ config }) => {
     },
     {
       id: 4,
-      title: "Create Visit",
-      desc: "Build your own custom museum tour",
-      icon: "➕",
-      color: "bg-red-500",
-      glow: "shadow-[0_0_15px_rgba(239,68,68,0.3)]",
-      path: "/visits" // Redirect o creazione
-    },
-    {
-      id: 5,
       title: "My Visits",
       desc: "View your saved visits and history",
       icon: "👤",
@@ -52,7 +43,7 @@ const Home = ({ config }) => {
       path: "/my-visits" // Va comunque alla pagina unificata di Visits
     },
     {
-      id: 6,
+      id: 5,
       title: "Marketplace",
       desc: "Build your own custom museum tour",
       icon: "✨",
