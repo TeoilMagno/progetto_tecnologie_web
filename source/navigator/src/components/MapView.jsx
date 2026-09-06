@@ -482,6 +482,10 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
                   setDetailsWork(null);
                   setCurrentWorkIndex(-1);
                 }}
+                socket={socket}
+                roomCode={roomCode}
+                isSharedSession={isSharedSession}
+                isTeacher={isTeacher}
               />
         )}
       </div>

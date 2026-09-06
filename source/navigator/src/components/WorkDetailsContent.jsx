@@ -12,7 +12,11 @@ export default function WorkDetailsContent({
   onClose, // Opzionale, per chiudere il popup se presente
   onDragPointerDown,
   onDragPointerMove,
-  onDragPointerUp
+  onDragPointerUp,
+  socket,
+  roomCode,
+  isSharedSession,
+  isTeacher
 }) {
   const { 
     playMode, currentExpertise, currentLength, audioProgressRatio, audioDuration,
@@ -22,6 +26,25 @@ export default function WorkDetailsContent({
     startListening, handleMoreDesc, handleLessDesc, handleHigherExper, handleLowerExper,
     handleFunFact, handleAboutAuthor, handleAboutStyle
   } = guide;
+
+  // Notifica la dashboard dell'insegnante quando uno studente interagisce
+  // tramite bottone. Il comando vocale è gestito internamente dall'hook
+  // "guide" (che deve ricevere socket/roomCode) e non transita da qui.
+  const sendInteraction = (query, interactionType = "button") => {
+    if (isSharedSession && !isTeacher && socket && roomCode) {
+      socket.emit("student_interaction", {
+        roomCode,
+        studentName: localStorage.getItem("student_name") || "Studente",
+        interactionType,
+        query,
+      });
+    }
+  };
+
+  // Agli studenti (in una sessione condivisa) nascondiamo la possibilità di
+  // saltare autonomamente a un'altra opera: la navigazione la guida solo
+  // l'insegnante, esattamente come già succede in NavigationControlBar.
+  const canNavigate = !(isSharedSession && !isTeacher);
   
   // STATO INTERNO DEL PLAYER AUDIO (Durata, Posizione in secondi e Play/Pausa reale)
   const currentText = work?.description?.[currentExpertise]?.[currentLength] || "";
@@ -169,11 +192,12 @@ export default function WorkDetailsContent({
                   />
                 </div>
 
-                {(onPrev || onNext) && (
+                {(onPrev || onNext) && canNavigate && (
                   <div className="flex items-center gap-2.5">
                     <button
                       type="button"
                       onClick={() => {
+                        sendInteraction("Precedente");
                         handlePlayerClose();
                         if (onPrev) onPrev();
                       }}
@@ -185,6 +209,7 @@ export default function WorkDetailsContent({
                     <button
                       type="button"
                       onClick={() => {
+                        sendInteraction("Successiva");
                         handlePlayerClose();
                         if (onNext) onNext();
                       }}
@@ -200,14 +225,14 @@ export default function WorkDetailsContent({
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={handleAboutAuthor}
+                    onClick={() => { sendInteraction("Chi è l'artista?"); handleAboutAuthor(); }}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-900/90 hover:bg-slate-800 border border-slate-800 rounded-xl text-amber-400 hover:text-amber-300 text-xs font-semibold active:scale-95 transition-all cursor-pointer"
                   >
                     <User size={14} /> Autore
                   </button>
                   <button
                     type="button"
-                    onClick={handleAboutStyle}
+                    onClick={() => { sendInteraction("Cos'è questo stile?"); handleAboutStyle(); }}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-900/90 hover:bg-slate-800 border border-slate-800 rounded-xl text-amber-400 hover:text-amber-300 text-xs font-semibold active:scale-95 transition-all cursor-pointer"
                   >
                     <Palette size={14} /> Stile
@@ -303,13 +328,13 @@ export default function WorkDetailsContent({
                 <div className="flex flex-col gap-2.5">
                   <div className="flex gap-2">
                     <button
-                      onClick={handleLessDesc}
+                      onClick={() => { sendInteraction("Dimmi di meno"); handleLessDesc(); }}
                       className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer"
                     >
                       Dimmi di meno
                     </button>
                     <button
-                      onClick={handleMoreDesc}
+                      onClick={() => { sendInteraction("Dimmi di più"); handleMoreDesc(); }}
                       className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer"
                     >
                       Dimmi di più
@@ -318,13 +343,13 @@ export default function WorkDetailsContent({
 
                   <div className="flex gap-2 items-center">
                     <button
-                      onClick={handleLowerExper}
+                      onClick={() => { sendInteraction("Semplifica"); handleLowerExper(); }}
                       className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer"
                     >
                       Semplifica
                     </button>
                     <button
-                      onClick={handleHigherExper}
+                      onClick={() => { sendInteraction("Approfondisci"); handleHigherExper(); }}
                       className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer"
                     >
                       Approfondisci

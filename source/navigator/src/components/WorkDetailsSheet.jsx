@@ -71,6 +71,10 @@ export default function WorkDetailsSheet({
             onDragPointerDown={handlePointerDown}
             onDragPointerMove={handlePointerMove}
             onDragPointerUp={handlePointerUp}
+            socket={socket}
+            roomCode={roomCode}
+            isSharedSession={isSharedSession}
+            isTeacher={isTeacher}
           />
         )}
       </div>
