@@ -202,34 +202,57 @@ function renderCatalog(itemsToRender, append = false) {
   let html = "";
   itemsToRender.forEach(item => {
     const img = item.image || "/img/fallback-work.jpg";
+    
+    // Rimuove le freccette native del browser dall'input numerico per permetterne la centratura
+    const noSpinnersStyle = "appearance: none; -moz-appearance: textfield; margin: 0;";
+
     html += `
       <div class="col" id="item-card-${item._id}">
-        <div class="card custom-card h-100 border-secondary border-opacity-25" style="background: rgba(255,255,255,0.02);">
-          <img src="${img}" class="card-img-top object-fit-cover border-bottom border-secondary border-opacity-25" style="height: 180px;">
+        <div class="card custom-card h-100 border-secondary border-opacity-25" style="background: rgba(255,255,255,0.02); border-radius: 12px;">
+          
+          <div class="position-relative">
+            <img src="${img}" class="card-img-top object-fit-cover border-bottom border-secondary border-opacity-25" style="height: 180px; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+            <div class="position-absolute top-0 end-0 m-2">
+              <span class="badge bg-dark bg-opacity-75 border border-secondary text-white fs-6 shadow-sm" style="backdrop-filter: blur(4px);">€${item.price.toFixed(2)}</span>
+            </div>
+          </div>
+          
           <div class="card-body p-3 d-flex flex-column">
             <div class="d-flex justify-content-between align-items-start mb-2">
-              <span class="badge bg-secondary text-white text-uppercase" style="font-size: 0.65rem;">${item.category || 'Altro'}</span>
-              <span class="text-info fw-bold">€${item.price.toFixed(2)}</span>
+              <span class="badge bg-secondary bg-opacity-25 text-secondary border border-secondary border-opacity-25 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">${item.category || 'Altro'}</span>
+              
+              <!-- Azioni Minimali (Modifica/Elimina) -->
+              <div class="d-flex gap-1">
+                <button class="btn btn-sm btn-glass text-info p-1 px-2 border-0" onclick="openItemModal('${item._id}')" title="Modifica"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-glass text-danger p-1 px-2 border-0" onclick="deleteItem('${item._id}')" title="Elimina"><i class="bi bi-trash"></i></button>
+              </div>
             </div>
+            
             <h6 class="card-title text-white mb-1 text-truncate">${item.name}</h6>
             <p class="small text-white-50 mb-3 text-truncate-3" style="font-size: 0.75rem;">${item.description || 'Nessuna descrizione'}</p>
             
-            <div class="mt-auto bg-dark rounded-3 p-2 d-flex justify-content-between align-items-center border border-secondary border-opacity-50">
-              <div class="text-center me-2">
-                <span class="d-block small text-secondary" style="font-size: 0.65rem; line-height: 1;">Disponibili</span>
-                <strong class="text-warning fs-6" id="stock-val-${item._id}">${item.quantity}</strong>
+            <!-- Gestione Scorte Elegante -->
+            <div class="mt-auto border-top border-secondary border-opacity-25 pt-3 d-flex justify-content-between align-items-center">
+              <div class="d-flex flex-column">
+                <span class="small text-secondary mb-1" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px;">Magazzino</span>
+                <span class="fs-5 fw-bold text-white lh-1" id="stock-val-${item._id}">${item.quantity}</span>
               </div>
-              <div class="input-group input-group-sm" style="width: 120px;">
-                <button class="btn btn-outline-danger px-2 border-secondary" type="button" onclick="updateStock('${item._id}', 'remove')"><i class="bi bi-dash"></i></button>
-                <input type="number" class="form-control bg-transparent text-white text-center border-secondary px-1 shadow-none" id="qty-change-${item._id}" value="1" min="1">
-                <button class="btn btn-outline-success px-2 border-secondary" type="button" onclick="updateStock('${item._id}', 'add')"><i class="bi bi-plus"></i></button>
+              
+              <!-- Controlli +/- Centrati in stile pillola -->
+              <div class="d-flex align-items-center rounded-pill" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 2px;">
+                <button class="btn btn-link text-white text-decoration-none shadow-none p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" type="button" onclick="updateStock('${item._id}', 'remove')">
+                  <i class="bi bi-dash fs-5"></i>
+                </button>
+                
+                <!-- Eliminato type="number", usato inputmode="numeric" per forzare la centratura senza freccette -->
+                <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control bg-transparent text-white border-0 shadow-none p-0 text-center fw-bold lh-1" id="qty-change-${item._id}" value="1" style="width: 36px; height: 32px;">
+                
+                <button class="btn btn-link text-white text-decoration-none shadow-none p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" type="button" onclick="updateStock('${item._id}', 'add')">
+                  <i class="bi bi-plus fs-5"></i>
+                </button>
               </div>
             </div>
-            
-            <div class="d-flex gap-2 mt-3 pt-3 border-top border-secondary border-opacity-25">
-              <button class="btn btn-sm btn-outline-info w-50" onclick="openItemModal('${item._id}')"><i class="bi bi-pencil me-1"></i> Modifica</button>
-              <button class="btn btn-sm btn-outline-danger w-50" onclick="deleteItem('${item._id}')"><i class="bi bi-trash me-1"></i> Elimina</button>
-            </div>
+
           </div>
         </div>
       </div>
