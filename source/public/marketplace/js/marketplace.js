@@ -526,14 +526,14 @@ async function fetchAndRenderItems(museumId, isLoadMore = false) {
   }
 }
 
-let itemsObserver = null;
+// setupItemsInfiniteScroll — riga 530, sostituisci tutto il blocco
 function setupItemsInfiniteScroll(museumId) {
   const sentinel = document.getElementById("global-infinite-sentinel");
   if (!sentinel) return;
 
-  if (itemsObserver) itemsObserver.disconnect();
+  if (catalogObserver) catalogObserver.disconnect(); // stesso discorso, dall'altro lato
 
-  itemsObserver = new IntersectionObserver((entries) => {
+  catalogObserver = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
        if (renderedItemsCount < currentItems.length) {
           const nextChunk = currentItems.slice(renderedItemsCount, renderedItemsCount + ITEMS_RENDER_CHUNK);
@@ -547,7 +547,7 @@ function setupItemsInfiniteScroll(museumId) {
     }
   }, { rootMargin: '100px' });
 
-  itemsObserver.observe(sentinel);
+  catalogObserver.observe(sentinel);
 }
 
 function updateItemsSentinelVisibility() {
@@ -558,14 +558,14 @@ function updateItemsSentinelVisibility() {
   }
 }
 
-let worksObserver = null;
+// setupWorksInfiniteScroll — riga 562, sostituisci tutto il blocco
 function setupWorksInfiniteScroll(museumId) {
   const sentinel = document.getElementById("global-infinite-sentinel");
   if (!sentinel) return;
 
-  if (worksObserver) worksObserver.disconnect();
+  if (catalogObserver) catalogObserver.disconnect(); // disconnette QUALUNQUE observer precedente, opere o articoli
 
-  worksObserver = new IntersectionObserver((entries) => {
+  catalogObserver = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
        if (renderedWorksCount < currentWorks.length) {
           const nextChunk = currentWorks.slice(renderedWorksCount, renderedWorksCount + WORK_RENDER_CHUNK);
@@ -579,7 +579,7 @@ function setupWorksInfiniteScroll(museumId) {
     }
   }, { rootMargin: '100px' });
 
-  worksObserver.observe(sentinel);
+  catalogObserver.observe(sentinel);
 }
 
 function updateWorksSentinelVisibility() {
