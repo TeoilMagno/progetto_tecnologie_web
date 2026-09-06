@@ -268,9 +268,9 @@ function renderMuseumDashboard(museumInfo) {
           <a href="/edit-museum?id=${museumInfo._id}" id="edit-museum-btn" class="btn-create-visit ms-2 d-none">
             <i class="bi bi-sliders me-1"></i> Modifica
           </a>
-          <button id="edit-stock-btn" class="btn-create-visit ms-2 d-none" onclick="openBookshopManager('${museumInfo._id}')">        
-            <i class="bi bi-shop me-1"></i> Bookshop
-          </button>
+          <a href="/bookshop?id=${museumInfo._id}" id="btn-manage-bookshop" class="btn-create-visit ms-2 d-none" >
+            <i class="bi bi-shop me-2"></i> Bookshop
+          </a>
           <a href="/museums/${museumInfo._id}/upload-map/" id="upload-map-btn" class="btn-create-visit ms-2 d-none">
             <i class="bi bi-map-fill me-1"></i> Mappa
           </a>
@@ -326,7 +326,7 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
 
   if (currentUser.role === 'admin') {
     const editBtn = document.getElementById("edit-museum-btn");
-    const editBshopBtn = document.getElementById("edit-stock-btn");
+    const editBshopBtn = document.getElementById("btn-manage-bookshop");
     const uploadMapBtn = document.getElementById("upload-map-btn");
     if (editBtn) editBtn.classList.remove("d-none");
     if (editBshopBtn) editBshopBtn.classList.remove("d-none");
@@ -348,7 +348,7 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
 
     if (isManaged) {
       const editBtn = document.getElementById("edit-museum-btn");
-      const editBshopBtn = document.getElementById("edit-stock-btn");
+      const editBshopBtn = document.getElementById("btn-manage-bookshop");
 
       if (editBtn) editBtn.classList.remove("d-none");
       if (editBshopBtn) editBshopBtn.classList.remove("d-none");

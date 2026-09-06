@@ -25,6 +25,11 @@ let pristineWorkPage = 1;
 let pristineTotalWorkPages = 1;
 let isEntireWorksDbInCache = false;
 
+let pristineItemsCache = [];
+let isEntireItemsDbInCache = false;
+let pristineItemsPage = 1;
+let pristineTotalItemsPages = 1;
+
 // Elementi correnti aperti
 let currentItems = [];
 let currentWorks = [];

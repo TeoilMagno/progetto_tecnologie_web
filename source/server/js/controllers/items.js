@@ -27,19 +27,31 @@ exports.uploadAllItems = async (data) => {
   }
 };
 
-exports.getMuseumItems = async (museumIdStr, page = 1, limit = 12, search = "") => {
+exports.getMuseumItems = async (museumIdStr, page = 1, limit = 12, search = "", category = "", targetAge = "", maxPrice = "") => {
   try {
     const mongoose = require("mongoose");
     const museumObjectId = new mongoose.Types.ObjectId(museumIdStr);
     
     const query = { museumId: museumObjectId };
 
-    // Supporto per una futura barra di ricerca nel bookshop
     if (search) {
-      query.name = { $regex: search, $options: 'i' };
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+    if (category) {
+      query.category = { $in: category.split(',') };
+    }
+    if (targetAge) {
+      // Peschiamo l'età target esatta OPPURE gli articoli universali ('all')
+      query.targetAge = { $in: [targetAge, 'all'] };
+    }
+    if (maxPrice && parseInt(maxPrice) < 100) {
+      query.price = { $lte: parseInt(maxPrice) };
     }
 
-    const Item = require("../models/items"); // Verifica che il percorso del modello sia corretto
+    const Item = require("../models/items"); 
     
     const total = await Item.countDocuments(query);
     const items = await Item.find(query)

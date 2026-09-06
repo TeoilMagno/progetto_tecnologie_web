@@ -194,12 +194,10 @@ apiRouter.delete("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (re
 apiRouter.get("/museums/:id/items", cacheMiddleware(60), async (req, res) => {
   res.set("Cache-Control", "public, max-age=60");
   try {
-    const { page = 1, limit = 12, search } = req.query;
+   const { page = 1, limit = 12, search, category, targetAge, maxPrice } = req.query;
     const museumId = req.params.id;
 
-    // Assicurati che itemController sia importato in cima al file!
-    const response = await itemController.getMuseumItems(museumId, page, limit, search);
-
+    const response = await itemController.getMuseumItems(museumId, page, limit, search, category, targetAge, maxPrice);
     res.json(response);
   } catch (error) {
     console.error("Errore nel recupero degli articoli:", error);
@@ -231,27 +229,27 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
   }
 });
 
-// 1. Aggiungi quantità allo stock di un item esistente
+// 1. Aggiungi o rimuovi quantità dallo stock di un item esistente
 apiRouter.put("/items/:id/add-stock", auth.isCurator, async (req, res) => {
   try {
-    const { quantityToAdd } = req.body;
+    const { changeAmount } = req.body; // Rinominato per chiarezza (può essere negativo)
     
-    if (!quantityToAdd || isNaN(quantityToAdd) || quantityToAdd <= 0) {
+    if (changeAmount === undefined || isNaN(changeAmount) || changeAmount === 0) {
       return res.status(400).json({ error: "Quantità non valida" });
     }
 
-    // Usiamo $inc per sommare la quantità in modo sicuro (evita problemi di concorrenza)
-    const updatedItem = await Item.findByIdAndUpdate(
-      req.params.id,
-      { $inc: { quantity: parseInt(quantityToAdd) } },
-      { new: true }
-    );
+    const item = await Item.findById(req.params.id);
+    if (!item) return res.status(404).json({ error: "Articolo non trovato" });
 
-    if (!updatedItem) return res.status(404).json({ error: "Articolo non trovato" });
+    // Calcoliamo la nuova quantità impedendo che scenda sotto zero
+    const newQuantity = Math.max(0, item.quantity + parseInt(changeAmount));
+
+    item.quantity = newQuantity;
+    await item.save();
 
     invalidateCache(["/items"]);
 
-    res.json({ message: "Stock aggiornato con successo", item: updatedItem });
+    res.json({ message: "Stock aggiornato con successo", item: item });
   } catch (error) {
     console.error("Errore aggiornamento stock:", error);
     res.status(500).json({ error: "Errore durante l'aggiornamento del magazzino" });
@@ -278,6 +276,25 @@ apiRouter.post("/museums/:museumId/items", auth.isCurator, async (req, res) => {
   } catch (error) {
     console.error("Errore creazione articolo:", error);
     res.status(500).json({ error: "Errore durante la creazione dell'articolo" });
+  }
+});
+
+// Elimina un articolo in modo sicuro tramite il controller
+apiRouter.delete("/items/:id", auth.isCurator, async (req, res) => {
+  try {
+    const itemId = req.params.id;
+    // Il frontend passerà il museumId nel body per i controlli di sicurezza
+    const { museumId } = req.body; 
+
+    await itemController.deleteItemById(itemId, museumId);
+    
+    invalidateCache(["/items"]);
+
+    res.json({ message: "Articolo eliminato e file immagine rimosso con successo" });
+  } catch (error) {
+    console.error("Errore eliminazione articolo:", error);
+    const statusCode = error.statusCode || 500;
+    res.status(statusCode).json({ error: error.message || "Errore interno del server" });
   }
 });
 

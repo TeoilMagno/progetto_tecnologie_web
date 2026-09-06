@@ -113,5 +113,9 @@ router.get('/profile', auth.isLoggedInPage, (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'html', 'profile.html'));
 });
 
+// pagina del bookshop di un museo
+router.get('/bookshop', auth.isCuratorPage, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'html', 'bookshop.html'));
+});
 
 module.exports = router;

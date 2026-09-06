@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ArtAround - Gestione Bookshop</title>
+    <link rel="icon" type="image/svg+xml" href="/shared/img/artaround-logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/marketplace/css/style.css" />
+    <link rel="stylesheet" href="/marketplace/css/search-bar.css" />
+    <link rel="stylesheet" href="/marketplace/css/forms-style.css" />
+  </head>
+  <body class="artaround-theme">
+    
+    <header class="navbar site-header sticky-top px-3 mb-4 d-flex justify-content-between">
+      <div class="d-flex align-items-center">
+        <a class="btn text-white me-2" href="/my-museums" id="back-to-museum-btn">
+          <i class="bi bi-arrow-left fs-4"></i>
+        </a>
+        <a class="navbar-brand d-flex align-items-center" href="/marketplace">
+          <i class="bi bi-shop me-2 text-info"></i>
+          <span class="brand-text">ArtAround</span>
+          <span class="brand-subtitle ms-1 text-white opacity-75">Gestione Bookshop</span>
+        </a>
+      </div> 
+      
+      <div class="d-flex align-items-center gap-3">
+        <!-- Barra di Ricerca Integrata -->
+        <div class="search-container position-relative d-flex align-items-center" id="search-container">
+          <input type="text" id="catalog-search-input" class="search-input form-control bg-transparent text-white border-0" placeholder="Cerca articoli...">
+          <button class="btn text-white" id="search-toggle-btn">
+            <i class="bi bi-search fs-5"></i>
+          </button>
+        </div>
+
+        <button class="btn btn-outline-info rounded-circle d-flex justify-content-center align-items-center ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar" aria-controls="filterSidebar" style="width: 36px; height: 36px; padding: 0;">
+          <i class="bi bi-funnel"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="container-fluid px-4 py-2">
+      <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-25 pb-3">
+        <div>
+          <h1 class="h3 text-white fw-bold mb-0">Inventario Bookshop</h1>
+          <p class="small text-secondary mb-0">Aggiungi articoli, modifica dettagli e gestisci le scorte in tempo reale.</p>
+        </div>
+        <button class="btn btn-gradient px-4 rounded-pill shadow-sm" onclick="openItemModal()">
+          <i class="bi bi-plus-lg me-1"></i> Nuovo Articolo
+        </button>
+      </div>
+
+      <!-- Griglia Articoli -->
+      <div id="items-catalog-area" class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4">
+        <div class="col-12 text-center mt-5">
+           <div class="spinner-border text-info" role="status"></div>
+        </div>
+      </div>
+    </div> 
+
+    <!-- Modale Aggiunta/Modifica Articolo -->
+    <div class="modal fade" id="itemModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content glass-modal text-white">
+          <div class="modal-header border-bottom-custom">
+            <h5 class="modal-title" id="itemModalLabel">Nuovo Articolo</h5>
+            <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="item-form">
+              <input type="hidden" id="item-id" />
+              <div class="row g-3">
+                <div class="col-md-8">
+                  <label class="form-label small text-secondary">Nome Articolo *</label>
+                  <input type="text" class="form-control glass-input" id="item-name" required />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small text-secondary">Prezzo (€) *</label>
+                  <input type="number" step="0.01" min="0" class="form-control glass-input" id="item-price" required />
+                </div>
+                
+                <div class="col-md-6">
+                  <label class="form-label small text-secondary">Categoria *</label>
+                  <select id="item-category" class="form-select glass-input text-white border-secondary">
+                    <!-- I "value" in inglese corrispondono all'enum di Mongoose, il testo visibile rimane in italiano -->
+                    <option value="book">Libro / Catalogo</option>
+                    <option value="gadget">Gadget / Souvenir</option>
+                    <option value="stationery">Cancelleria / Stampe</option>
+                    <option value="clothing">Abbigliamento</option>
+                    <option value="jewelry">Gioielleria / Bijoux</option>
+                    <option value="other">Altro</option>
+                  </select>
+                </div>
+                <div class="col-md-6" id="qty-container">
+                  <label class="form-label small text-secondary">Quantità Iniziale</label>
+                  <input type="number" min="0" class="form-control glass-input" id="item-qty" value="10" />
+                </div>
+
+                <div class="col-12" id="edit-item-image-widget"></div>
+
+                <div class="col-12">
+                  <label class="form-label small text-secondary">Descrizione</label>
+                  <textarea class="form-control glass-input" id="item-description" rows="3"></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer border-top-custom">
+            <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Annulla</button>
+            <button type="button" id="save-item-btn" class="btn btn-gradient px-4" onclick="saveItem()">Salva Articolo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Offcanvas Filtri -->
+    <nav id="filterSidebar" class="offcanvas offcanvas-start glass-modal text-white pt-3 px-3 border-end border-secondary border-opacity-25" tabindex="-1" style="width: 300px; background: rgba(20, 20, 30, 0.95);"></nav>
+  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/marketplace/js/config.js"></script>
+    <script src="/marketplace/js/search-bar.js"></script>
+    <script src="/marketplace/js/filters.js"></script>
+    <script src="/marketplace/js/sidebar.js"></script>
+    <script src="/marketplace/js/image-manager.js"></script>
+    <script src="/marketplace/js/bookshop.js"></script>
+  </body>
+</html>
