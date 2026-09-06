@@ -51,20 +51,22 @@ function AppLayout() {
 
   const [selectedMuseum, setSelectedMuseum] = useState(() => {
     const params = new URLSearchParams(location.search);
-    
-    if (params.has('visitId') || params.has('roomCode')) {
-      const savedId = localStorage.getItem('selected_museum_id');
-      const savedName = localStorage.getItem('selected_museum_name');
-      
-      // Se abbiamo i dati reali salvati dal marketplace, li usiamo
-      if (savedId && savedName) {
-        return { _id: savedId, name: savedName };
-      }
-      
-      // Fallback solo se l'utente è entrato tramite link diretto
-      return { name: "Visita in corso..." }; 
+    const savedId = localStorage.getItem('selected_museum_id');
+    const savedName = localStorage.getItem('selected_museum_name');
+
+    // Priorità sempre al museo salvato, su QUALSIASI rotta: è questo che
+    // evita di ritornare al MuseumSelectorOverlay ad ogni reload.
+    if (savedId && savedName) {
+      return { _id: savedId, name: savedName };
     }
-    
+
+    // Nessun museo salvato: se stiamo entrando da un link diretto (join
+    // a una visita condivisa o accesso diretto a /map con visitId), usiamo
+    // un placeholder invece dell'overlay, in attesa che i dati reali arrivino.
+    if (params.has('visitId') || params.has('roomCode')) {
+      return { name: "Visita in corso..." };
+    }
+
     return null;
   });
 
