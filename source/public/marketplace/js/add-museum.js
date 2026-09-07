@@ -17,11 +17,11 @@ async function museumHandleSave(event) {
     return;
   }
 
-  const name = document.getElementById("museum-name").value.trim();
-  const address = document.getElementById("museum-address").value.trim();
-  
-  if (!name || !address) {
-    alert("Nome e Indirizzo sono obbligatori!");
+  // Validazione manuale extra (es. immagine che potrebbe non essere un normale input required)
+  const image = document.getElementById("museum-image").value.trim();
+  if (!image) {
+    showToast("Attenzione: Inserisci un'immagine di copertina per il museo.", "error");
+    // Puoi opzionalmente dare uno stile di errore al widget immagine qui
     return;
   }
 

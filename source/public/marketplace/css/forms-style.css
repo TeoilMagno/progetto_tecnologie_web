@@ -177,3 +177,23 @@ input[type="number"].glass-input::-webkit-outer-spin-button:hover {
   padding: 1.25rem;
   margin-bottom: 1rem;
 }
+
+/* Asterisco azzurro per i campi obbligatori */
+.required-field::after {
+    content: " *";
+    color: #00ccff; /* Il ciano brillante di ArtAround */
+    font-weight: bold;
+}
+
+/* Evidenzia il bordo dei campi non validi solo dopo che l'utente ha provato a salvare (classe .was-validated) */
+.was-validated .form-control:invalid,
+.was-validated .glass-input:invalid {
+    border-color: #ef4444 !important; /* Bordo rosso */
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4) !important; /* Glow rosso */
+    background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+/* Rimuove l'icona di default di Bootstrap che potrebbe stonare con il design glass */
+.was-validated .form-control:invalid {
+    background-image: none; 
+}

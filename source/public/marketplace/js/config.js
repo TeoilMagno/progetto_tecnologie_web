@@ -281,3 +281,88 @@ window.showCustomPrompt = function(title, placeholder, iconClass = "bi-wikipedia
     window.showToast(message, type);
   };
 })();
+
+function openWorkDetails(workId) {
+  // Recupera l'opera dalla cache corrente
+  const work = currentWorks.find((w) => w._id === workId);
+  if (!work) return;
+
+  // Rimuove eventuali modali precedenti per non sporcare il DOM
+  const existingModal = document.getElementById("work-details-modal");
+  if (existingModal) existingModal.remove();
+
+  // Costruzione della modale sfruttando le classi CSS globali
+  const modalHTML = `
+    <div class="modal fade" id="work-details-modal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content glass-modal" style="border-radius: 16px;">
+          
+          <div class="modal-header border-bottom border-bottom-custom p-4">
+            <h4 class="modal-title text-white fw-bold m-0" style="opacity: 0.9;">Dettagli Esposizione</h4>
+            <button type="button" class="btn-close custom-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+          </div>
+          
+          <div class="modal-body p-4 p-lg-5">
+            <div class="row g-5">
+              
+              <!-- Colonna Sinistra -->
+              <div class="col-12 col-lg-5 d-flex flex-column">
+                <div class="custom-card p-2 mb-4">
+                  <img src="${work.image}" class="img-fluid rounded w-100" style="object-fit: contain; max-height: 550px;" alt="${work.name}">
+                </div>
+                
+                <div class="d-flex flex-wrap gap-2 mt-auto">
+                  <span class="badge-tag"><i class="bi bi-fingerprint me-1"></i>ID: ${work._id}</span>
+                  <span class="badge-tag"><i class="bi bi-c-circle me-1"></i>Licenza: ${work.license}</span>
+                </div>
+              </div>
+              
+              <!-- Colonna Destra -->
+              <div class="col-12 col-lg-7 d-flex flex-column">
+                <h1 class="page-title mb-4">${work.name}</h1>
+                
+                <!-- Griglia Metadati 2x2 per riempire orizzontalmente -->
+                <div class="row g-3 mb-4 fs-5">
+                  <div class="col-12 col-md-6 text-secondary">
+                    <i class="bi bi-person-fill me-3" style="color: #00ccff;"></i><span class="text-white">${work.authorName}</span>
+                  </div>
+                  <div class="col-12 col-md-6 text-secondary">
+                    <i class="bi bi-calendar3 me-3" style="color: #00ccff;"></i><span class="text-white">${work.year}</span>
+                  </div>
+                  <div class="col-12 col-md-6 text-secondary">
+                    <i class="bi bi-brush me-3" style="color: #00ccff;"></i><span class="text-white">${work.technique}</span>
+                  </div>
+                  <div class="col-12 col-md-6 text-secondary">
+                    <i class="bi bi-palette me-3" style="color: #00ccff;"></i><span class="text-white">${work.styleName}</span>
+                  </div>
+                </div>
+                
+                <hr class="border-bottom-custom w-100 my-2">
+                
+                <!-- Descrizione -->
+                <div class="mt-3 mb-4 pe-2" style="line-height: 1.8; font-size: 1.15rem; color: var(--text-primary); opacity: 0.9; max-height: 300px; overflow-y: auto;">
+                  ${work.description.medium.medium}
+                </div>
+                
+                <!-- Bottone Azione (Crea Visita) -->
+                <div class="mt-auto d-flex flex-wrap gap-3 pt-3 border-top border-bottom-custom">
+                  <a href="/create-visit?museumId=${currentMuseumId}&addWork=${work._id}" class="btn btn-gradient rounded-pill px-4 py-2 mt-3 text-white text-decoration-none">
+                    <i class="bi bi-map-fill me-2 fs-5 align-middle"></i>Crea Visita con quest'opera
+                  </a>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+  // Inizializza e mostra la modale Bootstrap
+  const modalElement = document.getElementById("work-details-modal");
+  const bsModal = new bootstrap.Modal(modalElement);
+  bsModal.show();
+}

@@ -51,7 +51,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (preselectedMuseumId) {
     currentMuseumId = preselectedMuseumId;
-    loadMuseumWorks(preselectedMuseumId);
+    
+    // Attendiamo il caricamento del catalogo per avere a disposizione l'array allMuseumWorks
+    await loadMuseumWorks(preselectedMuseumId);
+    
+    // Intercettiamo l'eventuale opera passata dall'URL per pre-selezionarla nel carrello
+    const workToAddId = urlParams.get("addWork");
+    if (workToAddId) {
+      const workObj = allMuseumWorks.find((w) => w._id === workToAddId);
+      if (workObj) {
+        // Sfruttiamo la funzione già esistente passando ID e Titolo puro (non serve escape da JS)
+        addToVisit(workObj._id, workObj.name);
+      }
+    }
   } else if (!editingVisitId) {
     showMuseumSelector();
   }
@@ -566,7 +578,7 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
 
     const workHtml = `
       <div class="col-12 col-md-6 col-xxl-4" id="work-card-${work._id}">
-        <div class="card custom-card h-100" style="background: rgba(255,255,255,0.01); border-color: rgba(255,255,255,0.05);">
+        <div class="card custom-card h-100 cursor-pointer" style="background: rgba(255,255,255,0.01); border-color: rgba(255,255,255,0.05);" onclick="openWorkDetails('${work._id}')" >
           <div class="row g-0 h-100">
             <div class="col-4">
               <!-- Aspect ratio 1/1 impedisce alle foto alte o larghe di deformare l'allineamento della card -->

@@ -747,7 +747,7 @@ function renderWorksList(works, append = false) {
 
     htmlString += `
       <div class="col-12 col-lg-6">
-        <div class="card custom-card overflow-hidden" style="height: 220px;">
+        <div class="card custom-card overflow-hidden cursor-pointer" style="height: 220px; cursor: pointer;" onclick="openWorkDetails('${work._id}')">
           <div class="row g-0 h-100">
             <div class="col-4 h-100">
               <img src="${work.image}" class="img-fluid rounded-start h-100 w-100"
