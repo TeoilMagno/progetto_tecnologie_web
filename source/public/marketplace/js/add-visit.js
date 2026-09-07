@@ -723,22 +723,31 @@ async function submitVisit(isSavingAsDraft = false) {
   clearTimeout(autoSaveTimeout); // evita race conditions con il timer dell'auto-save
 
   if (currentVisitCart.length === 0) {
-    alert("Devi aggiungere almeno un'opera alla tua visita!");
+    showToast("Devi aggiungere almeno un'opera alla tua visita!");
     return;
   }
   if (!currentMuseumId) {
-    alert("Errore critico: Nessun museo selezionato.");
+    showToast("Errore critico: Nessun museo selezionato.");
     return;
   }
 
   const titleInput = document.getElementById("visit-title");
-  if (!titleInput || !titleInput.value.trim()) {
-    alert("Il titolo della visita è obbligatorio.");
+  // Sfruttiamo il metodo reportValidity() direttamente sull'input 
+  // (poiché in create-visit i campi sono in una modale e non necessariamente avvolti da un <form> canonico)
+  if (titleInput && !titleInput.checkValidity()) {
+    titleInput.reportValidity();
     return;
   }
 
   const description = document.getElementById("visit-desc")?.value || "";
   const imageUrl = document.getElementById("visit-image")?.value || "";
+
+  // Il widget immagine non ha un required html, quindi lo controlliamo manualmente
+  if (!imageUrl && !isSavingAsDraft) {
+     showToast("L'immagine di copertina è obbligatoria per pubblicare o completare la visita.", "error");
+     return;
+  }
+
   const priceInput = document.getElementById("visit-price");
   const price =
     priceInput && priceInput.value ? parseFloat(priceInput.value) : 0;
@@ -844,10 +853,10 @@ async function submitVisit(isSavingAsDraft = false) {
     localStorage.setItem("visitsChanged", "true");
 
     if (isSavingAsDraft) {
-      alert("Bozza salvata con successo!");
+      showToast("Bozza salvata con successo!");
       window.location.replace("/my-visits"); // Le bozze rimangono nella lista "Le mie visite"
     } else {
-      alert(
+      showToast(
         isPublic
           ? "Visita pubblicata sul Marketplace!"
           : "Visita privata salvata con successo!"
