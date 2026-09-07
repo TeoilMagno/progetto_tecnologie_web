@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const servicesSchema = new Schema({
+const serviceSchema = new Schema({
   services: {
     type: String,
     enum: ['bathrooms','cafe','restaurant','bookshop','cloakroom','info_desk','elevator','ramp','seating_area','first_aid','parking']
@@ -60,14 +60,14 @@ const museumSchema = new Schema({
 
   // I servizi offerti a livello generale (piu' facile da filtrare di facilities)
   services: [{
-    type: servicesSchema,
+    type: serviceSchema,
   }],
 
   // Mappatura geometrica dei servizi sulla mappa SVG (Simile alle opere nelle sezioni)
   // Se un servizio non e' fisico, i relativi campi saranno impostati a null
   facilities: [{
     serviceType: {
-      type: servicesSchema,
+      type: serviceSchema,
     },
     inSection: {
       sectionId: { type: Schema.Types.ObjectId, ref: 'Section' },

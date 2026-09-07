@@ -33,20 +33,20 @@
       <div class="row g-3">
         <!-- Dati Base -->
         <div class="col-md-6">
-          <label class="form-label small text-secondary"><i class="bi bi-bank me-1"></i>Nome Museo *</label>
+          <label class="form-label small text-secondary required-field"><i class="bi bi-bank me-1"></i>Nome Museo</label>
           <input type="text" class="form-control glass-input text-white" id="museum-name" required />
         </div>
         <div class="col-md-6">
-          <label class="form-label small text-secondary"><i class="bi bi-geo-alt me-1"></i>Indirizzo *</label>
+          <label class="form-label small text-secondary required-field"><i class="bi bi-geo-alt me-1"></i>Indirizzo</label>
           <input type="text" class="form-control glass-input text-white" id="museum-address" required />
         </div>
         <div class="col-md-6">
-          <label class="form-label small text-secondary"><i class="bi bi-envelope me-1"></i>Email di contatto</label>
-          <input type="email" class="form-control glass-input text-white" id="museum-email" />
+          <label class="form-label small text-secondary required-field"><i class="bi bi-envelope me-1"></i>Email di contatto</label>
+          <input type="email" class="form-control glass-input text-white" id="museum-email" required/>
         </div>
         <div class="col-md-6">
-          <label class="form-label small text-secondary"><i class="bi bi-telephone me-1"></i>Telefono</label>
-          <input type="text" class="form-control glass-input text-white" id="museum-phone" />
+          <label class="form-label small text-secondary required-field"><i class="bi bi-telephone me-1"></i>Telefono</label>
+          <input type="text" class="form-control glass-input text-white" id="museum-phone" required/>
         </div>
         
         <div class="col-12" id="edit-museum-image-widget"></div>
@@ -56,8 +56,8 @@
           <input type="text" class="form-control glass-input text-white" id="museum-tags" placeholder="Arte, Rinascimento..." />
         </div>
         <div class="col-md-4">
-          <label class="form-label small text-secondary"><i class="bi bi-ticket-perforated me-1"></i>Prezzo Biglietto (€)</label>
-          <input type="number" step="0.01" min="0" class="form-control glass-input text-white" id="museum-price" placeholder="0.00 (Gratis)" />
+          <label class="form-label small text-secondary required-field"><i class="bi bi-ticket-perforated me-1"></i>Prezzo Biglietto (€)</label>
+          <input type="number" step="0.01" min="0" class="form-control glass-input text-white" id="museum-price" placeholder="0.00 (Gratis)" required/>
         </div>
 
         <!-- Servizi (Enum) -->
