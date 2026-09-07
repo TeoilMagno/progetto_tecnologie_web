@@ -2,6 +2,7 @@
   {
     "_id": "6a95d97840e04cf66fa19676",
     "name": "Vincent Van Gogh",
+    "wikidataId": "Q5582",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226a9",
@@ -52,6 +53,7 @@
   {
     "_id": "6a95d97840e04cf66fa19677",
     "name": "Leonardo Da Vinci",
+    "wikidataId": "Q762",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226ae",
@@ -66,6 +68,7 @@
   {
     "_id": "6a95d97840e04cf66fa19678",
     "name": "Munch",
+    "wikidataId": "Q41406",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226af",
@@ -82,6 +85,7 @@
   {
     "_id": "6a95d97840e04cf66fa19679",
     "name": "Giorgio De Chirico",
+    "wikidataId": "Q156522",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226b0",
@@ -98,6 +102,7 @@
   {
     "_id": "6a95d97840e04cf66fa1967a",
     "name": "Sandro Botticelli",
+    "wikidataId": "Q5669",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226b1",
@@ -114,6 +119,7 @@
   {
     "_id": "6a95d97840e04cf66fa1967b",
     "name": "Caravaggio",
+    "wikidataId": "Q42207",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226b2",
@@ -129,6 +135,7 @@
   {
     "_id": "6a95d97840e04cf66fa1967c",
     "name": "Raffaello Sanzio",
+    "wikidataId": "Q5597",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226b3",
@@ -145,6 +152,7 @@
   {
     "_id": "6a95d97840e04cf66fa1967d",
     "name": "Vincent van Gogh",
+    "wikidataId": "Q5582",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226b4",
@@ -162,6 +170,7 @@
   {
     "_id": "6a95d97840e04cf66fa1967e",
     "name": "Agesandro, Atenodoro, Polidoro",
+    "wikidataId": "Q392886",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226b5",
@@ -178,6 +187,7 @@
   {
     "_id": "6a95d97840e04cf66fa1967f",
     "name": "Rembrandt van Rijn",
+    "wikidataId": "Q5598",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226b6",
@@ -194,6 +204,7 @@
   {
     "_id": "6a95d97840e04cf66fa19680",
     "name": "Emanuel Leutze",
+    "wikidataId": "Q450346",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226b7",
@@ -210,6 +221,7 @@
   {
     "_id": "6a95d97840e04cf66fa19681",
     "name": "Francisco Goya",
+    "wikidataId": "Q5432",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226b8",
@@ -226,6 +238,7 @@
   {
     "_id": "6a95d97840e04cf66fa19682",
     "name": "Michelangelo Buonarroti",
+    "wikidataId": "Q5592",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226b9",
@@ -242,6 +255,7 @@
   {
     "_id": "6a95d97840e04cf66fa19683",
     "name": "NASA",
+    "wikidataId": "Q23548",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226ba",
@@ -257,6 +271,7 @@
   {
     "_id": "6a95d97840e04cf66fa19684",
     "name": "Eugène Delacroix",
+    "wikidataId": "Q33477",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226bb",
@@ -272,6 +287,7 @@
   {
     "_id": "6a95d97840e04cf66fa19685",
     "name": "John Singer Sargent",
+    "wikidataId": "Q155626",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226bc",
@@ -289,6 +305,7 @@
   {
     "_id": "6a95d97840e04cf66fa19686",
     "name": "Diego Velázquez",
+    "wikidataId": "Q297",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226bd",
@@ -305,6 +322,7 @@
   {
     "_id": "6a95d97840e04cf66fa19687",
     "name": "Fidia (supervisione)",
+    "wikidataId": "Q191256",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226be",
@@ -321,6 +339,7 @@
   {
     "_id": "6a95d97840e04cf66fa19688",
     "name": "Johannes Vermeer",
+    "wikidataId": "Q41264",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226bf",
@@ -336,6 +355,7 @@
   {
     "_id": "6a95d97840e04cf66fa19689",
     "name": "Autore Sconosciuto",
+    "wikidataId": "Q4233718",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226c0",
@@ -352,6 +372,7 @@
   {
     "_id": "6a95d97840e04cf66fa1968a",
     "name": "Alessandro di Antiochia (attribuito)",
+    "wikidataId": "Q383416",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226c1",
@@ -368,6 +389,7 @@
   {
     "_id": "6a95d97840e04cf66fa1968b",
     "name": "Hieronymus Bosch",
+    "wikidataId": "Q130531",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226c2",
@@ -384,6 +406,7 @@
   {
     "_id": "6a95d97840e04cf66fa1968c",
     "name": "Katsushika Hokusai",
+    "wikidataId": "Q5586",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226c3",
@@ -400,6 +423,7 @@
   {
     "_id": "6a95d97840e04cf66fa1968d",
     "name": "Fratelli Wright",
+    "wikidataId": "Q35820",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226c4",
@@ -416,6 +440,7 @@
   {
     "_id": "6a95d97840e04cf66fa1968e",
     "name": "Gesù",
+    "wikidataId": "Q302",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226c5",
@@ -430,6 +455,7 @@
   {
     "_id": "6a95d97840e04cf66fa1968f",
     "name": "Jacques-Louis David",
+    "wikidataId": "Q83155",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226c6",
@@ -446,6 +472,7 @@
   {
     "_id": "6a95d97840e04cf66fa19690",
     "name": "Claude Monet",
+    "wikidataId": "Q296",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226c7",

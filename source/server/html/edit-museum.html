@@ -222,6 +222,20 @@
                   <input type="text" class="form-control glass-input" id="work-name" required />
                 </div>
 
+                <!-- ID Wikidata (Opzionale) -->
+                <div class="col-md-6">
+                  <label class="form-label small text-secondary fw-bold mb-0">Wikidata ID (Opzionale)</label>
+                  <p class="text-secondary mb-1" style="font-size: 0.65rem; line-height: 1.2;">
+                    L'ID verrà cercato automaticamente, ma se ne può verificare la correttezza al link <a href="https://www.wikidata.org" id="work-wikidata-link" target="_blank" class="text-info text-decoration-underline">wikidata.org</a>
+                  </p>
+                  <div class="input-group input-group-sm mb-1">
+                    <span class="input-group-text bg-dark border-secondary text-secondary fw-bold">Q</span>
+                    <input type="text" class="form-control glass-input text-white border-secondary shadow-none" id="work-wikidata-id" placeholder="Es. 3204108" />
+                  </div>
+                  <!-- Contenitore per il feedback visivo -->
+                  <div id="wikidata-feedback" style="font-size: 0.7rem; display: none;"></div>
+                </div>
+
                 <!-- Ricerca Autore con Tendina Dinamica -->
                 <div class="col-md-6 position-relative">
                   <label class="form-label small text-secondary">Artista / Autore *</label>
@@ -284,6 +298,18 @@
 
                 <!-- URL Immagine -->
                 <div class="col-12" id="edit-work-image-widget"></div>
+
+                <!-- Licenza Contenuto -->
+                <div class="col-md-6">
+                  <label class="form-label small text-secondary">Licenza dei Testi (Diritti d'autore) *</label>
+                  <select class="form-select glass-input text-white border-secondary" id="work-license">
+                    <option value="Public Domain">Pubblico Dominio</option>
+                    <option value="CC BY 4.0">CC BY 4.0 (Attribuzione)</option>
+                    <option value="CC BY-SA 4.0">CC BY-SA 4.0 (Condividi allo stesso modo)</option>
+                    <option value="CC BY-NC 4.0" selected>CC BY-NC 4.0 (Uso non commerciale)</option>
+                    <option value="Copyright">Copyright (Tutti i diritti riservati)</option>
+                  </select>
+                </div>
 
                 <!-- Descrizione Culturale Base -->
                 <div class="col-12">

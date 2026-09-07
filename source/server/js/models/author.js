@@ -8,6 +8,10 @@ const authorSchema = new Schema({
     unique: true
   },
 
+  wikidataId: { 
+    type: String 
+  }, // Es. "Q1527051"
+
   data: [{
     museumId: [{ // cosi' piu' musei possono utilizzare la stessa descrizione
       type: Schema.Types.ObjectId,

@@ -44,8 +44,8 @@ exports.getStyleById = async (styleId) => {
 };
 
 exports.createStyle = async (styleData) => {
-  const { name, data } = styleData;
-  const newStyle = new Style({ name, data: [data] });
+  const { name, data, wikidataId } = styleData;
+  const newStyle = new Style({ name, wikidataId, data: [data] });
   try {
     return await newStyle.save();
   } catch (error) {

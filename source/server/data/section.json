@@ -1,234 +1,221 @@
 [
   {
     "viewBox": {
-      "x": 350,
-      "y": 200,
-      "width": 1450,
-      "height": 750
-    },
-    "_id": "6a95d97a40e04cf66fa196ce",
-    "name": "Verde",
-    "image": "No",
-    "works": [
-      {
-        "_id": "6a95e52f0d18f9511ba22683",
-        "x": 1200,
-        "y": 300,
-        "workId": "6a95d97b40e04cf66fa196f5"
-      }
-    ],
-    "museumId": "6a95d97740e04cf66fa1966d",
-    "rooms": [
-      {
-        "name": "Sala 1",
-        "svgId": "room-sala-1"
-      },
-      {
-        "name": "Sala 2",
-        "svgId": "room-sala-2"
-      }
-    ],
-    "color": "#809624",
-    "svgGroupId": "section-verde"
-  },
-  {
-    "viewBox": {
-      "x": 100,
-      "y": 100,
-      "width": 1400,
-      "height": 700
-    },
-    "_id": "6a95d97a40e04cf66fa196cf",
-    "name": "Blu",
-    "image": "Nein",
-    "works": [
-      {
-        "_id": "6a95e52f0d18f9511ba22684",
-        "x": 1000,
-        "y": 150,
-        "workId": "6a95d97b40e04cf66fa196f6"
-      }
-    ],
-    "museumId": "6a95d97740e04cf66fa1966d",
-    "rooms": [
-      {
-        "name": "Sala 3",
-        "svgId": "room-sala-3"
-      },
-      {
-        "name": "Sala 4",
-        "svgId": "room-sala-4"
-      },
-      {
-        "name": "Sala 5",
-        "svgId": "room-sala-5"
-      },
-      {
-        "name": "Sala 6",
-        "svgId": "room-sala-6"
-      }
-    ],
-    "color": "#00a7a7",
-    "svgGroupId": "section-blu"
-  },
-  {
-    "_id": "6a95d97a40e04cf66fa196d0",
-    "name": "Museo prova - sezione1",
-    "image": "Museo prova - sezione1",
-    "works": [],
-    "museumId": "6a721ddb7eb50308c05512a6",
-    "rooms": []
-  },
-  {
-    "_id": "6a95d97a40e04cf66fa196d1",
-    "name": "Museo prova - sezione1",
-    "image": "Museo prova - sezione1",
-    "works": [
-      {
-        "_id": "6a95e52f0d18f9511ba22685",
-        "work": "6a73703ee77df97525919c99"
-      }
-    ],
-    "museumId": "6a73703ee77df97525919c93",
-    "rooms": []
-  },
-  {
-    "_id": "6a95d97a40e04cf66fa196d2",
-    "name": "sezione 1",
-    "image": "sections1",
-    "works": [
-      {
-        "_id": "6a95e52f0d18f9511ba22686",
-        "workId": "6a95d97b40e04cf66fa196fd"
-      },
-      {
-        "_id": "6a95e52f0d18f9511ba22687",
-        "workId": "6a95d97b40e04cf66fa196fe"
-      }
-    ],
-    "museumId": "6a95d97840e04cf66fa1966e",
-    "rooms": [
-      {
-        "name": "sala 1",
-        "shape": {
-          "type": "polygon",
-          "points": ""
-        }
-      }
-    ]
-  },
-  {
-    "_id": "6a95d97a40e04cf66fa196d3",
-    "name": "sezione 1",
-    "image": "sections1",
-    "works": [
-      {
-        "_id": "6a95e52f0d18f9511ba22688",
-        "workId": "6a95d97b40e04cf66fa196fc"
-      }
-    ],
-    "museumId": "6a95d97740e04cf66fa1966b",
-    "rooms": [
-      {
-        "name": "sala 1",
-        "shape": {
-          "type": "polygon",
-          "points": ""
-        }
-      }
-    ]
-  },
-  {
-    "_id": "6a95d97a40e04cf66fa196d4",
-    "name": "sezione 1",
-    "image": "sections1",
-    "works": [
-      {
-        "_id": "6a95e52f0d18f9511ba22689",
-        "workId": "6a95d97b40e04cf66fa196ff"
-      },
-      {
-        "_id": "6a95e52f0d18f9511ba2268a",
-        "workId": "6a95d97b40e04cf66fa19700"
-      }
-    ],
-    "museumId": "6a95d97840e04cf66fa19670",
-    "rooms": [
-      {
-        "name": "sala 1",
-        "shape": {
-          "type": "polygon",
-          "points": ""
-        }
-      }
-    ]
-  },
-  {
-    "_id": "6a95d97a40e04cf66fa196d5",
-    "name": "sezione 1",
-    "image": "/uploads/1787671593448-966244077.png",
-    "works": [],
-    "museumId": "6a95d97840e04cf66fa19671",
-    "rooms": [
-      {
-        "name": "sala 1",
-        "shape": {
-          "type": "polygon",
-          "points": ""
-        }
-      }
-    ]
-  },
-  {
-    "_id": "6a95d97a40e04cf66fa196d6",
-    "name": "sezione 1",
-    "image": "/uploads/1787676279459-772685603.png",
-    "works": [
-      {
-        "_id": "6a95e52f0d18f9511ba2268b",
-        "workId": "6a95d97b40e04cf66fa19701"
-      },
-      {
-        "_id": "6a95e52f0d18f9511ba2268c",
-        "workId": "6a95d97b40e04cf66fa19702"
-      }
-    ],
-    "museumId": "6a95d97840e04cf66fa19671",
-    "rooms": [
-      {
-        "name": "sala 2",
-        "shape": {
-          "type": "polygon",
-          "points": ""
-        }
-      }
-    ]
-  },
-  {
-    "viewBox": {
       "x": 0,
       "y": 0,
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a387",
+    "_id": "6a97e2036658a8fbf46a0e37",
     "name": "European Sculpture and Decorative Arts",
     "svgGroupId": "section-european-sculpture-and-decorative-arts",
     "rooms": [],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675",
+    "museumId": "6a8879bfe6c216683b02eb70",
     "works": [
       {
-        "workId": "6a94682dd38404dfc005d661",
-        "x": 250,
-        "y": 300,
-        "_id": "6a94682dd38404dfc005d681"
+        "_id": "6a9ed0e2a03d26b3f9a0cd1a",
+        "workId": "6a982617967dc7a9838a838e",
+        "x": 100,
+        "y": 100
       },
       {
-        "workId": "6a94682dd38404dfc005d665",
-        "x": 380,
-        "y": 380,
-        "_id": "6a94682dd38404dfc005d682"
+        "_id": "6a9ed0e2a03d26b3f9a0cd1b",
+        "workId": "6a982617967dc7a9838a838f",
+        "x": 200,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd1c",
+        "workId": "6a982617967dc7a9838a8390",
+        "x": 300,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd1d",
+        "workId": "6a982617967dc7a9838a8391",
+        "x": 400,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd1e",
+        "workId": "6a982617967dc7a9838a8392",
+        "x": 500,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd1f",
+        "workId": "6a982617967dc7a9838a8393",
+        "x": 600,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd20",
+        "workId": "6a982617967dc7a9838a8394",
+        "x": 100,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd21",
+        "workId": "6a982617967dc7a9838a8395",
+        "x": 200,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd22",
+        "workId": "6a982617967dc7a9838a8396",
+        "x": 300,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd23",
+        "workId": "6a982617967dc7a9838a8397",
+        "x": 400,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd24",
+        "workId": "6a982617967dc7a9838a8398",
+        "x": 500,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd25",
+        "workId": "6a982617967dc7a9838a8399",
+        "x": 600,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd26",
+        "workId": "6a982617967dc7a9838a839a",
+        "x": 100,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd27",
+        "workId": "6a982617967dc7a9838a839b",
+        "x": 200,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd28",
+        "workId": "6a982617967dc7a9838a839c",
+        "x": 300,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd29",
+        "workId": "6a982617967dc7a9838a839d",
+        "x": 400,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd2a",
+        "workId": "6a982617967dc7a9838a839e",
+        "x": 500,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd2b",
+        "workId": "6a982618967dc7a9838a839f",
+        "x": 600,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd2c",
+        "workId": "6a982618967dc7a9838a83a0",
+        "x": 100,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd2d",
+        "workId": "6a982618967dc7a9838a83a1",
+        "x": 200,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd2e",
+        "workId": "6a982618967dc7a9838a83a2",
+        "x": 300,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd2f",
+        "workId": "6a982618967dc7a9838a83a3",
+        "x": 400,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd30",
+        "workId": "6a982618967dc7a9838a83a4",
+        "x": 500,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd31",
+        "workId": "6a982618967dc7a9838a83a5",
+        "x": 600,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd32",
+        "workId": "6a982618967dc7a9838a83a6",
+        "x": 100,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd33",
+        "workId": "6a982618967dc7a9838a83a7",
+        "x": 200,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd34",
+        "workId": "6a982618967dc7a9838a83a8",
+        "x": 300,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd35",
+        "workId": "6a982618967dc7a9838a83a9",
+        "x": 400,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd36",
+        "workId": "6a982618967dc7a9838a83aa",
+        "x": 500,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd37",
+        "workId": "6a982618967dc7a9838a83ab",
+        "x": 600,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd38",
+        "workId": "6a982618967dc7a9838a83ac",
+        "x": 100,
+        "y": 600
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd39",
+        "workId": "6a982618967dc7a9838a83ad",
+        "x": 200,
+        "y": 600
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd3a",
+        "workId": "6a982618967dc7a9838a83ae",
+        "x": 300,
+        "y": 600
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd3b",
+        "workId": "6a982618967dc7a9838a83af",
+        "x": 400,
+        "y": 600
       }
     ]
   },
@@ -239,30 +226,102 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a388",
+    "_id": "6a97e2036658a8fbf46a0e38",
     "name": "Modern and Contemporary Art",
     "svgGroupId": "section-modern-and-contemporary-art",
     "rooms": [],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675",
+    "museumId": "6a8879bfe6c216683b02eb70",
     "works": [
       {
-        "workId": "6a94682dd38404dfc005d669",
-        "x": 950,
-        "y": 800,
-        "_id": "6a94682dd38404dfc005d683"
+        "_id": "6a9ed0e2a03d26b3f9a0cd3c",
+        "workId": "6a981edd967dc7a9838a8344",
+        "x": 100,
+        "y": 100
       },
       {
-        "workId": "6a94682dd38404dfc005d66d",
-        "x": 1100,
-        "y": 950,
-        "_id": "6a94682dd38404dfc005d684"
+        "_id": "6a9ed0e2a03d26b3f9a0cd3d",
+        "workId": "6a981edd967dc7a9838a8345",
+        "x": 200,
+        "y": 100
       },
       {
-        "workId": "6a94682dd38404dfc005d671",
-        "x": 1250,
-        "y": 1100,
-        "_id": "6a94682dd38404dfc005d685"
+        "_id": "6a9ed0e2a03d26b3f9a0cd3e",
+        "workId": "6a981ede967dc7a9838a8346",
+        "x": 300,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd3f",
+        "workId": "6a981ede967dc7a9838a8347",
+        "x": 400,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd40",
+        "workId": "6a981ede967dc7a9838a8348",
+        "x": 100,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd41",
+        "workId": "6a981ede967dc7a9838a8349",
+        "x": 200,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd42",
+        "workId": "6a981ede967dc7a9838a834a",
+        "x": 300,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd43",
+        "workId": "6a981ede967dc7a9838a834b",
+        "x": 400,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd44",
+        "workId": "6a981ede967dc7a9838a834c",
+        "x": 100,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd45",
+        "workId": "6a981ede967dc7a9838a834d",
+        "x": 200,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd46",
+        "workId": "6a981ede967dc7a9838a834e",
+        "x": 300,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd47",
+        "workId": "6a981ede967dc7a9838a834f",
+        "x": 400,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd48",
+        "workId": "6a981ede967dc7a9838a8350",
+        "x": 100,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd49",
+        "workId": "6a981ede967dc7a9838a8351",
+        "x": 200,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd4a",
+        "workId": "6a981ede967dc7a9838a8352",
+        "x": 300,
+        "y": 400
       }
     ]
   },
@@ -273,30 +332,114 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a389",
+    "_id": "6a97e2036658a8fbf46a0e39",
     "name": "The American Wing",
     "svgGroupId": "section-the-american-wing",
     "rooms": [],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675",
+    "museumId": "6a8879bfe6c216683b02eb70",
     "works": [
       {
-        "workId": "6a94682dd38404dfc005d675",
-        "x": 1600,
-        "y": 1350,
-        "_id": "6a94682dd38404dfc005d686"
+        "_id": "6a9ed0e2a03d26b3f9a0cd4b",
+        "workId": "6a9828ac967dc7a9838a83c7",
+        "x": 100,
+        "y": 100
       },
       {
-        "workId": "6a94682dd38404dfc005d679",
-        "x": 1750,
-        "y": 1500,
-        "_id": "6a94682dd38404dfc005d687"
+        "_id": "6a9ed0e2a03d26b3f9a0cd4c",
+        "workId": "6a9828ac967dc7a9838a83c8",
+        "x": 200,
+        "y": 100
       },
       {
-        "workId": "6a94682dd38404dfc005d67d",
-        "x": 1900,
-        "y": 1650,
-        "_id": "6a94682dd38404dfc005d688"
+        "_id": "6a9ed0e2a03d26b3f9a0cd4d",
+        "workId": "6a9828ac967dc7a9838a83c9",
+        "x": 300,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd4e",
+        "workId": "6a9828ad967dc7a9838a83ca",
+        "x": 400,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd4f",
+        "workId": "6a9828ad967dc7a9838a83cb",
+        "x": 500,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd50",
+        "workId": "6a9828ad967dc7a9838a83cc",
+        "x": 100,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd51",
+        "workId": "6a9828ad967dc7a9838a83cd",
+        "x": 200,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd52",
+        "workId": "6a9828ad967dc7a9838a83ce",
+        "x": 300,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd53",
+        "workId": "6a9828ad967dc7a9838a83cf",
+        "x": 400,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd54",
+        "workId": "6a9828ad967dc7a9838a83d0",
+        "x": 500,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd55",
+        "workId": "6a9828ad967dc7a9838a83d1",
+        "x": 100,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd56",
+        "workId": "6a9828ad967dc7a9838a83d2",
+        "x": 200,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd57",
+        "workId": "6a9828ad967dc7a9838a83d3",
+        "x": 300,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd58",
+        "workId": "6a9828ad967dc7a9838a83d4",
+        "x": 400,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd59",
+        "workId": "6a9828ad967dc7a9838a83d5",
+        "x": 500,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd5a",
+        "workId": "6a9828ad967dc7a9838a83d6",
+        "x": 100,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd5b",
+        "workId": "6a9828ad967dc7a9838a83d7",
+        "x": 200,
+        "y": 400
       }
     ]
   },
@@ -307,13 +450,56 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a38a",
+    "_id": "6a97e2036658a8fbf46a0e3a",
     "name": "Medieval Art",
     "svgGroupId": "section-medieval-art",
     "rooms": [],
-    "works": [],
+    "works": [
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd5c",
+        "workId": "6a98279e967dc7a9838a83b2",
+        "x": 100,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd5d",
+        "workId": "6a98279e967dc7a9838a83b3",
+        "x": 200,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd5e",
+        "workId": "6a98279e967dc7a9838a83b4",
+        "x": 300,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd5f",
+        "workId": "6a98279e967dc7a9838a83b5",
+        "x": 100,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd60",
+        "workId": "6a98279e967dc7a9838a83b6",
+        "x": 200,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd61",
+        "workId": "6a98279e967dc7a9838a83b7",
+        "x": 300,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd62",
+        "workId": "6a98279e967dc7a9838a83b8",
+        "x": 100,
+        "y": 300
+      }
+    ],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
     "viewBox": {
@@ -322,13 +508,74 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a38b",
+    "_id": "6a97e2036658a8fbf46a0e3b",
     "name": "Arms and Armor",
     "svgGroupId": "section-arms-and-armor",
     "rooms": [],
-    "works": [],
+    "works": [
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd63",
+        "workId": "6a98297c967dc7a9838a83dc",
+        "x": 100,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd64",
+        "workId": "6a98297c967dc7a9838a83dd",
+        "x": 200,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd65",
+        "workId": "6a98297c967dc7a9838a83de",
+        "x": 300,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd66",
+        "workId": "6a98297c967dc7a9838a83df",
+        "x": 400,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd67",
+        "workId": "6a98297c967dc7a9838a83e0",
+        "x": 100,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd68",
+        "workId": "6a98297c967dc7a9838a83e1",
+        "x": 200,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd69",
+        "workId": "6a98297c967dc7a9838a83e2",
+        "x": 300,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd6a",
+        "workId": "6a98297c967dc7a9838a83e3",
+        "x": 400,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd6b",
+        "workId": "6a98297c967dc7a9838a83e4",
+        "x": 100,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd6c",
+        "workId": "6a98297c967dc7a9838a83e5",
+        "x": 200,
+        "y": 300
+      }
+    ],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
     "viewBox": {
@@ -337,13 +584,13 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a38c",
+    "_id": "6a97e2036658a8fbf46a0e3c",
     "name": "Grace Rainey Rogers Auditorium",
     "svgGroupId": "section-grace-rainey-rogers-autirorium",
     "rooms": [],
     "works": [],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
     "viewBox": {
@@ -352,13 +599,13 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a38d",
+    "_id": "6a97e2036658a8fbf46a0e3d",
     "name": "Exhibition Gallery 199",
     "svgGroupId": "section-exhibition-gallery-199",
     "rooms": [],
     "works": [],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
     "viewBox": {
@@ -367,13 +614,13 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a38e",
+    "_id": "6a97e2036658a8fbf46a0e3e",
     "name": "Exhibition Gallery 099",
     "svgGroupId": "section-exhibition-gallery-099",
     "rooms": [],
     "works": [],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
     "viewBox": {
@@ -382,13 +629,13 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a38f",
+    "_id": "6a97e2036658a8fbf46a0e3f",
     "name": "Thomas Watson Library",
     "svgGroupId": "section-thomas-watson-library",
     "rooms": [],
     "works": [],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
     "viewBox": {
@@ -397,13 +644,92 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a390",
+    "_id": "6a97e2036658a8fbf46a0e40",
     "name": "Robert Lehman Wing",
     "svgGroupId": "section-robert-lehman-wing",
     "rooms": [],
-    "works": [],
+    "works": [
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd6d",
+        "workId": "6a98154923763fa5311eb67c",
+        "x": 100,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd6e",
+        "workId": "6a98154923763fa5311eb67d",
+        "x": 200,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd6f",
+        "workId": "6a98154923763fa5311eb67e",
+        "x": 300,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd70",
+        "workId": "6a98154923763fa5311eb67f",
+        "x": 400,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd71",
+        "workId": "6a98154923763fa5311eb680",
+        "x": 100,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd72",
+        "workId": "6a98154923763fa5311eb681",
+        "x": 200,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd73",
+        "workId": "6a98154923763fa5311eb682",
+        "x": 300,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd74",
+        "workId": "6a98154a23763fa5311eb683",
+        "x": 400,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd75",
+        "workId": "6a98154a23763fa5311eb684",
+        "x": 100,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd76",
+        "workId": "6a98154a23763fa5311eb685",
+        "x": 200,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd77",
+        "workId": "6a98154a23763fa5311eb686",
+        "x": 300,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd78",
+        "workId": "6a98154a23763fa5311eb687",
+        "x": 400,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd79",
+        "workId": "6a98154a23763fa5311eb688",
+        "x": 100,
+        "y": 400
+      }
+    ],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
     "viewBox": {
@@ -412,13 +738,68 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a391",
+    "_id": "6a97e2036658a8fbf46a0e41",
     "name": "Michael Rockefeller Wing",
     "svgGroupId": "section-michael-rockefeller-wing",
     "rooms": [],
-    "works": [],
+    "works": [
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd7a",
+        "workId": "6a9822be967dc7a9838a8356",
+        "x": 100,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd7b",
+        "workId": "6a9822be967dc7a9838a8357",
+        "x": 200,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd7c",
+        "workId": "6a9822be967dc7a9838a8358",
+        "x": 300,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd7d",
+        "workId": "6a9822be967dc7a9838a8359",
+        "x": 100,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd7e",
+        "workId": "6a9822be967dc7a9838a835a",
+        "x": 200,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd7f",
+        "workId": "6a9822be967dc7a9838a835b",
+        "x": 300,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd80",
+        "workId": "6a9822be967dc7a9838a835c",
+        "x": 100,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd81",
+        "workId": "6a9822be967dc7a9838a835d",
+        "x": 200,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd82",
+        "workId": "6a9822be967dc7a9838a835e",
+        "x": 300,
+        "y": 300
+      }
+    ],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
     "viewBox": {
@@ -427,13 +808,138 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a392",
+    "_id": "6a97e2036658a8fbf46a0e42",
     "name": "Greek and Roman Art",
     "svgGroupId": "section-greek-and-roman-art",
     "rooms": [],
-    "works": [],
+    "works": [
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd83",
+        "workId": "6a9824d8967dc7a9838a8362",
+        "x": 100,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd84",
+        "workId": "6a9824d8967dc7a9838a8363",
+        "x": 200,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd85",
+        "workId": "6a9824d8967dc7a9838a8364",
+        "x": 300,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd86",
+        "workId": "6a9824d8967dc7a9838a8365",
+        "x": 400,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd87",
+        "workId": "6a9824d8967dc7a9838a8366",
+        "x": 500,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd88",
+        "workId": "6a9824d8967dc7a9838a8367",
+        "x": 100,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd89",
+        "workId": "6a9824d8967dc7a9838a8368",
+        "x": 200,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd8a",
+        "workId": "6a9824d8967dc7a9838a8369",
+        "x": 300,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd8b",
+        "workId": "6a9824d8967dc7a9838a836a",
+        "x": 400,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd8c",
+        "workId": "6a9824d8967dc7a9838a836b",
+        "x": 500,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd8d",
+        "workId": "6a9824d8967dc7a9838a836c",
+        "x": 100,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd8e",
+        "workId": "6a9824d8967dc7a9838a836d",
+        "x": 200,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd8f",
+        "workId": "6a9824d8967dc7a9838a836e",
+        "x": 300,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd90",
+        "workId": "6a9824d8967dc7a9838a836f",
+        "x": 400,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd91",
+        "workId": "6a9824d8967dc7a9838a8370",
+        "x": 500,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd92",
+        "workId": "6a9824d8967dc7a9838a8371",
+        "x": 100,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd93",
+        "workId": "6a9824d9967dc7a9838a8372",
+        "x": 200,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd94",
+        "workId": "6a9824d9967dc7a9838a8373",
+        "x": 300,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd95",
+        "workId": "6a9824d9967dc7a9838a8374",
+        "x": 400,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd96",
+        "workId": "6a9824d9967dc7a9838a8375",
+        "x": 500,
+        "y": 400
+      },
+      {
+        "workId": "6a9834fdfeabf46b3904ea8a",
+        "_id": "6a9834fefeabf46b3904ea8b"
+      }
+    ],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
     "viewBox": {
@@ -442,13 +948,13 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a393",
+    "_id": "6a97e2036658a8fbf46a0e43",
     "name": "The Great Hall",
     "svgGroupId": "section-the-great-hall",
     "rooms": [],
     "works": [],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
     "viewBox": {
@@ -457,12 +963,199 @@
       "width": 2000,
       "height": 1200
     },
-    "_id": "6a95ddf4d01493f397e9a394",
+    "_id": "6a97e2036658a8fbf46a0e44",
     "name": "Egyptian Art",
     "svgGroupId": "section-egyptian-art",
     "rooms": [],
-    "works": [],
+    "works": [
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd98",
+        "workId": "6a982aaa967dc7a9838a83e6",
+        "x": 100,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd99",
+        "workId": "6a982aaa967dc7a9838a83e7",
+        "x": 200,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd9a",
+        "workId": "6a982aaa967dc7a9838a83e8",
+        "x": 300,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd9b",
+        "workId": "6a982aaa967dc7a9838a83e9",
+        "x": 400,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd9c",
+        "workId": "6a982aaa967dc7a9838a83ea",
+        "x": 500,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd9d",
+        "workId": "6a982aaa967dc7a9838a83eb",
+        "x": 600,
+        "y": 100
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd9e",
+        "workId": "6a982aaa967dc7a9838a83ec",
+        "x": 100,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cd9f",
+        "workId": "6a982aaa967dc7a9838a83ed",
+        "x": 200,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cda0",
+        "workId": "6a982aaa967dc7a9838a83ee",
+        "x": 300,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cda1",
+        "workId": "6a982aaa967dc7a9838a83ef",
+        "x": 400,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cda2",
+        "workId": "6a982aaa967dc7a9838a83f0",
+        "x": 500,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cda3",
+        "workId": "6a982aab967dc7a9838a83f1",
+        "x": 600,
+        "y": 200
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cda4",
+        "workId": "6a982aab967dc7a9838a83f2",
+        "x": 100,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cda5",
+        "workId": "6a982aab967dc7a9838a83f3",
+        "x": 200,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cda6",
+        "workId": "6a982aab967dc7a9838a83f4",
+        "x": 300,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cda7",
+        "workId": "6a982aab967dc7a9838a83f5",
+        "x": 400,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cda8",
+        "workId": "6a982aab967dc7a9838a83f6",
+        "x": 500,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cda9",
+        "workId": "6a982aab967dc7a9838a83f7",
+        "x": 600,
+        "y": 300
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdaa",
+        "workId": "6a982aab967dc7a9838a83f8",
+        "x": 100,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdab",
+        "workId": "6a982aab967dc7a9838a83f9",
+        "x": 200,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdac",
+        "workId": "6a982aab967dc7a9838a83fa",
+        "x": 300,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdad",
+        "workId": "6a982aab967dc7a9838a83fb",
+        "x": 400,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdae",
+        "workId": "6a982aab967dc7a9838a83fc",
+        "x": 500,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdaf",
+        "workId": "6a982aab967dc7a9838a83fd",
+        "x": 600,
+        "y": 400
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdb0",
+        "workId": "6a982aab967dc7a9838a83fe",
+        "x": 100,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdb1",
+        "workId": "6a982aab967dc7a9838a83ff",
+        "x": 200,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdb2",
+        "workId": "6a982aab967dc7a9838a8400",
+        "x": 300,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdb3",
+        "workId": "6a982aab967dc7a9838a8401",
+        "x": 400,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdb4",
+        "workId": "6a982aab967dc7a9838a8402",
+        "x": 500,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdb5",
+        "workId": "6a982aab967dc7a9838a8403",
+        "x": 600,
+        "y": 500
+      },
+      {
+        "_id": "6a9ed0e2a03d26b3f9a0cdb6",
+        "workId": "6a982aac967dc7a9838a8404",
+        "x": 100,
+        "y": 600
+      }
+    ],
     "image": "default-section.jpg",
-    "museumId": "6a95d97840e04cf66fa19675"
+    "museumId": "6a8879bfe6c216683b02eb70"
   }
 ]

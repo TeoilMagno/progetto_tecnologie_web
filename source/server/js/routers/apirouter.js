@@ -1478,13 +1478,13 @@ apiRouter.post('/uploadDB', async (req,res) => {
 
     // Creiamo un array di "task" che accoppia il nome del file alla funzione giusta
     const uploadTasks = [
-      { file: 'museum.json', uploadFunction: museumController.uploadAllMuseums },
-      { file: 'item.json', uploadFunction: itemController.uploadAllItems },
-      { file: 'work.json', uploadFunction: workController.uploadAllWorks },
-      { file: 'section.json', uploadFunction: sectionController.uploadAllSections },
-      { file: 'visit.json', uploadFunction: visitController.uploadAllVisits },
-      { file: 'order.json', uploadFunction: orderController.uploadAllOrders },
-      { file: 'adoption.json', uploadFunction: adoptionController.uploadAllAdoptions },
+      // { file: 'museum.json', uploadFunction: museumController.uploadAllMuseums },
+      // { file: 'item.json', uploadFunction: itemController.uploadAllItems },
+      // { file: 'work.json', uploadFunction: workController.uploadAllWorks },
+      // { file: 'section.json', uploadFunction: sectionController.uploadAllSections },
+      // { file: 'visit.json', uploadFunction: visitController.uploadAllVisits },
+      // { file: 'order.json', uploadFunction: orderController.uploadAllOrders },
+      // { file: 'adoption.json', uploadFunction: adoptionController.uploadAllAdoptions },
       { file: 'author.json', uploadFunction: authorController.uploadAllAuthors },
       { file: 'style.json', uploadFunction: styleController.uploadAllStyles }
     ];
@@ -1554,6 +1554,71 @@ apiRouter.get("/config/by-museum/:museumName", cacheMiddleware(60), async (req, 
     res.json(configDoc.config);
   } catch (err) {
     res.status(500).json({ error: "Errore del server: " + err.message });
+  }
+});
+
+// Rotta temporanea per popolare wikidataId e license
+apiRouter.get("/temp-bulk-update", async (req, res) => {
+  try {
+    // Funzione helper per interrogare Wikidata dal server
+    const fetchWikiId = async (query) => {
+      if (!query) return undefined;
+      const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=it&format=json&origin=*`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return (data.search && data.search.length > 0) ? data.search[0].id : undefined;
+      } catch (e) {
+        return undefined;
+      }
+    };
+
+    let updatedWorks = 0, updatedAuthors = 0, updatedStyles = 0;
+
+    // 1. Aggiorna Opere (wikidataId + license)
+    const works = await Work.find({ $or: [{ wikidataId: { $exists: false } }, { license: { $exists: false } }] });
+    for (let w of works) {
+      const wId = await fetchWikiId(w.name);
+      w.wikidataId = wId || w.wikidataId;
+      w.license = w.license || "CC BY-NC 4.0"; // Licenza di default
+      await w.save();
+      updatedWorks++;
+    }
+
+    const Author = require("../models/author");
+    const Style = require("../models/style");
+
+    // 2. Aggiorna Autori (solo wikidataId)
+    const authors = await Author.find({ wikidataId: { $exists: false } });
+    for (let a of authors) {
+      const aId = await fetchWikiId(a.name);
+      if (aId) {
+        a.wikidataId = aId;
+        await a.save();
+        updatedAuthors++;
+      }
+    }
+
+    // 3. Aggiorna Stili (solo wikidataId)
+    const styles = await Style.find({ wikidataId: { $exists: false } });
+    for (let s of styles) {
+      const sId = await fetchWikiId(s.name);
+      if (sId) {
+        s.wikidataId = sId;
+        await s.save();
+        updatedStyles++;
+      }
+    }
+
+    res.json({
+      message: "Aggiornamento massivo completato!",
+      works: updatedWorks,
+      authors: updatedAuthors,
+      styles: updatedStyles
+    });
+  } catch (error) {
+    console.error("Errore nel bulk update:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 

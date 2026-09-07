@@ -8,6 +8,16 @@ const workSchema = new Schema({
     required: true
   },
 
+  wikidataId: { 
+    type: String 
+  }, // Es. "Q126599960"
+  
+  license: { 
+    type: String, 
+    enum: ['Public Domain', 'CC BY 4.0', 'CC BY-SA 4.0', 'CC BY-NC 4.0', 'Copyright'], 
+    default: 'CC BY-NC 4.0' 
+  },
+
   author: {
     type: Schema.Types.ObjectId,
     ref: 'Author',

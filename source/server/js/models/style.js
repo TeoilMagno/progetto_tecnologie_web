@@ -7,6 +7,11 @@ const styleSchema = new Schema({
     required: true,
     unique: true // es. "Barocco", "Cubismo"
   },
+
+  wikidataId: { 
+    type: String 
+  }, // Es. "Q131808"
+  
   data: [{
     museumId: [{
       type: Schema.Types.ObjectId,

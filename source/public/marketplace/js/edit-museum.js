@@ -50,6 +50,59 @@ document.addEventListener("DOMContentLoaded", async () => {
   initImageWidget("edit-work-image-widget", "work-image", "Immagine dell'Opera *");
   initImageWidget("edit-section-image-widget", "section-image-input", "Mappa / Piantina della Sezione", true);
 
+  const workNameInput = document.getElementById("work-name");
+  if (workNameInput) {
+    workNameInput.addEventListener("blur", async (e) => {
+      const query = e.target.value.trim();
+      const wikiInput = document.getElementById("work-wikidata-id");
+      const feedbackEl = document.getElementById("wikidata-feedback");
+      
+      // Scatta solo se c'è un titolo e l'ID è ancora vuoto
+      if (query && wikiInput) {
+        if (feedbackEl) {
+          feedbackEl.style.display = "block";
+          feedbackEl.className = "text-info mt-1";
+          feedbackEl.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true" style="width: 0.7rem; height: 0.7rem;"></span>Ricerca ID in corso...`;
+        }
+        
+        // La funzione searchWikidata deve essere accessibile (es. in author-style-picker.js)
+        const wikiResults = await searchWikidata(query); 
+        
+        if (wikiResults && wikiResults.length > 0) {
+           const foundId = wikiResults[0].id;
+           wikiInput.value = foundId.replace('Q', ''); // Salviamo solo i numeri
+           
+           // Aggiorna dinamicamente il link nella descrizione sopra l'input
+           const wikiLink = document.getElementById("work-wikidata-link");
+           if (wikiLink) wikiLink.href = `https://www.wikidata.org/wiki/${foundId}`;
+
+           if (feedbackEl) {
+             feedbackEl.className = "text-success mt-1";
+             // Inseriamo un link diretto anche nel messaggio di successo e RIMUOVIAMO il setTimeout per lasciarlo cliccabile
+             feedbackEl.innerHTML = `<i class="bi bi-check-circle me-1"></i>Trovato: <strong>${wikiResults[0].label || foundId}</strong>. <a href="https://www.wikidata.org/wiki/${foundId}" target="_blank" class="text-success text-decoration-underline">Clicca per verificare</a>`;
+           }
+        } else {
+           if (feedbackEl) {
+             feedbackEl.className = "text-warning mt-1";
+             feedbackEl.innerHTML = `<i class="bi bi-exclamation-triangle me-1"></i>Corrispondenza non trovata. Puoi cercarlo manualmente su <a href="https://www.wikidata.org" target="_blank" class="text-warning text-decoration-underline fw-bold">wikidata.org</a>`;
+           }
+        }
+      }
+    });
+  }
+
+  const wikiInput = document.getElementById("work-wikidata-id");
+  if (wikiInput) {
+    wikiInput.addEventListener("input", (e) => {
+      const link = document.getElementById("work-wikidata-link");
+      if (link) {
+        const val = e.target.value.trim();
+        // Se c'è un valore, costruisce il link aggiungendo la "Q", altrimenti torna alla home di Wikidata
+        link.href = val ? `https://www.wikidata.org/wiki/Q${val}` : "https://www.wikidata.org";
+      }
+    });
+  }
+
   await loadMuseumDetails();
 });
 
@@ -344,6 +397,8 @@ async function openWorkModal(sectionId, workId = null) {
     safeSetValue("work-technique", w.technique || "");
     safeSetValue("work-year", w.year || "");
     safeSetValue("work-image", w.image || "");
+    safeSetValue("work-wikidata-id", w.wikidataId || "");
+    safeSetValue("work-license", w.license || "CC BY-NC 4.0");
     
     let desc = "";
     if (w.description && w.description.simple && w.description.simple.medium) {
@@ -380,6 +435,8 @@ async function openWorkModal(sectionId, workId = null) {
     safeSetValue("work-style-id", "");
     safeSetValue("work-author-data-id", "");
     safeSetValue("work-style-data-id", "");
+    safeSetValue("work-wikidata-id", "");
+    safeSetValue("work-license", "CC BY-NC 4.0");
     
     const authContainer = document.getElementById("author-cards-container");
     if (authContainer) authContainer.style.display = "none";
@@ -407,6 +464,8 @@ async function saveWorkFromModal() {
     style: document.getElementById("work-style-id").value.trim() || undefined,
     styleName: document.getElementById("work-style-search").value.trim() || undefined, // NUOVO!
     image: document.getElementById("work-image").value.trim(),
+    wikidataId: document.getElementById("work-wikidata-id")?.value.trim() || undefined,
+    license: document.getElementById("work-license")?.value.trim() || "CC BY-NC 4.0"
   };
   
   if (!workData.name || !workData.author || !workData.technique) { 

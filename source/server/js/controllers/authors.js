@@ -51,10 +51,11 @@ exports.getAuthorById = async (authorId) => {
 
 // Crea un nuovo autore
 exports.createAuthor = async (authorData) => {
-  const { name, data } = authorData;
+  const { name, data, wikidataId } = authorData;
   
   const newAuthor = new Author({
     name,
+    wikidataId,
     data: [data] // Inizializziamo l'array con la prima card scritta dal curatore
   });
   

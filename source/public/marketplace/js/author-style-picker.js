@@ -264,11 +264,15 @@ async function saveAuthorData() {
     let finalAuthor; 
 
     if (newName && !existingAuthorId) {
+      // Ricerca invisibile dell'ID
+      const wikiResults = await searchWikidata(newName);
+      const wikidataId = wikiResults.length > 0 ? wikiResults[0].id : undefined;
+
       res = await fetch(`${API_BASE_URL}/authors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // BUG RISOLTO: Invio come oggetto puro, ci pensa il backend a farne un array
-        body: JSON.stringify({ name: newName, data: payloadData }) 
+        body: JSON.stringify({ name: newName, wikidataId: wikidataId, data: payloadData }) 
       });
       if (!res.ok) throw new Error("Errore durante la creazione dell'autore");
       finalAuthor = await res.json();
@@ -333,7 +337,7 @@ function renderStyleDropdown(styles, query) {
   } else {
     styles.forEach(s => {
       const safeName = s.name.replace(/'/g, "\\'");
-      hmtl += `<li><button type="button" class="dropdown-item text-white small" onclick="selectStyle('${s._id}', '${safeName}')">${s.name}</button></li>`;
+      html += `<li><button type="button" class="dropdown-item text-white small" onclick="selectStyle('${s._id}', '${safeName}')">${s.name}</button></li>`;
     });
   }
   container.innerHTML = html;
@@ -483,11 +487,13 @@ async function saveStyleData() {
     let finalStyle; 
 
     if (newName && !existingStyleId) {
+      const wikiResults = await searchWikidata(newName);
+      const wikidataId = wikiResults.length > 0 ? wikiResults[0].id : undefined;
       // Creazione nuovo stile
       res = await fetch(`${API_BASE_URL}/styles`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newName, data: [payloadData] })
+        body: JSON.stringify({ name: newName, wikidataId: wikidataId, data: [payloadData] })
       });
       if (!res.ok) throw new Error("Errore durante la creazione dello stile");
       finalStyle = await res.json();
@@ -607,4 +613,16 @@ async function generateStyleDescWithAI() {
       descTextarea.value = JSON.parse(cleanText).description || "";
     } else { descTextarea.value = "Errore API."; }
   } catch (e) { descTextarea.value = "Errore di parsing dati. Riprova."; }
+}
+
+async function searchWikidata(query) {
+  const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=it&format=json&origin=*`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.search; 
+  } catch (error) {
+    console.error("Errore nella ricerca Wikidata:", error);
+    return [];
+  }
 }

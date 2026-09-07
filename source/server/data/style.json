@@ -2,6 +2,7 @@
   {
     "_id": "6a95d97840e04cf66fa19691",
     "name": "Astrattiismo",
+    "wikidataId": "Q128115",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226c8",
@@ -15,6 +16,7 @@
   {
     "_id": "6a95d97840e04cf66fa19692",
     "name": "Impressionismo",
+    "wikidataId": "Q40415",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226c9",
@@ -37,6 +39,7 @@
   {
     "_id": "6a95d97840e04cf66fa19693",
     "name": "Espressionismo",
+    "wikidataId": "Q80113",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226cb",
@@ -50,6 +53,7 @@
   {
     "_id": "6a95d97940e04cf66fa19694",
     "name": "All'italiana",
+    "wikidataId": "Q1675124",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226cc",
@@ -63,6 +67,7 @@
   {
     "_id": "6a95d97940e04cf66fa19695",
     "name": "Arte Egizia",
+    "wikidataId": "Q1069123",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226cd",
@@ -76,6 +81,7 @@
   {
     "_id": "6a95d97940e04cf66fa19696",
     "name": "Barocco Olandese",
+    "wikidataId": "Q211116",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226ce",
@@ -89,6 +95,7 @@
   {
     "_id": "6a95d97940e04cf66fa19697",
     "name": "Arte Egizia / Tolemaica",
+    "wikidataId": "Q131969",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226cf",
@@ -102,6 +109,7 @@
   {
     "_id": "6a95d97940e04cf66fa19698",
     "name": "Barocco",
+    "wikidataId": "Q37853",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226d0",
@@ -115,6 +123,7 @@
   {
     "_id": "6a95d97940e04cf66fa19699",
     "name": "Arte Egizia / Nuovo Regno",
+    "wikidataId": "Q130604",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226d1",
@@ -128,6 +137,7 @@
   {
     "_id": "6a95d97940e04cf66fa1969a",
     "name": "Barocco Spagnolo",
+    "wikidataId": "Q3056073",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226d2",
@@ -141,6 +151,7 @@
   {
     "_id": "6a95d97940e04cf66fa1969b",
     "name": "Ingegneria Aeronautica",
+    "wikidataId": "Q3798668",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226d3",
@@ -154,19 +165,21 @@
   {
     "_id": "6a95d97940e04cf66fa1969c",
     "name": "Ingegneria Aerospaziale",
+    "wikidataId": "Q3798668",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226d4",
         "museumId": [
           "6a821d4940de71cb515d1407"
         ],
-        "description": "L'ingegneria aerospaziale, pur nascendo come disciplina scientifica e tecnologica nel pieno del ventesimo secolo, in particolare durante la feroce competizione della corsa allo spazio tra Stati Uniti e Unione Sovietica, si è rivelata una delle forme d'arte applicata più affascinanti della modernità. In questo contesto storico segnato dal desiderio di superare i confini terrestri, gli oggetti progettati per volare nel cielo e nello spazio hanno smesso di essere meri strumenti funzionali, trasformandosi in vere e proprie icone di una nuova estetica del sublime tecnologico. Razzi slanciati, stazioni orbitali e moduli lunari incarnano una bellezza rigorosa, dettata unicamente dalla fisica e dalla necessità aerodinamica.\n\nDal punto di vista visivo, questa corrente estetica si fonda su un'armonia radicale fatta di superfici metalliche riflettenti, geometrie pure, linee tese e una tensione costante verso il movimento verticale. Ogni elemento strutturale, dai serbatoi cilindrici agli ugelli di scarico, esprime una logica visiva in cui la forma segue indissolubilmente la funzione, generando un senso di leggerezza e potenza al tempo stesso. I temi fondanti di questo linguaggio visivo risiedono nel superamento dei limiti umani, nella fascinazione per l'ignoto cosmico e nella fede incrollabile nel progresso scientifico.\n\nCome storico dell'arte, considero l'ingegneria aerospaziale il culmine del modernismo: un momento in cui l'umanità ha scolpito il titanio e l'alluminio per dialogare direttamente con il vuoto siderale. I veicoli spaziali non sono soltanto capolavori di ingegneria, ma sculture monumentali concepite per sfidare la gravità, lasciando un'impronta indelebile nell'immaginario collettivo e ridefinendo il nostro concetto di bellezza all'alba dell'era interstellare."
+        "description": "L'ingegneria aerospaziale, pur nascendo come disciplina scientifica e tecnologica nel pieno del ventesimo secolo, in particolare durante la feroce competizione della corsa allo spazio tra Stati Uniti e Unione Sovietica, si è rivelata una delle forme d'arte applicata più affascinanti della modernità. In questo contesto storico segnato dal desiderio di superare i confini terrestri, gli oggetti progettati per volare nel cielo e nello spazio hanno smesso di essere meri strumenti funzionali, trasformandosi in vere e proprie icone di una nuova estetica del sublime tecnologico. Razzi slanciati, stazioni orbitali e moduli lunari incarnano una bellezza rigorosa, dettata unicamente dalla fisica e dalla necessità aerodinamica.\n\nDal punto di vista visivo, questa corrente estetica si fonda su un'armonia radicale fatta di superfici metalliche riflettenti, geometrie pure, lines tese e una tensione costante verso il movimento verticale. Ogni elemento strutturale, dai serbatoi cilindrici agli ugelli di scarico, esprime una logica visiva in cui la forma segue indissolubilmente la funzione, generando un senso di leggerezza e potenza al tempo stesso. I temi fondanti di questo linguaggio visivo risiedono nel superamento dei limiti umani, nella fascinazione per l'ignoto cosmico e nella fede incrollabile nel progresso scientifico.\n\nCome storico dell'arte, considero l'ingegneria aerospaziale il culmine del modernismo: un momento in cui l'umanità ha scolpito il titanio e l'alluminio per dialogare direttamente con il vuoto siderale. I veicoli spaziali non sono soltanto capolavori di ingegneria, ma sculture monumentali concepite per sfidare la gravità, lasciando un'impronta indelebile nell'immaginario collettivo e ridefinendo il nostro concetto di bellezza all'alba dell'era interstellare."
       }
     ]
   },
   {
     "_id": "6a95d97940e04cf66fa1969d",
     "name": "Post-Impressionismo",
+    "wikidataId": "Q166713",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226d5",
@@ -181,6 +194,7 @@
   {
     "_id": "6a95d97940e04cf66fa1969e",
     "name": "Periodo Edo",
+    "wikidataId": "Q230425",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226d6",
@@ -194,6 +208,7 @@
   {
     "_id": "6a95d97940e04cf66fa1969f",
     "name": "Ellenistico",
+    "wikidataId": "Q840004",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226d7",
@@ -207,6 +222,7 @@
   {
     "_id": "6a95d97940e04cf66fa196a0",
     "name": "Classico Greco",
+    "wikidataId": "Q3042456",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226d8",
@@ -220,6 +236,7 @@
   {
     "_id": "6a95d97940e04cf66fa196a1",
     "name": "Primo Rinascimento",
+    "wikidataId": "Q1508226",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226d9",
@@ -233,6 +250,7 @@
   {
     "_id": "6a95d97940e04cf66fa196a2",
     "name": "Realismo",
+    "wikidataId": "Q173819",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226da",
@@ -246,6 +264,7 @@
   {
     "_id": "6a95d97940e04cf66fa196a3",
     "name": "Rinascimento",
+    "wikidataId": "Q4692",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226db",
@@ -259,6 +278,7 @@
   {
     "_id": "6a95d97940e04cf66fa196a4",
     "name": "Ukiyo-e",
+    "wikidataId": "Q174075",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226dc",
@@ -272,6 +292,7 @@
   {
     "_id": "6a95d97940e04cf66fa196a5",
     "name": "Romanticismo",
+    "wikidataId": "Q37068",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226dd",
@@ -285,6 +306,7 @@
   {
     "_id": "6a95d97940e04cf66fa196a6",
     "name": "Rinascimento Fiammingo",
+    "wikidataId": "Q604473",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226de",
@@ -298,6 +320,7 @@
   {
     "_id": "6a95d97940e04cf66fa196a7",
     "name": "Secolo d'Oro Olandese",
+    "wikidataId": "Q184084",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226df",
@@ -311,6 +334,7 @@
   {
     "_id": "6a95d97940e04cf66fa196a8",
     "name": "Romanticismo Francese",
+    "wikidataId": "Q37068",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226e0",
@@ -324,6 +348,7 @@
   {
     "_id": "6a95d97940e04cf66fa196a9",
     "name": "Scultoreo",
+    "wikidataId": "Q11634",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226e1",
@@ -337,6 +362,7 @@
   {
     "_id": "6a95d97940e04cf66fa196aa",
     "name": "Neoclassicismo",
+    "wikidataId": "Q14378",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226e2",
@@ -350,6 +376,7 @@
   {
     "_id": "6a95d97940e04cf66fa196ab",
     "name": "Romanticismo Storico",
+    "wikidataId": "Q37068",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226e3",
@@ -363,6 +390,7 @@
   {
     "_id": "6a95d97940e04cf66fa196ac",
     "name": "Realismo / Ritrattismo",
+    "wikidataId": "Q134307",
     "data": [
       {
         "_id": "6a95e52f0d18f9511ba226e4",
