@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
-import { Trophy, CheckCircle2, XCircle, ArrowRight, Users, Loader2 } from 'lucide-react';
+import { Trophy, CheckCircle2, ArrowRight, Users, Loader2 } from 'lucide-react';
 import QuizReviewModal from '../components/QuizReviewModal';
+import { API_BASE_URL } from '../config';
 
 export default function QuizSession() {
   const { socket } = useSocket();
@@ -58,6 +59,7 @@ export default function QuizSession() {
   useEffect(() => {
     if (role === 'student' && socket) {
       socket.on('room_closed', () => {
+        localStorage.removeItem('savedSession');
         alert("La sessione è stata terminata definitivamente dall'insegnante.");
         navigate('/'); // Rimanda lo studente alla home (o a '/my-visits' se preferisci)
       });

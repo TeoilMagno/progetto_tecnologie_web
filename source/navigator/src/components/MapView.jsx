@@ -242,6 +242,7 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
       });
 
       socket.on("room_closed", () => {
+        localStorage.removeItem('savedSession');
         alert("L'insegnante ha terminato definitivamente la sessione.");
         navigate("/my-visits"); 
       });

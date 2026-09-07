@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { API_BASE_URL } from "../config";
 
 export function useWorkGuide({ 
   work, 
@@ -261,8 +262,55 @@ export function useWorkGuide({
       } else if (phrase.includes("stile") || phrase.includes("corrente")) {
         handleAboutStyle();
       } else {
+        // 1. Cerca il comando nel dizionario statico (priorità alta e risposta immediata)
         let mapped = commandsMap ? commandsMap[phrase.replace(/\.$/, '')] : null;
-        if (mapped === "PLAY") speakText(work?.description?.[currentExpertise]?.[currentLength]);
+        
+        // 2. Se non c'è nel dizionario, delega l'interpretazione all'IA
+        if (!mapped) {
+          try {
+            const aiResponse = await fetch(`${API_BASE_URL}/ai/map-request`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ prompt: phrase })
+            });
+            
+            if (aiResponse.ok) {
+              const aiData = await aiResponse.json();
+              mapped = aiData.mappedAction;
+            }
+          } catch (e) {
+            console.error("[MIC] Errore durante la mappatura IA:", e);
+          }
+        }
+
+        // 3. Esegui l'azione mappata (sia che provenga dal dizionario, sia dall'IA)
+        switch (mapped) {
+          case "PLAY":
+            speakText(work?.description?.[currentExpertise]?.[currentLength]);
+            break;
+          case "NEXT_DESC":
+            handleMoreDesc();
+            break;
+          case "PREV_DESC":
+            handleLessDesc();
+            break;
+          case "NEXT_EXPER":
+            handleHigherExper();
+            break;
+          case "PREV_EXPER":
+            handleLowerExper();
+            break;
+          case "FUN_FACT":
+            handleFunFact();
+            break;
+          case "CLOSE":
+            handleStopAudio();
+            break;
+          case "UNKNOWN":
+          default:
+            triggerToast("Non ho capito, riprova");
+            break;
+        }
       }
     };
 

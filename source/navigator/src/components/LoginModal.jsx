@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Lock, User, ArrowLeft, AlertCircle } from 'lucide-react';
-import { API_BASE_URL } from '../config';
+import { BASE_URL } from '../config';
 
 export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const [username, setUsername] = useState('');
@@ -105,7 +105,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
         <div className="text-center mt-4">
           <a 
-            href="http://localhost:8000/signup" 
+            href={`${BASE_URL}/signup`} 
             target="_blank" 
             rel="noreferrer" 
             className="text-xs text-slate-400 hover:text-purple-400 transition-colors"

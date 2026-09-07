@@ -76,6 +76,7 @@ export default function MuseumSelectorOverlay({ onSelect }) {
     const selectedMuseum = museums.find((m) => m._id === selectedId);
     if (selectedMuseum) {
       localStorage.setItem('selected_museum_id', selectedMuseum._id);
+      localStorage.setItem('selected_museum_name', selectedMuseum.name);
       onSelect(selectedMuseum);
     }
   };

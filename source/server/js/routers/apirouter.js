@@ -306,8 +306,8 @@ apiRouter.delete("/items/:id", auth.isCurator, async (req, res) => {
 //--------------- sections -----------------------
 
 // ritorna tutte le opere di una sezione specifica
-apiRouter.get("/sections/:id/works", cacheMiddleware(60), async (req, res) => {
-  res.set("Cache-Control", "public, max-age=60");
+apiRouter.get("/sections/:id/works", cacheMiddleware(60 * 60 * 24), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=86400");
   try {
     const works = await sectionController.getWorksBySection(
       req.params.id,
@@ -322,8 +322,8 @@ apiRouter.get("/sections/:id/works", cacheMiddleware(60), async (req, res) => {
 });
 
 // ritorna tutte le sezioni di un museo specifico
-apiRouter.get("/museums/:id/sections", cacheMiddleware(60), async (req, res) => {
-  res.set("Cache-Control", "public, max-age=60");
+apiRouter.get("/museums/:id/sections", cacheMiddleware(60 * 60 * 24), async (req, res) => {
+  res.set("Cache-Control", "public, max-age=86400");
   try {
     const sections = await sectionController.getSectionsByMuseum(req.params.id);
 
@@ -607,8 +607,14 @@ apiRouter.put("/museums/:id/sections/bulk-update", auth.isCurator, async (req,re
 apiRouter.get("/museums/:id/map-svg", async (req, res) => {
   const { id } = req.params;
   const cacheKey = req.originalUrl;
+  // La mappa cambia solo quando un curatore la ricarica esplicitamente, azione
+  // che già invalida questa stessa cache (vedi upload-map-svg più sotto):
+  // possiamo quindi permetterci un TTL lungo senza rischiare di servire una
+  // versione vecchia, la freschezza è garantita dall'invalidazione, non dalla
+  // scadenza naturale.
+  const MAP_SVG_TTL_SECONDS = 60 * 60 * 24; // 24 ore
 
-  res.set("Cache-Control", "public, max-age=3600");
+  res.set("Cache-Control", `public, max-age=${MAP_SVG_TTL_SECONDS}`);
   res.set("Content-Type", "image/svg+xml");
 
   const cached = getCache(cacheKey);
@@ -624,7 +630,7 @@ apiRouter.get("/museums/:id/map-svg", async (req, res) => {
     // solo res.json, mentre questa rotta risponde con res.send di testo puro.
     // Così le invalidateCache già presenti su upload-map-svg e
     // sections/bulk-update tornano ad avere effetto reale.
-    setCache(cacheKey, svgString, 3600);
+    setCache(cacheKey, svgString, MAP_SVG_TTL_SECONDS);
 
     res.status(200).send(svgString);
   } catch (error) {
@@ -1541,19 +1547,11 @@ apiRouter.get("/config/by-museum/:museumName", cacheMiddleware(60), async (req, 
     // Cerchiamo un config che abbia lo stesso nome del museo nel campo "config.name"
     const configDoc = await configCollection.findOne({ "config.name": museumName });
     
-    // Se trova il tema specifico, lo restituisce
-    if (configDoc) {
-      return res.json(configDoc.config);
+    if (!configDoc) {
+      return res.status(404).json({ error: "Configurazione specifica non trovata per questo museo" });
     }
     
-    // Fallback lato server: se non trova quello specifico, cerca e restituisce il default
-    const defaultDoc = await configCollection.findOne({ filename: "defaultconfig.json" });
-    
-    if (!defaultDoc) {
-      return res.status(404).json({ error: "Nessuna configurazione trovata nel database" });
-    }
-    
-    res.json(defaultDoc.config);
+    res.json(configDoc.config);
   } catch (err) {
     res.status(500).json({ error: "Errore del server: " + err.message });
   }

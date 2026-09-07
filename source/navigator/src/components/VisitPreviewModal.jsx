@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, Compass, Map as MapIcon, Image as ImageIcon } from 'lucide-react';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, BASE_URL } from '../config';
 import LoginModal from './LoginModal'; 
 
 export default function VisitPreviewModal({ visit, onClose, activeTab }) {
@@ -26,7 +26,7 @@ export default function VisitPreviewModal({ visit, onClose, activeTab }) {
         <div className="h-48 w-full bg-slate-800 relative shrink-0">
           {visit.coverImage ? (
             <img 
-              src={visit.coverImage.startsWith('http') ? visit.coverImage : `http://localhost:8000${visit.coverImage}`} 
+              src={visit.coverImage.startsWith('http') ? visit.coverImage : `${BASE_URL}${visit.coverImage}`} 
               alt={visit.title} 
               className="w-full h-full object-cover" 
             />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Headphones, Building2, Shield, Trash2, ChevronRight, User, GraduationCap, Lock, KeyRound, AlertTriangle, ChevronDown, CheckCircle2, Clock, Star } from 'lucide-react';
+import { ArrowLeft, Headphones, Building2, Shield, Trash2, ChevronRight, User, KeyRound, AlertTriangle, ChevronDown, CheckCircle2, Clock, Star } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
 export default function SettingsPage() {
@@ -517,7 +517,7 @@ export default function SettingsPage() {
                    Annulla
                  </button>
                  <button 
-                   onClick={submitCuratorRequest} 
+                   onClick={handleCuratorRequest} 
                    className="flex-1 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition-colors cursor-pointer"
                  >
                    Invia Richiesta

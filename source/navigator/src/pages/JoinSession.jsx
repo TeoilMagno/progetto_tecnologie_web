@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { QrCode, GraduationCap, Presentation, Users, Loader2, AlertCircle, RefreshCw, Sparkles, ArrowLeft, ArrowRight, Play, Send, Camera, CameraOff, CheckCircle2 } from 'lucide-react';
+import { QrCode, GraduationCap, Presentation, Users, Loader2, AlertCircle, RefreshCw, ArrowLeft, ArrowRight, Play, Send, Camera, CameraOff, CheckCircle2 } from 'lucide-react';
 import QrScanner from 'qr-scanner';
 import { API_BASE_URL } from '../config';
 import { useSocket } from '../context/SocketContext';

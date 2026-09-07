@@ -36,12 +36,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         searchInput.focus();
       } else {
         searchInput.value = "";
-        window.applyItemFilters(); // Rilancia i filtri passando per l'override
+        applyItemFilters(); // Rilancia i filtri passando per l'override
       }
     });
     
     // Ricerca live: sfrutta la funzione di filtro centralizzata
-    searchInput.addEventListener("input", () => window.applyItemFilters());
+    searchInput.addEventListener("input", () => applyItemFilters());
   }
 
   // Chiamata iniziale
@@ -51,72 +51,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // ==========================================
-// OVERRIDE FILTRI E OTTIMIZZAZIONE CACHE
+// OTTIMIZZAZIONE CACHE
 // ==========================================
-
-// Intercettiamo i filtri di filters.js per supportare la paginazione e isEntireItemsDbInCache
-window.applyItemFilters = async function() {
-  const searchInput = document.getElementById("catalog-search-input")?.value.trim().toLowerCase() || "";
-  const categoryCbs = Array.from(document.querySelectorAll('.item-category-checkbox:checked')).map(cb => cb.value);
-  const selectedAge = document.getElementById("filter-age-select")?.value || "";
-  const maxPrice = parseInt(document.getElementById("item-price-slider")?.value || 100);
-
-  const hasFilters = searchInput !== "" || categoryCbs.length > 0 || selectedAge !== "" || maxPrice < 100;
-
-  // 1. CACHE PULITA: Ripristino istantaneo se non ci sono filtri
-  if (!hasFilters && pristineItemsCache.length > 0) {
-    currentItems = [...pristineItemsCache];
-    currentItemsPage = pristineItemsPage;
-    totalItemsPages = pristineTotalItemsPages;
-
-    renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK, currentItems.length);
-    renderCatalog(currentItems.slice(0, renderedItemsCount), false);
-    updateItemsSentinelVisibility();
-    return;
-  }
-
-  // 2. ADAPTIVE FETCHING: Filtraggio in RAM a latenza zero se il DB è in cache
-  if (isEntireItemsDbInCache && hasFilters) {
-    let filtered = pristineItemsCache.filter(item => {
-      // Fuzzy search compatibile con search-bar.js
-      if (searchInput && !fuzzySearch(searchInput, item.name) && !(item.description && fuzzySearch(searchInput, item.description))) return false;
-      // Categoria
-      if (categoryCbs.length > 0 && !categoryCbs.includes(item.category)) return false;
-      // Età Target
-      if (selectedAge && item.targetAge !== selectedAge && item.targetAge !== 'all') return false;
-      // Prezzo
-      if (maxPrice < 100 && item.price > maxPrice) return false;
-      
-      return true;
-    });
-
-    currentItems = filtered;
-    renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK, currentItems.length);
-    renderCatalog(currentItems.slice(0, renderedItemsCount), false);
-    updateItemsSentinelVisibility();
-    return;
-  }
-
-  // 3. SERVER-SIDE FILTERING: Delega al backend se il DB non è interamente scaricato
-  currentItemsPage = 1;
-  renderedItemsCount = 0;
-  await fetchAndRenderItems(currentMuseumId, false);
-};
-
-window.resetItemFilters = function() {
-  document.querySelectorAll('.item-category-checkbox').forEach(cb => cb.checked = false);
-  const ageSelect = document.getElementById("filter-age-select");
-  if (ageSelect) ageSelect.value = "";
-  const priceSlider = document.getElementById("item-price-slider");
-  if (priceSlider) {
-    priceSlider.value = 100;
-    document.getElementById("item-price-value").innerText = "100+ €";
-  }
-  const searchInput = document.getElementById("catalog-search-input");
-  if (searchInput) searchInput.value = "";
-  
-  window.applyItemFilters();
-};
 
 async function fetchAndRenderItems(museumId, isLoadMore = false) {
   if (isFetchingItems) return;
@@ -161,7 +97,7 @@ async function fetchAndRenderItems(museumId, isLoadMore = false) {
 
       const nextChunk = currentItems.slice(renderedItemsCount, renderedItemsCount + ITEMS_RENDER_CHUNK);
       renderedItemsCount += nextChunk.length;
-      renderCatalog(nextChunk, true);
+      renderItemsList(nextChunk, true);
     } else {
       currentItems = fetchedArray;
       if (!hasFilters) {
@@ -172,7 +108,7 @@ async function fetchAndRenderItems(museumId, isLoadMore = false) {
       }
 
       renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK, currentItems.length);
-      renderCatalog(currentItems.slice(0, renderedItemsCount), false);
+      renderItemsList(currentItems.slice(0, renderedItemsCount), false);
     }
 
     setupItemsInfiniteScroll(museumId);
@@ -188,7 +124,7 @@ async function fetchAndRenderItems(museumId, isLoadMore = false) {
   }
 }
 
-function renderCatalog(itemsToRender, append = false) {
+function renderItemsList(itemsToRender, append = false) {
   const catalogArea = document.getElementById("items-catalog-area");
   if (!catalogArea) return;
 
@@ -280,7 +216,7 @@ function setupItemsInfiniteScroll(museumId) {
        if (renderedItemsCount < currentItems.length) {
           const nextChunk = currentItems.slice(renderedItemsCount, renderedItemsCount + ITEMS_RENDER_CHUNK);
           renderedItemsCount += nextChunk.length;
-          renderCatalog(nextChunk, true);
+          renderItemsList(nextChunk, true);
           updateItemsSentinelVisibility();
        } 
        else if (currentItemsPage < totalItemsPages) {
@@ -430,7 +366,7 @@ async function saveItem() {
         });
       }
 
-      renderCatalog(currentItems, false);
+      renderItemsList(currentItems, false);
       if (typeof window.showToast === 'function') window.showToast("Articolo salvato con successo!", "success");
 
     } else {
@@ -463,7 +399,7 @@ async function deleteItem(itemId) {
       // Ottimizzazione locale
       currentItems = currentItems.filter(i => i._id !== itemId);
       pristineItemsCache = pristineItemsCache.filter(i => i._id !== itemId);
-      renderCatalog(currentItems, false);
+      renderItemsList(currentItems, false);
       if (typeof window.showToast === 'function') window.showToast("Articolo eliminato.", "success");
     } else {
       if (cardEl) cardEl.style.opacity = '1';
