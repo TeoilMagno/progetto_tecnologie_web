@@ -218,11 +218,11 @@
               <div class="row g-3">
                 <!-- Titolo Opera -->
                 <div class="col-md-6">
-                  <label class="form-label small text-secondary">Titolo Opera *</label>
+                  <label class="form-label small text-secondary required-field">Titolo Opera</label>
                   <input type="text" class="form-control glass-input" id="work-name" required />
                 </div>
 
-                <!-- ID Wikidata (Opzionale) -->
+                <!-- ID Wikidata -->
                 <div class="col-md-6">
                   <label class="form-label small text-secondary fw-bold mb-0">Wikidata ID (Opzionale)</label>
                   <p class="text-secondary mb-1" style="font-size: 0.65rem; line-height: 1.2;">
@@ -238,8 +238,8 @@
 
                 <!-- Ricerca Autore con Tendina Dinamica -->
                 <div class="col-md-6 position-relative">
-                  <label class="form-label small text-secondary">Artista / Autore *</label>
-                  <input type="hidden" id="work-author-id" /> 
+                  <label class="form-label small text-secondary required-field">Artista / Autore</label>
+                  <input type="hidden" id="work-author-id" required/> 
                   <input type="text" class="form-control glass-input" id="work-author-search" placeholder="Cerca autore (es. Leonardo)..." autocomplete="off" />
                   
                   <!-- Dropdown Risultati (Fuzzy Search) -->
@@ -264,20 +264,20 @@
 
                 <!-- Tecnica -->
                 <div class="col-md-4">
-                  <label class="form-label small text-secondary">Tecnica *</label>
+                  <label class="form-label small text-secondary required-field">Tecnica</label>
                   <input type="text" class="form-control glass-input" id="work-technique" placeholder="Es. Olio su tela" required />
                 </div>
 
                 <!-- Anno / Periodo -->
                 <div class="col-md-4">
-                  <label class="form-label small text-secondary">Anno / Periodo *</label>
+                  <label class="form-label small text-secondary required-field">Anno / Periodo</label>
                   <input type="text" class="form-control glass-input" id="work-year" required />
                 </div>
 
                 <!-- Stile con ricerca dinamica -->
                 <div class="col-md-4 position-relative">
-                  <label class="form-label small text-secondary">Stile / Movimento</label>
-                  <input type="hidden" id="work-style-id" />
+                  <label class="form-label small text-secondary required-field">Stile / Movimento</label>
+                  <input type="hidden" id="work-style-id" required/>
                   <input type="text" class="form-control glass-input" id="work-style-search" placeholder="Cerca stile (es. Barocco)..." autocomplete="off" />
                   
                   <ul class="dropdown-menu w-100 bg-dark text-white border-secondary border-opacity-50" id="style-search-results" style="display: none; max-height: 200px; overflow-y: auto; position: absolute; z-index: 1050;">

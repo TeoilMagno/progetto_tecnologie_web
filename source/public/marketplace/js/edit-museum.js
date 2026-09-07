@@ -285,11 +285,23 @@ function openSectionModal(sectionId = null, currentName = "", currentImage = "")
 }
 
 async function saveSectionFromModal() {
+  const form = document.getElementById("section-form"); // Assicurati che gli input siano dentro un <form id="section-form">
+  if (form) {
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+  }
+
   const sectionId = document.getElementById("section-id-input").value;
   const sectionName = document.getElementById("section-name-input").value.trim();
   const sectionImage = document.getElementById("section-image-input").value.trim();
 
-  if (!sectionName) { alert("Il nome è obbligatorio."); return; }
+  // Controllo manuale per l'immagine
+  if (!sectionImage) { 
+    showToast("La mappa / piantina della sezione è obbligatoria.", "error"); 
+    return; 
+  }
 
   try {
     let res;
@@ -451,6 +463,14 @@ async function openWorkModal(sectionId, workId = null) {
 }
 
 async function saveWorkFromModal() {
+  const form = document.getElementById("work-form"); // Esiste già, l'hai usato per .reset()
+  if (form) {
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+  }
+
   const sectionId = document.getElementById("work-section-id").value;
   const workId = document.getElementById("work-id").value;
   const workDesc = document.getElementById("work-description").value.trim();
@@ -468,9 +488,21 @@ async function saveWorkFromModal() {
     license: document.getElementById("work-license")?.value.trim() || "CC BY-NC 4.0"
   };
   
-  if (!workData.name || !workData.author || !workData.technique) { 
-    alert("Titolo, Autore (da selezionare dalla tendina) e Tecnica sono campi obbligatori!"); 
+  // Autore e Stile non sono input testuali nativi in HTML (di solito sono riempiti tramite una ricerca/tendina personalizzata)
+  // Quindi manteniamo un controllo esplicito per l'ID dell'autore e dello stile.
+  if (!workData.author) { 
+    showToast("Autore non valido. Seleziona l'autore dal menu a tendina.", "error"); 
     return; 
+  }
+  
+  if (!workData.style) {
+    showToast("Stile non valido. Seleziona lo stile dal menu a tendina.", "error");
+    return;
+  }
+  
+  if (!workData.image) {
+    showToast("L'immagine dell'opera è obbligatoria.", "error");
+    return;
   }
 
   try {
