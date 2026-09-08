@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Compass, Settings, LogOut, ChevronRight, User, LogIn } from 'lucide-react';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, BASE_URL } from '../config';
 import LoginModal from '../components/LoginModal'; // Controlla che il path sia corretto
 
 export default function MenuPage() {

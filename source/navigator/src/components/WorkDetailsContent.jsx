@@ -24,7 +24,7 @@ export default function WorkDetailsContent({
     setCurrentExpertise, setCurrentLength,
     speakText, handleStopAudio, handlePauseAudio, handleResumeAudio, handleSeekAudio,
     startListening, handleMoreDesc, handleLessDesc, handleHigherExper, handleLowerExper,
-    handleFunFact, handleAboutAuthor, handleAboutStyle
+    handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase
   } = guide;
 
   // Notifica la dashboard dell'insegnante quando uno studente interagisce
@@ -225,7 +225,7 @@ export default function WorkDetailsContent({
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => { sendInteraction("Chi è l'artista?"); handleAboutAuthor(); }}
+                    onClick={() => { sendInteraction("Chi è l'artista?"); handleAuthorBio(); }}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-900/90 hover:bg-slate-800 border border-slate-800 rounded-xl text-amber-400 hover:text-amber-300 text-xs font-semibold active:scale-95 transition-all cursor-pointer"
                   >
                     <User size={14} /> Autore

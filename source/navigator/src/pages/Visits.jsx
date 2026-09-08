@@ -27,9 +27,12 @@ export default function Visits({ selectedMuseum }) {
         return res.json();
       })
       .then((data) => {
+        console.log('RAW DATA:', data);
+        console.log('selectedMuseum._id:', selectedMuseum._id, typeof selectedMuseum._id);
         const filtered = data.filter((visit) => {
-          const visitMuseumId = visit.museumId?._id || visit.museumId;
-          return visitMuseumId === selectedMuseum._id;
+          const visitMuseumId = (visit.museumId?._id || visit.museumId)?.toString();
+          console.log('confronto:', visitMuseumId, 'vs', selectedMuseum._id?.toString());
+          return visitMuseumId === selectedMuseum._id?.toString();
         });
         setAllVisits(filtered);
         setLoading(false);

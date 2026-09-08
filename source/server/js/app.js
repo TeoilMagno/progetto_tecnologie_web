@@ -44,7 +44,10 @@ app.use((req, res, next) => {
 });
 
 // ─── Middleware base ───────────────────────────────────────────────────────
-app.use(cors({ credentials: true }));
+app.use(cors({ 
+  credentials: true,
+  origin: (origin, cb) => cb(null, origin),
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -106,6 +109,7 @@ io.on('connection', (socket) => {
     activeSessions[roomCode] = { 
         teacherSocketId: socket.id, 
         students: [],
+        classStatus: {},
         visitId: visitId,
         hasStarted: false
     };
@@ -213,6 +217,69 @@ io.on('connection', (socket) => {
           status, // es. 'active', 'lagging'
           lastSeen: Date.now()
         }
+      });
+    }
+  });
+
+  const COMPLETION_RATIO_THRESHOLD = 0.6; // sotto questa % del tempo atteso -> sospetto
+
+  socket.on('student_audio_event', ({ roomCode, studentName, workId, eventType, expectedDuration, elapsedSeconds, seekCount, timestamp }) => {
+
+    if (!roomCode) return;
+    const room = activeSessions[roomCode.toUpperCase()];
+    if (!room) return;
+
+    // Fallback difensivo: se per qualche motivo la stanza non ha ancora
+    // classStatus (es. sessione creata prima di questo deploy), lo creiamo al volo
+    if (!room.classStatus) room.classStatus = {};
+
+    // L'entry dovrebbe già esistere da 'student_joined'; la creiamo per sicurezza
+    const student = room.classStatus[socket.id] || (room.classStatus[socket.id] = {
+      socketId: socket.id,
+      studentName,
+      status: 'active',
+    });
+
+    console.log('[SERVER AUDIO EVENT]', eventType, { studentName, workId, elapsedSeconds, expectedDuration, seekCount });
+  
+    switch (eventType) {
+      case 'audio_started':
+        student.audioState = 'playing';
+        student.currentWorkId = workId;
+        student.flagged = false; // una nuova lettura azzera il flag precedente
+        break;
+  
+      case 'audio_resumed':
+        student.audioState = 'playing';
+        break;
+  
+      case 'audio_paused':
+        student.audioState = 'paused';
+        break;
+  
+      case 'audio_completed':
+      case 'audio_stopped':
+        student.audioState = 'idle';
+        student.flagged = elapsedSeconds < expectedDuration * COMPLETION_RATIO_THRESHOLD;
+        break;
+  
+      case 'audio_seek_burst':
+        student.flagged = true;
+        break;
+  
+      default:
+        return; // evento sconosciuto, ignoriamo silenziosamente
+    }
+  
+    student.lastEventAt = timestamp;
+  
+    // Stesso canale già usato per lo stato attivo/inattivo: un solo listener
+    // lato client, nessuna modifica a MapView.jsx. Mandiamo SOLO al docente
+    // della stanza (mai broadcast) l'oggetto studente completo.
+    if (room.teacherSocketId) {
+      io.to(room.teacherSocketId).emit('teacher_dashboard_update', {
+        type: 'status',
+        data: student,
       });
     }
   });

@@ -31,6 +31,60 @@ export function useWorkGuide({
   const currentAudioTextRef = useRef("");
   const isAudioActiveRef = useRef(false);
 
+  // --- TRACCIAMENTO "INDIZI DI ASCOLTO" per la dashboard dell'insegnante ---
+  // Vive qui perché è l'hook, non il componente, a possedere davvero il
+  // ciclo di vita dell'audio (onstart/onend/onerror, pause/resume/seek).
+  // Emettiamo SOLO transizioni di stato, mai la posizione continua: con
+  // ~20 studenti connessi vogliamo pochi eventi a testa per opera. Sono
+  // indizi per il docente, non prove: leggere il testo invece di
+  // ascoltarlo resta legittimo.
+  const audioTrackingRef = useRef({
+    accumulatedSeconds: 0,
+    lastResumeAt: null,
+    completedSent: false,
+    seekBurstCount: 0,
+    seekBurstTimer: null,
+    expectedDuration: 0,
+  });
+
+  const resetAudioTracking = () => {
+    const t = audioTrackingRef.current;
+    t.accumulatedSeconds = 0;
+    t.lastResumeAt = null;
+    t.completedSent = false;
+    t.seekBurstCount = 0;
+    if (t.seekBurstTimer) {
+      clearTimeout(t.seekBurstTimer);
+      t.seekBurstTimer = null;
+    }
+  };
+
+  const sendAudioEvent = (eventType, extra = {}) => {
+    if (!(isSharedSession && !isTeacher && socket && roomCode)) return;
+    console.log('[AUDIO EVENT]', eventType, extra);
+    socket.emit("student_audio_event", {
+      roomCode,
+      studentName: localStorage.getItem("student_name") || "Studente",
+      workId: work?._id,
+      eventType,
+      expectedDuration: audioTrackingRef.current.expectedDuration,
+      timestamp: Date.now(),
+      ...extra,
+    });
+  };
+
+  // Ritorna il tempo di ascolto reale accumulato fino a questo istante
+  // (segmenti passati + eventuale segmento in corso).
+  const getLiveElapsedSeconds = () => {
+    const t = audioTrackingRef.current;
+    return t.accumulatedSeconds + (t.lastResumeAt ? (Date.now() - t.lastResumeAt) / 1000 : 0);
+  };
+
+  // Reset del tracciamento ad ogni cambio opera (nuova "sessione" di ascolto)
+  useEffect(() => {
+    resetAudioTracking();
+  }, [work]);
+
   const lengthLevels = ["short", "medium", "long", "exhaustive"];
   const expertiseLevels = ["simple", "medium", "professional", "expert"];
 
@@ -67,6 +121,7 @@ export function useWorkGuide({
       console.log("--> [AUDIO DEBUG] EVENTO ONSTART: Inizio lettura.");
       setPlayMode(true);
       isAudioActiveRef.current = true;
+      audioTrackingRef.current.lastResumeAt = Date.now();
     };
 
     utterance.onboundary = (event) => {
@@ -85,6 +140,18 @@ export function useWorkGuide({
       currentUtteranceRef.current = null;
       setAudioProgressRatio(0);
       setAudioDuration(0);
+
+      // Fine naturale: se non era già stata segnalata (es. da un handleStopAudio
+      // esplicito arrivato in mezzo), la registriamo come "completed".
+      const tracking = audioTrackingRef.current;
+      if (tracking.lastResumeAt) {
+        tracking.accumulatedSeconds += (Date.now() - tracking.lastResumeAt) / 1000;
+        tracking.lastResumeAt = null;
+      }
+      if (!tracking.completedSent) {
+        tracking.completedSent = true;
+        sendAudioEvent("audio_completed", { elapsedSeconds: Math.round(tracking.accumulatedSeconds) });
+      }
     };
 
     utterance.onerror = (e) => {
@@ -95,6 +162,12 @@ export function useWorkGuide({
       currentUtteranceRef.current = null;
       setAudioProgressRatio(0);
       setAudioDuration(0);
+
+      const tracking = audioTrackingRef.current;
+      if (tracking.lastResumeAt) {
+        tracking.accumulatedSeconds += (Date.now() - tracking.lastResumeAt) / 1000;
+        tracking.lastResumeAt = null;
+      }
     };
 
     const voices = window.speechSynthesis.getVoices();
@@ -126,6 +199,12 @@ export function useWorkGuide({
     const calculatedDuration = Math.max(1, Math.round(words / (2.2 * speed)));
     setAudioDuration(calculatedDuration);
 
+    // Ogni chiamata a speakText è un "nuovo ascolto" (prima lettura, o restart
+    // dopo "dimmi di più/meno", "semplifica/approfondisci", curiosità, ecc.)
+    resetAudioTracking();
+    audioTrackingRef.current.expectedDuration = calculatedDuration;
+    sendAudioEvent("audio_started");
+
     speakFromOffset(textToRead, 0);
   };
 
@@ -138,6 +217,18 @@ export function useWorkGuide({
     currentUtteranceRef.current = null;
     setAudioProgressRatio(0);
     setAudioDuration(0);
+
+    const tracking = audioTrackingRef.current;
+    if (tracking.lastResumeAt) {
+      tracking.accumulatedSeconds += (Date.now() - tracking.lastResumeAt) / 1000;
+      tracking.lastResumeAt = null;
+    }
+    // Se non aveva già finito naturalmente e c'era stato davvero un po' di
+    // ascolto, è un'interruzione manuale: la segnaliamo come indizio.
+    if (!tracking.completedSent && tracking.accumulatedSeconds > 0) {
+      tracking.completedSent = true;
+      sendAudioEvent("audio_stopped", { elapsedSeconds: Math.round(tracking.accumulatedSeconds) });
+    }
   };
 
   const handlePauseAudio = (visualRatio) => {
@@ -150,6 +241,13 @@ export function useWorkGuide({
       audioCharIndexRef.current = Math.round(fullText.length * visualRatio);
       setAudioProgressRatio(visualRatio);
     }
+
+    const tracking = audioTrackingRef.current;
+    if (tracking.lastResumeAt) {
+      tracking.accumulatedSeconds += (Date.now() - tracking.lastResumeAt) / 1000;
+      tracking.lastResumeAt = null;
+    }
+    sendAudioEvent("audio_paused", { progressRatio: visualRatio });
   };
 
   const handleResumeAudio = (visualRatio) => {
@@ -159,6 +257,8 @@ export function useWorkGuide({
     if (visualRatio !== undefined && fullText) {
       targetChar = Math.round(fullText.length * visualRatio);
     }
+
+    sendAudioEvent("audio_resumed", { progressRatio: visualRatio });
     
     // Riavvia l'audio simulando la ripresa dall'esatto punto di interruzione
     speakFromOffset(fullText, targetChar);
@@ -185,6 +285,22 @@ export function useWorkGuide({
     setAudioProgressRatio((targetChar / fullText.length) + 0.00001);
 
     speakFromOffset(fullText, targetChar);
+
+    // Un singolo ±5s è normale; tanti in rapida sequenza (avanti veloce per
+    // "far finire" l'opera) sono un indizio. Aggreghiamo invece di spammare
+    // un evento per ogni click.
+    if (seconds > 0) {
+      const tracking = audioTrackingRef.current;
+      tracking.seekBurstCount += 1;
+      if (tracking.seekBurstTimer) clearTimeout(tracking.seekBurstTimer);
+      tracking.seekBurstTimer = setTimeout(() => {
+        if (tracking.seekBurstCount >= 3) {
+          sendAudioEvent("audio_seek_burst", { seekCount: tracking.seekBurstCount });
+        }
+        tracking.seekBurstCount = 0;
+        tracking.seekBurstTimer = null;
+      }, 4000);
+    }
   };
 
   // Funzione che mostra il pop-up a schermo per 2 secondi
@@ -303,6 +419,21 @@ export function useWorkGuide({
           case "FUN_FACT":
             handleFunFact();
             break;
+          case "AUTHOR_BIO":
+            handleAuthorBio();
+            break;
+          case "AUTHOR_STUDIES":
+            handleAuthorStudies();
+            break;
+          case "AUTHOR_WORKS":
+            handleAuthorWorks();
+            break;
+          case "STYLE_DESC":
+            handleAboutStyle();
+            break;
+          case "PARAPHRASE":
+            handleParaphrase();
+            break;
           case "CLOSE":
             handleStopAudio();
             break;
@@ -392,22 +523,24 @@ export function useWorkGuide({
     }
   };
 
-  const handleAboutAuthor = () => {
-    const authorName = work?.authorName || "Autore non specificato";
-    const authorBio = work?.authorBio || work?.authorDescription;
-    const speech = authorBio 
-      ? `L'opera è stata realizzata da ${authorName}. ${authorBio}`
-      : `Quest'opera è attribuita a ${authorName}, maestro attivo nel periodo di creazione dell'opera.`;
-    speakText(speech);
+  const handleAuthorBio = () => {
+    speakText(work?.author?.data?.[0]?.bio);
+  };
+
+  const handleAuthorStudies = () => {
+    speakText(work?.author?.data?.[0]?.studies);
+  };
+
+  const handleAuthorWorks = () => {
+    speakText(work?.author?.data?.[0]?.mainWorks);
   };
 
   const handleAboutStyle = () => {
-    const styleName = work?.styleName || "Stile non specificato";
-    const styleDesc = work?.styleDescription;
-    const speech = styleDesc
-      ? `Quest'opera appartiene alla corrente ${styleName}. ${styleDesc}`
-      : `L'opera è un esempio significativo dello stile ${styleName}, caratteristico dell'epoca ${work?.year || ''}.`;
-    speakText(speech);
+    speakText(work?.style?.data?.[0]?.description);
+  };
+
+  const handleParaphrase = () => {
+    speakText(work?.paraphrase);
   };
 
   return {
@@ -416,6 +549,6 @@ export function useWorkGuide({
     setCurrentExpertise, setCurrentLength,
     speakText, handleStopAudio, handlePauseAudio, handleResumeAudio, handleSeekAudio,
     startListening, handleMoreDesc, handleLessDesc, handleHigherExper, handleLowerExper,
-    handleFunFact, handleAboutAuthor, handleAboutStyle
+    handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase
   };
 }

@@ -131,7 +131,7 @@ router.post('/logout', (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
 
-    let redirectTo = req.body.next;
+    let redirectTo = req.body?.next;
 
     // Estrazione immediata della rotta dal Referrer se il frontend non la specifica
     if (!redirectTo && req.get('Referrer')) {
