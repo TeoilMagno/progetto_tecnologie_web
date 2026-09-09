@@ -129,7 +129,7 @@ exports.getVisitById = async (visitId, user, isShared = false) => {
   const visit = await Visit.findById(visitId)
     .populate('museumId')
     .populate('creator', 'username email')
-    .populate({ path: 'works', populate: { path: 'adoptionId' } }); 
+    .populate({ path: 'works', populate: { path: 'adoptionId' } });
 
   if (!visit) {
     const error = new Error("Visita non trovata");
@@ -137,9 +137,17 @@ exports.getVisitById = async (visitId, user, isShared = false) => {
     throw error;
   }
 
-  // Passa se è pubblica, o se l'utente è il creatore/admin
   const creatorId = visit.creator?._id ? visit.creator._id.toString() : visit.creator?.toString();
-  if (isShared || visit.isPublic || user?.role === "admin" || creatorId === user?._id?.toString()) {
+  const isOwner = user?.role === "admin" || creatorId === user?._id?.toString();
+
+  if (isShared || visit.isPublic || isOwner) {
+    // Flag puramente informativo: la vetrina resta sempre visibile,
+    // questo dice ai frontend se l'utente può USARE la visita, non se può VEDERLA.
+    const isPaid = visit.price > 0;
+    const hasPurchased = user?.purchased_visits?.some(
+      id => id.toString() === visitId.toString()
+    );
+    visit._doc.canStart = isShared || !isPaid || isOwner || !!hasPurchased;
     return visit;
   } else {
     const error = new Error("Accesso negato: questa visita è privata");

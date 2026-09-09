@@ -90,6 +90,15 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         
         const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}${queryParam}`, { credentials: 'include' });
         if (!visitResponse.ok) throw new Error("Visita non trovata");
+
+        // NUOVO: se non ha diritto di usarla (e non è una sessione condivisa da un
+        // insegnante che l'ha già "sbloccata"), non carichiamo il tour interattivo
+        if (!visitResponse.canStart && !isSharedSession) {
+          setAccessDenied(true);
+          setLoading(false);
+          return;
+        }
+
         const apiData = await visitResponse.json();
         const visitData = apiData.visit;
         const dictionary = apiData.commands_map;

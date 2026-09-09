@@ -195,6 +195,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     const price = visit.price || 0;
     document.getElementById("visit-sidebar-price").innerText = price === 0 ? "Gratis" : `€${price.toFixed(2)}`;
 
+    // NUOVO: switch bottone Inizia/Acquista in base a visit.canStart
+    const startBtn = document.getElementById("visit-start-btn"); // usa l'id reale del tuo bottone nell'HTML
+    if (startBtn) {
+      if (visit.canStart) {
+        startBtn.innerHTML = `<i class="bi bi-play-fill me-1"></i> Inizia Visita`;
+        startBtn.onclick = startVisit;
+      } else {
+        startBtn.innerHTML = `<i class="bi bi-cart-plus me-1"></i> Acquista Visita · €${price.toFixed(2)}`;
+        startBtn.onclick = () => {
+          const product = { id: visit._id, type: 'visit', name: visit.title, price: visit.price, image: bgImage };
+          addToCart(product); // salva su localStorage, aggiorna cart-badge se esiste (qui non esiste, nessun problema)
+
+          // Popoliamo il nostro popup dedicato
+          document.getElementById('cart-popup-img').src = bgImage || '/img/fallback-work.jpg';
+          document.getElementById('cart-popup-name').innerText = visit.title;
+          document.getElementById('cart-popup-price').innerText = `€${visit.price.toFixed(2)}`;
+
+          // Trasparenza: se in carrello c'è già altro (da un'altra pagina), lo diciamo,
+          // altrimenti il totale al checkout sorprenderebbe l'utente
+          const fullCart = getCart();
+          const summaryEl = document.getElementById('cart-popup-summary');
+          if (fullCart.length > 1) {
+            const total = fullCart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+            summaryEl.innerText = `Nel carrello ci sono già altri ${fullCart.length - 1} elementi · Totale: €${total.toFixed(2)}`;
+          } else {
+            summaryEl.innerText = '';
+          }
+
+          new bootstrap.Modal(document.getElementById('visitCartModal')).show();
+        };
+      }
+    }
+
     const creatorName = visit.creator && visit.creator.username ? visit.creator.username : "Curatore";
     document.getElementById("visit-sidebar-creator").innerText = creatorName;
 

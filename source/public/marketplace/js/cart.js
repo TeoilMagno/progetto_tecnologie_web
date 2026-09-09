@@ -65,8 +65,11 @@ function addToCart(product) {
   saveCart(cart);
   
   // Apriamo la barra laterale del carrello per dare un feedback visivo
-  const cartOffcanvas = new bootstrap.Offcanvas(document.getElementById('cartOffcanvas'));
-  cartOffcanvas.show();
+  const cartOffcanvasEl = document.getElementById('cartOffcanvas');
+  if (cartOffcanvasEl) {
+    const cartOffcanvas = new bootstrap.Offcanvas(cartOffcanvasEl);
+    cartOffcanvas.show();
+  }
 }
 
 // 4. Rimuovi un elemento
