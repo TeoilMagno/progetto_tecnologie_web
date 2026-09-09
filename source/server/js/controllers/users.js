@@ -1,6 +1,12 @@
 // controllers/users.js
 const { User } = require('../models/users');
 const { FederatedCredential } = require('../models/users');
+const Visit = require('../models/visits');
+const Order = require('../models/orders');
+const Adoption = require('../models/adoptions');
+
+const { deleteMuseumById } = require("../models/museums");
+const { deleteVisitById } = require("../models/visits");
 const crypto = require('crypto');
 
 const PBKDF2_ITERATIONS = 310000;
@@ -62,4 +68,89 @@ exports.addPurchasedVisits = async (userId, visitIds) => {
   return await User.findByIdAndUpdate(userId, {
     $addToSet: { purchased_visits: { $each: visitIds } }
   });
+};
+
+exports.updateUserProfile = async (userId, updateData) => {
+  const { username, newPassword, oldPassword, expertiseLevel, type, requestCurator } = updateData;
+  const user = await User.findById(userId);
+
+  // 1. Aggiornamento Username
+  if (username) {
+    const existing = await User.findOne({ username });
+    if (existing && existing._id.toString() !== user._id.toString()) {
+      const error = new Error("Username già in uso.");
+      error.status = 400;
+      throw error;
+    }
+    user.username = username;
+  }
+
+  // 2. Aggiornamento Expertise
+  if (expertiseLevel) {
+    if (!user.preferences) user.preferences = {};
+    user.preferences.expertiseLevel = expertiseLevel;
+  }
+
+  // 3. Aggiornamento Password (riutilizzando hashPassword nativo del controller)
+  if (newPassword) {
+    if (user.password && user.salt) {
+      if (!oldPassword) {
+        const error = new Error("Devi inserire la password attuale.");
+        error.status = 400;
+        throw error;
+      }
+      const oldHash = await hashPassword(oldPassword, user.salt);
+      if (!crypto.timingSafeEqual(user.password, oldHash)) {
+        const error = new Error("La password attuale non è corretta.");
+        error.status = 401;
+        throw error;
+      }
+    }
+    const newSalt = crypto.randomBytes(16);
+    const newHash = await hashPassword(newPassword, newSalt);
+    
+    user.salt = newSalt;
+    user.password = newHash;
+  }
+
+  // 4. Aggiornamento Tipo / Ruoli
+  if (type) user.type = type;
+
+  if (requestCurator && (user.curator_status === 'none' || user.curator_status === 'rejected')) {
+    user.curator_status = 'pending';
+  }
+
+  await user.save();
+  return user;
+};
+
+
+exports.deleteUserAccount = async (userId) => {
+  // Richiamiamo i controller internamente per evitare dipendenze circolari globali
+
+  const user = await User.findById(userId);
+  if (!user) return;
+
+  // 1. Elimina i musei del curatore a cascata
+  if (user.managed_museums && user.managed_museums.length > 0) {
+    for (const museumId of user.managed_museums) {
+      await deleteMuseumById(museumId);
+    }
+  }
+
+  // 2. Elimina le visite create dall'utente
+  const userVisits = await Visit.find({ creator: user._id });
+  for (const visit of userVisits) {
+    await deleteVisitById(visit._id, user);
+  }
+
+  // 3. Elimina fisicamente Ordini e Adozioni
+  await Order.deleteMany({ userId: user._id });
+  await Adoption.deleteMany({ requestedBy: user._id });
+
+  // 4. Elimina eventuali credenziali social orfane (risolvendo il bug delle FederatedCredentials)
+  await FederatedCredential.deleteMany({ user_id: user._id });
+
+  // 5. Elimina profilo principale
+  return await User.findByIdAndDelete(user._id);
 };

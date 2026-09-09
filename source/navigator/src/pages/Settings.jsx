@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Headphones, Building2, Shield, Trash2, ChevronRight, User, KeyRound, AlertTriangle, ChevronDown, CheckCircle2, Clock, Star } from 'lucide-react';
+import { ArrowLeft, Headphones, Building2, Shield, Trash2, ChevronRight, User, KeyRound, AlertTriangle, ChevronDown, CheckCircle2, Clock, Star, Plus } from 'lucide-react';
 import { API_BASE_URL } from '../config';
+import CustomSelect from '../components/CustomSelect';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -142,8 +143,9 @@ export default function SettingsPage() {
   if (loading) return <div className="min-h-[100dvh] bg-[#09090b] text-white p-6 flex items-center justify-center">Caricamento in corso...</div>;
 
   return (
-    <div className="min-h-[100dvh] bg-[#09090b] text-white p-6 flex flex-col items-center animate-fadeIn relative">
-      <div className="w-full max-w-lg mt-4 flex flex-col h-full pb-20">
+    <>
+      <div className="min-h-[100dvh] bg-[#09090b] text-white p-6 flex flex-col items-center animate-fadeIn relative">
+        <div className="w-full max-w-lg mt-4 flex flex-col h-full pb-20">
         
         {/* HEADER */}
         <div className="flex items-center gap-4 mb-8">
@@ -182,6 +184,7 @@ export default function SettingsPage() {
               </button>
             </div>
           </section>
+        </div>
 
           {/* 1. SEZIONE: DATI PERSONALI */}
           {userData && (
@@ -260,66 +263,51 @@ export default function SettingsPage() {
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
               <Headphones size={14} /> Preferenze Esperienza
             </h3>
-            <div className="bg-slate-900/60 border border-white/5 rounded-2xl overflow-hidden divide-y divide-white/5">
+            <div className="bg-slate-900/60 border border-white/5 rounded-2xl divide-y divide-white/5">
               
               {userData && (
                 <>
                   <div className="p-4">
-                     <p className="text-xs text-slate-500 mb-2">Registro Linguistico (IA)</p>
-                     <div className="relative w-full">
-                       <select 
-                         value={userData.expertiseLevel || "medium"}
-                         onChange={(e) => handleUpdateProfile('expertiseLevel', e.target.value)}
-                         className="appearance-none w-full bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all cursor-pointer"
-                       >
-                          <option value="simple">Semplice - Per principianti e bambini</option>
-                          <option value="medium">Medio - Appassionato ma non esperto</option>
-                          <option value="professional">Professionale - Focus su storia e tecnica</option>
-                          <option value="expert">Esperto - Analisi critica e accademica</option>
-                       </select>
-                       <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                          <ChevronDown size={18} />
-                       </div>
-                     </div>
+                    <p className="text-xs text-slate-500 mb-2">Registro Linguistico (IA)</p>
+                    <CustomSelect 
+                      value={userData.expertiseLevel || "medium"}
+                      onChange={(val) => handleUpdateProfile('expertiseLevel', val)}
+                      options={[
+                        { value: "simple", label: "Semplice - Per principianti e bambini" },
+                        { value: "medium", label: "Medio - Appassionato ma non esperto" },
+                        { value: "professional", label: "Professionale - Focus su storia e tecnica" },
+                        { value: "expert", label: "Esperto - Analisi critica e accademica" }
+                      ]}
+                    />
                   </div>
 
                   <div className="p-4">
-                     <p className="text-xs text-slate-500 mb-2">Qualifica / Ruolo</p>
-                     <div className="relative w-full">
-                       <select 
-                         value={userData.type || "none"}
-                         onChange={(e) => handleUpdateProfile('type', e.target.value)}
-                         className="appearance-none w-full bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all cursor-pointer"
-                       >
-                          <option value="none">Visitatore Standard</option>
-                          <option value="student">Studente</option>
-                          <option value="teacher">Insegnante</option>
-                       </select>
-                       <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                          <ChevronDown size={18} />
-                       </div>
-                     </div>
+                    <p className="text-xs text-slate-500 mb-2">Qualifica / Ruolo</p>
+                    <CustomSelect 
+                      value={userData.type || "none"}
+                      onChange={(val) => handleUpdateProfile('type', val)}
+                      options={[
+                        { value: "none", label: "Visitatore Standard" },
+                        { value: "student", label: "Studente" },
+                        { value: "teacher", label: "Insegnante" }
+                      ]}
+                    />
                   </div>
                 </>
               )}
 
               <div className="p-4">
                 <p className="text-xs text-slate-500 mb-2">Velocità di Riproduzione Audio</p>
-                <div className="relative w-full">
-                  <select 
-                    value={playbackSpeed}
-                    onChange={(e) => setPlaybackSpeed(e.target.value)}
-                    className="appearance-none w-full bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all cursor-pointer"
-                  >
-                    <option value="0.75">Lenta (0.75x)</option>
-                    <option value="1.0">Normale (1x)</option>
-                    <option value="1.25">Veloce (1.25x)</option>
-                    <option value="1.5">Molto Veloce (1.5x)</option>
-                  </select>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                    <ChevronDown size={18} />
-                  </div>
-                </div>
+                <CustomSelect 
+                  value={playbackSpeed}
+                  onChange={setPlaybackSpeed}
+                  options={[
+                    { value: "0.75", label: "Lenta (0.75x)" },
+                    { value: "1.0", label: "Normale (1x)" },
+                    { value: "1.25", label: "Veloce (1.25x)" },
+                    { value: "1.5", label: "Molto Veloce (1.5x)" }
+                  ]}
+                />
               </div>
 
             </div>
@@ -526,7 +514,6 @@ export default function SettingsPage() {
            </div>
         </div>
       )}
-
-    </div>
+    </>
   );
 }
