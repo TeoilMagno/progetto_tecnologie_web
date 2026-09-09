@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { Home, Compass, Map as MapIcon, Menu, Users } from 'lucide-react';
 import { SocketProvider } from './context/SocketContext';
@@ -34,9 +34,19 @@ function MapRouteWrapper() {
 function AppLayout() {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // Definiamo un flag: se siamo su /map o su /quiz, nascondiamo le barre globali
   const hideGlobalUI = location.pathname === '/map' || location.pathname === '/quiz';
+  
+  // 2. Crea il riferimento per il contenitore principale
+  const mainRef = useRef(null);
+
+  // 3. Ascolta i cambi di URL e azzera lo scroll di QUESTO specifico div
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo(0, 0);
+    }
+  }, [location.pathname]);
 
   const [selectedMuseum, setSelectedMuseum] = useState(() => {
     const params = new URLSearchParams(location.search);
@@ -120,8 +130,8 @@ function AppLayout() {
       {/* --- MAIN CONTENT WRAPPER --- */}
       <div className="flex-1 flex flex-col relative w-full h-full overflow-hidden z-10">
         
-        {/* Area Scorrevole (Contenuto Pagina) */}
-        <main className="flex-1 overflow-y-auto scroll-smooth w-full relative">
+        <main ref={mainRef} className="flex-1 overflow-y-auto scroll-smooth w-full relative">
+
           <Routes>
             <Route path="/" element={<HomePage config={config} />} />
             <Route path="/visits" element={<Visits selectedMuseum={selectedMuseum} />} />
