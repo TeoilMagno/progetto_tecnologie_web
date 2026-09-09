@@ -34,6 +34,8 @@ export default function JoinSession() {
   const videoRef = useRef(null);
   const qrScannerRef = useRef(null);
   const hasScannedRef = useRef(false);
+
+  const joinSectionRef = useRef(null);
   
   // All'avvio, controlliamo se c'è una sessione "in sospeso"
   useEffect(() => {
@@ -305,6 +307,11 @@ export default function JoinSession() {
           setRoomCode(code);
           setCameraStatus('scanned');
           scanner.stop();
+
+          // NUOVO: Scorrimento fluido verso il basso
+          setTimeout(() => {
+            joinSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
         },
         {
           highlightScanRegion: false,
@@ -610,23 +617,23 @@ export default function JoinSession() {
             </div>
 
             {/* CAMPO CODICE STANZA */}
-            <div className="w-full bg-[#1e293b]/40 backdrop-blur-md border border-slate-800 rounded-2xl p-5">
+            <div ref={joinSectionRef} className="w-full bg-[#1e293b]/40 backdrop-blur-md border border-slate-800 rounded-2xl p-5">
               <label className="block text-left text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-1">
                 Inserisci Codice Stanza
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full">
                 <input
                   type="text"
                   maxLength={6}
                   placeholder="Esempio: ART452"
                   value={roomCode}
                   onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                  className="flex-1 bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 text-center text-base font-extrabold tracking-widest uppercase focus:outline-none focus:border-amber-500 transition-all"
+                  className="flex-1 min-w-0 bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 text-center text-base font-extrabold tracking-widest uppercase focus:outline-none focus:border-amber-500 transition-all"
                 />
                 <button 
                   onClick={handleJoinRoom}
                   disabled={roomCode.length !== 6}
-                  className="bg-amber-500 hover:bg-amber-600 disabled:bg-slate-800 text-slate-950 font-extrabold rounded-xl px-5 transition-all shadow-lg cursor-pointer"
+                  className="shrink-0 flex items-center justify-center bg-amber-500 hover:bg-amber-600 disabled:bg-slate-800 text-slate-950 font-extrabold rounded-xl px-5 transition-all shadow-lg cursor-pointer"
                 >
                   <Send size={18} />
                 </button>
