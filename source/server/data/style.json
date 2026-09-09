@@ -9,7 +9,7 @@
         "museumId": [
           "6a95d97740e04cf66fa1966b"
         ],
-        "description": "ci inventiamo cose"
+        "description": "L'Astrattismo nasce nei primi anni del Novecento, in un'epoca di radicali trasformazioni scientifiche e filosofiche in cui le certezze della rappresentazione visiva tradizionale iniziano a sgretolarsi. Liberandosi dal vincolo della mimesi e dall'obbligo di riprodurre la realtà oggettiva, gli artisti di questa corrente audace sembrano quasi dirci che \"ci inventiamo cose\", dando vita a un universo visivo totalmente inedito che attinge direttamente dall'inconscio, dalle emozioni pure e dall'essenza spirituale dell'essere umano.\n\nDal punto di vista visivo, l'Astrattismo abbandona la figura riconoscibile per concentrarsi esclusivamente sul potere espressivo del colore, della linea, della forma e della superficie. Le composizioni possono essere geometriche e rigorose, come nel caso di Piet Mondrian, oppure liriche e gestuali, come nelle opere pionieristiche di Vasilij Kandinskij. Non c'è più un sopra o un sotto, né una prospettiva illusionistica: lo spazio pittorico diventa un campo d'azione autonomo.\n\nI temi fondanti di questo movimento ruotano attorno alla ricerca di una lingua universale dell'anima. L'arte astratta aspira a risuonare con lo spettatore allo stesso modo in cui fa la musica, scavalcando la ragione per comunicare direttamente con i sentimenti più profondi. È una celebrazione della libertà creativa assoluta, un invito a esplorare dimensioni interiori che nessun occhio umano aveva mai potuto vedere prima."
       }
     ]
   },
@@ -19,22 +19,17 @@
     "wikidataId": "Q40415",
     "data": [
       {
-        "_id": "6a95e52f0d18f9511ba226c9",
         "museumId": [
           "6a95d97840e04cf66fa1966e",
           "6a95d97840e04cf66fa19675",
-          "6a95d97840e04cf66fa19671"
-        ],
-        "description": ""
-      },
-      {
-        "_id": "6a95e52f0d18f9511ba226ca",
-        "museumId": [
+          "6a95d97840e04cf66fa19671",
           "6a95d97840e04cf66fa19670"
         ],
-        "description": "L Impressionismo nasce in Francia, precisamente a Parigi, intorno agli anni Sessanta e Settanta dell Ottocento. Questo movimento storico e artistico si sviluppa in un periodo di grandi trasformazioni industriali e urbane, caratterizzato dalla nascita della fotografia e dalla diffusione dei colori in tubetto. I pittori impressionisti si ribellano contro i canoni rigidi e accademici dell epoca, rifiutando i soggetti storici e mitologici per dedicarsi alla rappresentazione della vita moderna, dei paesaggi urbani e della natura en plein air, cioe all aperto."
+        "description": "L Impressionismo nasce in Francia, precisamente a Parigi, intorno agli anni Sessanta e Settanta dell Ottocento. Questo movimento storico e artistico si sviluppa in un periodo di grandi trasformazioni industriali e urbane, caratterizzato dalla nascita della fotografia e dalla diffusione dei colori in tubetto. I pittori impressionisti si ribellano contro i canoni rigidi e accademici dell epoca, rifiutando i soggetti storici e mitologici per dedicarsi alla rappresentazione della vita moderna, dei paesaggi urbani e della natura en plein air, cioe all aperto.",
+        "_id": "6a95e52f0d18f9511ba226ca"
       }
-    ]
+    ],
+    "__v": 1
   },
   {
     "_id": "6a95d97840e04cf66fa19693",
@@ -65,6 +60,20 @@
     ]
   },
   {
+    "_id": "6a95d97940e04cf66fa19696",
+    "name": "Barocco Olandese",
+    "wikidataId": "Q211116",
+    "data": [
+      {
+        "_id": "6a95e52f0d18f9511ba226ce",
+        "museumId": [
+          "6a821d4940de71cb515d1407"
+        ],
+        "description": "Il Barocco Olandese fiorì nel corso del XVII secolo, in un periodo straordinario noto come il Secolo d'Oro dei Paesi Bassi. Appena ottenuta l'indipendenza dalla dominazione spagnola e abbracciato il protestantesimo calvinista, la giovane nazione divenne una repubblica mercantile ricca e culturalmente vibrante. A differenza del Barocco cattolico europeo, finalizzato alla celebrazione monumentale della Chiesa e della monarchia, l'arte olandese nacque per soddisfare una nuova classe borghese di mercanti e banchieri, che arredavano le proprie case con dipinti di formato intimo e raffinato.\n\nDal punto di vista visivo, questa corrente si distingue per un realismo straordinario e per la maestria quasi miracolosa nella gestione della luce e delle ombre, influenzata profondamente dal genio di Rembrandt. La pittura olandese abbandonò i grandi soggetti mitologici per esplorare generi fino ad allora considerati minori: i ritratti di gruppo, i paesaggi immensi solcati da cieli drammatici, le scene di genere che immortalavano la vita quotidiana e le nature morte, spesso cariche di simboli sulla caducità della vita.\n\nI temi fondanti dell'arte di questo periodo ruotano attorno all'osservazione attenta del mondo reale e alla riflessione morale sulla fugacità del tempo e dei beni materiali, espressa magistralmente nel genere delle Vanitas. C'è una celebrazione orgogliosa dell'identità nazionale, del lavoro operoso, della proprietà privata e della bellezza nascosta nelle piccole cose di tutti i giorni. In questo modo, i grandi maestri olandesi seppero elevare la quotidianità a opera d'arte immortale, catturando l'anima più autentica di un popolo libero."
+      }
+    ]
+  },
+  {
     "_id": "6a95d97940e04cf66fa19695",
     "name": "Arte Egizia",
     "wikidataId": "Q1069123",
@@ -79,20 +88,6 @@
     ]
   },
   {
-    "_id": "6a95d97940e04cf66fa19696",
-    "name": "Barocco Olandese",
-    "wikidataId": "Q211116",
-    "data": [
-      {
-        "_id": "6a95e52f0d18f9511ba226ce",
-        "museumId": [
-          "6a821d4940de71cb515d1407"
-        ],
-        "description": ""
-      }
-    ]
-  },
-  {
     "_id": "6a95d97940e04cf66fa19697",
     "name": "Arte Egizia / Tolemaica",
     "wikidataId": "Q131969",
@@ -102,7 +97,7 @@
         "museumId": [
           "6a821d4940de71cb515d1407"
         ],
-        "description": ""
+        "description": "L'arte egizia, sviluppatasi lungo le sponde fertili del Nilo per oltre tremila anni, trova nella fase tolemaica (305-30 a.C.) la sua affascinante sintesi finale. In questo periodo, successivo alla conquista di Alessandro Magno, la millenaria tradizione faraonica si fonde con la cultura ellenistica, dando vita a un sincretismo visivo unico in cui divinità tradizionali vengono rappresentate con sembianze influenzate dal naturalismo greco, pur mantenendo intatta la solennità dei canoni ancestrali.\n\nDal punto di vista visivo, l'arte egizia si fonda su una rigorosa geometria e sulla celebre legge della frontalità, in cui il corpo umano è ritratto combinando i punti di vista ottimali: il volto e gli arti di profilo, il busto e l'occhio di prospetto. Le figure non mirano al realismo transitorio, ma all'eternità: i faraoni e le divinità sono scolpiti in proporzioni ideali, immobili e incorruttibili, spesso racchiusi in un sistema di griglie proporzionali che garantiva la perfezione armonica dell'opera.\n\nI temi fondanti ruotano attorno al concetto di Maat, l'ordine cosmico, la giustizia e la verità, strettamente legati alla religione e alla vita ultraterrena. I templi monumentali, come quelli spettacolari di Edfu e File edificati proprio in epoca tolemaica, non erano luoghi di culto aperti alle folle, ma dimore terrene per gli dèi. Attraverso rilievi parietali densi di geroglifici e statue di sovrani divinizzati, l'arte assolveva alla sua funzione primaria: eternare il potere regale e garantire la perpetuazione del cosmo contro il caos."
       }
     ]
   },
@@ -117,6 +112,20 @@
           "6a821d4940de71cb515d1407"
         ],
         "description": "Nato a Roma tra la fine del Cinquecento e gli inizi del Seicento, il Barocco fiorisce in un epoca di grandi sconvolgimenti storici e religiosi, segnata dalla Controriforma cattolica. La Chiesa di Roma, desiderosa di riaffermare la propria autorità e di emozionare i fedeli, affida agli artisti il compito di creare un'arte capace di stupire e commuovere. Nasce cosi uno stile grandioso e teatrale, che rifiuta la quiete e l'equilibrio del Rinascimento per abbracciare il dinamismo, la tensione e la meraviglia.\n\nVisivamente, il Barocco si riconosce per l'uso magistrale del chiaroscuro, inventato da Caravaggio, che taglia le tenebre con lame di luce per drammatizzare la scena, e per il trionfo del trompe-l'œil nei soffitti affrescati, dove lo spazio architettonico sembra dissolversi per aprirsi direttamente sul cielo. Le linee rette cedono il passo a curve sinuose, spirali e forme ellittiche, mentre la scultura, magistralmente interpretata da Bernini, cattura il momento culminante dell'azione, infondendo nel marmo una vitalità vibrante e carnale.\n\nI temi fondanti di questa straordinaria stagione artistica ruotano attorno all'illusione, alla caducità della vita e alla potenza travolgente del divino. L'arte barocca non si limita a rappresentare la realtà, ma vuole sedurre lo spettatore, coinvolgendolo in un esperienza multisensoriale totale in cui architettura, pittura e scultura si fondono in un unico, grandioso spettacolo visivo."
+      }
+    ]
+  },
+  {
+    "_id": "6a95d97940e04cf66fa1969b",
+    "name": "Ingegneria Aeronautica",
+    "wikidataId": "Q3798668",
+    "data": [
+      {
+        "_id": "6a95e52f0d18f9511ba226d3",
+        "museumId": [
+          "6a821d4940de71cb515d1407"
+        ],
+        "description": "L'Ingegneria Aeronautica emerge come straordinaria corrente visiva e concettuale all'inizio del XX secolo, alimentata dal mito della velocità, dalla conquista dei cieli e dal progresso tecnologico travolgente della seconda rivoluzione industriale. In un'epoca dominata dai primi voli pionieristici e dalla necessità di superare i limiti fisici dell'uomo, gli artisti e i progettisti di questa disciplina hanno fuso la rigorosa scienza della fisica strutturale con un'estetica radicalmente nuova, votata al dinamismo e alla leggerezza.\n\nDal punto di vista visivo, lo stile aeronautico si caratterizza per linee aerodinamiche tese, superfici metalliche riflettenti e forme biomorfiche ispirate alle ali e alle fusoliere, progettate per fendere i fluidi con il minimo attrito. I temi fondanti ruotano attorno all'efficienza meccanica, alla tensione strutturale e all'ambizione prometeica del volo, celebrando la perfetta sintesi tra bellezza formale e assoluta funzionalità ingegneristica."
       }
     ]
   },
@@ -144,21 +153,7 @@
         "museumId": [
           "6a821d4940de71cb515d1407"
         ],
-        "description": ""
-      }
-    ]
-  },
-  {
-    "_id": "6a95d97940e04cf66fa1969b",
-    "name": "Ingegneria Aeronautica",
-    "wikidataId": "Q3798668",
-    "data": [
-      {
-        "_id": "6a95e52f0d18f9511ba226d3",
-        "museumId": [
-          "6a821d4940de71cb515d1407"
-        ],
-        "description": ""
+        "description": "Il Barocco spagnolo fiorì tra la fine del XVI e tutto il XVII secolo, in un'epoca nota come il Sigillo d'Oro (Siglo de Oro). Nonostante la crisi politica ed economica dell'impero, la Spagna visse una stagione di straordinario fervore culturale e religioso, profondamente legato ai dettami della Controriforma cattolica. In questo contesto, l'arte divenne il principale strumento di propaganda fideistica e di esaltazione monarchica, finanziata largamente dalla Chiesa e dalla Corona per commuovere e travolgere emotivamente l'osservatore.\n\nVisivamente, lo stile si distingue per un realismo crudo e senza filtri, unito a un uso magistrale del chiaroscuro, noto come tenebrismo, che modella i corpi e definisce lo spazio attraverso tagli di luce drammatici. A differenza del Barocco esuberante e teatrale di altre aree europee, quello spagnolo predilige una solenne e austera introspezione psicologica. Le figure appaiono spesso monumentali e terrene, immerse in un silenzio carico di tensione spirituale che riflette la complessa psicologia del periodo.\n\nI temi fondanti ruotano attorno alla profonda devozione religiosa, al misticismo e alla caducità della vita umana. Accanto alle estasi dei santi, al martirio e all'immaginario mariano, trovano spazio la riflessione sulla vanità delle cose terrene (le celebri *vanitas*) e una ritrattistica di corte capace di penetrare l'anima dei soggetti, come dimostrano i capolavori immortali di maestri del calibro di Diego Velázquez, Francisco de Zurbarán e Caravaggio."
       }
     ]
   },
@@ -173,6 +168,20 @@
           "6a821d4940de71cb515d1407"
         ],
         "description": "L'ingegneria aerospaziale, pur nascendo come disciplina scientifica e tecnologica nel pieno del ventesimo secolo, in particolare durante la feroce competizione della corsa allo spazio tra Stati Uniti e Unione Sovietica, si è rivelata una delle forme d'arte applicata più affascinanti della modernità. In questo contesto storico segnato dal desiderio di superare i confini terrestri, gli oggetti progettati per volare nel cielo e nello spazio hanno smesso di essere meri strumenti funzionali, trasformandosi in vere e proprie icone di una nuova estetica del sublime tecnologico. Razzi slanciati, stazioni orbitali e moduli lunari incarnano una bellezza rigorosa, dettata unicamente dalla fisica e dalla necessità aerodinamica.\n\nDal punto di vista visivo, questa corrente estetica si fonda su un'armonia radicale fatta di superfici metalliche riflettenti, geometrie pure, lines tese e una tensione costante verso il movimento verticale. Ogni elemento strutturale, dai serbatoi cilindrici agli ugelli di scarico, esprime una logica visiva in cui la forma segue indissolubilmente la funzione, generando un senso di leggerezza e potenza al tempo stesso. I temi fondanti di questo linguaggio visivo risiedono nel superamento dei limiti umani, nella fascinazione per l'ignoto cosmico e nella fede incrollabile nel progresso scientifico.\n\nCome storico dell'arte, considero l'ingegneria aerospaziale il culmine del modernismo: un momento in cui l'umanità ha scolpito il titanio e l'alluminio per dialogare direttamente con il vuoto siderale. I veicoli spaziali non sono soltanto capolavori di ingegneria, ma sculture monumentali concepite per sfidare la gravità, lasciando un'impronta indelebile nell'immaginario collettivo e ridefinendo il nostro concetto di bellezza all'alba dell'era interstellare."
+      }
+    ]
+  },
+  {
+    "_id": "6a95d97940e04cf66fa196a4",
+    "name": "Ukiyo-e",
+    "wikidataId": "Q174075",
+    "data": [
+      {
+        "_id": "6a95e52f0d18f9511ba226dc",
+        "museumId": [
+          "6a821e97205d7c012f901e3f"
+        ],
+        "description": "L'Ukiyo-e, che in giapponese si traduce suggestivamente come 'immagini del mondo fluttuante', rappresenta una delle espressioni artistiche più affascinanti e rivoluzionarie del periodo Edo, tra il XVII e il XIX secolo. Nato in un contesto di grande fioritura urbana a Edo (l'odierna Tokyo), questo movimento rifletteva lo spirito edonista della borghesia dell'epoca, desiderosa di celebrare i piaceri fugaci della vita quotidiana, lontani dalla rigidità del feudalesimo. Le stampe a blocchi di legno policromi catturavano la bellezza effimera del 'mondo fluttuante', immortalando i quartieri dei piaceri, i teatri Kabuki e le geisha.\n\nDal punto di vista visivo, l'Ukiyo-e si distingue per una straordinaria audacia compositiva: linee sinuose, colori piatti ma vibrantissimi e una totale assenza di chiaroscuro, spesso arricchita da inusuali 'tagli' prospettici di derivazione teatrale. I temi fondanti spaziano dai ritratti di attori famosi e cortigiane affascinanti fino ai paesaggi mozzafiato, resi celebri da maestri immortali come Hokusai e Hiroshige. Non si trattava di sola pittura d'élite, ma di un'arte democratica, riproducibile e accessibile a tutti, destinata a stupire e a ispirare intere generazioni.\n\nLa portata rivoluzionaria di questa corrente non si esaurì nei confini del Giappone. Quando le stampe Ukiyo-e giunsero in Europa, utilizzate persino come carta da imballaggio per le merci orientali, scossero profondamente il mondo artistico occidentale. Pittori impressionisti e post-impressionisti come Monet, Degas e Van Gogh rimasero folgorati da questa estetica così lontana dai canoni accademici tradizionali, assimilandone la freschezza e contribuendo a dar vita a quel fenomeno globale noto come 'Giapponismo'."
       }
     ]
   },
@@ -192,6 +201,62 @@
     ]
   },
   {
+    "_id": "6a95d97940e04cf66fa196a5",
+    "name": "Romanticismo",
+    "wikidataId": "Q37068",
+    "data": [
+      {
+        "_id": "6a95e52f0d18f9511ba226dd",
+        "museumId": [
+          "6a821e97205d7c012f901e3f"
+        ],
+        "description": "Nato tra la fine del XVIII e la prima metà del XIX secolo come reazione al razionalismo dell'Illuminismo e al rigore del Neoclassicismo, il Romanticismo fu molto più di una corrente artistica: fu una vera e propria rivoluzione dello spirito. In un'epoca scossa dai tumulti della Rivoluzione Industriale e dalle disillusioni post-napoleoniche, gli artisti voltarono le spalle alla ragione fredda per abbracciare l'emozione pura, riscoprendo la 'tempesta e l'assalto' dei sentimenti interiori e la dimensione smisurata dell'infinito."
+      }
+    ]
+  },
+  {
+    "_id": "6a95d97940e04cf66fa196a6",
+    "name": "Rinascimento Fiammingo",
+    "wikidataId": "Q604473",
+    "data": [
+      {
+        "_id": "6a95e52f0d18f9511ba226de",
+        "museumId": [
+          "6a821e97205d7c012f901e3f"
+        ],
+        "description": "Il Rinascimento Fiammingo fiorì nel corso del XV secolo nelle Fiandre, un'area geografica economicamente prospera e culturalmente vivace grazie ai traffici commerciali e al mecenatismo della borghesia mercantile. In questo periodo, la regione divenne il fulcro di una straordinaria rivoluzione visiva, parallela ma profondamente diversa da quella che si stava consumando in Italia. I maestri fiamminghi abbandonaronosprogressivamente la bidimensionalità gotica per abbracciare una nuova concezione dello spazio e della luce, inaugurando la stagione della pittura a olio, tecnica che permise di raggiungere vette di dettaglio, trasparenza e saturazione cromatica mai viste prima.\n\nVisivamente, le opere di questo movimento si distinguono per un iperrealismo sconcertante e per la meticolosa attenzione ai dettagli del mondo quotidiano. Gli artisti fiamminghi non cercavano la perfezione geometrica e ideale dell'antichità classica come i colleghi italiani, ma celebravano la realtà tangibile: la consistenza dei tessuti, i riflessi della luce su oggetti di metallo o vetro, e i panorami dettagliati visibili oltre le finestre. I temi fondanti spaziano dalla ritrattistica di corte e borghese, caratterizzata da un'indagine psicologica profonda e implacabile, alla pittura sacra, dove gli episodi biblici venivano sistematicamente ambientati in interni domestici contemporanei e borghesi, intrisi di un profondo simbolismo occulto."
+      }
+    ]
+  },
+  {
+    "_id": "6a95d97940e04cf66fa196a7",
+    "name": "Secolo d'Oro Olandese",
+    "wikidataId": "Q184084",
+    "data": [
+      {
+        "_id": "6a95e52f0d18f9511ba226df",
+        "museumId": [
+          "6a821e97205d7c012f901e3f"
+        ],
+        "description": "Il Secolo d'Oro Olandese fiorì nel corso del XVII secolo, un'epoca straordinaria in cui le Province Unite emersero come una delle potenze economiche e culturali più dinamiche d'Europa. Liberi dal giogo spagnolo e dominati da una borghesia mercantile colta e pragmatica, gli artisti olandesi non trovarono più nei committenti tradizionali, come la Chiesa cattolica o la corte, i loro unici mecenati. Questa rivoluzione sociale spostò il mercato dell'arte verso case private e gallerie pubbliche, dando vita a una produzione senza precedenti per varietà e quantità.\n\nVisivamente, la pittura di questo periodo si distingue per un realismo sbalorditivo, una maestria tecnica nell'uso della luce e delle ombre - splendidamente interpretata da giganti come Rembrandt - e una meticolosa attenzione ai dettagli quotidiani. I temi fondanti abbandonarono la grandiosità della pittura storica per abbracciare la vita di tutti i giorni: nacquero così i 'generi' pittorici che oggi associamo a quella stagione, dalle vivaci scene di genere di Vermeer alle nature morte cariche di simboli sulla caducità del tempo, fino ai vasti paesaggi dominati da cieli immensi e ai ritratti collettivi che celebravano l'orgoglio civico.\n\nQuesta corrente non fu semplicemente un momento di grazia estetica, ma uno specchio fedele di una società che per prima seppe ritrarre se stessa nella propria umanità, nei propri interni domestici e nei propri successi commerciali. L'arte olandese del Seicento continua ad affascinarci perché, dietro la perfezione formale di un raggio di sole che filtra da una finestra o di una tavola imbandita, ci sussurra la poesia universale della vita ordinaria elevata a opera d'arte."
+      }
+    ]
+  },
+  {
+    "_id": "6a95d97940e04cf66fa196a2",
+    "name": "Realismo",
+    "wikidataId": "Q173819",
+    "data": [
+      {
+        "_id": "6a95e52f0d18f9511ba226da",
+        "museumId": [
+          "6a821d4940de71cb515d1407"
+        ],
+        "description": "Il Realismo nacque in Francia intorno alla metà del XIX secolo, in un periodo di profondi sconvolgimenti politici e sociali segnati dalla Rivoluzione industriale e dai moti del 1848. In netto contrasto con l'idealismo accademico e con l'evasione romantica verso mondi esotici o storici, gli artisti realisti decisero di volgere lo sguardo al presente, rifiutando ogni forma di retorica e accademismo per concentrarsi sulla realtà quotidiana e tangibile.\n\nVisivamente, questa corrente si caratterizza per il rifiuto del bello ideale a favore di una rappresentazione oggettiva e senza filtri della vita di tutti i giorni. I soggetti prediletti non erano più eroi mitologici o sovrani, ma contadini sfiniti dalla fatica, operai nelle fabbriche, borghesi anonimi e paesaggi rurali aspri e reali, dipinti con una tavolozza spesso terrosa e concreta. Protagonista indiscusso di questa rivoluzione fu Gustave Courbet, il quale affermò provocatoriamente di non poter dipingere un angelo perché non ne aveva mai visto uno.\n\nI temi fondanti del Realismo risiedono nella dignità del lavoro umile, nella denuncia sociale delle ingiustizie e nella volontà di rendere visibili le classi sociali fino ad allora emarginate o ignorate dall'arte ufficiale. Attraverso una pittura che non abbellisce né edulcora, i realisti trasformarono la tela in uno specchio critico della società moderna, ponendo le basi per la nascita della sensibilità moderna e aprendo la strada alle future avanguardie."
+      }
+    ]
+  },
+  {
     "_id": "6a95d97940e04cf66fa1969e",
     "name": "Periodo Edo",
     "wikidataId": "Q230425",
@@ -201,7 +266,21 @@
         "museumId": [
           "6a821d4940de71cb515d1407"
         ],
-        "description": ""
+        "description": "Il periodo Edo, durato dal 1603 al 1868 in Giappone, rappresenta un'epoca di straordinaria fioritura culturale vissuta sotto il rigido controllo dello shogunato Tokugawa. Isolato dal resto del mondo da una politica di chiusura dei confini, l'arcipelago giapponese godette di un lungo periodo di pace interna che favorì l'ascesa economica e sociale della classe mercantile. È in questo contesto urbano vivace, soprattutto nella capitale Edo (l'odierna Tokyo), che nacque l'arte dell'ukiyo-e, letteralmente \"immagini del mondo fluttuante\", un fenomeno visivo rivoluzionario pensato per celebrare i piaceri transitori e la bellezza effimera della vita quotidiana.\n\nVisivamente, questa corrente si distingue per l'uso di linee audaci, composizioni asimmetriche e colori piatti e brillanti, resi accessibili al vasto pubblico grazie alla tecnica della stampa a matrice di legno. Le stampe e i dipinti catturavano con freschezza e ironia i soggetti più amati del tempo: le bellezze delle case da tè, i celebri attori del teatro kabuki e i lussureggianti paesaggi naturali, come le iconiche vedute del Monte Fuji. I temi fondanti ruotavano attorno all'evasione dalla rigida gerarchia feudale e all'apprezzamento estetico del momento presente, trasformando la cultura popolare in un'espressione artistica immortale."
+      }
+    ]
+  },
+  {
+    "_id": "6a95d97940e04cf66fa196a8",
+    "name": "Romanticismo Francese",
+    "wikidataId": "Q37068",
+    "data": [
+      {
+        "_id": "6a95e52f0d18f9511ba226e0",
+        "museumId": [
+          "6a821e97205d7c012f901e3f"
+        ],
+        "description": "Nato nella Francia della prima metà del XIX secolo, nel pieno dell'era post-rivoluzionaria e della Restaurazione, il Romanticismo francese si contrappose con forza al rigore razionale e neoclassico dell'Accademia. Questa corrente nacque dal bisogno viscerale di esprimere il 'sublime', ovvero quel misto di terrore e meraviglia di fronte alla potenza soverchiante della natura, e di riflettere i turbamenti dell'animo umano dopo il fallimento degli ideali illuministici. Artisti iconici come Théodore Géricault e Eugène Delacroix trasformarono la tela in un teatro di passioni estreme, dove la storia contemporanea e i drammi esistenziali trovavano finalmente voce.\n\nDal punto di vista visivo, lo stile abbandona le linee algide e la perfezione scultorea in favore di una pittura fatta di pennellate vibranti, contrasti cromatici violenti e una spiccata dinamicità compositiva. Le opere non cercano più l'equilibrio ideale, ma puntano al coinvolgimento emotivo dello spettatore attraverso la rappresentazione del movimento e della luce drammatica. I temi fondanti spaziano dall'esotismo e dalla fuga dalla realtà quotidiana fino all'impegno politico e civile, come dimostra celeberrimamente 'La Libertà che guida il popolo' di Delacroix. Il Romanticismo francese divenne così il manifesto di un'arte che non descrive semplicemente il mondo, ma lo interpreta attraverso il filtro infuocato del sentimento e dell'immaginazione."
       }
     ]
   },
@@ -215,7 +294,7 @@
         "museumId": [
           "6a821d4940de71cb515d1407"
         ],
-        "description": ""
+        "description": "L'arte ellenistica fiorisce a partire dalla morte di Alessandro Magno nel 323 a.C. e si estende fino alla conquista romana dell'Egitto nel 30 a.C. Questo straordinario periodo storico vede la diffusione della cultura greca in un vasto impero che va dal Mediterraneo all'Asia, generando un vivace scambio culturale e una nuova visione del mondo. L'individuo, non più protetto dalla ristretta e sicura dimensione della polis classica, si trova ora a fare i conti con la vastità del cosmo e con il destino, inaugurando una sensibilità artistica inedita, più inquieta e complessa.\n\nDal punto di vista visivo, lo stile ellenistico si distacca dal sereno equilibrio e dalla misura idealizzata del periodo classico per abbracciare il dinamismo estremo, il virtuosismo tecnico e la ricerca del patos. Le composizioni diventano teatrali e avvolgenti, caratterizzate da torsioni violente, forti contrasti chiaroscurali e panneggi agitati che sembrano muoversi nello spazio. L'attenzione si sposta verso una rappresentazione esasperata delle emozioni, che spaziano dalla sofferenza tragica e travolgente alla gioia sfrenata, passando per la curiosità verso l'inedito e il grottesco.\n\nI temi fondanti di questa stagione artistica non celebrano più soltanto l'eroismo olimpico o la vittoria ideale, ma esplorano la realtà in tutte le sue sfaccettature. Troviamo così una predilezione per la drammaticità dei grandi miti, come nel celebre gruppo del Laocoonte, accanto a una straordinaria attenzione per il quotidiano, l'infanzia, la vecchiaia e la bruttezza fisica, ritratte con un realismo crudo e compassionevole. L'arte ellenistica immortala l'umanità nel suo tumulto interiore, lasciando in eredità un repertorio visivo di ineguagliabile potenza emotiva."
       }
     ]
   },
@@ -248,20 +327,6 @@
     ]
   },
   {
-    "_id": "6a95d97940e04cf66fa196a2",
-    "name": "Realismo",
-    "wikidataId": "Q173819",
-    "data": [
-      {
-        "_id": "6a95e52f0d18f9511ba226da",
-        "museumId": [
-          "6a821d4940de71cb515d1407"
-        ],
-        "description": ""
-      }
-    ]
-  },
-  {
     "_id": "6a95d97940e04cf66fa196a3",
     "name": "Rinascimento",
     "wikidataId": "Q4692",
@@ -272,76 +337,6 @@
           "6a821e97205d7c012f901e3f"
         ],
         "description": "Il Rinascimento, fiorito in Italia tra il quindicesimo e il sedicesimo secolo, rappresenta uno dei momenti più alti e affascinanti della storia dell'umanità. Nato nella splendida cornice di Firenze, questo movimento segna una netta frattura con il periodo medievale, riscoprendo e reinterpretando i valori estetici e filosofici dell'arte classica greco-romana. Non si trattò di una semplice imitazione del passato, ma di una vera e propria rinascita culturale fondata sulla centralità dell'uomo, l'umanesimo, e sulla convinzione che la ragione e l'osservazione scientifica fossero gli strumenti chiave per decodificare il creato."
-      }
-    ]
-  },
-  {
-    "_id": "6a95d97940e04cf66fa196a4",
-    "name": "Ukiyo-e",
-    "wikidataId": "Q174075",
-    "data": [
-      {
-        "_id": "6a95e52f0d18f9511ba226dc",
-        "museumId": [
-          "6a821e97205d7c012f901e3f"
-        ],
-        "description": "L'Ukiyo-e, che in giapponese si traduce suggestivamente come 'immagini del mondo fluttuante', rappresenta una delle espressioni artistiche più affascinanti e rivoluzionarie del periodo Edo, tra il XVII e il XIX secolo. Nato in un contesto di grande fioritura urbana a Edo (l'odierna Tokyo), questo movimento rifletteva lo spirito edonista della borghesia dell'epoca, desiderosa di celebrare i piaceri fugaci della vita quotidiana, lontani dalla rigidità del feudalesimo. Le stampe a blocchi di legno policromi catturavano la bellezza effimera del 'mondo fluttuante', immortalando i quartieri dei piaceri, i teatri Kabuki e le geisha.\n\nDal punto di vista visivo, l'Ukiyo-e si distingue per una straordinaria audacia compositiva: linee sinuose, colori piatti ma vibrantissimi e una totale assenza di chiaroscuro, spesso arricchita da inusuali 'tagli' prospettici di derivazione teatrale. I temi fondanti spaziano dai ritratti di attori famosi e cortigiane affascinanti fino ai paesaggi mozzafiato, resi celebri da maestri immortali come Hokusai e Hiroshige. Non si trattava di sola pittura d'élite, ma di un'arte democratica, riproducibile e accessibile a tutti, destinata a stupire e a ispirare intere generazioni.\n\nLa portata rivoluzionaria di questa corrente non si esaurì nei confini del Giappone. Quando le stampe Ukiyo-e giunsero in Europa, utilizzate persino come carta da imballaggio per le merci orientali, scossero profondamente il mondo artistico occidentale. Pittori impressionisti e post-impressionisti come Monet, Degas e Van Gogh rimasero folgorati da questa estetica così lontana dai canoni accademici tradizionali, assimilandone la freschezza e contribuendo a dar vita a quel fenomeno globale noto come 'Giapponismo'."
-      }
-    ]
-  },
-  {
-    "_id": "6a95d97940e04cf66fa196a5",
-    "name": "Romanticismo",
-    "wikidataId": "Q37068",
-    "data": [
-      {
-        "_id": "6a95e52f0d18f9511ba226dd",
-        "museumId": [
-          "6a821e97205d7c012f901e3f"
-        ],
-        "description": "Nato tra la fine del XVIII e la prima metà del XIX secolo come reazione al razionalismo dell'Illuminismo e al rigore del Neoclassicismo, il Romanticismo fu molto più di una corrente artistica: fu una vera e propria rivoluzione dello spirito. In un'epoca scossa dai tumulti della Rivoluzione Industriale e dalle disillusioni post-napoleoniche, gli artisti voltarono le spalle alla ragione fredda per abbracciare l'emozione pura, riscoprendo la 'tempesta e l'assalto' dei sentimenti interiori e la dimensione smisurata dell'infinito."
-      }
-    ]
-  },
-  {
-    "_id": "6a95d97940e04cf66fa196a6",
-    "name": "Rinascimento Fiammingo",
-    "wikidataId": "Q604473",
-    "data": [
-      {
-        "_id": "6a95e52f0d18f9511ba226de",
-        "museumId": [
-          "6a821e97205d7c012f901e3f"
-        ],
-        "description": ""
-      }
-    ]
-  },
-  {
-    "_id": "6a95d97940e04cf66fa196a7",
-    "name": "Secolo d'Oro Olandese",
-    "wikidataId": "Q184084",
-    "data": [
-      {
-        "_id": "6a95e52f0d18f9511ba226df",
-        "museumId": [
-          "6a821e97205d7c012f901e3f"
-        ],
-        "description": "Il Secolo d'Oro Olandese fiorì nel corso del XVII secolo, un'epoca straordinaria in cui le Province Unite emersero come una delle potenze economiche e culturali più dinamiche d'Europa. Liberi dal giogo spagnolo e dominati da una borghesia mercantile colta e pragmatica, gli artisti olandesi non trovarono più nei committenti tradizionali, come la Chiesa cattolica o la corte, i loro unici mecenati. Questa rivoluzione sociale spostò il mercato dell'arte verso case private e gallerie pubbliche, dando vita a una produzione senza precedenti per varietà e quantità.\n\nVisivamente, la pittura di questo periodo si distingue per un realismo sbalorditivo, una maestria tecnica nell'uso della luce e delle ombre - splendidamente interpretata da giganti come Rembrandt - e una meticolosa attenzione ai dettagli quotidiani. I temi fondanti abbandonarono la grandiosità della pittura storica per abbracciare la vita di tutti i giorni: nacquero così i 'generi' pittorici che oggi associamo a quella stagione, dalle vivaci scene di genere di Vermeer alle nature morte cariche di simboli sulla caducità del tempo, fino ai vasti paesaggi dominati da cieli immensi e ai ritratti collettivi che celebravano l'orgoglio civico.\n\nQuesta corrente non fu semplicemente un momento di grazia estetica, ma uno specchio fedele di una società che per prima seppe ritrarre se stessa nella propria umanità, nei propri interni domestici e nei propri successi commerciali. L'arte olandese del Seicento continua ad affascinarci perché, dietro la perfezione formale di un raggio di sole che filtra da una finestra o di una tavola imbandita, ci sussurra la poesia universale della vita ordinaria elevata a opera d'arte."
-      }
-    ]
-  },
-  {
-    "_id": "6a95d97940e04cf66fa196a8",
-    "name": "Romanticismo Francese",
-    "wikidataId": "Q37068",
-    "data": [
-      {
-        "_id": "6a95e52f0d18f9511ba226e0",
-        "museumId": [
-          "6a821e97205d7c012f901e3f"
-        ],
-        "description": "Nato nella Francia della prima metà del XIX secolo, nel pieno dell'era post-rivoluzionaria e della Restaurazione, il Romanticismo francese si contrappose con forza al rigore razionale e neoclassico dell'Accademia. Questa corrente nacque dal bisogno viscerale di esprimere il 'sublime', ovvero quel misto di terrore e meraviglia di fronte alla potenza soverchiante della natura, e di riflettere i turbamenti dell'animo umano dopo il fallimento degli ideali illuministici. Artisti iconici come Théodore Géricault e Eugène Delacroix trasformarono la tela in un teatro di passioni estreme, dove la storia contemporanea e i drammi esistenziali trovavano finalmente voce.\n\nDal punto di vista visivo, lo stile abbandona le linee algide e la perfezione scultorea in favore di una pittura fatta di pennellate vibranti, contrasti cromatici violenti e una spiccata dinamicità compositiva. Le opere non cercano più l'equilibrio ideale, ma puntano al coinvolgimento emotivo dello spettatore attraverso la rappresentazione del movimento e della luce drammatica. I temi fondanti spaziano dall'esotismo e dalla fuga dalla realtà quotidiana fino all'impegno politico e civile, come dimostra celeberrimamente 'La Libertà che guida il popolo' di Delacroix. Il Romanticismo francese divenne così il manifesto di un'arte che non descrive semplicemente il mondo, ma lo interpreta attraverso il filtro infuocato del sentimento e dell'immaginazione."
       }
     ]
   },
@@ -360,20 +355,6 @@
     ]
   },
   {
-    "_id": "6a95d97940e04cf66fa196aa",
-    "name": "Neoclassicismo",
-    "wikidataId": "Q14378",
-    "data": [
-      {
-        "_id": "6a95e52f0d18f9511ba226e2",
-        "museumId": [
-          "6a95d97840e04cf66fa19675"
-        ],
-        "description": "Movimento artistico ispirato all'arte classica greca e romana."
-      }
-    ]
-  },
-  {
     "_id": "6a95d97940e04cf66fa196ab",
     "name": "Romanticismo Storico",
     "wikidataId": "Q37068",
@@ -384,6 +365,20 @@
           "6a95d97840e04cf66fa19675"
         ],
         "description": "Scene drammatiche e storiche cariche di pathos."
+      }
+    ]
+  },
+  {
+    "_id": "6a95d97940e04cf66fa196aa",
+    "name": "Neoclassicismo",
+    "wikidataId": "Q14378",
+    "data": [
+      {
+        "_id": "6a95e52f0d18f9511ba226e2",
+        "museumId": [
+          "6a95d97840e04cf66fa19675"
+        ],
+        "description": "Movimento artistico ispirato all'arte classica greca e romana."
       }
     ]
   },

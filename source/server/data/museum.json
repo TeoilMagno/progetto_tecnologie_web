@@ -18,20 +18,56 @@
       "Paolo e Francesca"
     ],
     "ticketPrice": 10,
-    "accessibility": [],
-    "openingHours": "Mar-Dom: 09:00 - 19:00, Lun: Chiuso",
-    "openingDays": [
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-      "sunday"
+    "accessibility": [
+      "wheelchair_accessible"
     ],
     "facilities": [],
-    "__v": 0,
-    "services": [],
-    "schedule": []
+    "services": [
+      {
+        "_id": "6aa036f06c454a897ad211a8",
+        "services": "bathrooms"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211a9",
+        "services": "info_desk"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211aa",
+        "services": "bookshop"
+      }
+    ],
+    "schedule": [
+      {
+        "_id": "6aa036f06c454a897ad211ab",
+        "day": "tuesday",
+        "hours": "09:00 - 19:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211ac",
+        "day": "wednesday",
+        "hours": "09:00 - 19:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211ad",
+        "day": "thursday",
+        "hours": "09:00 - 19:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211ae",
+        "day": "friday",
+        "hours": "09:00 - 19:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211af",
+        "day": "saturday",
+        "hours": "09:00 - 19:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211b0",
+        "day": "sunday",
+        "hours": "09:00 - 19:00"
+      }
+    ]
   },
   {
     "_id": "6a8dfae9a88f1bcdb73ec5e8",
@@ -50,21 +86,61 @@
       "Animazione"
     ],
     "ticketPrice": 8,
-    "accessibility": [],
-    "openingHours": "Tutti i giorni: 10:00 - 20:00",
-    "openingDays": [
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-      "sunday"
+    "accessibility": [
+      "wheelchair_accessible"
     ],
     "facilities": [],
-    "__v": 0,
-    "services": [],
-    "schedule": []
+    "services": [
+      {
+        "_id": "6aa036f06c454a897ad211b1",
+        "services": "bathrooms"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211b2",
+        "services": "info_desk"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211b3",
+        "services": "bookshop"
+      }
+    ],
+    "schedule": [
+      {
+        "_id": "6aa036f06c454a897ad211b4",
+        "day": "monday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211b5",
+        "day": "tuesday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211b6",
+        "day": "wednesday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211b7",
+        "day": "thursday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211b8",
+        "day": "friday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211b9",
+        "day": "saturday",
+        "hours": "10:00 - 20:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211ba",
+        "day": "sunday",
+        "hours": "10:00 - 20:00"
+      }
+    ]
   },
   {
     "_id": "6a8dfae9a88f1bcdb73ec5e9",
@@ -85,22 +161,74 @@
     ],
     "ticketPrice": 12,
     "accessibility": [
-      "none"
-    ],
-    "openingHours": "Tutti i giorni: 09:30 - 18:30",
-    "openingDays": [
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-      "sunday"
+      "wheelchair_accessible",
+      "blind_friendly",
+      "deaf_friendly"
     ],
     "facilities": [],
-    "__v": 0,
-    "services": [],
-    "schedule": []
+    "services": [
+      {
+        "_id": "6aa036f06c454a897ad211bb",
+        "services": "bathrooms"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211bc",
+        "services": "info_desk"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211bd",
+        "services": "bookshop"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211be",
+        "services": "cafe"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211bf",
+        "services": "elevator"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211c0",
+        "services": "cloakroom"
+      }
+    ],
+    "schedule": [
+      {
+        "_id": "6aa036f06c454a897ad211c1",
+        "day": "monday",
+        "hours": "09:30 - 18:30"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211c2",
+        "day": "tuesday",
+        "hours": "09:30 - 18:30"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211c3",
+        "day": "wednesday",
+        "hours": "09:30 - 18:30"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211c4",
+        "day": "thursday",
+        "hours": "09:30 - 18:30"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211c5",
+        "day": "friday",
+        "hours": "09:30 - 18:30"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211c6",
+        "day": "saturday",
+        "hours": "09:30 - 18:30"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211c7",
+        "day": "sunday",
+        "hours": "09:30 - 18:30"
+      }
+    ]
   },
   {
     "_id": "6a8879bfe6c216683b02eb70",
@@ -123,20 +251,68 @@
     ],
     "ticketPrice": 25,
     "accessibility": [
-      "none"
-    ],
-    "openingHours": "Mar-Dom: 10:00 - 17:00",
-    "openingDays": [
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-      "sunday"
+      "wheelchair_accessible",
+      "blind_friendly",
+      "deaf_friendly"
     ],
     "facilities": [],
-    "__v": 0,
-    "schedule": [],
-    "services": []
+    "schedule": [
+      {
+        "_id": "6aa036f06c454a897ad211c8",
+        "day": "tuesday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211c9",
+        "day": "wednesday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211ca",
+        "day": "thursday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211cb",
+        "day": "friday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211cc",
+        "day": "saturday",
+        "hours": "10:00 - 17:00"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211cd",
+        "day": "sunday",
+        "hours": "10:00 - 17:00"
+      }
+    ],
+    "services": [
+      {
+        "_id": "6aa036f06c454a897ad211ce",
+        "services": "bathrooms"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211cf",
+        "services": "info_desk"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211d0",
+        "services": "bookshop"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211d1",
+        "services": "cafe"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211d2",
+        "services": "elevator"
+      },
+      {
+        "_id": "6aa036f06c454a897ad211d3",
+        "services": "cloakroom"
+      }
+    ]
   }
 ]

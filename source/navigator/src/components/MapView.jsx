@@ -14,10 +14,17 @@ import RoomQRCode from "./RoomQRCode";
 import TeacherDashboard from "./TeacherDashboard";
 import WorkDetailsContent from "./WorkDetailsContent"
 
-export default function MapView({ visitId, roomCode, isTeacher }) {
+export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequested }) {
   const navigate = useNavigate();
   const { socket } = useSocket();
   const [selectedSection, setSelectedSection] = useState(null);
+
+  // isTeacher qui NON è più il valore dell'URL: è la conferma del server,
+  // ottenuta in risposta a 'rejoin_room' (vedi useEffect più sotto). Parte
+  // da false (nessun privilegio) per fail-safe: finché il server non
+  // conferma, questo client si comporta come studente in tutto il resto
+  // del componente — anche se l'URL dice ?role=teacher.
+  const [isTeacher, setIsTeacher] = useState(false);
 
   const [sections, setSections] = useState([]);
   const [visitedWorks, setVisitedWorks] = useState([]);
@@ -64,11 +71,17 @@ export default function MapView({ visitId, roomCode, isTeacher }) {
   useEffect(() => {
     if (!roomCode || !socket) return;
 
+    const upperRoomCode = roomCode.toUpperCase();
     socket.emit('rejoin_room', {
-      roomCode: roomCode.toUpperCase(),
-      role: isTeacher ? 'teacher' : 'student'
+      roomCode: upperRoomCode,
+      role: isTeacherRequested ? 'teacher' : 'student',
+      // Presente solo se questo browser ha davvero creato la stanza.
+      teacherToken: isTeacherRequested ? localStorage.getItem(`teacherToken_${upperRoomCode}`) : undefined
+    }, (ack) => {
+      // Fonte di verità unica: quello che dice il server, non l'URL.
+      setIsTeacher(!!ack?.isTeacher);
     });
-  }, [roomCode, isTeacher, socket]);
+  }, [roomCode, isTeacherRequested, socket]);
 
   useEffect(() => {
     const fetchVisitData = async () => {

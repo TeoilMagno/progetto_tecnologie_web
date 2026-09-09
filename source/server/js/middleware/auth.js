@@ -58,13 +58,19 @@ passport.use(
       scope: ["profile"],
     },
     async (issuer, profile, cb) => {
+      console.log('\n--- A. ESECUZIONE GOOGLE STRATEGY ---');
+      console.log('Profile ID da Google:', profile.id);
       try {
         const user = await userController.findOrCreateFederatedUser(
           issuer, profile.id, { name: profile.displayName }
         );
+        console.log('--- B. UTENTE CREATO/TROVATO:', user ? 'SI' : 'NO');
         if (!user) return cb(null, false);
         return cb(null, user);
-      } catch (err) { cb(err); }
+      } catch (err) { 
+        console.error('--- C. ERRORE STRATEGY:', err);
+        cb(err); 
+      }
     }
   )
 );

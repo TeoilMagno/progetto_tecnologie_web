@@ -55,6 +55,7 @@ export default function ProtectedRoute({ children }) {
           isOpen={showLogin} 
           onClose={() => navigate('/')} // Se chiude il login senza accedere, torna alla home
           onLoginSuccess={() => setIsAuthenticated(true)} // Se accede, sblocchiamo il contenuto!
+          returnTo={window.location.pathname + window.location.search}
         />
       </div>
     );

@@ -698,7 +698,7 @@ apiRouter.delete("/delete-image", auth.isLoggedIn, async (req, res) => {
   }
 });
 
-apiRouter.post("/delete-image-beacon", async (req, res) => {
+apiRouter.post("/delete-image-beacon", auth.isLoggedIn, async (req, res) => {
   try {
     const { imageUrl } = req.body;
     if (imageUrl) await deleteLocalFile(imageUrl);
@@ -993,7 +993,7 @@ apiRouter.put("/visits/:id", auth.isLoggedIn, async (req, res) => {
       req.user,
     );
 
-     if (savedVisit.isPublic) invalidateCache(["/visits"]);
+    if (updatedVisit.isPublic) invalidateCache(["/visits"]);
 
     res.status(200).json(updatedVisit);
   } catch (error) {
@@ -1297,7 +1297,7 @@ apiRouter.post("/ai/generate", auth.isCurator, async (req, res) => {
 });
 
 // Rotta ufficiale per generare le descrizioni di un'opera e salvarle nel DB
-apiRouter.post("/ai/generate-work-desc", async (req, res) => {
+apiRouter.post("/ai/generate-work-desc", auth.isCurator, async (req, res) => {
   const { workId, workName, userDescription } = req.body;
 
   if (!workId || !workName) {
@@ -1312,7 +1312,7 @@ apiRouter.post("/ai/generate-work-desc", async (req, res) => {
 });
 
 // Generazione descrizione autori
-apiRouter.post("/ai/generate-author-desc", async (req, res) => {
+apiRouter.post("/ai/generate-author-desc", auth.isCurator, async (req, res) => {
   const { authorId, museumId, authorName, userDescription } = req.body;
   if (!authorId || !authorName || !museumId) return res.status(400).json({ error: "Dati mancanti" });
 
@@ -1321,7 +1321,7 @@ apiRouter.post("/ai/generate-author-desc", async (req, res) => {
 });
 
 // Generazione descrizione stili
-apiRouter.post("/ai/generate-style-desc", async (req, res) => {
+apiRouter.post("/ai/generate-style-desc", auth.isCurator, async (req, res) => {
   const { styleId, museumId, styleName, userDescription } = req.body;
   if (!styleId || !styleName || !museumId) return res.status(400).json({ error: "Dati mancanti" });
 
@@ -1330,7 +1330,7 @@ apiRouter.post("/ai/generate-style-desc", async (req, res) => {
 });
 
 // Associazione targetAge per gli itetms
-apiRouter.post("/ai/generate-item-targetage", async (req,res) => {
+apiRouter.post("/ai/generate-item-targetage", auth.isCurator, async (req,res) => {
   const { itemId, itemName, itemDescription } = req.body;
   if(!itemId || !itemName || !itemDescription) return res.status(400).json({ error: "Dati mancanti" });
 
@@ -1427,7 +1427,7 @@ apiRouter.get('/my-quiz-results', auth.isLoggedIn, async (req, res) => {
 });
 
 // ---------------- Gestione DB ---------------------
-apiRouter.get("/downloadDB", async (req, res) => {
+apiRouter.get("/downloadDB", auth.isAdmin, async (req, res) => {
   try {
     console.log("Inizio esportazione di tutto il DB...");
     
@@ -1469,7 +1469,7 @@ apiRouter.get("/downloadDB", async (req, res) => {
   }
 });
 
-apiRouter.post('/uploadDB', async (req,res) => {
+apiRouter.post('/uploadDB', auth.isAdmin, async (req,res) => {
   try {
     console.log("Inizio importazione dei dati nel DB...");
 

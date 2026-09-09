@@ -142,6 +142,7 @@ export default function VisitPreviewModal({ visit, onClose, activeTab }) {
             setShowLoginModal(false);
             alert("Login effettuato con successo! Clicca di nuovo su 'Acquista' per confermare l'ordine.");
           }}
+          returnTo={window.location.pathname + window.location.search}
       />
 
       </div>

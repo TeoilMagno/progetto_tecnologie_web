@@ -90,18 +90,49 @@ router.post('/signup', async (req, res, next) => {
 
 // ─── Google ───────────────────────────────────────────────────────────────
 // Standard passport per il login con Google
-router.get('/login/federated/google', passport.authenticate('google'));
+router.get('/login/federated/google', (req, res, next) => {
+  console.log('\n--- 1. INIZIO LOGIN GOOGLE ---');
+  console.log('Query returnTo frontend:', req.query.returnTo);
+  
+  saveReturnTo(req);
+  req.session.isInitialized = true;
+  
+  req.session.save((err) => {
+    if (err) {
+      console.error('--- ERRORE SALVATAGGIO SESSIONE:', err);
+      return next(err);
+    }
+    console.log('--- 2. SESSIONE SALVATA. ID:', req.sessionID);
+    console.log('--- 3. CHIAMO PASSPORT AUTHENTICATE ---');
+    passport.authenticate('google')(req, res, next);
+  });
+});
+
 router.get('/oauth2/redirect/google', (req, res, next) => {
-  // SALVATAGGIO PREVENTIVO: Estraiamo il returnTo PRIMA della rigenerazione
+  console.log('\n--- 4. HIT CALLBACK GOOGLE ---');
   const redirectTo = req.session.returnTo || '/';
+  console.log('Session ID al ritorno:', req.sessionID);
+  console.log('RedirectTo estratto:', redirectTo);
 
   passport.authenticate('google', (err, user, info) => {
+    console.log('--- 5. DENTRO PASSPORT CALLBACK ---');
+    if (err) console.error('Errore Passport:', err);
+    if (!user) console.log('Utente non trovato, info:', info);
+    else console.log('Utente autenticato con successo:', user.username || user._id);
+
     if (err) return next(err);
-    if (!user) return res.redirect('/login');
+    if (!user) {
+       console.log('--- 6. FAIL: REDIRECT FORZATO A /LOGIN ---');
+       return res.redirect('/login');
+    }
     
     req.logIn(user, (err) => {
-      if (err) return next(err);
+      if (err) {
+        console.error('Errore logIn:', err);
+        return next(err);
+      }
       delete req.session.returnTo;
+      console.log('--- 7. SUCCESS: REDIRECT A:', redirectTo);
       return res.redirect(redirectTo);
     });
   })(req, res, next);
@@ -109,7 +140,16 @@ router.get('/oauth2/redirect/google', (req, res, next) => {
 
 // ─── GitHub ───────────────────────────────────────────────────────────────
 // Standard passport per il login con GitHub
-router.get('/login/federated/github', passport.authenticate('github'));
+router.get('/login/federated/github', (req, res, next) => {
+  saveReturnTo(req);
+  req.session.isInitialized = true;
+  
+  req.session.save((err) => {
+    if (err) return next(err);
+    passport.authenticate('github')(req, res, next);
+  });
+});
+
 router.get('/oauth2/redirect/github', (req, res, next) => {
   // SALVATAGGIO PREVENTIVO
   const redirectTo = req.session.returnTo || '/';

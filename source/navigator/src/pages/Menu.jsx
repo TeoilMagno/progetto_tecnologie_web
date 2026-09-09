@@ -140,6 +140,7 @@ export default function MenuPage() {
               .then(data => setCurrentUser(data))
               .catch(err => console.error(err));
           }}
+          returnTo={window.location.pathname + window.location.search}
         />
 
       </div>

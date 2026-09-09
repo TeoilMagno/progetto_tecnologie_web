@@ -175,23 +175,43 @@ export default function JoinSession() {
   };
 
   // 3. Quando crea la stanza, passiamo al server o salviamo anche la visita scelta
-  const handleCreateRoom = () => {
-    if (!selectedVisitId) {
-      alert("Seleziona una visita da sincronizzare prima di avviare la stanza.");
-      return;
-    }
-
+  const generateRoomCode = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code = '';
     for (let i = 0; i < 6; i++) {
       code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    setTeacherRoomCode(code);
-    setIsRoomCreated(true);
-    setConnectedStudents([]);
+    return code;
+  };
 
-    // Inviamo al server il codice e l'ID della visita associata
-    socket.emit('create_room', { roomCode: code, visitId: selectedVisitId });
+  const handleCreateRoom = (attempt = 0) => {
+    if (!selectedVisitId) {
+      alert("Seleziona una visita da sincronizzare prima di avviare la stanza.");
+      return;
+    }
+    if (attempt >= 5) {
+      alert("Impossibile generare un codice stanza libero, riprova.");
+      return;
+    }
+
+    const code = generateRoomCode();
+
+    // Aspettiamo l'ack del server prima di mostrare la stanza come creata:
+    // un codice, per quanto improbabile, potrebbe risultare già occupato
+    // (vedi guard su create_room lato server), e in quel caso riproviamo
+    // con un nuovo codice invece di procedere con uno stato inconsistente.
+    socket.emit('create_room', { roomCode: code, visitId: selectedVisitId }, (ack) => {
+      if (ack?.error === 'room_code_taken') {
+        handleCreateRoom(attempt + 1);
+        return;
+      }
+      if (ack?.teacherToken) {
+        localStorage.setItem(`teacherToken_${code}`, ack.teacherToken);
+      }
+      setTeacherRoomCode(code);
+      setIsRoomCreated(true);
+      setConnectedStudents([]);
+    });
   };
 
   const handleRejoin = () => {
@@ -748,6 +768,7 @@ export default function JoinSession() {
               })
               .catch((err) => console.error("Errore aggiornamento utente post-login:", err));
           }}
+          returnTo={window.location.pathname + window.location.search}
         />
       </div>
     </div>

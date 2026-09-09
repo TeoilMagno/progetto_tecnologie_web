@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const path = require('path');
+const crypto = require('crypto');
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
@@ -103,17 +104,42 @@ app.locals.activeSessions = activeSessions;
 io.on('connection', (socket) => {
   console.log(`Nuovo client connesso al Navigator: ${socket.id}`);
 
+  // Vero solo se questo socket è, in questo momento, il socket riconosciuto
+  // come insegnante per quella stanza. Va usato PRIMA di eseguire qualunque
+  // azione riservata al docente: il ruolo dichiarato dal client (via URL o
+  // socket) non è mai sufficiente da solo, perché è manipolabile.
+  function isTeacherSocket(room, socket) {
+    return !!room && room.teacherSocketId === socket.id;
+  }
+
   // Insegnante crea la stanza
-  socket.on('create_room', ({ roomCode, visitId }) => {
+  socket.on('create_room', ({ roomCode, visitId }, callback) => {
+    // Un roomCode già attivo NON va mai sovrascritto: altrimenti chiunque
+    // conosca il codice (es. uno studente che si è appena unito) potrebbe
+    // rifare 'create_room' con lo stesso codice e dirottare la sessione,
+    // rubando teacherSocketId e teacherToken al vero insegnante.
+    if (activeSessions[roomCode]) {
+      console.warn(`create_room rifiutato: il codice ${roomCode} è già in uso (socket ${socket.id})`);
+      if (typeof callback === 'function') callback({ error: 'room_code_taken' });
+      return;
+    }
+
     socket.join(roomCode);
+    const teacherToken = crypto.randomUUID();
     activeSessions[roomCode] = { 
         teacherSocketId: socket.id, 
+        teacherToken,
         students: [],
         classStatus: {},
         visitId: visitId,
         hasStarted: false
     };
     console.log(`L'insegnante ha creato la stanza: ${roomCode} per la visita ${visitId}`);
+
+    // Il token va SOLO a chi ha appena creato la stanza (ack del socket che
+    // ha emesso l'evento, mai un broadcast). Serve a riprovare che è lui
+    // quando più avanti farà 'rejoin_room' da un nuovo socket (refresh, ecc.)
+    if (typeof callback === 'function') callback({ teacherToken });
   });
 
   // Studente si unisce
@@ -140,44 +166,65 @@ io.on('connection', (socket) => {
   socket.on('change_artwork', (data) => {
     if (!data || !data.roomCode) return;
     const room = data.roomCode.toUpperCase();
-    
-    if (activeSessions[room]) {
-      // 1. SALVIAMO LO STATO: Ci ricordiamo l'opera per chi entra in ritardo
-      activeSessions[room].currentArtworkId = data.artworkId;
-      
-      // 2. Inoltriamo L'INTERO pacchetto (incluso il roomCode) usando l'evento corretto!
-      socket.to(room).emit('change_artwork', data);
+    const session = activeSessions[room];
+
+    if (!isTeacherSocket(session, socket)) {
+      console.warn(`change_artwork rifiutato: socket ${socket.id} non è l'insegnante della stanza ${room}`);
+      return;
     }
+    
+    // 1. SALVIAMO LO STATO: Ci ricordiamo l'opera per chi entra in ritardo
+    session.currentArtworkId = data.artworkId;
+    
+    // 2. Inoltriamo L'INTERO pacchetto (incluso il roomCode) usando l'evento corretto!
+    socket.to(room).emit('change_artwork', data);
   });
 
   // Client (Studente o Insegnante) che si ri-unisce caricando la Mappa
-  socket.on('rejoin_room', ({ roomCode, role }) => {
+  socket.on('rejoin_room', ({ roomCode, role, teacherToken }, callback) => {
     if (!roomCode) return;
     roomCode = roomCode.toUpperCase();
-    
-    if (activeSessions[roomCode]) {
-      socket.join(roomCode);
+    const room = activeSessions[roomCode];
+
+    if (!room) {
+      if (typeof callback === 'function') callback({ isTeacher: false });
+      return;
+    }
+
+    socket.join(roomCode);
       
-      if (role === 'teacher') {
-        activeSessions[roomCode].teacherSocketId = socket.id;
+    if (role === 'teacher') {
+      if (teacherToken && teacherToken === room.teacherToken) {
+        room.teacherSocketId = socket.id;
+      } else {
+        // Qualcuno dichiara role: 'teacher' ma non ha il token giusto:
+        // NON gli assegnamo i privilegi. Resta un socket "qualsiasi" agli
+        // occhi del server, qualunque cosa dica l'URL sul suo browser.
+        console.warn(`rejoin_room: token insegnante non valido per la stanza ${roomCode} (socket ${socket.id})`);
       }
-      console.log(`Un client (${role}) è entrato nella mappa della stanza: ${roomCode}`);
+    }
+    console.log(`Un client (${role}) è entrato nella mappa della stanza: ${roomCode}`);
       
-      if(activeSessions[roomCode].hasStarted) {
-        socket.emit('session_started', { visitId: activeSessions[roomCode].visitId });
+    if(room.hasStarted) {
+      socket.emit('session_started', { visitId: room.visitId });
         
-        // 3. Se la lezione è già iniziata, allineiamo il ritardatario/chi rientra
-        if (activeSessions[roomCode].currentArtworkId) {
-          // Aspettiamo 800ms per dare il tempo al MapView di scaricare le opere dal DB
-          setTimeout(() => {
-            socket.emit('change_artwork', { 
-              roomCode: roomCode,
-              artworkId: activeSessions[roomCode].currentArtworkId 
-            });
-          }, 800);
-        }
+      // Se la lezione è già iniziata, allineiamo il ritardatario/chi rientra
+      if (room.currentArtworkId) {
+        // Aspettiamo 800ms per dare il tempo al MapView di scaricare le opere dal DB
+        setTimeout(() => {
+          socket.emit('change_artwork', { 
+            roomCode: roomCode,
+            artworkId: room.currentArtworkId 
+          });
+        }, 800);
       }
-      
+    }
+
+    // Risposta AUTORITATIVA: il client non deve fidarsi di ciò che ha
+    // dichiarato lui stesso, solo di questo. isTeacher è vero SOLO se
+    // room.teacherSocketId è davvero questo socket in questo momento.
+    if (typeof callback === 'function') {
+      callback({ isTeacher: room.teacherSocketId === socket.id });
     }
   });
 
@@ -286,7 +333,13 @@ io.on('connection', (socket) => {
 
   // Master (Insegnante) lancia il quiz
   socket.on('start_quiz', ({ roomCode, quizData }) => {
-    socket.to(roomCode).emit('quiz_started', quizData);
+    if (!roomCode) return;
+    const room = roomCode.toUpperCase();
+    if (!isTeacherSocket(activeSessions[room], socket)) {
+      console.warn(`start_quiz rifiutato: socket ${socket.id} non è l'insegnante della stanza ${room}`);
+      return;
+    }
+    socket.to(room).emit('quiz_started', quizData);
   });
 
   // Slave (Studente) risponde al quiz
@@ -322,23 +375,37 @@ io.on('connection', (socket) => {
   });
 
   socket.on('start_shared_session', ({ roomCode, visitId }) => {
-    if(activeSessions[roomCode]) {
-      activeSessions[roomCode].hasStarted = true;
+    if (!roomCode) return;
+    const room = roomCode.toUpperCase();
+    if (!isTeacherSocket(activeSessions[room], socket)) {
+      console.warn(`start_shared_session rifiutato: socket ${socket.id} non è l'insegnante della stanza ${room}`);
+      return;
     }
-    socket.to(roomCode).emit('session_started', { visitId });
+    activeSessions[room].hasStarted = true;
+    socket.to(room).emit('session_started', { visitId });
   });
 
   // L'insegnante ha raggiunto la fine della visita -> puo' scegliere di fare il quiz o terminare la stanza
   socket.on('end_shared_visit', ({ roomCode }) => {
     if (!roomCode) return;
+    const room = roomCode.toUpperCase();
+    if (!isTeacherSocket(activeSessions[room], socket)) {
+      console.warn(`end_shared_visit rifiutato: socket ${socket.id} non è l'insegnante della stanza ${room}`);
+      return;
+    }
     // Avvisiamo tutti gli studenti nella stanza che la visita è terminata
-    socket.to(roomCode.toUpperCase()).emit('visit_ended');
+    socket.to(room).emit('visit_ended');
   });
 
   // L'insegnante chiude definitivamente la stanza (dalla mappa o dal quiz)
   socket.on('close_room', ({ roomCode }) => {
     if (!roomCode) return;
     const room = roomCode.toUpperCase();
+
+    if (!isTeacherSocket(activeSessions[room], socket)) {
+      console.warn(`close_room rifiutato: socket ${socket.id} non è l'insegnante della stanza ${room}`);
+      return;
+    }
     
     // Avvisa tutti gli studenti che la sessione è finita
     socket.to(room).emit('room_closed');
