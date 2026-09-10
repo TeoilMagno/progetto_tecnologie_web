@@ -10,41 +10,83 @@ class ArtHeader extends HTMLElement {
 
     // 2. Inserisce la struttura HTML sfruttando i tag dei sotto-componenti
     this.innerHTML = `
-      <header class="navbar site-header sticky-top px-3">
-        <a class="navbar-brand d-flex align-items-center" href="/marketplace">
+      <style>
+        /* Regole CSS per l'adattamento della User Area nel menu mobile */
+        @media (max-width: 767px) {
+            .site-header .dropdown-menu {
+                width: 100%;
+                box-sizing: border-box;
+                position: static !important;
+                margin-top: 10px;
+            }
+            .site-header user-area .btn {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+        }
+      </style>
+
+      <header class="navbar site-header sticky-md-top px-3 flex-nowrap" style="z-index: 1030;">
+        
+        <!-- Hamburger Menu (solo Mobile) -->
+        <button class="navbar-toggler d-md-none text-white border-0 me-2 p-1 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+          <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+        </button>
+
+        <!-- Brand -->
+        <a class="navbar-brand d-flex align-items-center me-auto" href="/marketplace">
           <i class="bi bi-bank me-2 text-white"></i>
           <span class="brand-text">ArtAround</span>
           <span class="brand-subtitle ms-1 text-white opacity-75">Marketplace</span>
         </a>
         
-        <div class="d-flex align-items-center">
-          <!-- Sotto-componente Search Bar -->
-          <search-bar></search-bar>
-
-          <a href="/navigator" class="btn text-white me-3" title="Apri Navigator">
-            <i class="bi bi-compass fs-5"></i>
-          </a>
-
-          <button class="btn text-white me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar">
-            <i class="bi bi-funnel fs-5"></i>
-          </button>
-
-          <!-- Bottone Carrello con Badge -->
-          <button class="btn text-white position-relative me-3" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
-            <i class="bi bi-cart3 fs-4"></i>
-            <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
-              0
-            </span>
-          </button>
-
-          <!-- User Area -->
-          <div id="user-area" class="text-white small d-flex align-items-center gap-2">
-            <span class="spinner-border spinner-border-sm text-light" role="status"></span>
+        <!-- Offcanvas Container con z-index forzato per evitare tagli -->
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="mobileMenu" style="background: rgba(20, 20, 30, 0.95); z-index: 1050;">
+          
+          <div class="offcanvas-header border-bottom border-secondary border-opacity-25 d-md-none">
+            <h5 class="offcanvas-title text-white">Menu</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#mobileMenu"></button>
           </div>
+
+          <div class="offcanvas-body p-4 p-md-0 d-flex flex-column flex-md-row align-items-start align-items-md-center gap-4 gap-md-0">
+            
+            <!-- Componente Search Bar -->
+            <search-bar class="me-md-2"></search-bar>
+
+            <a href="/navigator" class="btn text-white me-3 d-flex align-items-center" title="Apri Navigator">
+              <i class="bi bi-compass fs-5"></i><span class="d-md-none ms-3">Navigator</span>
+            </a>
+
+            <button class="btn text-white me-3 d-flex align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar">
+              <i class="bi bi-funnel fs-5"></i><span class="d-md-none ms-3">Filtri</span>
+            </button>
+
+            <button class="btn text-white position-relative me-3 d-flex align-items-center" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+              <i class="bi bi-cart3 fs-4"></i>
+              <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">0</span>
+              <span class="d-md-none ms-3">Carrello</span>
+            </button>
+
+            <!-- Componente User Area adattato -->
+            <div id="user-area" class="text-white small d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 gap-md-2 w-100 w-md-auto mt-2 mt-md-0"></div>
+          
+            </div>
         </div>
       </header>
 
-      <!-- Sotto-componente Carrello -->
+      <art-cart></art-cart>
+    `;
+
+class SiteHeader extends HTMLElement {
+  connectedCallback() {
+    // Clona il contenuto del template e lo attacca al custom element
+    this.appendChild(headerTemplate.content.cloneNode(true));
+  }
+}
+
+customElements.define('site-header', SiteHeader);`
+
       <art-cart></art-cart>
     `;
 

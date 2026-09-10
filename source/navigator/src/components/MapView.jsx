@@ -45,6 +45,8 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
   const [interactionFeed, setInteractionFeed] = useState([]);
   const [isSuggestingWorks, setIsSuggestingWorks] = useState(false);
 
+  const [accessDenied, setAccessDenied] = useState(true);
+
   // Variabili temporali per suggerire opere extra
   const [visitBeginTime, setVisitBeginTime] = useState(null);
   const [visitEndTime, setVisitEndTime] = useState(null);
@@ -100,7 +102,9 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         }
 
         const apiData = await visitResponse.json();
+	alert("visitData pirla");
         const visitData = apiData.visit;
+
         const dictionary = apiData.commands_map;
         const userData = apiData.user;
 
@@ -154,7 +158,9 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
             console.warn("Errore nel caricamento dei dati mappa/opere del museo. Fallback attivato.", e);
             setSections([]);
           }
-        }
+        } else {
+	console.log("mongolo non hai il museumId")
+}
         setLoading(false);
       } catch (error) {
         console.error("Errore critico:", error);

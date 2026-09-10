@@ -32,7 +32,6 @@ body.artaround-theme::-webkit-scrollbar {
 .site-header {
     background-color: rgba(9, 9, 11, 0.8);
     border-bottom: 1px solid var(--border-color);
-    backdrop-filter: blur(10px);
     height: 63px;
 }
 

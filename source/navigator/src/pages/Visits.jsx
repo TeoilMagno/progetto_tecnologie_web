@@ -171,7 +171,7 @@ export default function Visits({ selectedMuseum }) {
                 <div className="relative h-32 w-full bg-gradient-to-r from-slate-800 to-slate-900 overflow-hidden shrink-0">
                   {visit.coverImage ? (
                     <img 
-                      src={visit.coverImage.startsWith('http') ? visit.coverImage : `${BASE_URL}${visit.coverImage}`} 
+                      src={visit.coverImage.startsWith('http') ? visit.coverImage : `${API_BASE_URL}${visit.coverImage}`} 
                       alt={visit.title} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
