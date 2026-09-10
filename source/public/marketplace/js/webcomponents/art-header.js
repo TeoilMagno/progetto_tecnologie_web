@@ -1,12 +1,14 @@
 class ArtHeader extends HTMLElement {
   constructor() {
     super();
-    this.currentUser = null;
+    currentUser = null;
   }
 
   async connectedCallback() {
     // 1. Carica dinamicamente gli script dei sotto-componenti se non sono già presenti
     await this.loadDependencies();
+
+    const subtitle = this.getAttribute('subtitle') || 'Marketplace';
 
     // 2. Inserisce la struttura HTML sfruttando i tag dei sotto-componenti
     this.innerHTML = `
@@ -25,6 +27,13 @@ class ArtHeader extends HTMLElement {
                 box-shadow: none !important;
             }
         }
+
+        .site-header {
+            transition: transform 0.3s ease-in-out;
+        }
+        .site-header.header-hidden {
+            transform: translateY(-100%);
+        }
       </style>
 
       <header class="navbar site-header sticky-md-top px-3 flex-nowrap" style="z-index: 1030;">
@@ -38,7 +47,7 @@ class ArtHeader extends HTMLElement {
         <a class="navbar-brand d-flex align-items-center me-auto" href="/marketplace">
           <i class="bi bi-bank me-2 text-white"></i>
           <span class="brand-text">ArtAround</span>
-          <span class="brand-subtitle ms-1 text-white opacity-75">Marketplace</span>
+          <span class="brand-subtitle ms-1 text-white opacity-75">${subtitle}</span>
         </a>
         
         <!-- Offcanvas Container con z-index forzato per evitare tagli -->
@@ -71,21 +80,9 @@ class ArtHeader extends HTMLElement {
             <!-- Componente User Area adattato -->
             <div id="user-area" class="text-white small d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 gap-md-2 w-100 w-md-auto mt-2 mt-md-0"></div>
           
-            </div>
+          </div>
         </div>
       </header>
-
-      <art-cart></art-cart>
-    `;
-
-class SiteHeader extends HTMLElement {
-  connectedCallback() {
-    // Clona il contenuto del template e lo attacca al custom element
-    this.appendChild(headerTemplate.content.cloneNode(true));
-  }
-}
-
-customElements.define('site-header', SiteHeader);`
 
       <art-cart></art-cart>
     `;
@@ -99,6 +96,30 @@ customElements.define('site-header', SiteHeader);`
         cartBadge.classList.toggle('d-none', e.detail.totalItems === 0);
       }
     });
+
+    // LOGICA SMART HEADER: Scompare in giù, riappare in su
+    const headerEl = this.querySelector('.site-header');
+    let lastScroll = window.scrollY;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      
+      // Verifica la direzione dello scroll e ignora i piccoli rimbalzi elastici (es. Safari)
+      if (currentScroll <= 0) {
+        headerEl.classList.remove('header-hidden');
+        return;
+      }
+      
+      if (currentScroll > lastScroll && currentScroll > 70) {
+        // Scroll verso il basso
+        headerEl.classList.add('header-hidden');
+      } else if (currentScroll < lastScroll) {
+        // Scroll verso l'alto
+        headerEl.classList.remove('header-hidden');
+      }
+      
+      lastScroll = currentScroll;
+    }, { passive: true });
   }
 
   // Funzione che inietta gli script figli se mancano
@@ -107,8 +128,7 @@ customElements.define('site-header', SiteHeader);`
       let loadedCount = 0;
       const scripts = [
         { name: 'search-bar', src: '/marketplace/js/webcomponents/search-bar.js' },
-        { name: 'art-cart', src: '/marketplace/js/webcomponents/art-cart.js' },
-        { name: 'user-area', src: '/marketplace/js/personal-area.js' },
+        { name: 'art-cart', src: '/marketplace/js/webcomponents/art-cart.js' }
       ];
 
       const checkDone = () => {
@@ -132,12 +152,16 @@ customElements.define('site-header', SiteHeader);`
 
   async fetchCurrentUser() {
     try {
-      const API = window.API_BASE_URL || '/api';
-      const res = await fetch(`${API}/current-user`);
-      this.currentUser = await res.json();
+      // const API = window.API_BASE_URL || '/api';
+      const res = await fetch(`${API_BASE_URL}/current-user`);
+      currentUser = await res.json();
     } catch (e) {
-      this.currentUser = null;
+      currentUser = null;
     }
+
+    window.dispatchEvent(new CustomEvent('current-user-loaded', { 
+      detail: { user: currentUser } 
+    }));
 
     if (typeof window.syncGuestCartToUser === 'function') {
       window.syncGuestCartToUser();
@@ -154,14 +178,14 @@ customElements.define('site-header', SiteHeader);`
     const area = this.querySelector("#user-area");
     if (!area) return;
 
-    if (this.currentUser && (this.currentUser.username || this.currentUser.name)) {
-      const initials = (this.currentUser.username || this.currentUser.name)
+    if (currentUser && (currentUser.username || currentUser.name)) {
+      const initials = (currentUser.username || currentUser.name)
         .slice(0, 2)
         .toUpperCase();
 
       const currentPath = window.location.pathname;
       const isCurrent = (path) => currentPath === path;
-      const role = this.currentUser.role;
+      const role = currentUser.role;
 
       let menuOptions = `
         ${(role === "admin") ? `<li><a class="dropdown-item ${isCurrent('/admin-dashboard') ? 'text-info fw-bold' : 'text-warning'}" href="/admin-dashboard"><i class="bi bi-shield-lock me-2"></i>Pannello Admin</a></li>` : ''}
@@ -186,7 +210,7 @@ customElements.define('site-header', SiteHeader);`
               ${initials}
             </div>
 
-            <span class="fw-medium text-white">${this.currentUser.username || this.currentUser.name}</span>
+            <span class="fw-medium text-white">${currentUser.username || currentUser.name}</span>
 
             <i class="bi bi-chevron-down ms-3 custom-arrow"></i> 
           </div>

@@ -24,8 +24,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  document.addEventListener('current-user-loaded', (e) => {
-    currentUser = e.detail.user; // Aggiorna la variabile globale se ti serve nel marketplace
+  window.addEventListener('current-user-loaded', (e) => {
+    currentUser = e.detail.user; 
+    
+    // Se siamo dentro a un museo e i bottoni admin non si erano caricati 
+    // perché l'utente è arrivato in ritardo, ricontrolliamo i permessi ora!
+    if (currentMuseumId) {
+      checkIfMuseumIsManaged(currentMuseumId);
+    }
   });
   
   const urlParams = new URLSearchParams(window.location.search);

@@ -353,16 +353,16 @@ body.artaround-theme::-webkit-scrollbar {
 
 /* MOBILE */
 @media (max-width: 768px) {
-    #sidebar {
-        position: fixed;
-        height: 100%;
-        background-color: var(--bg-dark);
-        margin-left: -250px;
-        z-index: 1040;
-    }
-    #sidebar.active {
-        margin-left: 0;
-    }
+  #sidebar {
+    position: fixed;
+    height: 100%;
+    background-color: var(--bg-dark);
+    margin-left: -250px;
+    z-index: 1040;
+  }
+  #sidebar.active {
+    margin-left: 0;
+  }
 }
 
 /* Stile del Tab Attivo: illumina solo i tre lati superiori e il testo */

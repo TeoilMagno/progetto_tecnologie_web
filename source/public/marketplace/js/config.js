@@ -37,6 +37,7 @@ let currentVisits = [];
 let currentMuseumId = null;
 let editModalInstance = null; // Se serviva in marketplace
 let currentView = 'works';
+let currentUser = null;
 
 // Variabili Paginazione Musei
 let currentMuseumPage = 1;
