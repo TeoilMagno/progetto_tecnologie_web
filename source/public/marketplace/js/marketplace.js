@@ -24,8 +24,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Carica utente dal server (Passport) e poi carica i musei
-  await fetchCurrentUser();
+  document.addEventListener('current-user-loaded', (e) => {
+    currentUser = e.detail.user; // Aggiorna la variabile globale se ti serve nel marketplace
+  });
   
   const urlParams = new URLSearchParams(window.location.search);
   const museumToOpen = urlParams.get("museumId");
@@ -39,6 +40,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Comportamento normale
     getMuseums();
   }
+
+  document.addEventListener('search-input', (e) => {
+    const query = e.detail.query;
+    
+    if (currentMuseumId === null) {
+      clearTimeout(window.searchTimeout);
+      window.searchTimeout = setTimeout(() => applyMuseumFilters(false), 400);
+    } else if (currentView === 'works') {
+      const filtered = currentWorks.filter(w => fuzzySearch(query, w.name) || (w.author && fuzzySearch(query, w.author)));
+      renderWorksList(filtered);
+    } else if (currentView === 'items') {
+      const filtered = currentItems.filter(i => fuzzySearch(query, i.name) || (i.description && fuzzySearch(query, i.description)));
+      renderItemsList(filtered);
+    }
+  });
+
+  document.addEventListener('search-cleared', () => {
+    if (currentMuseumId === null) renderMuseumsList(cachedMuseums);
+    else if (currentView === 'works') renderWorksList(currentWorks);
+    else if (currentView === 'items') renderItemsList(currentItems);
+  });
+
+  document.addEventListener('cart-updated', (e) => {
+    const cartBadge = document.getElementById('cart-badge');
+    if (cartBadge) {
+      cartBadge.innerText = e.detail.totalItems;
+      cartBadge.classList.toggle('d-none', e.detail.totalItems === 0);
+    }
+  });
 });
 
 function setupInfiniteScroll() {
@@ -717,7 +747,7 @@ function renderVisitsListForMuseum(visits) {
 
             <div class="mt-3">
               <button class="btn btn-sm btn-gradient w-100 py-2 rounded-pill" 
-                onclick="event.stopPropagation(); addToCart({ id: '${visit._id}', type: 'visit', name: '${safeTitle}', price: ${visit.price}, image: '${coverImg}' })">
+                onclick="event.stopPropagation(); window.dispatchEvent(new CustomEvent('cart-add-item', { detail: { id: '${visit._id}', type: 'visit', name: '${safeTitle}', price: ${visit.price}, image: '${coverImg}' } }))">
                 <i class="bi bi-cart-plus me-1"></i> Acquista
               </button>
             </div>
@@ -827,7 +857,7 @@ function renderItemsList(items, append = false) {
                 <div class="d-flex justify-content-between align-items-end mt-auto pt-2 border-top border-secondary border-opacity-25">
                   <div class="fw-bold text-white fs-5">€ ${item.price.toFixed(2)}</div>
                   <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-gradient rounded-pill px-3" onclick="addToCart({ id: '${item._id}', type: 'item', name: '${safeName}', price: ${item.price}, image: '${item.image || ''}' })"><i class="bi bi-cart-plus me-1"></i> Compra</button>
+                    <button class="btn btn-sm btn-gradient rounded-pill px-3" onclick="window.dispatchEvent(new CustomEvent('cart-add-item', { detail: { id: '${item._id}', type: 'item', name: '${safeName}', price: ${item.price}, image: '${item.image || ''}' } }))"><i class="bi bi-cart-plus me-1"></i> Aggiungi al carrello</button>
                   </div>
                 </div>
               </div>
