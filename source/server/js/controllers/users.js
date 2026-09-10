@@ -154,3 +154,43 @@ exports.deleteUserAccount = async (userId) => {
   // 5. Elimina profilo principale
   return await User.findByIdAndDelete(user._id);
 };
+
+// Da aggiungere in fondo al file users.js
+
+exports.getAllUsers = async () => {
+  // Usiamo .lean() per ottenere oggetti JS puri dal DB
+  const users = await User.find({}).lean();
+  
+  return users.map(user => {
+    // Convertiamo esplicitamente i Buffer in stringhe Base64 per un JSON pulito
+    if (user.password) user.password = user.password.toString('base64');
+    if (user.salt) user.salt = user.salt.toString('base64');
+    
+    return user;
+  });
+};
+
+exports.uploadAllUsers = async (usersData) => {
+  await User.deleteMany({});
+  
+  const formattedUsers = usersData.map(user => {
+    // Ripristiniamo la stringa Base64 nel formato Buffer nativo richiesto da crypto
+    if (user.password) user.password = Buffer.from(user.password, 'base64');
+    if (user.salt) user.salt = Buffer.from(user.salt, 'base64');
+    
+    return user;
+  });
+
+  await User.insertMany(formattedUsers);
+};
+
+// Da aggiungere in fondo al file users.js (dopo la funzione uploadAllUsers)
+
+exports.getAllFederatedCredentials = async () => {
+  return await FederatedCredential.find({}).lean();
+};
+
+exports.uploadAllFederatedCredentials = async (credentialsData) => {
+  await FederatedCredential.deleteMany({});
+  await FederatedCredential.insertMany(credentialsData);
+};

@@ -62,5 +62,36 @@
     "createdAt": "2026-09-07T20:55:26.683Z",
     "updatedAt": "2026-09-07T20:55:26.683Z",
     "__v": 0
+  },
+  {
+    "_id": "6aa1cbae0b6193eebce169f1",
+    "title": "Visita prova acquisto",
+    "description": "Visita breve",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "creator": "6a95ec582eb2f2383178971b",
+    "works": [
+      "6a98154923763fa5311eb67c",
+      "6a98154923763fa5311eb67f",
+      "6a98154923763fa5311eb682"
+    ],
+    "isDraft": false,
+    "isPublic": true,
+    "duration": 9,
+    "maxDuration": 0,
+    "preferredLength": "medium",
+    "expertiseLevel": "medium",
+    "visitType": "custom",
+    "quiz": [],
+    "createdAt": "2026-09-09T21:12:14.092Z",
+    "updatedAt": "2026-09-09T21:13:03.464Z",
+    "__v": 0,
+    "coverImage": "/uploads/1788988358174-906891431.png",
+    "accessibility": [
+      "deaf_friendly"
+    ],
+    "price": 15,
+    "targetAudience": [
+      "all"
+    ]
   }
 ]

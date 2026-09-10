@@ -1,0 +1,118 @@
+[
+  {
+    "_id": "6a95e6fb45123c6b58491e1c",
+    "username": "visitatore1",
+    "password": "PGV0SDdQtUMOwmn/ZDhzWe8cDshPLLje4naE9LYqsuE=",
+    "salt": "umNL40E908sH8WgQu8jfAA==",
+    "role": "visitor",
+    "type": "teacher",
+    "curator_status": "none",
+    "purchased_visits": [
+      "6aa1cbae0b6193eebce169f1"
+    ],
+    "preferences": {
+      "interactionsCount": {
+        "simpler_requests": 0,
+        "deeper_requests": 0
+      },
+      "expertiseLevel": "medium"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "6a95e70f45123c6b58491ec7",
+    "username": "visitatore2",
+    "password": "8S5jU6hq8QzpQA32AgNqzYbsRW5lB3Q3EgkMUNCyPtk=",
+    "salt": "lJqQyKHmvb4trpLph9gI1A==",
+    "role": "visitor",
+    "type": "none",
+    "curator_status": "none",
+    "purchased_visits": [],
+    "preferences": {
+      "interactionsCount": {
+        "simpler_requests": 0,
+        "deeper_requests": 0
+      },
+      "expertiseLevel": "medium"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "6a95e72445123c6b58491f72",
+    "username": "autore1",
+    "password": "ZX5f1kvFTEMb1AqjctjOMWyd+9lNp1AvlGTBIjzKsoc=",
+    "salt": "Md274dxEa8b9wdSE7pNt/A==",
+    "role": "curator",
+    "type": "none",
+    "curator_status": "none",
+    "managed_museums": [],
+    "purchased_visits": [],
+    "preferences": {
+      "interactionsCount": {
+        "simpler_requests": 0,
+        "deeper_requests": 0
+      },
+      "expertiseLevel": "medium"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "6a95e75345123c6b5849201e",
+    "username": "autore2",
+    "password": "VG75e+xGb6oUfYtpnv7f0mOpIrTM59WkzR3k5PgsMek=",
+    "salt": "EbP/9HtYQfIK3pZD4HHDgg==",
+    "role": "curator",
+    "type": "none",
+    "curator_status": "approved",
+    "managed_museums": [],
+    "purchased_visits": [],
+    "preferences": {
+      "interactionsCount": {
+        "simpler_requests": 0,
+        "deeper_requests": 0
+      },
+      "expertiseLevel": "medium"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "6a95ec582eb2f2383178971b",
+    "username": "admin",
+    "password": "v4DN9vU6mRyoanWVhlv8j8B/DAqQk8lpwYW/8SOVmog=",
+    "salt": "hWj0E03apfJlXagBsPyksg==",
+    "role": "admin",
+    "type": "teacher",
+    "curator_status": "none",
+    "managed_museums": [],
+    "purchased_visits": [
+      "6a98512ffeabf46b3904ef01"
+    ],
+    "preferences": {
+      "interactionsCount": {
+        "simpler_requests": 0,
+        "deeper_requests": 0
+      },
+      "expertiseLevel": "medium"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "6aa18824b6608ac2d159960f",
+    "username": "asuna",
+    "role": "visitor",
+    "type": "student",
+    "curator_status": "none",
+    "managed_museums": [],
+    "purchased_visits": [],
+    "preferences": {
+      "interactionsCount": {
+        "simpler_requests": 0,
+        "deeper_requests": 0
+      },
+      "expertiseLevel": "expert"
+    },
+    "__v": 0,
+    "password": "4rOpw/fAv1RI1pa2okJRPwCn1l1JTHjiuFOoS0kzh1g=",
+    "salt": "RqbGzNtsmHGL0nS+g5rZTg=="
+  }
+]

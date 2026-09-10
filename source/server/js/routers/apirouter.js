@@ -1383,7 +1383,11 @@ apiRouter.get("/downloadDB", auth.isAdmin, async (req, res) => {
       'order.json': await orderController.getAllOrders(),
       'adoption.json': await adoptionController.getAllAdoptions(),
       'author.json': await authorController.getAllAuthors(),
-      'style.json': await styleController.getAllStyles()
+      'style.json': await styleController.getAllStyles(),
+      'user.json': await userController.getAllUsers(),
+      'federated.json': await userController.getAllFederatedCredentials(),
+      'quizReport.json': await QuizReport.find({}).lean(),
+      'config.json': await mongoose.connection.db.collection('config').find({}).toArray(),
     };
 
     // 2. Scrittura dinamica di tutti i file
@@ -1424,7 +1428,24 @@ apiRouter.post('/uploadDB', auth.isAdmin, async (req,res) => {
       { file: 'order.json', uploadFunction: orderController.uploadAllOrders },
       { file: 'adoption.json', uploadFunction: adoptionController.uploadAllAdoptions },
       { file: 'author.json', uploadFunction: authorController.uploadAllAuthors },
-      { file: 'style.json', uploadFunction: styleController.uploadAllStyles }
+      { file: 'style.json', uploadFunction: styleController.uploadAllStyles },
+      { file: 'user.json', uploadFunction: userController.uploadAllUsers },
+      { file: 'federated.json', uploadFunction: userController.uploadAllFederatedCredentials },
+      { 
+        file: 'quizReport.json', 
+        uploadFunction: async (data) => {
+          await QuizReport.deleteMany({});
+          if (data && data.length > 0) await QuizReport.insertMany(data);
+        }
+      },
+      { 
+        file: 'config.json', 
+        uploadFunction: async (data) => {
+          const configColl = mongoose.connection.db.collection('config');
+          await configColl.deleteMany({});
+          if (data && data.length > 0) await configColl.insertMany(data);
+        }
+      },
     ];
 
     // Eseguiamo il ciclo in modo sequenziale per non sovraccaricare il database

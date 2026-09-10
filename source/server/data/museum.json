@@ -1,75 +1,5 @@
 [
   {
-    "_id": "6a8dfae9a88f1bcdb73ec5e7",
-    "name": "Castello di Gradara & Museo Medievale",
-    "address": "Piazza de i Caduti, 1, 61012 Gradara PU, Italia",
-    "latitude": 43.941,
-    "longitude": 12.771,
-    "contact_email": "info@castellodigradara.it",
-    "contact_phone": "+39 0541 964181",
-    "sections": [
-      "6a96ed9abe0a98320ec20cd0"
-    ],
-    "image": "https://media.cultura.gov.it/mibac/files/boards/283284ecc5849a4de7a01eef5a9f042a/Gradara/GradaraRocca-panorama.jpg",
-    "tags": [
-      "Castello",
-      "Medioevo",
-      "Armature",
-      "Paolo e Francesca"
-    ],
-    "ticketPrice": 10,
-    "accessibility": [
-      "wheelchair_accessible"
-    ],
-    "facilities": [],
-    "services": [
-      {
-        "_id": "6aa036f06c454a897ad211a8",
-        "services": "bathrooms"
-      },
-      {
-        "_id": "6aa036f06c454a897ad211a9",
-        "services": "info_desk"
-      },
-      {
-        "_id": "6aa036f06c454a897ad211aa",
-        "services": "bookshop"
-      }
-    ],
-    "schedule": [
-      {
-        "_id": "6aa036f06c454a897ad211ab",
-        "day": "tuesday",
-        "hours": "09:00 - 19:00"
-      },
-      {
-        "_id": "6aa036f06c454a897ad211ac",
-        "day": "wednesday",
-        "hours": "09:00 - 19:00"
-      },
-      {
-        "_id": "6aa036f06c454a897ad211ad",
-        "day": "thursday",
-        "hours": "09:00 - 19:00"
-      },
-      {
-        "_id": "6aa036f06c454a897ad211ae",
-        "day": "friday",
-        "hours": "09:00 - 19:00"
-      },
-      {
-        "_id": "6aa036f06c454a897ad211af",
-        "day": "saturday",
-        "hours": "09:00 - 19:00"
-      },
-      {
-        "_id": "6aa036f06c454a897ad211b0",
-        "day": "sunday",
-        "hours": "09:00 - 19:00"
-      }
-    ]
-  },
-  {
     "_id": "6a8dfae9a88f1bcdb73ec5e8",
     "name": "Museo Internazionale del Fumetto e dell'Animazione",
     "address": "Corso Garibaldi, 53, 55100 Lucca LU, Italia",
@@ -92,51 +22,51 @@
     "facilities": [],
     "services": [
       {
-        "_id": "6aa036f06c454a897ad211b1",
+        "_id": "6aa2c5965b1c0e1df1d5d302",
         "services": "bathrooms"
       },
       {
-        "_id": "6aa036f06c454a897ad211b2",
+        "_id": "6aa2c5965b1c0e1df1d5d303",
         "services": "info_desk"
       },
       {
-        "_id": "6aa036f06c454a897ad211b3",
+        "_id": "6aa2c5965b1c0e1df1d5d304",
         "services": "bookshop"
       }
     ],
     "schedule": [
       {
-        "_id": "6aa036f06c454a897ad211b4",
+        "_id": "6aa2c5965b1c0e1df1d5d305",
         "day": "monday",
         "hours": "10:00 - 20:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211b5",
+        "_id": "6aa2c5965b1c0e1df1d5d306",
         "day": "tuesday",
         "hours": "10:00 - 20:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211b6",
+        "_id": "6aa2c5965b1c0e1df1d5d307",
         "day": "wednesday",
         "hours": "10:00 - 20:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211b7",
+        "_id": "6aa2c5965b1c0e1df1d5d308",
         "day": "thursday",
         "hours": "10:00 - 20:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211b8",
+        "_id": "6aa2c5965b1c0e1df1d5d309",
         "day": "friday",
         "hours": "10:00 - 20:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211b9",
+        "_id": "6aa2c5965b1c0e1df1d5d30a",
         "day": "saturday",
         "hours": "10:00 - 20:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211ba",
+        "_id": "6aa2c5965b1c0e1df1d5d30b",
         "day": "sunday",
         "hours": "10:00 - 20:00"
       }
@@ -168,65 +98,135 @@
     "facilities": [],
     "services": [
       {
-        "_id": "6aa036f06c454a897ad211bb",
+        "_id": "6aa2c5965b1c0e1df1d5d30c",
         "services": "bathrooms"
       },
       {
-        "_id": "6aa036f06c454a897ad211bc",
+        "_id": "6aa2c5965b1c0e1df1d5d30d",
         "services": "info_desk"
       },
       {
-        "_id": "6aa036f06c454a897ad211bd",
+        "_id": "6aa2c5965b1c0e1df1d5d30e",
         "services": "bookshop"
       },
       {
-        "_id": "6aa036f06c454a897ad211be",
+        "_id": "6aa2c5965b1c0e1df1d5d30f",
         "services": "cafe"
       },
       {
-        "_id": "6aa036f06c454a897ad211bf",
+        "_id": "6aa2c5965b1c0e1df1d5d310",
         "services": "elevator"
       },
       {
-        "_id": "6aa036f06c454a897ad211c0",
+        "_id": "6aa2c5965b1c0e1df1d5d311",
         "services": "cloakroom"
       }
     ],
     "schedule": [
       {
-        "_id": "6aa036f06c454a897ad211c1",
+        "_id": "6aa2c5965b1c0e1df1d5d312",
         "day": "monday",
         "hours": "09:30 - 18:30"
       },
       {
-        "_id": "6aa036f06c454a897ad211c2",
+        "_id": "6aa2c5965b1c0e1df1d5d313",
         "day": "tuesday",
         "hours": "09:30 - 18:30"
       },
       {
-        "_id": "6aa036f06c454a897ad211c3",
+        "_id": "6aa2c5965b1c0e1df1d5d314",
         "day": "wednesday",
         "hours": "09:30 - 18:30"
       },
       {
-        "_id": "6aa036f06c454a897ad211c4",
+        "_id": "6aa2c5965b1c0e1df1d5d315",
         "day": "thursday",
         "hours": "09:30 - 18:30"
       },
       {
-        "_id": "6aa036f06c454a897ad211c5",
+        "_id": "6aa2c5965b1c0e1df1d5d316",
         "day": "friday",
         "hours": "09:30 - 18:30"
       },
       {
-        "_id": "6aa036f06c454a897ad211c6",
+        "_id": "6aa2c5965b1c0e1df1d5d317",
         "day": "saturday",
         "hours": "09:30 - 18:30"
       },
       {
-        "_id": "6aa036f06c454a897ad211c7",
+        "_id": "6aa2c5965b1c0e1df1d5d318",
         "day": "sunday",
         "hours": "09:30 - 18:30"
+      }
+    ]
+  },
+  {
+    "_id": "6a8dfae9a88f1bcdb73ec5e7",
+    "name": "Castello di Gradara & Museo Medievale",
+    "address": "Piazza de i Caduti, 1, 61012 Gradara PU, Italia",
+    "latitude": 43.941,
+    "longitude": 12.771,
+    "contact_email": "info@castellodigradara.it",
+    "contact_phone": "+39 0541 964181",
+    "sections": [
+      "6a96ed9abe0a98320ec20cd0"
+    ],
+    "image": "https://media.cultura.gov.it/mibac/files/boards/283284ecc5849a4de7a01eef5a9f042a/Gradara/GradaraRocca-panorama.jpg",
+    "tags": [
+      "Castello",
+      "Medioevo",
+      "Armature",
+      "Paolo e Francesca"
+    ],
+    "ticketPrice": 10,
+    "accessibility": [
+      "wheelchair_accessible"
+    ],
+    "facilities": [],
+    "services": [
+      {
+        "_id": "6aa2c5965b1c0e1df1d5d319",
+        "services": "bathrooms"
+      },
+      {
+        "_id": "6aa2c5965b1c0e1df1d5d31a",
+        "services": "info_desk"
+      },
+      {
+        "_id": "6aa2c5965b1c0e1df1d5d31b",
+        "services": "bookshop"
+      }
+    ],
+    "schedule": [
+      {
+        "_id": "6aa2c5965b1c0e1df1d5d31c",
+        "day": "tuesday",
+        "hours": "09:00 - 19:00"
+      },
+      {
+        "_id": "6aa2c5965b1c0e1df1d5d31d",
+        "day": "wednesday",
+        "hours": "09:00 - 19:00"
+      },
+      {
+        "_id": "6aa2c5965b1c0e1df1d5d31e",
+        "day": "thursday",
+        "hours": "09:00 - 19:00"
+      },
+      {
+        "_id": "6aa2c5965b1c0e1df1d5d31f",
+        "day": "friday",
+        "hours": "09:00 - 19:00"
+      },
+      {
+        "_id": "6aa2c5965b1c0e1df1d5d320",
+        "day": "saturday",
+        "hours": "09:00 - 19:00"
+      },
+      {
+        "_id": "6aa2c5965b1c0e1df1d5d321",
+        "day": "sunday",
+        "hours": "09:00 - 19:00"
       }
     ]
   },
@@ -258,59 +258,59 @@
     "facilities": [],
     "schedule": [
       {
-        "_id": "6aa036f06c454a897ad211c8",
+        "_id": "6aa2c5965b1c0e1df1d5d322",
         "day": "tuesday",
         "hours": "10:00 - 17:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211c9",
+        "_id": "6aa2c5965b1c0e1df1d5d323",
         "day": "wednesday",
         "hours": "10:00 - 17:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211ca",
+        "_id": "6aa2c5965b1c0e1df1d5d324",
         "day": "thursday",
         "hours": "10:00 - 17:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211cb",
+        "_id": "6aa2c5965b1c0e1df1d5d325",
         "day": "friday",
         "hours": "10:00 - 17:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211cc",
+        "_id": "6aa2c5965b1c0e1df1d5d326",
         "day": "saturday",
         "hours": "10:00 - 17:00"
       },
       {
-        "_id": "6aa036f06c454a897ad211cd",
+        "_id": "6aa2c5965b1c0e1df1d5d327",
         "day": "sunday",
         "hours": "10:00 - 17:00"
       }
     ],
     "services": [
       {
-        "_id": "6aa036f06c454a897ad211ce",
+        "_id": "6aa2c5965b1c0e1df1d5d328",
         "services": "bathrooms"
       },
       {
-        "_id": "6aa036f06c454a897ad211cf",
+        "_id": "6aa2c5965b1c0e1df1d5d329",
         "services": "info_desk"
       },
       {
-        "_id": "6aa036f06c454a897ad211d0",
+        "_id": "6aa2c5965b1c0e1df1d5d32a",
         "services": "bookshop"
       },
       {
-        "_id": "6aa036f06c454a897ad211d1",
+        "_id": "6aa2c5965b1c0e1df1d5d32b",
         "services": "cafe"
       },
       {
-        "_id": "6aa036f06c454a897ad211d2",
+        "_id": "6aa2c5965b1c0e1df1d5d32c",
         "services": "elevator"
       },
       {
-        "_id": "6aa036f06c454a897ad211d3",
+        "_id": "6aa2c5965b1c0e1df1d5d32d",
         "services": "cloakroom"
       }
     ]

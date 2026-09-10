@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "_id": "6aa05408a09fcc3ebb0d9187",
+    "user": "6a95ec582eb2f2383178971b",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6a98512ffeabf46b3904ef01",
+        "title": "Robert Lehman Wing",
+        "price": 0,
+        "_id": "6aa05408a09fcc3ebb0d9188"
+      }
+    ],
+    "totalAmount": 0,
+    "status": "completed",
+    "createdAt": "2026-09-08T18:29:28.645Z",
+    "updatedAt": "2026-09-08T18:29:28.645Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa1dc9865352538ff1115d3",
+    "user": "6a95e6fb45123c6b58491e1c",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6aa1cbae0b6193eebce169f1",
+        "title": "Visita prova acquisto",
+        "price": 15,
+        "_id": "6aa1dc9865352538ff1115d4"
+      }
+    ],
+    "totalAmount": 15,
+    "status": "completed",
+    "createdAt": "2026-09-09T22:24:24.470Z",
+    "updatedAt": "2026-09-09T22:24:24.470Z",
+    "__v": 0
+  }
+]
