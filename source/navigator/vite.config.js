@@ -12,6 +12,16 @@ export default defineConfig({
     // poiché la cartella di destinazione è fuori dalla root 
     // del progetto Vite, dobbiamo dirgli esplicitamente che va bene 
     // svuotarla prima di ogni nuova build per evitare errori di sicurezza.
-    emptyOutDir: true
+    emptyOutDir: true,
+
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor'; // Tutti i pacchetti esterni finiranno in vendor.js
+          }
+        }
+      }
+    }
   }
 })

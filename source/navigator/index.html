@@ -9,9 +9,14 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <script src="/marketplace/js/config.js"></script>
+    <script>
+      // Inietta lo script a runtime: Vite lo ignorerà durante la build
+      const configScript = document.createElement('script');
+      configScript.src = '/marketplace/js/config.js';
+      document.head.appendChild(configScript);
+    </script>
  
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
+    <script>eruda.init();</script>
   </body>
 </html>
