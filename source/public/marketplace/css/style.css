@@ -9,6 +9,10 @@
     --aura-glow: radial-gradient(circle at 50% -20%, rgba(58, 168, 237, 0.4), transparent 70%);
 }
 
+html {
+    scroll-padding-top: 100px; /* Compensa l'altezza dell'header sticky */
+}
+
 /* BASE: Agganciato alla classe artaround-theme per priorità su Bootstrap e HTML */
 html,
 body.artaround-theme {
@@ -33,6 +37,22 @@ body.artaround-theme::-webkit-scrollbar {
     background-color: rgba(9, 9, 11, 0.8);
     border-bottom: 1px solid var(--border-color);
     height: 63px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1030;
+    transition: transform 0.25s ease-in-out;
+    flex-wrap: nowrap; /* <-- impedisce all'header di andare a capo su due righe */
+}
+
+.site-header.header-hidden {
+    transform: translateY(-100%);
+}
+
+body {
+    padding-top: 63px; /* compensa l'header ora fisso, evita che il contenuto ci finisca sotto */
 }
 
 .brand-text {

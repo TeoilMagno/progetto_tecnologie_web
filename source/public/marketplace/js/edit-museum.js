@@ -166,12 +166,13 @@ async function loadMuseumDetails() {
   }
 }
 
-// CARICAMENTO GERARCHICO: Sezioni -> Stanze -> Opere
+// CARICAMENTO SEZIONI (Lazy Loading Opere)
 async function loadSectionsAndWorks() {
   const container = document.getElementById("sectionsAccordion");
   worksCache = {};
 
   try {
+    // 1. Chiediamo al backend solo la lista delle sezioni
     const res = await fetch(`${API_BASE_URL}/museums/${currentMuseumId}/sections`);
     museumSections = await res.json();
 
@@ -180,73 +181,68 @@ async function loadSectionsAndWorks() {
       return;
     }
 
-    // Le opere di ogni sezione sono indipendenti tra loro: fetch in parallelo
-    const worksPerSection = await Promise.all(
-      museumSections.map(section =>
-        fetch(`${API_BASE_URL}/sections/${section._id}/works`).then(r => r.json())
-      )
-    );
-
     let html = "";
     museumSections.forEach((section, index) => {
-      const works = worksPerSection[index];
-      works.forEach(w => worksCache[w._id] = w);
-      html += renderSectionAccordionItem(section, works, index);
+      html += renderSectionAccordionItem(section, index);
     });
     container.innerHTML = html;
 
-    setTimeout(initSortableWorks, 100);
+    // 2. Chiediamo al backend i metadati globali per i filtri (autori, stili, ecc.) a costo quasi zero
+    fetch(`${API_BASE_URL}/museums/${currentMuseumId}/works?limit=1&fetchMetadata=true`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.metadata && typeof initializeWorkFiltersDataFromApi === 'function') {
+          initializeWorkFiltersDataFromApi(data.metadata);
+        }
+      }).catch(e => console.error("Errore recupero metadati filtri:", e));
+
+    // 3. LAZY LOADING: Scarica le opere solo quando la stanza viene aperta
+    container.addEventListener('show.bs.collapse', async (e) => {
+      const sectionId = e.target.dataset.sectionId;
+      if (!sectionId) return;
+      
+      const worksContainer = document.getElementById(`works-container-${sectionId}`);
+      if (worksContainer.dataset.loaded === "true") return;
+
+      worksContainer.innerHTML = `<div class="col-12 text-center py-4"><div class="spinner-border spinner-border-sm text-info"></div> Caricamento opere...</div>`;
+      
+      try {
+        const worksRes = await fetch(`${API_BASE_URL}/sections/${sectionId}/works`);
+        const works = await worksRes.json();
+        works.forEach(w => worksCache[w._id] = w);
+        
+        worksContainer.innerHTML = renderWorksHTML(works, sectionId);
+        worksContainer.dataset.loaded = "true";
+        setTimeout(initSortableWorks, 100);
+      } catch (err) {
+        worksContainer.innerHTML = `<div class="col-12 text-danger">Errore caricamento opere.</div>`;
+      }
+    });
+
   } catch (error) {
     console.error("Errore sezioni:", error);
     container.innerHTML = `<div class="alert alert-danger">Errore caricamento struttura.</div>`;
   }
 }
 
-function renderSectionAccordionItem(section, works, index) {
+function renderSectionAccordionItem(section, index) {
   const collapseId = `collapseSection${index}`;
   const headingId = `headingSection${index}`;
   const safeSectionName = (section.name || "").replace(/'/g, "\\'");
   const safeSectionImage = (section.image || "").replace(/'/g, "\\'");
 
-  let worksHtml = `<div class="row row-cols-1 row-cols-md-2 g-3 mt-1 sortable-works-container" data-section-id="${section._id}" style="min-height: 80px;">`;
-
-  if (works.length === 0) {
-    worksHtml += `<div class="col-12 empty-section-placeholder"><p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa sezione. Trascinane una qui o aggiungine una!</p></div>`;
-  } else {
-    worksHtml += works.map(w => `
-      <div class="col sortable-work-item" data-work-id="${w._id}">
-        <div class="card bg-transparent border border-secondary border-opacity-25 h-100 p-2 d-flex flex-row align-items-center rounded-3" style="transition: all 0.2s ease;">
-          <i class="bi bi-grip-vertical text-secondary me-2 drag-handle fs-5" style="cursor: grab;" title="Trascina per spostare"></i>
-          <img src="${w.image || '/img/fallback-work.jpg'}" class="rounded me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
-          <div class="flex-grow-1 text-truncate">
-            <h6 class="mb-0 text-white text-truncate small fw-bold">${w.name}</h6>
-            <small class="text-white-50" style="font-size: 0.7rem;">${w.author?.name || w.author || 'Autore Sconosciuto'}</small>
-          </div>
-          <div class="d-flex gap-1 ms-2">
-            <button class="btn btn-sm btn-glass text-info p-1 px-2 border-0" title="Gestisci Testi" onclick="openTextManager('${w._id}')"><i class="bi bi-card-text"></i></button>
-            <button class="btn btn-sm btn-glass text-white p-1 px-2 border-0" title="Modifica Opera" onclick="openWorkModal('${section._id}', '${w._id}')"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-sm btn-glass text-danger p-1 px-2 border-0" title="Elimina Opera" onclick="deleteWork('${section._id}', '${w._id}')"><i class="bi bi-trash"></i></button>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  }
-  worksHtml += `</div>`;
-
   return `
-    <div class="accordion-item bg-transparent mb-3 border-0">
+    <div class="accordion-item bg-transparent mb-3 border-0 section-accordion-wrapper" id="wrapper-${section._id}">
       <h2 class="accordion-header" id="${headingId}">
         <button class="accordion-button collapsed custom-card text-white py-3 px-4 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: none;">
           <i class="bi bi-grid-1x2-fill me-3 text-info fs-5"></i> 
           <span class="fw-bold fs-6">${section.name}</span>
-          <span class="badge bg-info bg-opacity-25 text-info border border-info ms-auto me-3 rounded-pill px-3 py-2">${works.length} Opere</span>
         </button>
       </h2>
       
-      <div id="${collapseId}" class="accordion-collapse collapse mt-2">
+      <div id="${collapseId}" class="accordion-collapse collapse mt-2" data-section-id="${section._id}">
         <div class="accordion-body p-4 custom-card border-secondary border-opacity-25 bg-dark bg-opacity-50" style="border-radius: 12px;">
           
-          <!-- Header Azioni Sezione -->
           <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25">
             <div class="d-flex gap-2">
               <button class="btn btn-sm btn-glass text-white px-3" onclick="openSectionModal('${section._id}', '${safeSectionName}', '${safeSectionImage}')">
@@ -261,12 +257,38 @@ function renderSectionAccordionItem(section, works, index) {
             </button>
           </div>
 
-          <!-- Contenuto Opere -->
-          ${worksHtml}
+          <!-- Contenitore Opere inizialmente vuoto (Verrà riempito all'apertura) -->
+          <div class="row row-cols-1 row-cols-md-2 g-3 mt-1 sortable-works-container" id="works-container-${section._id}" data-section-id="${section._id}" data-loaded="false" style="min-height: 80px;">
+            <div class="col-12 text-center text-secondary small py-3 fst-italic">Espandi la stanza per caricare le opere</div>
+          </div>
 
         </div>
       </div>
     </div>`;
+}
+
+// Helper per generare le card interne
+function renderWorksHTML(works, sectionId) {
+  if (works.length === 0) {
+    return `<div class="col-12 empty-section-placeholder"><p class="small text-white-50 mb-0 fst-italic">Nessuna opera in questa sezione. Trascinane una qui o aggiungine una!</p></div>`;
+  }
+  return works.map(w => `
+    <div class="col sortable-work-item" data-work-id="${w._id}">
+      <div class="card bg-transparent border border-secondary border-opacity-25 h-100 p-2 d-flex flex-row align-items-center rounded-3">
+        <i class="bi bi-grip-vertical text-secondary me-2 drag-handle fs-5" style="cursor: grab;"></i>
+        <img src="${w.image || '/img/fallback-work.jpg'}" class="rounded me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover;">
+        <div class="flex-grow-1 text-truncate">
+          <h6 class="mb-0 text-white text-truncate small fw-bold">${w.name}</h6>
+          <small class="text-white-50" style="font-size: 0.7rem;">${w.author?.name || w.authorName || w.author || 'Sconosciuto'}</small>
+        </div>
+        <div class="d-flex gap-1 ms-2">
+          <button class="btn btn-sm btn-glass text-info p-1 px-2 border-0" onclick="openTextManager('${w._id}')"><i class="bi bi-card-text"></i></button>
+          <button class="btn btn-sm btn-glass text-white p-1 px-2 border-0" onclick="openWorkModal('${sectionId}', '${w._id}')"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-glass text-danger p-1 px-2 border-0" onclick="deleteWork('${sectionId}', '${w._id}')"><i class="bi bi-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  `).join('');
 }
 
 // ------------------- GESTIONE SEZIONI (Invariata) -------------------
@@ -574,19 +596,16 @@ async function saveWorkFromModal() {
       workModalInstance.hide();
       
       // Ricarichiamo SOLTANTO le opere di questa sezione specifica per aggiornare il DOM localmente
+      // Aggiorniamo dinamicamente solo il contenitore delle opere della stanza interessata
       const worksRes = await fetch(`${API_BASE_URL}/sections/${sectionId}/works`);
       const works = await worksRes.json();
       works.forEach(w => worksCache[w._id] = w);
-      
-      const secIndex = museumSections.findIndex(s => s._id === sectionId);
-      if (secIndex !== -1) {
-        const collapseBody = document.querySelector(`#collapseSection${secIndex} .accordion-body`);
-        if (collapseBody) {
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = renderSectionAccordionItem(museumSections[secIndex], works, secIndex);
-          collapseBody.innerHTML = tempDiv.querySelector('.accordion-body').innerHTML;
-          setTimeout(initSortableWorks, 100);
-        }
+
+      const worksContainer = document.getElementById(`works-container-${sectionId}`);
+      if (worksContainer) {
+        worksContainer.innerHTML = renderWorksHTML(works, sectionId);
+        worksContainer.dataset.loaded = "true";
+        setTimeout(initSortableWorks, 100);
       }
 
     } else {

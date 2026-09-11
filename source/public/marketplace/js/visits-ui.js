@@ -1,5 +1,40 @@
 let cachedVisits = [];
 
+// Inizializza il caricamento delle visite
+document.addEventListener("DOMContentLoaded", async () => {
+  await fetchCurrentUser();
+
+  getMyVisits(); 
+
+  document.addEventListener('search-input', (e) => {
+    const query = e.detail.query;
+    if (!cachedVisits || cachedVisits.length === 0) return;
+    const filtered = cachedVisits.filter(v => {
+      const title = v.title || "";
+      const museumName = v.museumId ? v.museumId.name : "";
+      // Utilizziamo fuzzySearch (che presumo tu abbia in config.js)
+      return fuzzySearch(query, title) || fuzzySearch(query, museumName);
+    });
+    renderVisitsList(filtered, "managed-visits-area");
+  });
+
+  document.addEventListener('search-cleared', () => {
+    renderVisitsList(cachedVisits, "managed-visits-area");
+  });
+  });
+
+  // intercetta il tasto "Indietro"
+  window.addEventListener("pageshow", (event) => {
+    // Se la pagina viene dalla cache (tasto indietro) E c'è il post-it di aggiornamento
+    if (event.persisted && localStorage.getItem("visitsChanged") === "true") {
+        console.log("Rilevate nuove modifiche, aggiorno i dati...");
+        getMyVisits(); 
+        
+        // Strappiamo il post-it, così se torna indietro un'altra volta non ricarica inutilmente!
+        localStorage.removeItem("visitsChanged");
+    }
+});
+
 async function getMyVisits() {
   const container = document.getElementById("managed-visits-area");
 

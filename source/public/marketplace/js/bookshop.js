@@ -24,25 +24,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 1. Popoliamo la barra dei filtri laterale sfruttando sidebar.js
   if (typeof populateFilters === 'function') populateFilters("items");
 
-  // 2. Barra di ricerca in alto
-  const searchContainer = document.getElementById("search-container");
-  const searchToggleBtn = document.getElementById("search-toggle-btn");
-  const searchInput = document.getElementById("catalog-search-input");
+  // 2. Barra di ricerca (ora gestita dal web component <search-bar>)
+  document.addEventListener('search-input', (e) => {
+    clearTimeout(window.itemSearchTimeout);
+    window.itemSearchTimeout = setTimeout(() => applyItemFilters(e.detail.query), 300);
+  });
 
-  if (searchToggleBtn && searchInput) {
-    searchToggleBtn.addEventListener("click", () => {
-      searchContainer.classList.toggle("active");
-      if (searchContainer.classList.contains("active")) {
-        searchInput.focus();
-      } else {
-        searchInput.value = "";
-        applyItemFilters(); // Rilancia i filtri passando per l'override
-      }
-    });
-    
-    // Ricerca live: sfrutta la funzione di filtro centralizzata
-    searchInput.addEventListener("input", () => applyItemFilters());
-  }
+  document.addEventListener('search-cleared', () => {
+    applyItemFilters('');
+  });
 
   // Chiamata iniziale
   currentItemsPage = 1;
@@ -58,7 +48,7 @@ async function fetchAndRenderItems(museumId, isLoadMore = false) {
   if (isFetchingItems) return;
   isFetchingItems = true;
 
-  const searchInput = document.getElementById("catalog-search-input")?.value.trim() || "";
+  const searchInput = window.activeItemSearchQuery || "";
   const categoryCbs = Array.from(document.querySelectorAll('.item-category-checkbox:checked')).map(cb => cb.value);
   const selectedAge = document.getElementById("filter-age-select")?.value || "";
   const maxPrice = parseInt(document.getElementById("item-price-slider")?.value || 100);

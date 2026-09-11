@@ -10,12 +10,28 @@
     <link rel="stylesheet" href="/marketplace/css/style.css" />
   </head>
   <body class="artaround-theme text-white">
+
+    <header class="navbar site-header sticky-top px-3 mb-4 flex-nowrap" style="background: rgba(20, 20, 30, 0.95);">
+      <!-- Tasto Indietro Desktop -->
+      <a onclick="window.history.back()" class="btn d-none d-md-inline-block text-white me-2" style="cursor: pointer;">
+        <i class="bi bi-arrow-left fs-4"></i>
+      </a>
+
+      <a class="navbar-brand d-flex align-items-center me-auto" href="/quiz-reports">
+        <i class="bi bi-bank me-2 text-white"></i>
+        <span class="brand-text">ArtAround</span>
+        <span class="brand-subtitle ms-1 text-white opacity-75 d-none d-md-inline">Dettagli Sessione</span>
+      </a>
+
+      <!-- Tasto Indietro Mobile a pillola -->
+      <div class="d-flex align-items-center flex-nowrap">
+        <a onclick="window.history.back()" class="btn d-md-none btn-sm btn-glass rounded-pill px-3" style="cursor: pointer;">
+            <i class="bi bi-arrow-left me-1"></i> Indietro
+        </a>
+      </div>
+    </header>
     
     <div class="container py-5" style="max-width: 700px;">
-      <button onclick="window.history.back()" class="btn btn-link text-secondary text-decoration-none p-0 mb-3 small">
-        <i class="bi bi-arrow-left me-1"></i> Indietro
-      </button>
-
       <h3 class="text-info fw-bold mb-1">Risultati Sessione</h3>
       <p class="text-secondary small mb-4" id="report-subtitle">Caricamento dettagli...</p>
 

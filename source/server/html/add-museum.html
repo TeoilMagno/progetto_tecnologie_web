@@ -12,7 +12,48 @@
 </head>
 <body class="artaround-theme">
 
-  <art-header subtitle="Aggiungi museo"></art-header>
+  <header class="navbar site-header sticky-md-top px-3 flex-nowrap">
+      <button class="navbar-toggler d-md-none text-white border-0 me-2 p-1 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+        <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+      </button>
+
+      <a class="btn d-none d-md-inline-block text-white me-2" href=`window.history.back()` id="back-to-museum-btn">
+        <i class="bi bi-arrow-left fs-4"></i>
+      </a>
+
+      <a class="navbar-brand d-flex align-items-center me-auto" href="/marketplace">
+        <i class="bi bi-bank me-2 text-white"></i>
+        <span class="brand-text">ArtAround</span>
+        <span class="brand-subtitle ms-1 text-white opacity-75 d-none d-md-inline">Aggiungi museo</span>
+      </a>
+
+      <div class="d-flex align-items-center flex-nowrap">
+        <a href=`window.history.back()` class="btn d-md-none btn-sm btn-glass rounded-pill px-3">
+            <i class="bi bi-x-lg me-1"></i> Annulla
+        </a>
+
+        <!-- Solo desktop: su mobile finiscono nell'hamburger qui sotto -->
+        <a href="/navigator" class="btn text-white me-3 d-none d-md-inline-flex" title="Apri Navigator">
+          <i class="bi bi-compass fs-5"></i>
+        </a>
+
+        <div class="user-area text-white small d-none d-md-flex align-items-center gap-2"></div>        
+      </div>
+
+      <!-- Solo mobile: Navigator, Filtri e area utente, dietro l'hamburger -->
+      <div class="offcanvas-md offcanvas-start d-md-none" tabindex="-1" id="mobileMenu" style="background: rgba(20, 20, 30, 0.95); z-index: 1050;">
+        <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+          <h5 class="offcanvas-title text-white">Menu</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#mobileMenu"></button>
+        </div>
+        <div class="offcanvas-body p-4 d-flex flex-column align-items-start gap-4">
+          <a href="/navigator" class="btn text-white d-flex align-items-center" title="Apri Navigator" data-bs-dismiss="offcanvas" data-bs-target="#mobileMenu">
+            <i class="bi bi-compass fs-5 me-3"></i>Navigator
+          </a>
+          <div class="user-area text-white small d-flex flex-column align-items-start gap-3 w-100 mt-2"></div>
+        </div>
+      </div>
+    </header>
 
   <div class="form-wrapper">
     <h1 class="aura-title">Crea un Nuovo Museo</h1>
@@ -141,6 +182,5 @@
   <script src="/marketplace/js/config.js"></script>
   <script src="/marketplace/js/image-manager.js"></script>
   <script src="/marketplace/js/add-museum.js"></script>
-  <script src="/marketplace/js/webcomponents/art-header.js"></script>
 </body>
 </html>

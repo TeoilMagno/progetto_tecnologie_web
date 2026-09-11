@@ -9,6 +9,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   loadPendingCurators();
+
+  // Tasto Indietro: torna alla pagina precedente, o alla home se non c'è cronologia
+  const backBtn = document.getElementById("back-btn");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  }
 });
 
 async function loadPendingCurators() {

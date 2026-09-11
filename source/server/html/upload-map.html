@@ -20,17 +20,24 @@
   </head>
   <body class="artaround-theme">
 
-    <header class="navbar site-header sticky-top px-3 mb-4">
-      <div class="d-flex align-items-center">
-        <a class="navbar-brand d-flex align-items-center" href="/my-museums">
-          <i class="bi bi-bank me-2 text-white"></i>
-          <span class="brand-text">ArtAround</span>
-          <span class="brand-subtitle ms-1 text-white opacity-75">Curator</span>
+    <header class="navbar site-header sticky-top px-3 mb-4 flex-nowrap" style="background: rgba(20, 20, 30, 0.95);">
+      <!-- Tasto Indietro Desktop -->
+      <a onclick="window.history.back()" class="btn d-none d-md-inline-block text-white me-2" style="cursor: pointer;">
+        <i class="bi bi-arrow-left fs-4"></i>
+      </a>
+
+      <a class="navbar-brand d-flex align-items-center me-auto" href="/my-museums">
+        <i class="bi bi-bank me-2 text-white"></i>
+        <span class="brand-text">ArtAround</span>
+        <span class="brand-subtitle ms-1 text-white opacity-75 d-none d-md-inline">Mappa Museo</span>
+      </a>
+
+      <!-- Tasto Indietro Mobile a pillola -->
+      <div class="d-flex align-items-center flex-nowrap">
+        <a onclick="window.history.back()" class="btn d-md-none btn-sm btn-glass rounded-pill px-3" style="cursor: pointer;">
+            <i class="bi bi-arrow-left me-1"></i> Indietro
         </a>
       </div>
-      <a href="/my-museums" class="btn btn-sm btn-glass rounded-pill px-3">
-        <i class="bi bi-x-lg me-1"></i> Annulla
-      </a>
     </header>
 
     <!-- Aggiunto pb-5 qui per evitare che il contenuto si appiccichi in fondo -->

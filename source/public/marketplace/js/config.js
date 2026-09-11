@@ -434,7 +434,7 @@ function renderUserArea() {
           <span class="fw-medium text-white">${currentUser.username || currentUser.name}</span>
           <i class="bi bi-chevron-down ms-3 custom-arrow"></i>
         </div>
-        <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu mt-2" aria-labelledby="userDropdown">
+        <ul class="dropdown-menu dropdown-menu-md-end custom-dropdown-menu mt-2" aria-labelledby="userDropdown">
           ${menuOptions}
           <li><hr class="dropdown-divider border-secondary opacity-25"></li>
           <li>
@@ -469,3 +469,43 @@ document.addEventListener('cart-updated', (e) => {
   cartBadge.innerText = e.detail.totalItems;
   cartBadge.classList.toggle('d-none', e.detail.totalItems === 0);
 });
+
+// Nasconde l'header scrollando verso il basso, lo rimostra scrollando verso l'alto.
+// Autonomo: basta includerlo in ogni pagina che ha .site-header, non dipende da marketplace.js
+(function () {
+  const header = document.querySelector('.site-header');
+  if (!header) return;
+
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+  const SCROLL_THRESHOLD = 10; // px minimi prima di reagire, evita flicker su micro-scroll
+  const headerHeight = header.offsetHeight;
+
+  function onScroll() {
+    const currentScrollY = window.scrollY;
+    const delta = currentScrollY - lastScrollY;
+
+    if (Math.abs(delta) < SCROLL_THRESHOLD) {
+      ticking = false;
+      return;
+    }
+
+    if (currentScrollY <= headerHeight) {
+      header.classList.remove('header-hidden'); // sempre visibile vicino alla cima
+    } else if (delta > 0) {
+      header.classList.add('header-hidden'); // scroll giù -> nascondi
+    } else {
+      header.classList.remove('header-hidden'); // scroll su -> mostra
+    }
+
+    lastScrollY = currentScrollY;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(onScroll);
+      ticking = true;
+    }
+  }, { passive: true });
+})();

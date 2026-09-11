@@ -8,7 +8,7 @@ let currentQuiz = [];
 let expertiseSelectInstance = null;
 let prefLengthSelectInstance = null;
 
-// Alias globali per agganciare nativamente filters_2.js e search-bar.js
+// Alias globali per agganciare nativamente filters.js e search-bar.js
 window.renderWorksList = function(works, append = false) { renderCatalog(works, append); };
 window.fetchAndRenderWorks = async function(museumId, append) { await fetchCatalogChunk(museumId, append); };
 window.updateWorksSentinelVisibility = function() { updateCatalogSentinel(); };
@@ -49,6 +49,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Assegniamo la variabile globale
   editingVisitId = urlParams.get("editId") || urlParams.get("edit");
 
+  // --- NUOVA LOGICA UI: Nascondi ricerca e filtri se non c'è museo ---
+  const searchBarEl = document.querySelector('search-bar');
+  const desktopFilterBtn = document.querySelector('button[data-bs-target="#filterSidebar"]');
+  const mobileFilterBtn = document.getElementById("mobile-filtri-btn");
+
+  if (!preselectedMuseumId && !editingVisitId) {
+    if (searchBarEl) searchBarEl.classList.add('d-none');
+    if (desktopFilterBtn) desktopFilterBtn.classList.replace('d-md-inline-flex', 'd-none');
+    if (mobileFilterBtn) mobileFilterBtn.classList.add('d-none');
+  } else {
+    // FONDAMENTALE: Inietta la struttura HTML dei filtri PRIMA di caricare le opere!
+    populateFilters("works");
+  }
+  // ------------------------------------------------------------------
+
   if (preselectedMuseumId) {
     currentMuseumId = preselectedMuseumId;
     
@@ -66,30 +81,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   } else if (!editingVisitId) {
     showMuseumSelector();
-  }
-
-  // Inizializzazione barra di ricerca
-  const searchContainer = document.getElementById("search-container");
-  const searchToggleBtn = document.getElementById("search-toggle-btn");
-  const searchInput = document.getElementById("catalog-search-input");
-
-  if (searchToggleBtn && searchInput) {
-    searchToggleBtn.addEventListener("click", () => {
-      searchContainer.classList.toggle("active");
-      if (searchContainer.classList.contains("active")) {
-        searchInput.focus();
-      } else {
-        searchInput.value = "";
-        currentWorkPage = 1;
-        fetchCatalogChunk(currentMuseumId, false);
-      }
-    });
-
-    searchInput.addEventListener("input", (e) => {
-      if (!currentMuseumId) return;
-      currentWorkPage = 1; 
-      fetchCatalogChunk(currentMuseumId, false);
-    });
   }
 
   // Inizializza Tom Select per il Registro Linguistico
@@ -113,7 +104,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  populateFilters("works");
+  // Barra di ricerca (gestita dal web component <search-bar>): rilancia il fetch/filtro
+  // del catalogo opere, che legge già da solo il valore di #museum-search-input
+  document.addEventListener('search-input', () => {
+    if (!currentMuseumId) return;
+    clearTimeout(window.worksSearchTimeout);
+    window.worksSearchTimeout = setTimeout(() => fetchCatalogChunk(currentMuseumId, false), 300);
+  });
+
+  document.addEventListener('search-cleared', () => {
+    if (!currentMuseumId) return;
+    fetchCatalogChunk(currentMuseumId, false);
+  });
+
+  // Tasto Annulla: torna alla pagina precedente, o a "Le mie visite" se non c'è cronologia
+  const cancelBtn = document.getElementById("cancel-btn");
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/my-visits";
+      }
+    });
+  }
 
   // Gestione bozza
   if (editingVisitId) {
@@ -392,7 +406,7 @@ async function fetchCatalogChunk(museumId, isLoadMore = false) {
   if (isFetchingWorks) return;
   isFetchingWorks = true;
 
-  const searchInput = document.getElementById("catalog-search-input")?.value.trim().toLowerCase() || "";
+  const searchInput = document.getElementById("museum-search-input")?.value.trim().toLowerCase() || "";
   
   // 1. LEGGIAMO LO STATO DEI FILTRI AVANZATI
   const authorCbs = Array.from(document.querySelectorAll('.author-cb:checked')).map(cb => cb.value);
@@ -574,8 +588,7 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
 
     let buttonHtml = isAdded 
       ? `<button class="btn btn-sm btn-success mt-auto w-100" disabled style="background-color: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #10b981;"><i class="bi bi-check-lg"></i> Già aggiunto</button>`
-      : `<button class="btn btn-sm btn-outline-light mt-auto w-100" id="btn-add-${work._id}" onclick="addToVisit('${work._id}', '${work.name.replace(/'/g, "\\'")}')"><i class="bi bi-plus"></i> Aggiungi alla visita</button>`;
-
+      : `<button class="btn btn-sm btn-outline-light mt-auto w-100" id="btn-add-${work._id}" onclick="event.stopPropagation(); addToVisit('${work._id}', '${work.name.replace(/'/g, "\\'")}')"><i class="bi bi-plus"></i> Aggiungi alla visita</button>`;
     const workHtml = `
       <div class="col-12 col-md-6 col-xxl-4" id="work-card-${work._id}">
         <div class="card custom-card h-100 cursor-pointer" style="background: rgba(255,255,255,0.01); border-color: rgba(255,255,255,0.05);" onclick="openWorkDetails('${work._id}')" >
@@ -741,12 +754,6 @@ async function submitVisit(isSavingAsDraft = false) {
 
   const description = document.getElementById("visit-desc")?.value || "";
   const imageUrl = document.getElementById("visit-image")?.value || "";
-
-  // Il widget immagine non ha un required html, quindi lo controlliamo manualmente
-  if (!imageUrl && !isSavingAsDraft) {
-     showToast("L'immagine di copertina è obbligatoria per pubblicare o completare la visita.", "error");
-     return;
-  }
 
   const priceInput = document.getElementById("visit-price");
   const price =

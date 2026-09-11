@@ -84,41 +84,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Carica le informazioni sull'utente nella navbar
   await fetchCurrentUser();
 
-  const searchContainer = document.getElementById("search-container");
-  const searchToggleBtn = document.getElementById("search-toggle-btn");
-  const searchInput = document.getElementById("orders-search-input");
+  // --- INIZIALIZZAZIONE BARRA DI RICERCA CON WEB COMPONENT ---
+  document.addEventListener('search-input', (e) => {
+    const query = e.detail.query;
+    if (!cachedOrders || cachedOrders.length === 0) return;
 
-  if (searchToggleBtn && searchInput) {
-    searchToggleBtn.addEventListener("click", () => {
-      searchContainer.classList.toggle("active");
-      if (searchContainer.classList.contains("active")) {
-        searchInput.focus();
-      } else {
-        searchInput.value = "";
-        renderOrdersList(cachedOrders); // Sostituisci con il nome della tua funzione di render
-      }
-    });
-
-    searchInput.addEventListener("input", (e) => {
-      const query = e.target.value;
-      if (!cachedOrders || cachedOrders.length === 0) return;
-
-      const filtered = cachedOrders.filter(order => {
-        // Cerca per ID dell'ordine (utile per cercare la ricevuta)
-        if (fuzzySearch(query, order._id)) return true;
-        
-        // Cerca per nome della visita acquistata
-        const hasVisit = order.visits && order.visits.some(v => fuzzySearch(query, v.title || v.name));
-        
-        // Cerca per nome dell'articolo bookshop
-        const hasItem = order.items && order.items.some(i => fuzzySearch(query, i.name));
-        
-        return hasVisit || hasItem;
-      });
+    const filtered = cachedOrders.filter(order => {
+      if (fuzzySearch(query, order._id)) return true;
+      const hasVisit = order.visits && order.visits.some(v => fuzzySearch(query, v.title || v.name));
+      const hasItem = order.items && order.items.some(i => fuzzySearch(query, i.name));
       
-      renderOrdersList(filtered); // Sostituisci con il nome della tua funzione di render
+      return hasVisit || hasItem;
     });
-  }
+    
+    renderOrdersList(filtered);
+  });
+
+  document.addEventListener('search-cleared', () => {
+    renderOrdersList(cachedOrders);
+  });
 
   try {
     // Chiamiamo l'API del backend creata nello step precedente

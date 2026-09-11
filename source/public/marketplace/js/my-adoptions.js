@@ -69,44 +69,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadAdoptions();
 
-  // --- INIZIALIZZAZIONE BARRA DI RICERCA ---
-  const searchContainer = document.getElementById("search-container");
-  const searchToggleBtn = document.getElementById("search-toggle-btn");
-  const searchInput = document.getElementById("adoptions-search-input");
-
-  if (searchToggleBtn && searchInput) {
-    searchToggleBtn.addEventListener("click", () => {
-      searchContainer.classList.toggle("active");
-      if (searchContainer.classList.contains("active")) {
-        searchInput.focus();
-      } else {
-        searchInput.value = "";
-        // Ripristina tutto
-        renderAdoptionsList(cachedIncoming, document.getElementById("incoming-container"), true);
-        renderAdoptionsList(cachedOutgoing, document.getElementById("outgoing-container"), false);
-      }
-    });
-
-    searchInput.addEventListener("input", (e) => {
-      const query = e.target.value;
+  // --- INIZIALIZZAZIONE BARRA DI RICERCA CON WEB COMPONENT ---
+  document.addEventListener('search-input', (e) => {
+    const query = e.detail.query;
+    
+    const filterFn = (adoption) => {
+      const workName = adoption.workId ? adoption.workId.name : "";
+      const fromMuseum = adoption.fromMuseumId ? adoption.fromMuseumId.name : "";
+      const toMuseum = adoption.toMuseumId ? adoption.toMuseumId.name : "";
       
-      // Funzione di filtro riutilizzabile per le adozioni
-      const filterAdoptions = (adoption) => {
-        const workName = adoption.workId ? adoption.workId.name : "";
-        const fromMuseum = adoption.fromMuseumId ? adoption.fromMuseumId.name : "";
-        const toMuseum = adoption.toMuseumId ? adoption.toMuseumId.name : "";
-        
-        return fuzzySearch(query, workName) || fuzzySearch(query, fromMuseum) || fuzzySearch(query, toMuseum);
-      };
+      return fuzzySearch(query, workName) || fuzzySearch(query, fromMuseum) || fuzzySearch(query, toMuseum);
+    };
 
-      // Filtra e renderizza simultaneamente entrambe le schede
-      const filteredIncoming = cachedIncoming.filter(filterAdoptions);
-      const filteredOutgoing = cachedOutgoing.filter(filterAdoptions);
+    renderAdoptionsList(cachedIncoming.filter(filterFn), document.getElementById("incoming-container"), true);
+    renderAdoptionsList(cachedOutgoing.filter(filterFn), document.getElementById("outgoing-container"), false);
+  });
 
-      renderAdoptionsList(filteredIncoming, document.getElementById("incoming-container"), true);
-      renderAdoptionsList(filteredOutgoing, document.getElementById("outgoing-container"), false);
-    });
-  }
+  document.addEventListener('search-cleared', () => {
+    renderAdoptionsList(cachedIncoming, document.getElementById("incoming-container"), true);
+    renderAdoptionsList(cachedOutgoing, document.getElementById("outgoing-container"), false);
+  });
 });
 
 // Carica tutte le adozioni dell'utente e le divide in Inviate e Ricevute

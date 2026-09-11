@@ -1,39 +1,65 @@
 class ArtCart extends HTMLElement {
   connectedCallback() {
-    // Genera la sua UI (il vecchio div #cartOffcanvas)
+    // 1. Legge gli attributi custom per permetterti di stilizzarlo in HTML (Desktop vs Mobile)
+    const btnClass = this.getAttribute('btn-class') || 'btn text-white position-relative me-3 d-none d-md-inline-block';
+    const iconClass = this.getAttribute('icon-class') || 'bi bi-cart3 fs-4';
+    const labelText = this.getAttribute('label') || '';
+
+    // 2. Renderizza IL BOTTONE (Trigger) esattamente dove hai messo il tag
     this.innerHTML = `
-      <div class="offcanvas offcanvas-end glass-modal text-white" tabindex="-1" id="cartOffcanvas" style="background: rgba(20, 20, 30, 0.95);">
-        <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
-          <h5 class="offcanvas-title"><i class="bi bi-cart3 me-2"></i>Il tuo Carrello</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body" id="cart-items-list"></div>
-        <div class="offcanvas-footer border-top border-secondary border-opacity-25 p-3">
-          <div class="d-flex justify-content-between mb-3">
-            <span class="fs-5">Totale:</span>
-            <span class="fs-5 fw-bold text-info" id="cart-total">€ 0.00</span>
-          </div>
-          <button class="btn btn-gradient w-100 py-2 fs-5" id="btn-checkout">Procedi al Checkout</button>
-        </div>
-      </div>
+      <button type="button" class="${btnClass}" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+        <i class="${iconClass}"></i> ${labelText}
+        <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
+          0
+        </span>
+      </button>
     `;
 
-    this.listEl = this.querySelector('#cart-items-list');
-    this.totalEl = this.querySelector('#cart-total');
-    
-    this.querySelector('#btn-checkout').addEventListener('click', () => this.goToCheckout());
-    
-    // Ascolta eventi globali per aggiungere prodotti
-    window.addEventListener('cart-add-item', (e) => this.addToCart(e.detail));
+    // 3. Inietta l'Offcanvas nel DOM globale (body) UNA SOLA VOLTA
+    if (!document.getElementById('cartOffcanvas')) {
+      const offcanvasHTML = `
+        <div class="offcanvas offcanvas-end glass-modal text-white" tabindex="-1" id="cartOffcanvas" style="background: rgba(20, 20, 30, 0.95);">
+          <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+            <h5 class="offcanvas-title"><i class="bi bi-cart3 me-2"></i>Il tuo Carrello</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+          </div>
+          <div class="offcanvas-body" id="cart-items-list"></div>
+          <div class="offcanvas-footer border-top border-secondary border-opacity-25 p-3">
+            <div class="d-flex justify-content-between mb-3">
+              <span class="fs-5">Totale:</span>
+              <span class="fs-5 fw-bold text-info" id="cart-total">€ 0.00</span>
+            </div>
+            <button class="btn btn-gradient w-100 py-2 fs-5" id="btn-checkout">Procedi al Checkout</button>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', offcanvasHTML);
 
-    window.updateCartUI = () => this.updateCartUI();
-    window.syncGuestCartToUser = () => this.syncGuestCartToUser();
-    
-    // Rendi globale l'aggiornamento quantità dal template string
-    window.updateCartQuantity = (id, type, delta) => this.updateQuantity(id, type, delta);
-    window.removeCartItem = (id, type) => this.removeFromCart(id, type);
+      // Associa gli eventi ai pulsanti dell'offcanvas appena creato
+      document.getElementById('btn-checkout').addEventListener('click', () => this.goToCheckout());
+      
+      // Associa eventi globali
+      window.addEventListener('cart-add-item', (e) => this.addToCart(e.detail));
+      window.updateCartUI = () => this.updateCartUI();
+      window.syncGuestCartToUser = () => this.syncGuestCartToUser();
+      window.updateCartQuantity = (id, type, delta) => this.updateQuantity(id, type, delta);
+      window.removeCartItem = (id, type) => this.removeFromCart(id, type);
+    }
 
+    // 4. Inizializza l'UI e ascolta i cambiamenti del carrello per aggiornare il badge di QUESTO specifico bottone
     this.updateCartUI();
+    
+    window.addEventListener('cart-updated', (e) => {
+      const badge = this.querySelector('.cart-badge');
+      if (badge) {
+        if (e.detail.totalItems > 0) {
+          badge.textContent = e.detail.totalItems;
+          badge.classList.remove('d-none');
+        } else {
+          badge.classList.add('d-none');
+        }
+      }
+    });
   }
 
   getCartKey() {
@@ -144,8 +170,10 @@ class ArtCart extends HTMLElement {
         `;
       });
     }
-    this.listEl.innerHTML = html;
-    this.totalEl.innerText = `€ ${totalPrice.toFixed(2)}`;
+    const listEl = document.getElementById('cart-items-list');
+    const totalEl = document.getElementById('cart-total');
+    if (listEl) listEl.innerHTML = html;
+    if (totalEl) totalEl.innerText = `€ ${totalPrice.toFixed(2)}`;
 
     // Comunica all'esterno (es. badge nell'header) che il carrello è cambiato
     this.dispatchEvent(new CustomEvent('cart-updated', { detail: { totalItems }, bubbles: true }));

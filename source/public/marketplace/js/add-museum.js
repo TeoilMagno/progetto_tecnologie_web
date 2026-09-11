@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function museumHandleSave(event) {
   if (event) event.preventDefault();
 
-  const form = document.querySelector("form");
+  const form = document.getElementById("museumForm");
   if (!form) return;
   
   // Se i campi required (nome e indirizzo) sono vuoti, il browser li blocca in automatico 

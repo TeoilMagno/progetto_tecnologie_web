@@ -13,33 +13,52 @@
   </head>
   <body class="artaround-theme">
     
-    <header class="navbar site-header sticky-top px-3">
-      <div class="d-flex align-items-center">
-        <button class="btn text-white me-2 d-none" id="sidebarOpenBtn">
-          <i class="bi bi-list fs-4"></i>
-        </button>
-        <a class="navbar-brand d-flex align-items-center" href="/marketplace">
-          <i class="bi bi-bank me-2 text-white"></i>
-          <span class="brand-text">ArtAround</span>
-          <span class="brand-subtitle ms-1 text-white opacity-75">Marketplace</span>
+    <header class="navbar site-header sticky-md-top px-3 flex-nowrap">
+      <button class="navbar-toggler d-md-none text-white border-0 me-2 p-1 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+        <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+      </button>
+
+      <!-- Tasto Indietro Desktop -->
+      <a onclick="window.history.back()" class="btn d-none d-md-inline-block text-white me-2" style="cursor: pointer;">
+        <i class="bi bi-arrow-left fs-4"></i>
+      </a>
+
+      <a class="navbar-brand d-flex align-items-center me-auto" href="/marketplace">
+        <i class="bi bi-bank me-2 text-white"></i>
+        <span class="brand-text">ArtAround</span>
+        <span class="brand-subtitle ms-1 text-white opacity-75 d-none d-md-inline">Le mie visite</span>
+      </a>
+
+      <div class="d-flex align-items-center flex-nowrap">
+        <search-bar class="me-3"></search-bar>
+
+        <!-- Web Component del carrello (Desktop) -->
+        <art-cart class="me-3 d-none d-md-inline-block"></art-cart>
+        
+        <!-- Tasto Indietro Mobile a pillola (Inserito come richiesto) -->
+        <a onclick="window.history.back()" class="btn d-md-none btn-sm btn-glass rounded-pill px-3 ms-2" style="cursor: pointer;">
+            <i class="bi bi-arrow-left me-1"></i> Indietro
         </a>
-      </div>
-      
-      <div class="d-flex align-items-center">
-        <!-- Bottone Filtri -->
-        <button class="btn text-white me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar">
+
+        <button class="btn text-white me-3 d-none d-md-inline-flex" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar">
           <i class="bi bi-funnel fs-5"></i>
         </button>
+        <div id="user-area" class="text-white small d-none d-md-flex align-items-center gap-2"></div>
+      </div>
 
-        <!-- Bottone Carrello -->
-        <button class="btn text-white position-relative me-3" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
-          <i class="bi bi-cart3 fs-4"></i>
-          <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
-            0
-          </span>
-        </button>
-
-        <div id="user-area" class="text-white small d-flex align-items-center gap-2"></div>
+      <!-- Menu Mobile -->
+      <div class="offcanvas-md offcanvas-start d-md-none" tabindex="-1" id="mobileMenu" style="background: rgba(20, 20, 30, 0.95); z-index: 1050;">
+        <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+          <h5 class="offcanvas-title text-white">Menu</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#mobileMenu"></button>
+        </div>
+        <div class="offcanvas-body p-4 d-flex flex-column align-items-start gap-4">
+          <art-cart btn-class="btn text-white d-flex align-items-center w-100 text-start" icon-class="bi bi-cart3 fs-5 me-3" label="Carrello"></art-cart>
+          <button class="btn text-white d-flex align-items-center w-100 text-start" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar">
+            <i class="bi bi-funnel fs-5 me-3"></i>Filtri
+          </button>
+          <div class="user-area text-white small d-flex flex-column align-items-start gap-3 w-100 mt-2"></div>
+        </div>
       </div>
     </header>
 
@@ -100,31 +119,10 @@
     <script src="/vendor/tom-select/js/tom-select.complete.min.js"></script>
     <script src="/vendor/imask/imask.js"></script>
     <script src="/marketplace/js/config.js"></script>
-    <script src="/marketplace/js/cart.js"></script>
-    <script src="/marketplace/js/search-bar.js"></script>
+    <script src="/marketplace/js/webcomponents/art-cart.js"></script>
+    <script src="/marketplace/js/webcomponents/search-bar.js"></script>
     <script src="/marketplace/js/filters.js"></script>
     <script src="/marketplace/js/sidebar.js"></script>
     <script src="/marketplace/js/visits-ui.js"></script>
-    <script src="/marketplace/js/personal-area.js"></script>
-    <script>
-      // Inizializza il caricamento delle visite
-      document.addEventListener("DOMContentLoaded", async () => {
-        await fetchCurrentUser();
-
-        getMyVisits(); 
-      });
-
-      // intercetta il tasto "Indietro"
-      window.addEventListener("pageshow", (event) => {
-        // Se la pagina viene dalla cache (tasto indietro) E c'è il post-it di aggiornamento
-        if (event.persisted && localStorage.getItem("visitsChanged") === "true") {
-            console.log("Rilevate nuove modifiche, aggiorno i dati...");
-            getMyVisits(); 
-            
-            // Strappiamo il post-it, così se torna indietro un'altra volta non ricarica inutilmente!
-            localStorage.removeItem("visitsChanged");
-        }
-      });
-    </script>
   </body>
 </html>

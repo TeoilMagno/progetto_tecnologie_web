@@ -19,14 +19,27 @@
 </head>
 <body class="artaround-theme d-flex flex-column align-items-center pt-4" style="min-height: 100vh;">
   
-  <div class="w-100 px-4 mb-4" style="max-width: 600px;">
-    <!-- HEADER -->
-    <div class="d-flex align-items-center gap-3 mb-4">
-      <button onclick="window.history.back()" class="btn btn-glass text-secondary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-        <i class="bi bi-arrow-left fs-5"></i>
-      </button>
-      <h3 class="text-white fw-bold mb-0">Impostazioni</h3>
+  <header class="navbar site-header sticky-top px-3 mb-4 w-100 flex-nowrap" style="background: rgba(20, 20, 30, 0.95);">
+    <!-- Tasto Indietro Desktop -->
+    <a onclick="window.history.back()" class="btn d-none d-md-inline-block text-white me-2" style="cursor: pointer;">
+      <i class="bi bi-arrow-left fs-4"></i>
+    </a>
+    
+    <a class="navbar-brand d-flex align-items-center me-auto" href="/marketplace">
+      <i class="bi bi-bank me-2 text-white"></i>
+      <span class="brand-text">ArtAround</span>
+      <span class="brand-subtitle ms-1 text-white opacity-75">Impostazioni Profilo</span>
+    </a>
+
+    <!-- Tasto Indietro Mobile a pillola -->
+    <div class="d-flex align-items-center flex-nowrap">
+      <a onclick="window.history.back()" class="btn d-md-none btn-sm btn-glass rounded-pill px-3" style="cursor: pointer;">
+          <i class="bi bi-arrow-left me-1"></i> Indietro
+      </a>
     </div>
+  </header>
+  
+  <div class="w-100 px-4 mb-4" style="max-width: 600px;">
 
     <!-- SEZIONE 1: PROFILO -->
     <section class="mb-4">

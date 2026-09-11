@@ -16,32 +16,49 @@
   </head>
   <body class="artaround-theme">
     
-    <header class="navbar site-header sticky-top px-3 mb-2 d-flex justify-content-between">
-      <div class="d-flex align-items-center">
-        <a class="navbar-brand d-flex align-items-center" href="/marketplace">
-          <i class="bi bi-map me-2 text-white"></i>
-          <span class="brand-text">ArtAround</span>
-          <span class="brand-subtitle ms-1 text-white opacity-75">Editor Visita</span>
-        </a>
-      </div> 
-      
-      <div class="d-flex align-items-center gap-3">
-        <div class="search-container position-relative d-flex align-items-center" id="search-container">
-          <input type="text" id="catalog-search-input" class="search-input form-control bg-transparent text-white border-0" placeholder="Cerca per opera o autore...">
-          <button class="btn text-white" id="search-toggle-btn">
-            <i class="bi bi-search fs-5"></i>
-          </button>
-        </div>
+    <header class="navbar site-header sticky-md-top px-3 flex-nowrap">
+      <button class="navbar-toggler d-md-none text-white border-0 me-2 p-1 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+        <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+      </button>
 
-        <button class="btn btn-outline-info rounded-circle d-flex justify-content-center align-items-center ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar" aria-controls="filterSidebar" style="width: 36px; height: 36px; padding: 0;">
-          <i class="bi bi-funnel"></i>
+      <a class="btn d-none d-md-inline-block text-white me-2" href=`window.history.back()` id="back-to-museum-btn">
+        <i class="bi bi-arrow-left fs-4"></i>
+      </a>
+
+      <a class="navbar-brand d-flex align-items-center me-auto" href="/marketplace">
+        <i class="bi bi-map me-2 text-white"></i>
+        <span class="brand-text">ArtAround</span>
+        <span class="brand-subtitle ms-1 text-white opacity-75 d-none d-md-inline">Editor Visita</span>
+      </a>
+
+      <div class="d-flex align-items-center flex-nowrap">
+        <!-- Sempre visibili (mobile e desktop) -->
+        <search-bar class="me-2"></search-bar>
+
+        <!-- Solo desktop: su mobile finisce nell'hamburger qui sotto -->
+        <button class="btn text-white me-3 d-none d-md-inline-flex" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar" aria-controls="filterSidebar">
+          <i class="bi bi-funnel fs-5"></i>
         </button>
 
-        <div id="user-area" class="text-white small d-flex align-items-center gap-2"></div>
-        
-        <a href="javascript:history.length > 1 ? history.back() : window.location.href='/my-visits'" class="btn btn-sm btn-glass rounded-pill px-3">
-            <i class="bi bi-x-lg me-1"></i> Annulla
-        </a>
+        <div class="user-area text-white small d-none d-md-flex align-items-center gap-2"></div>
+
+        <button id="cancel-btn" class="btn d-md-none btn-sm btn-glass rounded-pill px-3 ms-3">
+          <i class="bi bi-x-lg me-1"></i> Annulla
+        </button>
+      </div>
+
+      <!-- Solo mobile: Filtri, area utente e annulla, dietro l'hamburger -->
+      <div class="offcanvas-md offcanvas-start d-md-none" tabindex="-1" id="mobileMenu" style="background: rgba(20, 20, 30, 0.95); z-index: 1050;">
+        <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+          <h5 class="offcanvas-title text-white">Menu</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#mobileMenu"></button>
+        </div>
+        <div class="offcanvas-body p-4 d-flex flex-column align-items-start gap-4">
+          <button id="mobile-filtri-btn" class="btn text-white d-flex align-items-center" type="button" data-bs-dismiss="offcanvas" data-bs-target="#mobileMenu">
+            <i class="bi bi-funnel fs-5 me-3"></i>Filtri
+          </button>
+          <div class="user-area text-white small d-flex flex-column align-items-start gap-3 w-100 mt-2"></div>
+        </div>
       </div>
     </header>
 
@@ -294,7 +311,7 @@
     <script src="/vendor/sortablejs/Sortable.min.js"></script>
     <script src="/vendor/tom-select/js/tom-select.complete.min.js"></script>
     <script src="/marketplace/js/config.js"></script>
-    <script src="/marketplace/js/search-bar.js"></script>
+    <script src="/marketplace/js/webcomponents/search-bar.js"></script>
     <script src="/marketplace/js/filters.js"></script>
     <script src="/marketplace/js/sidebar.js"></script>
     <script src="/marketplace/js/image-manager.js"></script>

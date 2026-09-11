@@ -370,61 +370,91 @@ function attachMuseumFilterEvents() {
 // MODULO FILTRI BOOKSHOP (Items)
 // ==========================================
 
-function applyItemFilters() {
-  // 1. Raccogliamo i valori scelti dall'utente
+async function applyItemFilters(searchQuery = null) {
+  // Salviamo la query di ricerca globalmente se arriva dal web component
+  if (searchQuery !== null) {
+    window.activeItemSearchQuery = searchQuery.trim();
+  }
+  const search = window.activeItemSearchQuery || "";
+
   const categoryCheckboxes = document.querySelectorAll('.item-category-checkbox:checked');
   const selectedCategories = Array.from(categoryCheckboxes).map(cb => cb.value);
-  
-  const selectedAge = document.getElementById("filter-age-select")?.value;
+  const selectedAge = document.getElementById("filter-age-select")?.value || "";
   const maxPrice = parseInt(document.getElementById("item-price-slider")?.value || 100);
 
-  // 2. Filtriamo l'array corrente degli articoli
-  let filtered = currentItems.filter(item => {
+  const hasFilters = search !== "" || selectedCategories.length > 0 || selectedAge !== "" || maxPrice < 100;
+
+  // 1. Nessun filtro attivo: ripristina la cache pulita
+  if (!hasFilters && typeof pristineItemsCache !== 'undefined' && pristineItemsCache.length > 0) {
+    currentItems = [...pristineItemsCache];
+    currentItemsPage = pristineItemsPage;
     
-    // A. Filtro Categoria (l'item deve appartenere a una delle categorie spuntate)
-    if (selectedCategories.length > 0) {
-      if (!item.category || !selectedCategories.includes(item.category)) {
-        return false;
+    // FIX: Ripristiniamo anche il limite totale delle pagine altrimenti l'observer si ferma
+    if (typeof pristineTotalItemsPages !== 'undefined') {
+      totalItemsPages = pristineTotalItemsPages;
+    }
+    
+    renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK || 12, currentItems.length);
+    renderItemsList(currentItems.slice(0, renderedItemsCount), false);
+    
+    if (typeof updateItemsSentinelVisibility === 'function') updateItemsSentinelVisibility();
+    return;
+  }
+
+  // 2. Filtraggio Locale (Latenza Zero): se tutto il DB è in RAM
+  if (typeof isEntireItemsDbInCache !== 'undefined' && isEntireItemsDbInCache && hasFilters) {
+    let filtered = pristineItemsCache.filter(item => {
+      // Testo
+      if (search && typeof fuzzySearch === 'function') {
+        if (!fuzzySearch(search, item.name) && !(item.description && fuzzySearch(search, item.description))) return false;
+      } else if (search) {
+        const sLower = search.toLowerCase();
+        if (!item.name?.toLowerCase().includes(sLower) && !item.description?.toLowerCase().includes(sLower)) return false;
       }
-    }
+      
+      // Checkbox, Categorie e Prezzo
+      if (selectedCategories.length > 0 && (!item.category || !selectedCategories.includes(item.category))) return false;
+      if (selectedAge && selectedAge !== "" && (!item.targetAge || (!item.targetAge.includes(selectedAge) && !item.targetAge.includes('all')))) return false;
+      if (maxPrice < 100 && item.price > maxPrice) return false;
+      
+      return true;
+    });
 
-    // B. Filtro Età target (Gestione intelligente)
-    // Se l'utente cerca "4-7", mostriamo i prodotti specifici per "4-7" e quelli "all" (adatti a tutti)
-    if (selectedAge && selectedAge !== "") {
-      if (!item.targetAge || (!item.targetAge.includes(selectedAge) && !item.targetAge.includes('all'))) {
-        return false;
-      }
-    }
+    currentItems = filtered;
+    renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK || 12, currentItems.length);
+    renderItemsList(currentItems.slice(0, renderedItemsCount), false);
+    if (typeof updateItemsSentinelVisibility === 'function') updateItemsSentinelVisibility();
+    return;
+  }
 
-    // C. Filtro Prezzo Massimo
-    if (maxPrice < 100 && item.price > maxPrice) {
-      return false;
-    }
-
-    return true;
-  });
-
-  // 3. Renderizziamo i risultati
-  renderItemsList(filtered);
+  // 3. Server-side Filtering: Interroga Mongoose API
+  currentItemsPage = 1;
+  renderedItemsCount = 0;
+  await fetchAndRenderItems(currentMuseumId, false);
 }
 
 function resetItemFilters() {
-  // Resetta le checkbox delle categorie
+  window.activeItemSearchQuery = "";
+  
+  // Svuota visivamente il web component
+  const searchBarComponent = document.querySelector('search-bar');
+  if (searchBarComponent) {
+    const input = searchBarComponent.querySelector('input');
+    if (input) input.value = '';
+  }
+
   document.querySelectorAll('.item-category-checkbox').forEach(cb => cb.checked = false);
   
-  // Resetta la tendina dell'età
   const ageSelect = document.getElementById("filter-age-select");
   if (ageSelect) ageSelect.value = "";
   
-  // Resetta lo slider del prezzo
   const priceSlider = document.getElementById("item-price-slider");
   if (priceSlider) priceSlider.value = 100;
   
   const priceVal = document.getElementById("item-price-value");
   if (priceVal) priceVal.innerText = "100+ €";
 
-  // Ricarica la lista completa
-  renderItemsList(currentItems);
+  applyItemFilters();
 }
 
 function attachItemFilterEvents() {

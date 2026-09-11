@@ -34,10 +34,7 @@
           <i class="bi bi-funnel fs-5"></i>
         </button>
 
-        <button class="btn text-white position-relative me-3" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
-          <i class="bi bi-cart3 fs-4"></i>
-          <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">0</span>
-        </button>
+        <art-cart></art-cart>
 
         <div class="user-area text-white small d-none d-md-flex align-items-center gap-2"></div>
       </div>
@@ -49,6 +46,8 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#mobileMenu"></button>
         </div>
         <div class="offcanvas-body p-4 d-flex flex-column align-items-start gap-4">
+          <art-cart btn-class="btn text-white d-flex align-items-center w-100 text-start" icon-class="bi bi-cart3 fs-5 me-3" label="Carrello"></art-cart>
+
           <a href="/navigator" class="btn text-white d-flex align-items-center" title="Apri Navigator" data-bs-dismiss="offcanvas" data-bs-target="#mobileMenu">
             <i class="bi bi-compass fs-5 me-3"></i>Navigator
           </a>
@@ -59,8 +58,6 @@
         </div>
       </div>
     </header>
-
-    <art-cart></art-cart>
 
     <div class="container-fluid">
       <div class="row flex-nowrap">
