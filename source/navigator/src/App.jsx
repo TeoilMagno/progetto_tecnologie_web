@@ -144,9 +144,7 @@ function AppLayout() {
 
             {/* Rotte protette */}
             <Route path="/map" element={
-              <ProtectedRoute>
                 <MapRouteWrapper />
-              </ProtectedRoute>
             } />
             <Route path="/quiz" element={
               <ProtectedRoute>

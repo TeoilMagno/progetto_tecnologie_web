@@ -901,6 +901,7 @@ apiRouter.get("/visits/:id", async (req, res) => {
     // sessione condivisa, quindi cachearla per URL mescolerebbe i dati di
     // utenti diversi che aprono la stessa visita.
     const visitObj = visit.toObject ? visit.toObject() : visit;
+    visitObj.canStart = visit._doc.canStart;
 
     const isLogged = req.isAuthenticated();
     const userData = isLogged ? req.user : null;

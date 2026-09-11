@@ -93,17 +93,25 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         const visitResponse = await fetch(`${API_BASE_URL}/visits/${visitId}${queryParam}`, { credentials: 'include' });
         if (!visitResponse.ok) throw new Error("Visita non trovata");
 
+        const apiData = await visitResponse.json();
+        const visitData = apiData.visit;
+
+        console.log("visit: ", apiData);
+        console.log("sharedsession: ", isSharedSession);
+
         // NUOVO: se non ha diritto di usarla (e non è una sessione condivisa da un
         // insegnante che l'ha già "sbloccata"), non carichiamo il tour interattivo
-        if (!visitResponse.canStart && !isSharedSession) {
-          setAccessDenied(true);
+        // Se non ha i permessi e non è in una sessione condivisa, interrompiamo l'esecuzione
+        if (!visitData.canStart && !isSharedSession) {
+          // accessDenied è già true di default, ci basta fermare la rotellina di caricamento
           setLoading(false);
           return;
         }
 
-        const apiData = await visitResponse.json();
-	alert("visitData pirla");
-        const visitData = apiData.visit;
+        // Se supera il blocco precedente, ha i permessi: sblocchiamo la vista
+        setAccessDenied(false);
+
+	  alert("visitData pirla");
 
         const dictionary = apiData.commands_map;
         const userData = apiData.user;
@@ -461,6 +469,21 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
       <div className="flex flex-col items-center justify-center w-screen h-screen bg-[#09090b] text-white">
         <Loader2 className="animate-spin text-cyan-400 mb-4" size={40} />
         <p className="text-slate-400">Caricamento visita in corso...</p>
+      </div>
+    );
+  }
+
+  if (accessDenied) {
+    return (
+      <div className="flex flex-col items-center justify-center w-screen h-screen bg-[#09090b] text-white p-6 text-center">
+        <div className="w-16 h-16 bg-red-500/10 text-red-500 flex items-center justify-center rounded-2xl mb-4">
+          <LogOut size={32} />
+        </div>
+        <h2 className="text-2xl font-bold mb-2">Accesso Riservato</h2>
+        <p className="text-slate-400 max-w-sm mb-6">Non hai i permessi per avviare questo itinerario. Acquistalo prima dal marketplace.</p>
+        <button onClick={() => navigate('/visits')} className="bg-cyan-600 hover:bg-cyan-500 px-6 py-2.5 rounded-xl text-white font-bold transition-colors">
+          Torna agli itinerari
+        </button>
       </div>
     );
   }
