@@ -173,7 +173,7 @@ export default function WorkDetailsContent({
             <div className="pr-10">
               <h3 className="font-extrabold text-xl md:text-2xl mb-1 text-white leading-tight">{work.name}</h3>
               <p className="text-amber-500 font-semibold m-0 text-xs md:text-sm">
-                {work.authorName || 'Autore Sconosciuto'} • {work.year} {work.styleName ? `• ${work.styleName}` : ''}
+                {work.authorName || 'Autore sconosciuto'} • {work.year} {work.styleName ? `• ${work.styleName}` : ''}
               </p>
             </div>
           </div>

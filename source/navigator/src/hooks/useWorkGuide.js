@@ -374,7 +374,7 @@ export function useWorkGuide({
       } else if (phrase.includes("curiosità") || phrase.includes("aneddoto")) {
         handleFunFact();
       } else if (phrase.includes("autore") || phrase.includes("chi l'ha fatto")) {
-        handleAboutAuthor();
+        handleAuthorBio();
       } else if (phrase.includes("stile") || phrase.includes("corrente")) {
         handleAboutStyle();
       } else {
@@ -523,24 +523,60 @@ export function useWorkGuide({
     }
   };
 
+  const handleParaphrase = () => {
+    const text = work?.paraphrase || "La parafrasi non è disponibile per quest'opera.";
+    speakText(text);
+  };
+
+  // --- HELPER PER PESCARE I DATI CORRETTI ---
+  const currentMuseumId = localStorage.getItem('selected_museum_id');
+
+  const getAuthorData = () => {
+    const authorObj = work?.author || work?.authorId;
+    const dataList = authorObj?.data || [];
+    
+    // Controlla se m è un oggetto popolato (m._id) oppure una stringa/ObjectId semplice (m)
+    return dataList.find(d => 
+      d.museumId && d.museumId.some(m => 
+        (m._id ? m._id.toString() : m.toString()) === currentMuseumId
+      )
+    ) || dataList[0];
+  };
+
+  const getStyleData = () => {
+    const styleObj = work?.style || work?.styleId;
+    const dataList = styleObj?.data || [];
+    
+    return dataList.find(d => 
+      d.museumId && d.museumId.some(m => 
+        (m._id ? m._id.toString() : m.toString()) === currentMuseumId
+      )
+    ) || dataList[0];
+  };
+
+  // --- FUNZIONI DI LETTURA ---
   const handleAuthorBio = () => {
-    speakText(work?.author?.data?.[0]?.bio);
+    const authorData = getAuthorData();
+    const text = authorData?.bio || `Mi dispiace, non ho una biografia dettagliata per ${work?.authorName || "questo autore"}.`;
+    speakText(text);
   };
 
   const handleAuthorStudies = () => {
-    speakText(work?.author?.data?.[0]?.studies);
+    const authorData = getAuthorData();
+    const text = authorData?.studies || "Non ho informazioni sugli studi dell'autore.";
+    speakText(text);
   };
 
   const handleAuthorWorks = () => {
-    speakText(work?.author?.data?.[0]?.mainWorks);
+    const authorData = getAuthorData();
+    const text = authorData?.mainWorks || "Non ho informazioni sulle altre opere principali.";
+    speakText(text);
   };
 
   const handleAboutStyle = () => {
-    speakText(work?.style?.data?.[0]?.description);
-  };
-
-  const handleParaphrase = () => {
-    speakText(work?.paraphrase);
+    const styleData = getStyleData();
+    const text = styleData?.description || `Mi dispiace, non ho approfondimenti sullo stile ${work?.styleName || "di quest'opera"}.`;
+    speakText(text);
   };
 
   return {

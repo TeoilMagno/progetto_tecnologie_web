@@ -125,11 +125,20 @@ exports.getVisits = async (userId) => {
   return allVisits;
 };
 
-exports.getVisitById = async (visitId, user, isShared = false) => {
+exports.getVisitById = async (visitId, user, isShared = false, isNavigator = false) => {
+  // 1. Array di popolamento dinamico: adoptionId serve sempre per i warning nel marketplace
+  const worksPopulate = [{ path: 'adoptionId' }];
+  
+  // 2. Aggiungiamo i dati pesanti di Autore e Stile SOLO per il Navigator (IA e Assistente)
+  if (isNavigator) {
+    worksPopulate.push({ path: 'author' });
+    worksPopulate.push({ path: 'style' });
+  }
+
   const visit = await Visit.findById(visitId)
     .populate('museumId')
     .populate('creator', 'username email')
-    .populate({ path: 'works', populate: { path: 'adoptionId' } });
+    .populate({ path: 'works', populate: worksPopulate });
 
   if (!visit) {
     const error = new Error("Visita non trovata");

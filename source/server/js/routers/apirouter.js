@@ -886,14 +886,16 @@ apiRouter.get("/visits/:visitId/museum", async (req, res) => {
 apiRouter.get("/visits/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { roomCode } = req.query;
+    const { roomCode, navigator } = req.query;
     
     // Controlliamo se esiste una stanza attiva per questa visita
     const sessions = req.app.locals.activeSessions;
     const isSharedValid = roomCode && sessions[roomCode] && sessions[roomCode].visitId === id;
     
+    const isNavigator = navigator === 'true';
+
     // Passiamo isSharedValid (true o false) al controller
-    const visit = await visitController.getVisitById(id, req.user, isSharedValid);
+    const visit = await visitController.getVisitById(id, req.user, isSharedValid, isNavigator);
 
     if(!visit) return res.status(404).json({ error: "visita non trovata" });
 
@@ -1516,6 +1518,53 @@ apiRouter.get("/config/by-museum/:museumName", cacheMiddleware(60), async (req, 
     res.json(configDoc.config);
   } catch (err) {
     res.status(500).json({ error: "Errore del server: " + err.message });
+  }
+});
+
+const Author = require("../models/author");
+const Style = require("../models/style");
+
+// Rotta temporanea per risolvere i riferimenti orfani di opere, autori e stili
+// Rotta temporanea per validare la conformità di Work, Author e Style ai modelli Mongoose
+apiRouter.get("/check-validity", async (req, res) => {
+  try {
+    const report = {
+      works: { total: 0, invalidCount: 0, errors: [] },
+      authors: { total: 0, invalidCount: 0, errors: [] },
+      styles: { total: 0, invalidCount: 0, errors: [] }
+    };
+
+    // Funzione helper per controllare un'intera collezione
+    const checkCollection = async (Model, reportKey) => {
+      const docs = await Model.find({}); // Recupera i documenti idratandoli con Mongoose
+      report[reportKey].total = docs.length;
+
+      for (let doc of docs) {
+        // validateSync() esegue la validazione dello schema senza salvare nel DB
+        const validationError = doc.validateSync(); 
+        if (validationError) {
+          report[reportKey].invalidCount++;
+          report[reportKey].errors.push({
+            id: doc._id,
+            name: doc.name || 'Sconosciuto',
+            errorDetails: validationError.message
+          });
+        }
+      }
+    };
+
+    // Controllo delle tre collezioni
+    await checkCollection(Work, 'works');
+    await checkCollection(Author, 'authors');
+    await checkCollection(Style, 'styles');
+
+    res.status(200).json({
+      message: "Check di validità completato",
+      report
+    });
+  } catch (error) {
+    console.error("Errore durante il check di validità:", error);
+    res.status(500).json({ error: "Errore fatale di cast o caricamento: " + error.message });
   }
 });
 
