@@ -23,13 +23,39 @@ body.artaround-theme {
     background-attachment: fixed;
     background-repeat: no-repeat;
     min-height: 100vh;
-    -ms-overflow-style: none !important;  /* IE e Edge */
-    scrollbar-width: none !important;     /* Firefox */
+    
+    /* Risolto: applichiamo lo scroll custom su Firefox invece di nasconderlo */
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent !important;
 }
 
+/* Risolto: la barra globale per l'intero sito e contenitori isolati */
 html::-webkit-scrollbar,
-body.artaround-theme::-webkit-scrollbar {
-    display: none !important;             /* Chrome, Safari, Edge, Opera */
+body.artaround-theme::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+    display: block !important;
+    width: 8px;
+    height: 8px;
+}
+
+html::-webkit-scrollbar-track,
+body.artaround-theme::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+}
+
+html::-webkit-scrollbar-thumb,
+body.artaround-theme::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body.artaround-theme::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
 }
 
 /* HEADER */
@@ -860,4 +886,37 @@ body {
 /* 3. Capovolge la freccina quando il menu si apre */
 .ts-wrapper.single.dropdown-active .ts-control::after {
     transform: translateY(-30%) rotate(-135deg);
+}
+
+/* ========================================= */
+/* CLASSE GENERALE: SCROLLBAR PERSONALIZZATA */
+/* ========================================= */
+.custom-scrollbar {
+    /* Per Firefox */
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent !important;
+}
+
+/* Forza la visualizzazione su Chrome/Safari/Edge sovrascrivendo il display:none globale */
+.custom-scrollbar::-webkit-scrollbar {
+    display: block !important; 
+    width: 8px;
+    height: 8px;
+}
+
+/* Binario della scrollbar (sfondo quasi invisibile) */
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+}
+
+/* Cursore della scrollbar (grigio trasparente) */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+/* Cursore della scrollbar al passaggio del mouse (leggermente più visibile) */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
 }

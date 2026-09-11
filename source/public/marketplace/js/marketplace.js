@@ -292,23 +292,23 @@ function renderMuseumDashboard(museumInfo) {
   // Configura il titolo, la barra extra e i bottoni
   if (museumInfo) {
     title.innerHTML = `
-      <div class="d-flex justify-content-between align-items-center w-100">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center w-100 gap-3">
         <div>
           ${museumInfo.name}
           ${museumExtraInfo}
         </div>
-        <div class="d-flex flex-shrink-0 align-items-start">
-          <a href="/create-visit?museumId=${museumInfo._id}" class="btn-create-visit ms-3">
+        <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
+          <a href="/create-visit?museumId=${museumInfo._id}" class="btn-create-visit">
             <i class="bi bi-map me-1"></i> Crea visita
           </a>
-          <a href="/edit-museum?id=${museumInfo._id}" id="edit-museum-btn" class="btn-create-visit ms-2 d-none">
+          <a href="/edit-museum?id=${museumInfo._id}" id="edit-museum-btn" class="btn-create-visit d-none">
             <i class="bi bi-sliders me-1"></i> Modifica
           </a>
-          <a href="/bookshop?id=${museumInfo._id}" id="btn-manage-bookshop" class="btn-create-visit ms-2 d-none" >
-            <i class="bi bi-shop me-2"></i> Bookshop
+          <a href="/bookshop?id=${museumInfo._id}" id="btn-manage-bookshop" class="btn-create-visit d-none" >
+            <i class="bi bi-shop me-1"></i> Bookshop
           </a>
-          <a href="/museums/${museumInfo._id}/upload-map/" id="upload-map-btn" class="btn-create-visit ms-2 d-none">
-            <i class="bi bi-map-fill me-1"></i> Mappa
+          <a href="/museums/${museumInfo._id}/upload-map/" id="upload-map-btn" class="btn-create-visit d-none">
+            <i class="bi bi-geo-alt me-1"></i> Mappa
           </a>
         </div>
       </div>
