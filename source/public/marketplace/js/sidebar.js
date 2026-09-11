@@ -12,6 +12,22 @@ document.addEventListener("DOMContentLoaded", () => {
       <!-- I filtri verranno iniettati qui dinamicamente in base al contesto -->
     </div>
   `;
+
+  // Passaggio di testimone hamburger -> filtri (solo mobile): due offcanvas
+  // Bootstrap aperti anche solo per un istante si contendono lo stesso
+  // backdrop e vanno in conflitto (uno dei due lampeggia apri/chiudi).
+  // Il bottone "Filtri" dentro l'hamburger ha solo data-bs-dismiss (chiude
+  // #mobileMenu): apriamo #filterSidebar SOLO dopo che #mobileMenu si e'
+  // chiuso davvero (evento hidden.bs.offcanvas), mai in contemporanea.
+  const mobileFilterBtn = document.getElementById("mobile-filtri-btn");
+  const mobileMenuEl = document.getElementById("mobileMenu");
+  if (mobileFilterBtn && mobileMenuEl) {
+    mobileFilterBtn.addEventListener("click", () => {
+      mobileMenuEl.addEventListener("hidden.bs.offcanvas", () => {
+        bootstrap.Offcanvas.getOrCreateInstance(sidebar).show();
+      }, { once: true });
+    });
+  }
 });
 
 // Funzione globale chiamata da marketplace.js per popolare i filtri giusti
