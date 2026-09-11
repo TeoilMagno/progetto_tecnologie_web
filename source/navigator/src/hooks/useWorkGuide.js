@@ -313,6 +313,106 @@ export function useWorkGuide({
     }, 2000);
   };
 
+  const processUserCommand = async (phrase) => {
+    if (!phrase.trim()) return;
+    const cleanPhrase = phrase.trim().toLowerCase();
+
+    if (isSharedSession && !isTeacher && socket && roomCode) {
+      socket.emit('student_interaction', {
+        roomCode,
+        studentName: localStorage.getItem('student_name') || 'Studente',
+        interactionType: 'voice',
+        query: phrase
+      });
+    }
+
+    // Mappatura comandi vocali sui tasti
+    if (phrase.includes("approfondisci") || phrase.includes("spiega meglio") || phrase.includes("più difficile") || phrase.includes("più tecnico")) {
+      handleHigherExper();
+    } else if (phrase.includes("semplifica") || phrase.includes("più facile") || phrase.includes("parla semplice") || phrase.includes("più semplice")) {
+      handleLowerExper();
+    } else if (phrase.includes("dimmi di più") || phrase.includes("più lunga") || phrase.includes("continua") || phrase.includes("estendi")) {
+      handleMoreDesc();
+    } else if (phrase.includes("dimmi di meno") || phrase.includes("più corta") || phrase.includes("riassumi") || phrase.includes("meno")) {
+      handleLessDesc();
+    } else if (phrase.includes("ascolta") || phrase.includes("leggi") || phrase.includes("riproduci") || phrase.includes("play")) {
+      speakText(work?.description?.[currentExpertise]?.[currentLength]);
+    } else if (phrase.includes("ferma") || phrase.includes("stop") || phrase.includes("pausa") || phrase.includes("silenzio")) {
+      handleStopAudio();
+    } else if (phrase.includes("curiosità") || phrase.includes("aneddoto")) {
+      handleFunFact();
+    } else if (phrase.includes("autore") || phrase.includes("chi l'ha fatto")) {
+      handleAuthorBio();
+    } else if (phrase.includes("stile") || phrase.includes("corrente")) {
+      handleAboutStyle();
+    } else {
+      // 1. Cerca il comando nel dizionario statico (priorità alta e risposta immediata)
+      let mapped = commandsMap ? commandsMap[phrase.replace(/\.$/, '')] : null;
+      
+      // 2. Se non c'è nel dizionario, delega l'interpretazione all'IA
+      if (!mapped) {
+        try {
+          const aiResponse = await fetch(`${API_BASE_URL}/ai/map-request`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: phrase })
+          });
+          
+          if (aiResponse.ok) {
+            const aiData = await aiResponse.json();
+            mapped = aiData.mappedAction;
+          }
+        } catch (e) {
+          console.error("[MIC] Errore durante la mappatura IA:", e);
+        }
+      }
+
+      // 3. Esegui l'azione mappata (sia che provenga dal dizionario, sia dall'IA)
+      switch (mapped) {
+        case "PLAY":
+          speakText(work?.description?.[currentExpertise]?.[currentLength]);
+          break;
+        case "NEXT_DESC":
+          handleMoreDesc();
+          break;
+        case "PREV_DESC":
+          handleLessDesc();
+          break;
+        case "NEXT_EXPER":
+          handleHigherExper();
+          break;
+        case "PREV_EXPER":
+          handleLowerExper();
+          break;
+        case "FUN_FACT":
+          handleFunFact();
+          break;
+        case "AUTHOR_BIO":
+          handleAuthorBio();
+          break;
+        case "AUTHOR_STUDIES":
+          handleAuthorStudies();
+          break;
+        case "AUTHOR_WORKS":
+          handleAuthorWorks();
+          break;
+        case "STYLE_DESC":
+          handleAboutStyle();
+          break;
+        case "PARAPHRASE":
+          handleParaphrase();
+          break;
+        case "CLOSE":
+          handleStopAudio();
+          break;
+        case "UNKNOWN":
+        default:
+          triggerToast("Non ho capito, riprova");
+          break;
+      }
+    }
+  };
+
   // GESTORE RICONOSCIMENTO VOCALE
   const startListening = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -349,101 +449,8 @@ export function useWorkGuide({
       // Mostra a schermo esattamente quello che ha capito
       triggerToast(`"${phrase}"`);
 
-      if (isSharedSession && !isTeacher && socket && roomCode) {
-        socket.emit('student_interaction', {
-          roomCode,
-          studentName: localStorage.getItem('student_name') || 'Studente',
-          interactionType: 'voice',
-          query: phrase
-        });
-      }
-
-      // Mappatura comandi vocali sui tasti
-      if (phrase.includes("approfondisci") || phrase.includes("spiega meglio") || phrase.includes("più difficile") || phrase.includes("più tecnico")) {
-        handleHigherExper();
-      } else if (phrase.includes("semplifica") || phrase.includes("più facile") || phrase.includes("parla semplice") || phrase.includes("più semplice")) {
-        handleLowerExper();
-      } else if (phrase.includes("dimmi di più") || phrase.includes("più lunga") || phrase.includes("continua") || phrase.includes("estendi")) {
-        handleMoreDesc();
-      } else if (phrase.includes("dimmi di meno") || phrase.includes("più corta") || phrase.includes("riassumi") || phrase.includes("meno")) {
-        handleLessDesc();
-      } else if (phrase.includes("ascolta") || phrase.includes("leggi") || phrase.includes("riproduci") || phrase.includes("play")) {
-        speakText(work?.description?.[currentExpertise]?.[currentLength]);
-      } else if (phrase.includes("ferma") || phrase.includes("stop") || phrase.includes("pausa") || phrase.includes("silenzio")) {
-        handleStopAudio();
-      } else if (phrase.includes("curiosità") || phrase.includes("aneddoto")) {
-        handleFunFact();
-      } else if (phrase.includes("autore") || phrase.includes("chi l'ha fatto")) {
-        handleAuthorBio();
-      } else if (phrase.includes("stile") || phrase.includes("corrente")) {
-        handleAboutStyle();
-      } else {
-        // 1. Cerca il comando nel dizionario statico (priorità alta e risposta immediata)
-        let mapped = commandsMap ? commandsMap[phrase.replace(/\.$/, '')] : null;
-        
-        // 2. Se non c'è nel dizionario, delega l'interpretazione all'IA
-        if (!mapped) {
-          try {
-            const aiResponse = await fetch(`${API_BASE_URL}/ai/map-request`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ prompt: phrase })
-            });
-            
-            if (aiResponse.ok) {
-              const aiData = await aiResponse.json();
-              mapped = aiData.mappedAction;
-            }
-          } catch (e) {
-            console.error("[MIC] Errore durante la mappatura IA:", e);
-          }
-        }
-
-        // 3. Esegui l'azione mappata (sia che provenga dal dizionario, sia dall'IA)
-        switch (mapped) {
-          case "PLAY":
-            speakText(work?.description?.[currentExpertise]?.[currentLength]);
-            break;
-          case "NEXT_DESC":
-            handleMoreDesc();
-            break;
-          case "PREV_DESC":
-            handleLessDesc();
-            break;
-          case "NEXT_EXPER":
-            handleHigherExper();
-            break;
-          case "PREV_EXPER":
-            handleLowerExper();
-            break;
-          case "FUN_FACT":
-            handleFunFact();
-            break;
-          case "AUTHOR_BIO":
-            handleAuthorBio();
-            break;
-          case "AUTHOR_STUDIES":
-            handleAuthorStudies();
-            break;
-          case "AUTHOR_WORKS":
-            handleAuthorWorks();
-            break;
-          case "STYLE_DESC":
-            handleAboutStyle();
-            break;
-          case "PARAPHRASE":
-            handleParaphrase();
-            break;
-          case "CLOSE":
-            handleStopAudio();
-            break;
-          case "UNKNOWN":
-          default:
-            triggerToast("Non ho capito, riprova");
-            break;
-        }
-      }
-    };
+      processUserCommand(phrase);
+    }
 
     recognition.onerror = (e) => {
       console.warn("[MIC] Errore:", e.error);
@@ -585,6 +592,7 @@ export function useWorkGuide({
     setCurrentExpertise, setCurrentLength,
     speakText, handleStopAudio, handlePauseAudio, handleResumeAudio, handleSeekAudio,
     startListening, handleMoreDesc, handleLessDesc, handleHigherExper, handleLowerExper,
-    handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase
+    handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase,
+    processUserCommand
   };
 }

@@ -1,4 +1,4 @@
-import { Play, Pause, Mic, X, Sparkles, RotateCcw, RotateCw, ChevronLeft, ChevronRight, User, Palette } from "lucide-react";
+import { Play, Pause, Mic, X, Sparkles, RotateCcw, RotateCw, ChevronLeft, ChevronRight, User, Palette, Send, Loader2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react"; 
 import { createPortal } from "react-dom";
 
@@ -24,7 +24,8 @@ export default function WorkDetailsContent({
     setCurrentExpertise, setCurrentLength,
     speakText, handleStopAudio, handlePauseAudio, handleResumeAudio, handleSeekAudio,
     startListening, handleMoreDesc, handleLessDesc, handleHigherExper, handleLowerExper,
-    handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase
+    handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase,
+    processUserCommand
   } = guide;
 
   // Notifica la dashboard dell'insegnante quando uno studente interagisce
@@ -57,6 +58,10 @@ export default function WorkDetailsContent({
 
   // Stato interno che gestisce l'animazione fluida
   const [internalRatio, setInternalRatio] = useState(0);
+
+  // Stati per l'inserimento testuale
+  const [textCommand, setTextCommand] = useState("");
+  const [isProcessingText, setIsProcessingText] = useState(false);
 
   // 1. Allinea il timer interno immediatamente quando il padre invia un salto (-5s/+5s) o un onboundary
   useEffect(() => {
@@ -365,6 +370,40 @@ export default function WorkDetailsContent({
                       title="Comandi vocali: 'dimmi di più', 'semplifica', ecc."
                     >
                       <Mic size={18} />
+                    </button>
+                  </div>
+
+                  {/* NUOVA BARRA DI TESTO */}
+                  <div className="relative w-full mt-1">
+                    <input 
+                      type="text" 
+                      value={textCommand}
+                      onChange={(e) => setTextCommand(e.target.value)}
+                      onKeyDown={async (e) => {
+                        if (e.key === 'Enter' && textCommand.trim()) {
+                          setIsProcessingText(true);
+                          await processUserCommand(textCommand);
+                          setIsProcessingText(false);
+                          setTextCommand('');
+                        }
+                      }}
+                      placeholder="Chiedi qualcosa..." 
+                      className="w-full bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-xl pl-4 pr-12 py-3 text-sm text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 shadow-inner transition-colors"
+                    />
+                    <button 
+                      type="button"
+                      onClick={async () => {
+                        if (textCommand.trim()) {
+                          setIsProcessingText(true);
+                          await processUserCommand(textCommand);
+                          setIsProcessingText(false);
+                          setTextCommand('');
+                        }
+                      }}
+                      disabled={isProcessingText || !textCommand.trim()}
+                      className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white rounded-lg transition-colors cursor-pointer"
+                    >
+                      {isProcessingText ? <Loader2 size={16} className="animate-spin text-white" /> : <Send size={16} />}
                     </button>
                   </div>
                 </div>
