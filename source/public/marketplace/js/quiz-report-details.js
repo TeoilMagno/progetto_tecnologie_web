@@ -12,11 +12,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  document.addEventListener('search-input', () => {
+    const query = document.querySelector('search-bar input')?.value.toLowerCase().trim() || "";
+    if (!currentReportData || !currentReportData.results) return;
+    
+    const filtered = currentReportData.results.filter(student => {
+      if (!query) return true;
+      return student.studentName.toLowerCase().includes(query);
+    });
+    
+    renderStudentsList(filtered);
+  });
+
+  document.addEventListener('search-cleared', () => {
+    if (currentReportData) renderStudentsList(currentReportData.results);
+  });
+
   try {
     const res = await fetch(`${API_BASE_URL}/quiz-results/${reportId}`);
     if (!res.ok) throw new Error("Report non trovato");
     
     currentReportData = await res.json();
+    
+    // Assegna l'indice originale per agganciare la modale post-filtro
+    if (currentReportData.results) {
+      currentReportData.results.forEach((student, idx) => student.originalIndex = idx);
+    }
+    
     renderReportDetails(currentReportData);
   } catch (error) {
     console.error(error);
@@ -26,29 +48,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function renderReportDetails(report) {
   const subtitle = document.getElementById("report-subtitle");
-  const container = document.getElementById("students-container");
-
   const dateStr = new Date(report.date).toLocaleDateString('it-IT');
   subtitle.innerHTML = `Stanza: <span class="text-white font-monospace">${report.roomCode}</span> &bull; ${dateStr}`;
+  
+  renderStudentsList(report.results);
+}
 
-  const quizData = report.visitId?.quiz || [];
+function renderStudentsList(resultsArray) {
+  const container = document.getElementById("students-container");
+  const quizData = currentReportData.visitId?.quiz || [];
   let html = "";
 
-  if (!report.results || report.results.length === 0) {
-    container.innerHTML = `<div class="text-center text-secondary py-4">Nessuno studente ha ancora completato il quiz in questa sessione.</div>`;
+  if (!resultsArray || resultsArray.length === 0) {
+    container.innerHTML = `<div class="text-center text-secondary py-4">Nessuno studente trovato per questa ricerca.</div>`;
     return;
   }
 
-  report.results.forEach((student, idx) => {
+  resultsArray.forEach(student => {
     const isMax = student.score === quizData.length;
     
     html += `
       <div class="col-12">
-        <div class="card custom-card p-3 cursor-pointer" onclick="openStudentReview(${idx})" style="cursor: pointer;">
+        <div class="card custom-card p-3 cursor-pointer" onclick="openStudentReview(${student.originalIndex})" style="cursor: pointer;">
           <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
               <div class="rounded-circle bg-info bg-opacity-25 text-info d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem;">
-                ${idx + 1}
+                ${student.originalIndex + 1}
               </div>
               <span class="fw-bold text-white">${student.studentName}</span>
             </div>

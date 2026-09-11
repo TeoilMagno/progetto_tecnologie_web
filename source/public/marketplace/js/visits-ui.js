@@ -6,33 +6,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   getMyVisits(); 
 
-  document.addEventListener('search-input', (e) => {
-    const query = e.detail.query;
+  document.addEventListener('search-input', () => {
+    // Leggiamo il valore direttamente dal web component per massima compatibilità
+    const query = document.querySelector('search-bar input')?.value.toLowerCase().trim() || "";
+    
     if (!cachedVisits || cachedVisits.length === 0) return;
+    
     const filtered = cachedVisits.filter(v => {
-      const title = v.title || "";
-      const museumName = v.museumId ? v.museumId.name : "";
-      // Utilizziamo fuzzySearch (che presumo tu abbia in config.js)
-      return fuzzySearch(query, title) || fuzzySearch(query, museumName);
+      if (!query) return true;
+      const title = (v.title || "").toLowerCase();
+      const museumName = (v.museumId && v.museumId.name ? v.museumId.name : "").toLowerCase();
+      
+      return title.includes(query) || museumName.includes(query);
     });
+    
     renderVisitsList(filtered, "managed-visits-area");
   });
 
   document.addEventListener('search-cleared', () => {
     renderVisitsList(cachedVisits, "managed-visits-area");
   });
-  });
+});
 
-  // intercetta il tasto "Indietro"
-  window.addEventListener("pageshow", (event) => {
-    // Se la pagina viene dalla cache (tasto indietro) E c'è il post-it di aggiornamento
-    if (event.persisted && localStorage.getItem("visitsChanged") === "true") {
-        console.log("Rilevate nuove modifiche, aggiorno i dati...");
-        getMyVisits(); 
-        
-        // Strappiamo il post-it, così se torna indietro un'altra volta non ricarica inutilmente!
-        localStorage.removeItem("visitsChanged");
-    }
+// intercetta il tasto "Indietro"
+window.addEventListener("pageshow", (event) => {
+  // Se la pagina viene dalla cache (tasto indietro) E c'è il post-it di aggiornamento
+  if (event.persisted && localStorage.getItem("visitsChanged") === "true") {
+      console.log("Rilevate nuove modifiche, aggiorno i dati...");
+      getMyVisits(); 
+      
+      // Strappiamo il post-it, così se torna indietro un'altra volta non ricarica inutilmente!
+      localStorage.removeItem("visitsChanged");
+  }
 });
 
 async function getMyVisits() {

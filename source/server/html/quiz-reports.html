@@ -12,6 +12,11 @@
   <body class="artaround-theme text-white">
     
     <header class="navbar site-header sticky-top px-3 mb-4 flex-nowrap" style="background: rgba(20, 20, 30, 0.95);">
+      <!-- Hamburger Menu (Mobile) -->
+      <button class="navbar-toggler d-md-none text-white border-0 me-2 p-1 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+        <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+      </button>
+
       <!-- Tasto Indietro Desktop -->
       <a onclick="window.history.back()" class="btn d-none d-md-inline-block text-white me-2" style="cursor: pointer;">
         <i class="bi bi-arrow-left fs-4"></i>
@@ -25,19 +30,33 @@
 
       <!-- Tasto Indietro Mobile a pillola -->
       <div class="d-flex align-items-center flex-nowrap">
+        <search-bar class="me-2 d-none d-md-block"></search-bar>
         <a onclick="window.history.back()" class="btn d-md-none btn-sm btn-glass rounded-pill px-3" style="cursor: pointer;">
             <i class="bi bi-arrow-left me-1"></i> Indietro
         </a>
+        <div id="user-area" class="user-area text-white small d-none d-md-flex align-items-center gap-2"></div>
+      </div>
+
+
+      <!-- Menu Mobile -->
+      <div class="offcanvas-md offcanvas-start d-md-none" tabindex="-1" id="mobileMenu" style="background: rgba(20, 20, 30, 0.95); z-index: 1050;">
+        <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+          <h5 class="offcanvas-title text-white">Menu</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#mobileMenu"></button>
+        </div>
+        <div class="offcanvas-body p-4 d-flex flex-column align-items-start gap-4">
+          <a href="/navigator" class="btn text-white d-flex align-items-center" title="Apri Navigator" data-bs-dismiss="offcanvas" data-bs-target="#mobileMenu">
+            <i class="bi bi-compass fs-5 me-3"></i>Navigator
+          </a>
+          <div class="user-area text-white small d-flex flex-column align-items-start gap-3 w-100 mt-2"></div>
+        </div>
       </div>
     </header>
     
     <div class="container py-5" style="max-width: 700px;">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h2 class="text-info fw-bold mb-1"><i class="bi bi-file-text me-2"></i>Storico Report</h2>
-          <p class="text-secondary small mb-0">Consulta i risultati delle tue sessioni di quiz condivise con gli studenti.</p>
-        </div>
-        <a href="/marketplace" class="btn btn-sm btn-glass rounded-pill px-3">Home</a>
+      <div>
+        <h2 class="text-info fw-bold mb-1"><i class="bi bi-file-text me-2"></i>Storico Report</h2>
+        <p class="text-secondary small mb-0">Consulta i risultati delle tue sessioni di quiz condivise con gli studenti.</p>
       </div>
 
       <div id="reports-container" class="row g-3">
@@ -50,6 +69,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/marketplace/js/config.js"></script>
+    <script src="/marketplace/js/webcomponents/search-bar.js"></script>
     <script src="/marketplace/js/quiz-reports.js"></script>
   </body>
 </html>
