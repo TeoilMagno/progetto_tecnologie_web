@@ -310,13 +310,15 @@ apiRouter.delete("/items/:id", auth.isCurator, async (req, res) => {
 apiRouter.get("/sections/:id/works", cacheMiddleware(60 * 60 * 24), async (req, res) => {
   res.set("Cache-Control", "public, max-age=86400");
   try {
-    const works = await sectionController.getWorksBySection(
-      req.params.id,
-    );
+    // Raccogliamo i parametri se presenti
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const limit = req.query.limit ? parseInt(req.query.limit) : null;
 
-    if(!works) return res.status(404).json({ error: "Opere non trovate" });
+    const result = await sectionController.getWorksBySection(req.params.id, page, limit);
 
-    res.json(works);
+    if(!result) return res.status(404).json({ error: "Opere non trovate" });
+
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -64,13 +64,31 @@ exports.getSectionsByMuseum = async (museumId) => {
   return await Section.find({ museumId: museumId });
 }
 
-exports.getWorksBySection = async (sectionId) => {
-  const { getWorksById } = require('./works'); // require differito: evita la dipendenza circolare con works.js
+exports.getWorksBySection = async (sectionId, page = 1, limit = null) => {
+  const { getWorksById } = require('./works'); // require differito
   const section = await Section.findById(sectionId);
   if (!section) throw new Error("Sezione non trovata");
 
-  const workIds = section.works.map(w => w.workId);
-  return await getWorksById(workIds);
+  let workIds = section.works.map(w => w.workId);
+  
+  // Aggiunta logica di paginazione
+  const total = workIds.length;
+  let totalPages = 1;
+  
+  if (limit) {
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + Number(limit);
+    workIds = workIds.slice(startIndex, endIndex);
+    totalPages = Math.ceil(total / limit);
+  }
+
+  const works = await getWorksById(workIds);
+  
+  // Se viene richiesta la paginazione, ritorniamo l'oggetto completo
+  if (limit) {
+     return { works, total, page: Number(page), totalPages };
+  }
+  return works; // Ritorno array classico per retrocompatibilità con altre chiamate
 }
 
 // Aggiorna i dati base di una sezione

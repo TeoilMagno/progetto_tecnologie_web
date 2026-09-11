@@ -20,6 +20,11 @@ let deleteMuseumModalInstance = null;
 
 // Cache globale per tenere in memoria i dati delle opere della pagina corrente
 let worksCache = {};
+let isGlobalFilterMode = false;
+let sectionPagination = {}; 
+let globalWorkPage = 1;
+let globalTotalWorkPages = 1;
+let isFetchingGlobalWorks = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("workModal")) workModalInstance = new bootstrap.Modal(document.getElementById("workModal"));
@@ -102,6 +107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+
+  populateFilters('works');
 
   await loadMuseumDetails();
 });
@@ -196,27 +203,21 @@ async function loadSectionsAndWorks() {
         }
       }).catch(e => console.error("Errore recupero metadati filtri:", e));
 
-    // 3. LAZY LOADING: Scarica le opere solo quando la stanza viene aperta
+    // 3. LAZY LOADING & PAGINAZIONE PER STANZA (Modalità Default)
     container.addEventListener('show.bs.collapse', async (e) => {
+      if (isGlobalFilterMode) return; // Disattiva il lazy load della stanza se i filtri globali sono attivi
+
       const sectionId = e.target.dataset.sectionId;
       if (!sectionId) return;
       
       const worksContainer = document.getElementById(`works-container-${sectionId}`);
       if (worksContainer.dataset.loaded === "true") return;
 
-      worksContainer.innerHTML = `<div class="col-12 text-center py-4"><div class="spinner-border spinner-border-sm text-info"></div> Caricamento opere...</div>`;
-      
-      try {
-        const worksRes = await fetch(`${API_BASE_URL}/sections/${sectionId}/works`);
-        const works = await worksRes.json();
-        works.forEach(w => worksCache[w._id] = w);
-        
-        worksContainer.innerHTML = renderWorksHTML(works, sectionId);
-        worksContainer.dataset.loaded = "true";
-        setTimeout(initSortableWorks, 100);
-      } catch (err) {
-        worksContainer.innerHTML = `<div class="col-12 text-danger">Errore caricamento opere.</div>`;
+      // Inizializza stato paginazione locale
+      if (!sectionPagination[sectionId]) {
+        sectionPagination[sectionId] = { page: 1, totalPages: 1, isLoading: false };
       }
+      await loadSectionWorksChunk(sectionId);
     });
 
   } catch (error) {
@@ -891,4 +892,260 @@ function initSortableWorks() {
       }
     });
   });
+}
+
+// ==========================================
+// FUNZIONI DI SUPPORTO PAGINAZIONE E FILTRI
+// ==========================================
+
+// --- Modalità Locale (Accordion Default) ---
+async function loadSectionWorksChunk(sectionId, isLoadMore = false) {
+  const worksContainer = document.getElementById(`works-container-${sectionId}`);
+  const state = sectionPagination[sectionId];
+
+  if (state.isLoading) return;
+  state.isLoading = true;
+
+  if (!isLoadMore) {
+    worksContainer.innerHTML = `<div class="col-12 text-center py-4"><div class="spinner-border spinner-border-sm text-info"></div> Caricamento opere...</div>`;
+  } else {
+    const btn = document.getElementById(`load-more-btn-${sectionId}`);
+    if (btn) btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/sections/${sectionId}/works?page=${state.page}&limit=12`);
+    const data = await res.json();
+    
+    // Supporto ibrido in base a cosa torna (Limitato -> Data Object, non Limitato -> Array)
+    const works = Array.isArray(data) ? data : (data.works || []);
+    state.totalPages = data.totalPages || 1;
+
+    works.forEach(w => worksCache[w._id] = w);
+    
+    // Rimuove il vecchio pulsante prima di inserire le nuove opere
+    const oldBtn = document.getElementById(`load-more-container-${sectionId}`);
+    if (oldBtn) oldBtn.remove();
+
+    const worksHTML = renderWorksHTML(works, sectionId);
+    
+    if (isLoadMore) {
+       worksContainer.insertAdjacentHTML("beforeend", worksHTML);
+    } else {
+       worksContainer.innerHTML = worksHTML;
+       worksContainer.dataset.loaded = "true";
+    }
+
+    if (state.page < state.totalPages) {
+      worksContainer.insertAdjacentHTML("beforeend", `
+        <div class="col-12 text-center mt-3" id="load-more-container-${sectionId}">
+          <button class="btn btn-sm btn-outline-info" id="load-more-btn-${sectionId}" onclick="loadNextSectionPage('${sectionId}')">
+            Carica altre opere della stanza
+          </button>
+        </div>
+      `);
+    }
+    setTimeout(initSortableWorks, 100);
+  } catch (err) {
+    if (!isLoadMore) worksContainer.innerHTML = `<div class="col-12 text-danger">Errore caricamento.</div>`;
+  } finally {
+    state.isLoading = false;
+  }
+}
+
+window.loadNextSectionPage = function(sectionId) {
+  if (sectionPagination[sectionId] && sectionPagination[sectionId].page < sectionPagination[sectionId].totalPages) {
+    sectionPagination[sectionId].page++;
+    loadSectionWorksChunk(sectionId, true);
+  }
+};
+
+// --- Modalità Globale (Filtri Attivati) ---
+// Alias chiamati da filters.js
+window.renderWorksList = function(works, append = false) { renderGlobalCatalog(works, append); };
+window.fetchAndRenderWorks = async function(museumId, append) { await fetchGlobalCatalogChunk(museumId, append); };
+window.updateWorksSentinelVisibility = function() { updateGlobalCatalogSentinel(); };
+
+document.addEventListener('search-input', () => {
+  if (!currentMuseumId) return;
+  clearTimeout(window.worksSearchTimeout);
+  window.worksSearchTimeout = setTimeout(() => {
+    fetchGlobalCatalogChunk(currentMuseumId, false);
+  }, 300);
+});
+
+document.addEventListener('search-cleared', () => {
+  if (!currentMuseumId) return;
+  
+  // FIX ALLA RADICE 3: Uccidiamo il timer della search-bar prima di resettare
+  clearTimeout(window.worksSearchTimeout); 
+  
+  isGlobalFilterMode = false;
+  resetToLazyAccordion(); 
+});
+
+async function fetchGlobalCatalogChunk(museumId, isLoadMore = false) {
+  if (isFetchingGlobalWorks) return;
+  isFetchingGlobalWorks = true;
+  isGlobalFilterMode = true; 
+
+  const searchInput = document.getElementById("museum-search-input")?.value.trim().toLowerCase() || "";
+  const authorCbs = Array.from(document.querySelectorAll('.author-cb:checked')).map(cb => cb.value);
+  const techniqueCbs = Array.from(document.querySelectorAll('.technique-cb:checked')).map(cb => cb.value);
+  const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
+
+  // FIX ALLA RADICE 1: Se tutti i filtri sono vuoti, blocchiamo la fetch globale 
+  // e rimandiamo tutto allo stato base a stanze.
+  if (!searchInput && authorCbs.length === 0 && techniqueCbs.length === 0 && styleCbs.length === 0) {
+    isFetchingGlobalWorks = false;
+    isGlobalFilterMode = false;
+    resetToLazyAccordion();
+    return;
+  }
+
+  if (!isLoadMore) {
+    globalWorkPage = 1;
+    document.querySelectorAll('.sortable-works-container').forEach(c => {
+      c.innerHTML = "";
+      c.dataset.loaded = "false";
+    });
+    document.querySelectorAll('.accordion-collapse').forEach(c => c.classList.remove('show'));
+    
+    // NOVITÀ: Nascondi di default tutte le sezioni dell'accordion quando parte la ricerca
+    document.querySelectorAll('.section-accordion-wrapper').forEach(w => w.classList.add('d-none'));
+  }
+
+  const params = new URLSearchParams();
+  params.append("page", globalWorkPage);
+  params.append("limit", 24); 
+  if (searchInput) params.append("search", searchInput);
+  if (authorCbs.length > 0) params.append("author", authorCbs.join(","));
+  if (techniqueCbs.length > 0) params.append("technique", techniqueCbs.join(","));
+  if (styleCbs.length > 0) params.append("workstyle", styleCbs.join(","));
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/museums/${museumId}/works?${params.toString()}`);
+    const data = await res.json();
+    
+    globalTotalWorkPages = data.totalPages || 1;
+    const fetchedWorks = data.works || [];
+    
+    fetchedWorks.forEach(w => worksCache[w._id] = w);
+    renderGlobalCatalog(fetchedWorks, isLoadMore);
+
+    // NOVITÀ: Scroll fluido alla prima stanza con risultati visibili
+    if (!isLoadMore) {
+      setTimeout(() => {
+        const firstVisible = document.querySelector('.section-accordion-wrapper:not(.d-none)');
+        if (firstVisible) {
+          // Sottraiamo 100px per non far finire il titolo sotto l'header appiccicato in alto
+          const y = firstVisible.getBoundingClientRect().top + window.scrollY - 100;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 150); // Piccolo ritardo per dare tempo al browser di espandere l'accordion
+    }
+
+  } catch (e) {
+    console.error("Errore fetch globale:", e);
+  } finally {
+    isFetchingGlobalWorks = false;
+    updateGlobalCatalogSentinel();
+  }
+}
+
+function renderGlobalCatalog(works, isLoadMore) {
+  if (works.length === 0 && !isLoadMore) return;
+
+  const worksBySection = {};
+  works.forEach(w => {
+    const sId = w.sectionId || "unassigned";
+    if (!worksBySection[sId]) worksBySection[sId] = [];
+    worksBySection[sId].push(w);
+  });
+
+  for (const sId in worksBySection) {
+    const container = document.getElementById(`works-container-${sId}`);
+    if (container) {
+      
+      // NOVITÀ: Riaccendi la visibilità dell'intera sezione
+      const wrapper = document.getElementById(`wrapper-${sId}`);
+      if (wrapper) wrapper.classList.remove('d-none');
+
+      const html = renderWorksHTML(worksBySection[sId], sId);
+      container.insertAdjacentHTML("beforeend", html);
+      
+      const collapseEl = container.closest('.accordion-collapse');
+      if (collapseEl && !collapseEl.classList.contains('show')) {
+        // FIX ALLA RADICE 2: Apriamo la stanza istantaneamente manipolando le classi.
+        // L'animazione di Bootstrap faceva accorciare la pagina facendo impazzire l'infinite scroll.
+        collapseEl.classList.add('show');
+        
+        // Sistemiamo anche l'icona del bottone
+        const btn = document.querySelector(`[data-bs-target="#${collapseEl.id}"]`);
+        if (btn) btn.classList.remove('collapsed');
+      }
+    }
+  }
+  
+  setTimeout(initSortableWorks, 100);
+}
+
+function updateGlobalCatalogSentinel() {
+  let sentinel = document.getElementById("global-works-sentinel");
+  if (!sentinel) {
+    // Genera l'infinite-scroll in fondo a tutte le stanze (dopo l'accordion)
+    sentinel = document.createElement("div");
+    sentinel.id = "global-works-sentinel";
+    sentinel.className = "text-center py-4 d-none w-100";
+    sentinel.innerHTML = `<div class="spinner-border text-info spinner-border-sm"></div> Caricamento risultati della ricerca...`;
+    
+    const accordion = document.getElementById("sectionsAccordion");
+    if (accordion) accordion.parentNode.appendChild(sentinel);
+    
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !isFetchingGlobalWorks && globalWorkPage < globalTotalWorkPages) {
+        globalWorkPage++;
+        fetchGlobalCatalogChunk(currentMuseumId, true);
+      }
+    }, { rootMargin: '100px' });
+    observer.observe(sentinel);
+  }
+
+  if (globalWorkPage < globalTotalWorkPages) sentinel.classList.remove("d-none");
+  else sentinel.classList.add("d-none");
+}
+
+function resetToLazyAccordion() {
+  document.querySelectorAll('.sortable-works-container').forEach(c => {
+    c.innerHTML = `<div class="col-12 text-center text-secondary small py-3 fst-italic">Espandi la stanza per caricare le opere</div>`;
+    c.dataset.loaded = "false";
+  });
+  
+  document.querySelectorAll('.accordion-collapse').forEach(c => {
+    c.classList.remove('show');
+    // Sistemiamo anche l'icona a freccia dei bottoni dell'accordion
+    const btn = document.querySelector(`[data-bs-target="#${c.id}"]`);
+    if (btn) btn.classList.add('collapsed');
+  });
+  
+  document.querySelectorAll('.section-accordion-wrapper').forEach(w => w.classList.remove('d-none'));
+  
+  const sentinel = document.getElementById("global-works-sentinel");
+  if (sentinel) sentinel.classList.add("d-none");
+  
+  sectionPagination = {};
+
+  // FIX 1: Chiudi la sidebar dei filtri (se aperta)
+  const sidebar = document.getElementById("filterSidebar");
+  if (sidebar && sidebar.classList.contains('show')) {
+    const bsOffcanvas = bootstrap.Offcanvas.getInstance(sidebar);
+    if (bsOffcanvas) bsOffcanvas.hide();
+  }
+
+  // Scroll fluido verso l'inizio dell'area sezioni
+  const accordion = document.getElementById("sectionsAccordion");
+  if (accordion) {
+    const y = accordion.getBoundingClientRect().top + window.scrollY - 100;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
 }
