@@ -103,7 +103,7 @@ async function fetchAndRenderItems(museumId, isLoadMore = false) {
 
     setupItemsInfiniteScroll(museumId);
   } catch (error) {
-    console.error("Errore fetch items:", error);
+    alert("Errore impossibile caricare gli item, riporva più tardi", error);
     const catalogArea = document.getElementById("items-catalog-area");
     if (catalogArea && !isLoadMore) {
       catalogArea.innerHTML = `<p class="text-danger col-12 text-center mt-3">Errore di connessione.</p>`;
@@ -261,7 +261,7 @@ async function updateStock(itemId, action) {
     if (index !== -1) currentItems[index].quantity = data.item.quantity;
 
   } catch (e) { 
-    console.error("Errore aggiornamento stock:", e);
+    alert("Errore aggiornamento stock:", e);
     // Rollback
     stockValEl.innerText = currentQty;
     if (index !== -1) currentItems[index].quantity = currentQty;
@@ -364,7 +364,7 @@ async function saveItem() {
       alert("Errore salvataggio: " + (errorData.error || "Riprova"));
     }
   } catch (error) { 
-    console.error(error); 
+    alert(`Errore durante il salvataggio degli item: ${error}`); 
   } finally {
     btn.innerHTML = originalText;
     btn.disabled = false;
@@ -397,6 +397,6 @@ async function deleteItem(itemId) {
     }
   } catch (error) { 
     if (cardEl) cardEl.style.opacity = '1';
-    console.error(error); 
+    alert("Errore di connessione, impossibile eliminare l'item, riprovare più tardi" + error); 
   }
 }

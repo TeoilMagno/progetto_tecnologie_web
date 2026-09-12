@@ -23,7 +23,7 @@ async function discardImage(url) {
       body: JSON.stringify({ imageUrl: url })
     });
   } catch (e) {
-    console.error("Errore pulizia immagine orfana:", e);
+    alert("Errore durante l'eliminazione di immagine orfana:", e);
   }
 }
 
@@ -116,7 +116,7 @@ async function handleImageUpload(fileInput, targetId) {
       if (labelEl) labelEl.innerText = "Scegli un'immagine dal dispositivo";
     }
   } catch (error) { 
-    console.error(error); 
+    alert("impossibile caricare l'immagine sul server:", error); 
     if (labelEl) labelEl.innerText = "Scegli un'immagine dal dispositivo";
   }
 }
@@ -192,7 +192,7 @@ async function clearImageWidget(targetId) {
         body: JSON.stringify({ imageUrl: imageUrl })
       });
     } catch (error) {
-      console.error("Errore pulizia file:", error);
+      alert("Errore pulizia file:", error);
     }
   }
 

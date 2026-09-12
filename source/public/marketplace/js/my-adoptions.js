@@ -113,7 +113,7 @@ async function loadAdoptions() {
     renderAdoptionsList(cachedIncoming, incomingContainer, true);
     renderAdoptionsList(cachedOutgoing, outgoingContainer, false);
   } catch (error) {
-    console.error("Errore caricamento adozioni:", error);
+    alert("Errore durante il caricamento delle adozioni:", error);
     incomingContainer.innerHTML = `<div class="alert alert-danger col-12">Errore nel caricamento delle adozioni.</div>`;
   }
 }
@@ -262,7 +262,7 @@ async function completeAdoption(adoptionId) {
       const err = await res.json();
       alert(err.error || "Errore durante il completamento.");
     }
-  } catch (error) { console.error(error); }
+  } catch (error) { alert("Errore durante le conferma dell'adozione:", error); }
 }
 
 // ------------------- MODALE NUOVA ADOZIONE -------------------
@@ -287,7 +287,7 @@ async function openNewAdoptionModal() {
     targetTs.control_input.placeholder = "Cerca un tuo museo...";
 
     newAdoptionModalInstance.show();
-  } catch (error) { console.error(error); }
+  } catch (error) { alert("Errore durante il caricamento dei musei per richiedere l'adozione:", error); }
 }
 
 async function onSourceMuseumChange(museumId) {
@@ -311,7 +311,7 @@ async function onSourceMuseumChange(museumId) {
     } else {
       workTs.control_input.placeholder = "Nessuna opera trovata";
     }
-  } catch(error) { console.error(error); }
+  } catch(error) { alert("Errore durante il caricamento delle opere, riprovare più tardi", error); }
 }
 
 async function onTargetMuseumChange(museumId) {
@@ -335,7 +335,7 @@ async function onTargetMuseumChange(museumId) {
     } else {
       sectionTs.control_input.placeholder = "Nessuna sezione creata!";
     }
-  } catch (error) { console.error(error); }
+  } catch (error) { alert("Errore durante il caricamento delle opere o l'assegnazione dell'opera alla sezione selezionata, riprovare più tardi", error); }
 }
 
 async function submitAdoptionRequest() {
@@ -428,5 +428,5 @@ async function confirmArrival(adoptionId) {
       const err = await res.json();
       alert(err.error || "Errore durante la conferma dell'arrivo.");
     }
-  } catch (error) { console.error(error); }
+  } catch (error) { alert("Errore durante il caricamento delle adozioni:", error); }
 }

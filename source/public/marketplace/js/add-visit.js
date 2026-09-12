@@ -230,6 +230,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     } catch (e) {
       console.error("Errore nel caricamento della bozza", e);
+      alert(`Errore nel caricamento della bozza, potrebbe non essere stata salvata correttamente, o il server non riesce a trovarla`);
     }
   }
 
@@ -873,7 +874,7 @@ async function submitVisit(isSavingAsDraft = false) {
     }
   } catch (error) {
     console.error("Errore salvataggio:", error);
-    alert(error.message);
+    alert(`Qualcosa è andato storto durante il salvataggio della visita, ricontrolla i dati inseriti o riprova più tardi`);
 
     // Ripristino bottoni in caso di errore
     if (submitBtn && draftBtn) {

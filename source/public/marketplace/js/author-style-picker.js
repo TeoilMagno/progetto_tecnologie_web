@@ -289,8 +289,8 @@ async function saveAuthorData() {
 
     if (finalAuthor) {
       if(!existingAuthorId) {
-        console.log("Inizio generazione IA per l'autore in background...");
-        fetch(`${API_BASE_URL}/ai/generate-author-desc`, {
+        alert("Generazione automatica dell'autore in corso...");
+        res = await fetch(`${API_BASE_URL}/ai/generate-author-desc`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -512,7 +512,7 @@ async function saveStyleData() {
     // Generazione testo con ia (solo se lo stile e' nuovo)
     if (finalStyle) {
       if(!existingStyleId) {
-        console.log("Inizio generazione IA per lo stile in background...");
+        alert("Generazione automatica per lo stile in corso...");
         fetch(`${API_BASE_URL}/ai/generate-style-desc`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
