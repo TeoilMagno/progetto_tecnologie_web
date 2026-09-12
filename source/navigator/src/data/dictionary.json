@@ -37,5 +37,9 @@
   "opere principali": "AUTHOR_WORKS",
   "cos'è questo stile": "STYLE_DESC",
   "parlami dello stile": "STYLE_DESC",
-  "corrente artistica": "STYLE_DESC"
+  "corrente artistica": "STYLE_DESC",
+  "dove si trova la prossima opera": "NEXT_LOCATION",
+  "dove devo andare": "NEXT_LOCATION",
+  "prossima opera": "NEXT_LOCATION",
+  "dove si trova": "NEXT_LOCATION"
 }

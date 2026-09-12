@@ -3,6 +3,7 @@ import { API_BASE_URL } from "../config";
 
 export function useWorkGuide({ 
   work, 
+  sections = [],
   initialExpertise = "medium", 
   initialLength = "medium", 
   commandsMap,
@@ -331,94 +332,86 @@ export function useWorkGuide({
         roomCode,
         studentName: localStorage.getItem('student_name') || 'Studente',
         interactionType: 'voice',
-        query: phrase
+        query: cleanPhrase
       });
     }
 
-    // Mappatura comandi vocali sui tasti
-    if (phrase.includes("approfondisci") || phrase.includes("spiega meglio") || phrase.includes("più difficile") || phrase.includes("più tecnico")) {
-      handleHigherExper();
-    } else if (phrase.includes("semplifica") || phrase.includes("più facile") || phrase.includes("parla semplice") || phrase.includes("più semplice")) {
-      handleLowerExper();
-    } else if (phrase.includes("dimmi di più") || phrase.includes("più lunga") || phrase.includes("continua") || phrase.includes("estendi")) {
-      handleMoreDesc();
-    } else if (phrase.includes("dimmi di meno") || phrase.includes("più corta") || phrase.includes("riassumi") || phrase.includes("meno")) {
-      handleLessDesc();
-    } else if (phrase.includes("ascolta") || phrase.includes("leggi") || phrase.includes("riproduci") || phrase.includes("play")) {
-      speakText(work?.description?.[currentExpertise]?.[currentLength]);
-    } else if (phrase.includes("ferma") || phrase.includes("stop") || phrase.includes("pausa") || phrase.includes("silenzio")) {
-      handleStopAudio();
-    } else if (phrase.includes("curiosità") || phrase.includes("aneddoto")) {
-      handleFunFact();
-    } else if (phrase.includes("autore") || phrase.includes("chi l'ha fatto")) {
-      handleAuthorBio();
-    } else if (phrase.includes("stile") || phrase.includes("corrente")) {
-      handleAboutStyle();
-    } else {
-      // 1. Cerca il comando nel dizionario statico (priorità alta e risposta immediata)
-      let mapped = commandsMap ? commandsMap[phrase.replace(/\.$/, '')] : null;
-      
-      // 2. Se non c'è nel dizionario, delega l'interpretazione all'IA
-      if (!mapped) {
-        try {
-          const aiResponse = await fetch(`${API_BASE_URL}/ai/map-request`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: phrase })
-          });
-          
-          if (aiResponse.ok) {
-            const aiData = await aiResponse.json();
-            mapped = aiData.mappedAction;
-          }
-        } catch (e) {
-          console.error("[MIC] Errore durante la mappatura IA:", e);
+    let mapped = null;
+
+    // 1. Ricerca dinamica e flessibile nel dizionario locale
+    if (commandsMap) {
+      for (const [key, action] of Object.entries(commandsMap)) {
+        // Usiamo includes() per mantenere la flessibilità (es. "per favore dimmi di più")
+        if (cleanPhrase.includes(key)) {
+          mapped = action;
+          break;
         }
       }
-
-      // 3. Esegui l'azione mappata (sia che provenga dal dizionario, sia dall'IA)
-      switch (mapped) {
-        case "PLAY":
-          speakText(work?.description?.[currentExpertise]?.[currentLength]);
-          break;
-        case "NEXT_DESC":
-          handleMoreDesc();
-          break;
-        case "PREV_DESC":
-          handleLessDesc();
-          break;
-        case "NEXT_EXPER":
-          handleHigherExper();
-          break;
-        case "PREV_EXPER":
-          handleLowerExper();
-          break;
-        case "FUN_FACT":
-          handleFunFact();
-          break;
-        case "AUTHOR_BIO":
-          handleAuthorBio();
-          break;
-        case "AUTHOR_STUDIES":
-          handleAuthorStudies();
-          break;
-        case "AUTHOR_WORKS":
-          handleAuthorWorks();
-          break;
-        case "STYLE_DESC":
-          handleAboutStyle();
-          break;
-        case "PARAPHRASE":
-          handleParaphrase();
-          break;
-        case "CLOSE":
-          handleStopAudio();
-          break;
-        case "UNKNOWN":
-        default:
-          triggerToast("Non ho capito, riprova");
-          break;
+    }
+    
+    // 2. Se non c'è nel dizionario, delega l'interpretazione all'IA
+    if (!mapped) {
+      try {
+        const aiResponse = await fetch(`${API_BASE_URL}/ai/map-request`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: cleanPhrase })
+        });
+        
+        if (aiResponse.ok) {
+          const aiData = await aiResponse.json();
+          mapped = aiData.mappedAction;
+        }
+      } catch (e) {
+        console.error("[MIC] Errore durante la mappatura IA:", e);
       }
+    }
+
+    // 3. Esegui l'azione mappata
+    switch (mapped) {
+      case "PLAY":
+        speakText(work?.description?.[currentExpertise]?.[currentLength]);
+        break;
+      case "NEXT_DESC":
+        handleMoreDesc();
+        break;
+      case "PREV_DESC":
+        handleLessDesc();
+        break;
+      case "NEXT_EXPER":
+        handleHigherExper();
+        break;
+      case "PREV_EXPER":
+        handleLowerExper();
+        break;
+      case "FUN_FACT":
+        handleFunFact();
+        break;
+      case "AUTHOR_BIO":
+        handleAuthorBio();
+        break;
+      case "AUTHOR_STUDIES":
+        handleAuthorStudies();
+        break;
+      case "AUTHOR_WORKS":
+        handleAuthorWorks();
+        break;
+      case "STYLE_DESC":
+        handleAboutStyle();
+        break;
+      case "NEXT_LOCATION":
+        handleLocation(cleanPhrase);
+        break;
+      case "PARAPHRASE":
+        handleParaphrase();
+        break;
+      case "CLOSE":
+        handleStopAudio();
+        break;
+      case "UNKNOWN":
+      default:
+        triggerToast("Non ho capito, riprova");
+        break;
     }
   };
 
@@ -606,6 +599,25 @@ export function useWorkGuide({
     const styleData = getStyleData();
     const text = styleData?.description || `Mi dispiace, non ho approfondimenti sullo stile ${work?.styleName || "di quest'opera"}.`;
     speakText(text);
+  };
+
+  const handleLocation = (phrase = "") => {
+    setActiveTab('work');
+    
+    let areaName = "una sezione adiacente";
+    
+    if (work && sections.length > 0) {
+      const section = sections.find(s => 
+        s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === work._id)
+      );
+      if (section) areaName = section.name;
+    }
+    
+    // Controlla se la frase contiene la parola "prossima" o "dopo"
+    const isNext = phrase.includes("prossima") || phrase.includes("dopo") || phrase.includes("successiva");
+    const subject = isNext ? "La prossima opera" : "Quest'opera";
+    
+    speakText(`${subject} si trova nella ${areaName}.`);
   };
 
   const authorText = getAuthorData()?.bio || `Mi dispiace, non ho una biografia dettagliata per ${work?.authorName || "questo autore"}.`;

@@ -63,6 +63,7 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
 
   const workGuide = useWorkGuide({
     work: detailsWork,
+    sections: sections,
     commandsMap: commandsMap,
     socket: socket,
     roomCode: roomCode,
