@@ -84,7 +84,7 @@ function AppLayout() {
       {!hideGlobalUI && (
         <div className="fixed inset-0 z-0 pointer-events-none">
           <img 
-            src={config && config.backgroundImage ? config.backgroundImage : "/img1.jpg"} 
+            src={config && config.backgroundImage ? config.backgroundImage : "/shared/img/fallback-image.jpeg"} 
             alt="Background Museo" 
             className="w-full h-full object-cover"
           />

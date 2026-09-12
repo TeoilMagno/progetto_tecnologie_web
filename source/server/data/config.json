@@ -109,8 +109,8 @@
     "filename": "defaultconfig.json",
     "config": {
       "name": "ArtAround Default Museum",
-      "iconUrl": "/assets/icons/default-logo.svg",
-      "backgroundImage": "/img1.jpg",
+      "iconUrl": "/shared/img/artaround-logo.svg",
+      "backgroundImage": "/shared/img/fallback-image.jpeg",
       "welcomeMessage": "Benvenuto in ArtAround. Esplora i capolavori del museo con guide audio interattive ed esperienze coinvolgenti.",
       "description": "La piattaforma innovativa per la simulazione e l'esplorazione autonoma e guidata dei più grandi capolavori artistici.",
       "mapFile": "mappa-completa.svg",
