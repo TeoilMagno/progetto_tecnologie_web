@@ -5,6 +5,10 @@ let isCurrentVisitDraft = true;
 let allMuseumWorks = [];
 let allMuseumSections = [];
 let currentQuiz = [];
+const QUIZ_MIN_OPTIONS = 2;
+const QUIZ_MAX_OPTIONS = 5;
+const QUIZ_DEFAULT_OPTIONS = 4;
+const QUIZ_TEXT_MAXLENGTH = 250;
 let expertiseSelectInstance = null;
 let prefLengthSelectInstance = null;
 
@@ -233,6 +237,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // Ricalcola le altezze delle textarea del quiz non appena la modale diventa visibile
+  const saveVisitModal = document.getElementById("saveVisitModal");
+  if (saveVisitModal) {
+    saveVisitModal.addEventListener("shown.bs.modal", () => {
+      const quizTextareas = document.querySelectorAll("#quiz-questions-container textarea");
+      quizTextareas.forEach(autoResizeTextarea);
+    });
+  }
+
   await checkUserRole();
 });
 
@@ -285,60 +298,130 @@ async function checkUserRole() {
 // --- GESTIONE QUIZ ---
 // --------------------------------------------------------
 
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function autoResizeTextarea(el) {
+  if (!el) return;
+  
+  // 1. Collassiamo temporaneamente l'altezza a 1px (il min-height del CSS eviterà sfarfallii visivi).
+  // Questo forza il browser a scartare le vecchie dimensioni.
+  el.style.height = "1px";
+  
+  // 2. Ora scrollHeight conterrà il valore perfetto (testo + padding). Aggiungiamo 2px per i bordi.
+  el.style.height = (el.scrollHeight + 2) + "px";
+}
+
+function updateQuizCharCount(el) {
+  const counter = el.parentElement?.querySelector(".quiz-char-count");
+  if (!counter) return;
+  const len = el.value.length;
+  counter.textContent = `${len}/${QUIZ_TEXT_MAXLENGTH}`;
+  counter.classList.toggle("text-limit-close", len > QUIZ_TEXT_MAXLENGTH * 0.85);
+}
+
 function renderQuizBuilder() {
   const container = document.getElementById("quiz-questions-container");
   if (!container) return;
 
+  // Stato vuoto: nessuna domanda ancora -> mostriamo solo il bottone "Crea quiz"
   if (currentQuiz.length === 0) {
-    container.innerHTML = `<p class="text-secondary small mb-3">Nessuna domanda inserita. Aggiungine una per creare un quiz finale.</p>`;
+    container.innerHTML = `
+      <div class="text-center py-3">
+        <p class="text-secondary small mb-3">Nessuna domanda inserita. Crea il tuo primo quiz per gli studenti.</p>
+        <button type="button" class="btn btn-outline-info quiz-add-btn" onclick="addQuizQuestion()">
+          <i class="bi bi-plus-lg me-1"></i> Crea quiz
+        </button>
+      </div>
+    `;
     return;
   }
 
   let html = "";
   currentQuiz.forEach((q, qIndex) => {
+    const canRemoveOption = q.options.length > QUIZ_MIN_OPTIONS;
+    const canAddOption = q.options.length < QUIZ_MAX_OPTIONS;
+
     let optionsHtml = "";
     q.options.forEach((opt, optIndex) => {
       const isCorrect = q.correctAnswerIndex === optIndex;
       optionsHtml += `
-        <div class="input-group mb-2">
-          <div class="input-group-text bg-transparent border-secondary">
-            <input class="form-check-input mt-0" type="radio" name="correctAnswer_${qIndex}" value="${optIndex}" ${isCorrect ? 'checked' : ''} onchange="updateQuizQuestion(${qIndex}, 'correctAnswerIndex', this.value)" aria-label="Risposta corretta">
+        <div class="quiz-option-row ${isCorrect ? 'is-correct' : ''}">
+          <div class="quiz-option-meta">
+            <input class="form-check-input mt-0" type="radio" name="correctAnswer_${qIndex}" id="quizCorrect_${qIndex}_${optIndex}" value="${optIndex}" ${isCorrect ? 'checked' : ''} onchange="updateQuizQuestion(${qIndex}, 'correctAnswerIndex', this.value)">
+            <label class="form-check-label mb-0" for="quizCorrect_${qIndex}_${optIndex}">Opzione ${optIndex + 1}</label>
           </div>
-          <input type="text" class="form-control bg-transparent text-white border-secondary" placeholder="Opzione ${optIndex + 1}" value="${opt}" oninput="updateQuizQuestion(${qIndex}, 'option', this.value, ${optIndex})">
+          <div class="flex-grow-1 position-relative">
+            <textarea class="quiz-option-text" rows="1" maxlength="${QUIZ_TEXT_MAXLENGTH}" placeholder="Scrivi l'opzione..." oninput="autoResizeTextarea(this); updateQuizCharCount(this); updateQuizQuestion(${qIndex}, 'option', this.value, ${optIndex})">${escapeHtml(opt)}</textarea>
+            <div class="quiz-char-count position-absolute bottom-0 end-0 me-2 mb-1 px-1 rounded text-secondary" style="background: rgba(0,0,0,0.4); font-size: 0.65rem; pointer-events: none;">${opt.length}/${QUIZ_TEXT_MAXLENGTH}</div>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle quiz-option-remove" ${canRemoveOption ? '' : 'disabled'} onclick="removeQuizOption(${qIndex}, ${optIndex})" title="Rimuovi opzione">
+            <i class="bi bi-x-lg"></i>
+          </button>
         </div>
       `;
     });
 
     html += `
-      <div class="card custom-card p-3 mb-3 border-secondary bg-dark bg-opacity-25">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h6 class="text-info mb-0">Domanda ${qIndex + 1}</h6>
-          <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" onclick="removeQuizQuestion(${qIndex})" title="Rimuovi domanda">
-            <i class="bi bi-trash"></i>
+      <div class="quiz-question-card">
+        <div class="quiz-question-header mb-2">
+          <span class="quiz-question-label text-info fw-bold"><i class="bi bi-patch-question me-1"></i>Domanda ${qIndex + 1}</span>
+          <button type="button" class="btn btn-sm text-danger p-0 m-0" onclick="removeQuizQuestion(${qIndex})" title="Rimuovi domanda">
+            <i class="bi bi-trash fs-6"></i>
           </button>
         </div>
-        <div class="mb-3">
-          <input type="text" class="form-control bg-transparent text-white border-secondary" placeholder="Scrivi qui la domanda..." value="${q.question}" oninput="updateQuizQuestion(${qIndex}, 'question', this.value)">
+        <div class="mb-3 position-relative">
+          <textarea class="quiz-question-input" rows="1" maxlength="${QUIZ_TEXT_MAXLENGTH}" placeholder="Scrivi qui la domanda..." oninput="autoResizeTextarea(this); updateQuizCharCount(this); updateQuizQuestion(${qIndex}, 'question', this.value)">${escapeHtml(q.question)}</textarea>
+          <div class="quiz-char-count position-absolute bottom-0 end-0 me-2 mb-1 px-1 rounded text-secondary" style="background: rgba(0,0,0,0.4); font-size: 0.65rem; pointer-events: none;">${q.question.length}/${QUIZ_TEXT_MAXLENGTH}</div>
         </div>
-        <div>
-          <label class="form-label small text-secondary">Opzioni (seleziona quella corretta):</label>
+        <div class="quiz-options-list">
           ${optionsHtml}
+          <div class="mt-2 ps-1">
+            <button type="button" class="btn btn-sm btn-link text-info text-decoration-none py-0 px-0" ${canAddOption ? '' : 'disabled'} onclick="addQuizOption(${qIndex})" title="${canAddOption ? 'Aggiungi opzione' : `Massimo ${QUIZ_MAX_OPTIONS} opzioni`}">
+              <i class="bi bi-plus-circle-fill me-1"></i> Aggiungi nuova opzione
+            </button>
+          </div>
         </div>
       </div>
     `;
   });
 
+  html += `
+    <button type="button" class="btn btn-outline-info quiz-add-btn w-100" onclick="addQuizQuestion()">
+      <i class="bi bi-plus-lg me-1"></i> Aggiungi domanda
+    </button>
+  `;
+
   container.innerHTML = html;
+
+  // Il setTimeout assicura che il DOM abbia prima renderizzato le textarea con i nuovi padding
+  // prima di calcolarne l'altezza effettiva, evitando l'errore dello scrollHeight sballato.
+  setTimeout(() => {
+    container.querySelectorAll(".quiz-question-input, .quiz-option-text").forEach(autoResizeTextarea);
+  }, 0);
 }
 
 function addQuizQuestion() {
   currentQuiz.push({
     question: "",
-    options: ["", "", "", ""], // 4 opzioni di default
-    correctAnswerIndex: 0 // La prima corretta di default
+    options: Array(QUIZ_DEFAULT_OPTIONS).fill(""),
+    correctAnswerIndex: 0
   });
   renderQuizBuilder();
   triggerAutoSave();
+
+  // Scorrimento automatico verso la nuova domanda
+  setTimeout(() => {
+    const cards = document.querySelectorAll(".quiz-question-card");
+    if (cards.length > 0) {
+      // Prende l'ultima card (quella appena creata) e la scorre fluidamente al centro della vista
+      cards[cards.length - 1].scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, 50); // Piccolo delay per garantire che l'HTML sia stato iniettato nel DOM
 }
 
 function removeQuizQuestion(index) {
@@ -347,13 +430,48 @@ function removeQuizQuestion(index) {
   triggerAutoSave();
 }
 
+function addQuizOption(qIndex) {
+  const q = currentQuiz[qIndex];
+  if (!q || q.options.length >= QUIZ_MAX_OPTIONS) return;
+  q.options.push("");
+  renderQuizBuilder();
+  triggerAutoSave();
+}
+
+function removeQuizOption(qIndex, optIndex) {
+  const q = currentQuiz[qIndex];
+  if (!q || q.options.length <= QUIZ_MIN_OPTIONS) return;
+
+  q.options.splice(optIndex, 1);
+
+  // Se la risposta corretta era quella rimossa, ricadiamo sulla prima opzione rimasta.
+  // Se era dopo quella rimossa, aggiorniamo l'indice per restare allineati.
+  if (q.correctAnswerIndex === optIndex) {
+    q.correctAnswerIndex = 0;
+  } else if (q.correctAnswerIndex > optIndex) {
+    q.correctAnswerIndex -= 1;
+  }
+
+  renderQuizBuilder();
+  triggerAutoSave();
+}
+
 function updateQuizQuestion(qIndex, field, value, optIndex = null) {
   if (field === 'question') {
-    currentQuiz[qIndex].question = value;
+    currentQuiz[qIndex].question = String(value).slice(0, QUIZ_TEXT_MAXLENGTH);
   } else if (field === 'correctAnswerIndex') {
-    currentQuiz[qIndex].correctAnswerIndex = parseInt(value);
+    const newIndex = parseInt(value);
+    currentQuiz[qIndex].correctAnswerIndex = newIndex;
+    
+    // Aggiornamento DOM: toglie/aggiunge la classe is-correct alle righe dell'opzione
+    const cards = document.querySelectorAll('.quiz-question-card');
+    if (cards[qIndex]) {
+      cards[qIndex].querySelectorAll('.quiz-option-row').forEach((row, idx) => {
+        row.classList.toggle('is-correct', idx === newIndex);
+      });
+    }
   } else if (field === 'option' && optIndex !== null) {
-    currentQuiz[qIndex].options[optIndex] = value;
+    currentQuiz[qIndex].options[optIndex] = String(value).slice(0, QUIZ_TEXT_MAXLENGTH);
   }
   triggerAutoSave();
 }
@@ -744,6 +862,20 @@ async function submitVisit(isSavingAsDraft = false) {
     return;
   }
 
+  // --- Validazione Frontend del Quiz ---
+  if (currentQuiz.length > 0) {
+    for (let i = 0; i < currentQuiz.length; i++) {
+      if (!currentQuiz[i].question.trim()) {
+        showToast(`Errore Quiz: inserisci il testo per la Domanda ${i + 1}.`);
+        return;
+      }
+      if (currentQuiz[i].options.some(opt => opt.trim() === "")) {
+        showToast(`Errore Quiz: compila tutte le opzioni della Domanda ${i + 1} o rimuovi quelle vuote (minimo 2).`);
+        return;
+      }
+    }
+  }
+
   const titleInput = document.getElementById("visit-title");
   // Sfruttiamo il metodo reportValidity() direttamente sull'input 
   // (poiché in create-visit i campi sono in una modale e non necessariamente avvolti da un <form> canonico)
@@ -904,6 +1036,15 @@ async function autoSaveDraft() {
 
   // Se non c'è un museo, non possiamo collegare la visita a nulla
   if (!currentMuseumId) return;
+
+  // --- Protezione salvataggio automatico ---
+  // Blocca l'autosalvataggio se il quiz è in lavorazione e presenta campi obbligatori vuoti
+  if (currentQuiz.length > 0) {
+    const isQuizIncomplete = currentQuiz.some(q => 
+      !q.question.trim() || q.options.some(opt => opt.trim() === "")
+    );
+    if (isQuizIncomplete) return; 
+  }
 
   const titleInput = document.getElementById("visit-title")?.value.trim() || "Bozza in corso...";
   const descInput = document.getElementById("visit-desc")?.value.trim() || "";
