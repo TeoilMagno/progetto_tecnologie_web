@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, forwardRef, useImperativeHandle } from 'react';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { ZoomIn, ZoomOut, Maximize } from "lucide-react";
 
-export default function HighlyOptimizedMapView({ 
+const HighlyOptimizedMapView = forwardRef(({ 
   svgString, 
   activeSection, 
   sections, 
@@ -12,7 +12,7 @@ export default function HighlyOptimizedMapView({
   activeWorkId,
   onWorkClick,
   disablePanZoom
-}) {
+}, ref) => {
   // STATO PER LE ANIMAZIONI DI TRANSIZIONE
   const [animationStyle, setAnimationStyle] = useState({
     transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -30,7 +30,63 @@ export default function HighlyOptimizedMapView({
     [svgString, zoomViewBox]
   );
 
-  // GESTIONE DEL CLICK CON ANIMAZIONE
+  // ESPOSIZIONE ANIMAZIONI AL COMPONENTE PADRE
+  useImperativeHandle(ref, () => ({
+    flyToSection: (targetSection) => {
+      // Se siamo già nella vista globale, entra direttamente
+      if (!activeSection) {
+        setAnimationStyle({
+          transformOrigin: 'center', transform: 'scale(1.5)', opacity: 0,
+          filter: 'blur(5px)', transition: 'none'
+        });
+        setTimeout(() => {
+          onSelectSection(targetSection);
+          setAnimationStyle({
+            transformOrigin: 'center', transform: 'scale(1)', opacity: 1,
+            filter: 'blur(0px)', transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+          });
+        }, 50);
+        return;
+      }
+
+      // 1. Zoom out (esce dalla sezione attuale)
+      setAnimationStyle({
+        transformOrigin: 'center',
+        transform: 'scale(0.8)',
+        opacity: 0,
+        filter: 'blur(5px)',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+      });
+
+      setTimeout(() => {
+        onBack(); // Torna alla mappa globale
+        
+        // 2. Prepara l'ingresso "dall'alto"
+        setAnimationStyle({
+          transformOrigin: 'center',
+          transform: 'scale(1.5)',
+          opacity: 0,
+          filter: 'blur(5px)',
+          transition: 'none'
+        });
+
+        setTimeout(() => {
+          onSelectSection(targetSection); // Passa alla nuova sezione
+          
+          // 3. Zoom in (entra nella nuova sezione)
+          setAnimationStyle({
+            transformOrigin: 'center',
+            transform: 'scale(1)',
+            opacity: 1,
+            filter: 'blur(0px)',
+            transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+          });
+        }, 50);
+      }, 350);
+    }
+  }));
+
+  // GESTIONE DEL CLICK MANUALE CON ANIMAZIONE
   const handleMapClick = (e) => {
     if (activeSection) return; 
 
@@ -77,7 +133,7 @@ export default function HighlyOptimizedMapView({
     }
   };
 
-  // ANIMAZIONE QUANDO SI TORNA ALLA VISTA GLOBALE
+  // ANIMAZIONE QUANDO SI TORNA ALLA VISTA GLOBALE MANUALMENTE
   const handleBackClick = (e) => {
     e.stopPropagation();
 
@@ -234,4 +290,6 @@ export default function HighlyOptimizedMapView({
       </TransformWrapper>
     </div>
   );
-}
+});
+
+export default HighlyOptimizedMapView;

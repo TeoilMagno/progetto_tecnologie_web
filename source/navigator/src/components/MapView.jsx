@@ -5,14 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { useSocket } from "../context/SocketContext";
 import { Activity } from "react";
-import { useWorkGuide } from "../hooks/useWorkGuide"
+import { useWorkGuide } from "../hooks/useWorkGuide";
 import HighlyOptimizedMapView from "./HighlyOptimizedMapView";
 import GlobalMapView from "./GlobalMapView"; // ?
 import WorkDetailsSheet from "./WorkDetailsSheet";
 import NavigationControlBar from "./NavigationControlBar";
 import RoomQRCode from "./RoomQRCode";
 import TeacherDashboard from "./TeacherDashboard";
-import WorkDetailsContent from "./WorkDetailsContent"
+import WorkDetailsContent from "./WorkDetailsContent";
 
 export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequested }) {
   const navigate = useNavigate();
@@ -60,6 +60,8 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
   const isSharedSession = Boolean(roomCode);
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
   const hasMap = sections && sections.length > 0;
+  
+  const mapRef = useRef(null);
 
   const workGuide = useWorkGuide({
     work: detailsWork,
@@ -78,10 +80,8 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
     socket.emit('rejoin_room', {
       roomCode: upperRoomCode,
       role: isTeacherRequested ? 'teacher' : 'student',
-      // Presente solo se questo browser ha davvero creato la stanza.
       teacherToken: isTeacherRequested ? localStorage.getItem(`teacherToken_${upperRoomCode}`) : undefined
     }, (ack) => {
-      // Fonte di verità unica: quello che dice il server, non l'URL.
       setIsTeacher(!!ack?.isTeacher);
     });
   }, [roomCode, isTeacherRequested, socket]);
@@ -97,22 +97,12 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         const apiData = await visitResponse.json();
         const visitData = apiData.visit;
 
-        console.log("visit: ", apiData);
-        console.log("sharedsession: ", isSharedSession);
-
-        // NUOVO: se non ha diritto di usarla (e non è una sessione condivisa da un
-        // insegnante che l'ha già "sbloccata"), non carichiamo il tour interattivo
-        // Se non ha i permessi e non è in una sessione condivisa, interrompiamo l'esecuzione
         if (!visitData.canStart && !isSharedSession) {
-          // accessDenied è già true di default, ci basta fermare la rotellina di caricamento
           setLoading(false);
           return;
         }
 
-        // Se supera il blocco precedente, ha i permessi: sblocchiamo la vista
         setAccessDenied(false);
-
-	  alert("visitData pirla");
 
         const dictionary = apiData.commands_map;
         const userData = apiData.user;
@@ -167,9 +157,7 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
             console.warn("Errore nel caricamento dei dati mappa/opere del museo. Fallback attivato.", e);
             setSections([]);
           }
-        } else {
-	console.log("mongolo non hai il museumId")
-}
+        }
         setLoading(false);
       } catch (error) {
         console.error("Errore critico:", error);
@@ -187,22 +175,6 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
     return () => window.speechSynthesis.cancel();
   }, []);
 
-  const selectSectionForWork = (work) => {
-    if (!work || !hasMap) return null;
-    const section = sections.find(s => 
-      s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === work._id)
-    );
-    if (section) {
-      setSelectedSection(section);
-      return { section };
-    }
-    return null;
-  };
-
-  // Riporta l'utente all'opera corrente da qualsiasi punto della mappa in cui
-  // si sia "perso" (es. panoramica generale): se serve cambia prima sezione
-  // (zoom), poi apre la scheda dell'opera con un breve ritardo per rendere
-  // visibile la sequenza invece di far scattare tutto insieme.
   const returnToCurrentWork = () => {
     if (!currentWork) return;
 
@@ -211,8 +183,17 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         sw => (sw.workId?._id || sw.workId) === currentWork._id
       );
       if (!alreadyOnRightSection) {
-        selectSectionForWork(currentWork);
-        setTimeout(() => setDetailsWork(currentWork), 450);
+        const targetSection = sections.find(s => 
+          s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === currentWork._id)
+        );
+        if (targetSection) {
+          if (mapRef.current) {
+            mapRef.current.flyToSection(targetSection);
+          } else {
+            setSelectedSection(targetSection);
+          }
+        }
+        setTimeout(() => setDetailsWork(currentWork), 900);
         return;
       }
     }
@@ -220,7 +201,6 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
     setDetailsWork(currentWork);
   };
 
-  // --- ASCOLTO EVENTI INSEGNANTE (DASHBOARD) ---
   useEffect(() => {
     if (isSharedSession && isTeacher && socket) {
       socket.on("teacher_dashboard_update", (payload) => {
@@ -240,7 +220,6 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
     }
   }, [isSharedSession, isTeacher, socket]);
 
-  // Ascolto eventi studente
   useEffect(() => {
     if (isSharedSession && !isTeacher && socket) {
       socket.on("change_artwork", (data) => {
@@ -253,9 +232,16 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
             setVisitedWorks(prev => {
               const updated = [...prev, newWork];
               setCurrentWorkIndex(updated.length - 1);
-              setDetailsWork(newWork);
+              setDetailsWork(null);
               setShowEndModal(false);
-              if (hasMap) selectSectionForWork(newWork);
+              
+              if (hasMap) {
+                const targetSection = sections.find(s => s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === newWork._id));
+                if (targetSection && targetSection._id !== selectedSection?._id) {
+                  if (mapRef.current) mapRef.current.flyToSection(targetSection);
+                  else setSelectedSection(targetSection);
+                }
+              }
               return updated;
             });
             return;
@@ -264,9 +250,17 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
 
         if (index !== -1) {
           setCurrentWorkIndex(index);
-          setDetailsWork(visitedWorks[index]);
+          setDetailsWork(null);
           setShowEndModal(false);
-          if (hasMap) selectSectionForWork(visitedWorks[index]);
+          
+          if (hasMap) {
+            const newWork = visitedWorks[index];
+            const targetSection = sections.find(s => s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === newWork._id));
+            if (targetSection && targetSection._id !== selectedSection?._id) {
+              if (mapRef.current) mapRef.current.flyToSection(targetSection);
+              else setSelectedSection(targetSection);
+            }
+          }
         }
       });
 
@@ -323,7 +317,7 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         window.removeEventListener("focus", handleFocus);
       };
     }
-  }, [isSharedSession, isTeacher, visitedWorks, socket, navigate, roomCode, hasMap]);
+  }, [isSharedSession, isTeacher, visitedWorks, socket, navigate, roomCode, hasMap, sections, selectedSection]);
 
   useEffect(() => {
     if (isSharedSession && !isTeacher && socket && roomCode) {
@@ -344,29 +338,39 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         sec.works && sec.works.some(sw => (sw.workId?._id || sw.workId) === activeWork._id)
       );
 
-      if (targetSection && targetSection._id !== selectedSection?._id) {
+      if (targetSection && targetSection._id !== selectedSection?._id && !mapRef.current) {
         setSelectedSection(targetSection);
       }
     }
   }, [currentWorkIndex, visitedWorks, sections, hasMap]);
 
-  // Gestione Successiva con apertura automatica del banner
-  const handleNext = () => {
+  const handleNext = (autoOpen = false) => {
     if (currentWorkIndex < visitedWorks.length - 1) {
       workGuide.handleStopAudio();
       const nextIndex = currentWorkIndex + 1;
       setCurrentWorkIndex(nextIndex);
       const activeWork = visitedWorks[nextIndex];
-      setDetailsWork(activeWork);
       
       if (hasMap) {
         const currentSection = selectedSection;
-        const result = selectSectionForWork(activeWork);
-        const nextSection = result ? result.section : null;
+        const nextSection = sections.find(s => 
+          s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === activeWork._id)
+        );
         
         if (nextSection && currentSection && nextSection._id !== currentSection._id) {
-          alert(`Stiamo passando alla sezione: ${nextSection.name}`);
+          setDetailsWork(null); // Chiude per mostrare la mappa
+          if (mapRef.current) {
+            mapRef.current.flyToSection(nextSection); // Esegue il volo
+          } else {
+            setSelectedSection(nextSection);
+          }
+          if (autoOpen) setTimeout(() => setDetailsWork(activeWork), 900); // Riapre a volo completato
+        } else {
+          if (nextSection && !currentSection) setSelectedSection(nextSection);
+          setDetailsWork(autoOpen ? activeWork : null);
         }
+      } else {
+        setDetailsWork(autoOpen ? activeWork : null);
       }
 
       if (isSharedSession && isTeacher && socket) {
@@ -375,23 +379,33 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
     }
   };
 
-  // Gestione Precedente con apertura automatica del banner
-  const handlePrev = () => {
+  const handlePrev = (autoOpen = false) => {
     if (currentWorkIndex > 0) {
       workGuide.handleStopAudio();
       const prevIndex = currentWorkIndex - 1;
       setCurrentWorkIndex(prevIndex);
       const activeWork = visitedWorks[prevIndex];
-      setDetailsWork(activeWork);
       
       if (hasMap) {
         const currentSection = selectedSection;
-        const result = selectSectionForWork(activeWork);
-        const prevSection = result ? result.section : null;
+        const prevSection = sections.find(s => 
+          s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === activeWork._id)
+        );
         
         if (prevSection && currentSection && prevSection._id !== currentSection._id) {
-          alert(`Torniamo alla sezione: ${prevSection.name}`);
+          setDetailsWork(null);
+          if (mapRef.current) {
+            mapRef.current.flyToSection(prevSection);
+          } else {
+            setSelectedSection(prevSection);
+          }
+          if (autoOpen) setTimeout(() => setDetailsWork(activeWork), 900);
+        } else {
+          if (prevSection && !currentSection) setSelectedSection(prevSection);
+          setDetailsWork(autoOpen ? activeWork : null);
         }
+      } else {
+        setDetailsWork(autoOpen ? activeWork : null);
       }
 
       if (isSharedSession && isTeacher && socket) {
@@ -526,6 +540,7 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
       <div className="w-full h-full relative overflow-hidden flex-1">
         {hasMap && svgMapString ? (
           <HighlyOptimizedMapView 
+            ref={mapRef}
             svgString={svgMapString}
             activeSection={selectedSection}
             sections={sections}
@@ -536,10 +551,6 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
             onWorkClick={(work) => {
               const idx = visitedWorks.findIndex(w => (w._id?.toString() || w.toString()) === (work._id?.toString() || work.toString()));
 
-              // In una sessione condivisa, solo l'insegnante decide quale opera
-              // si sta visitando: lo studente può comunque esplorare liberamente
-              // la mappa, ma toccare un'opera diversa da quella corrente non
-              // apre nulla. Può però riaprire la scheda di quella corrente.
               if (isSharedSession && !isTeacher && idx !== currentWorkIndex) {
                 return;
               }
@@ -556,8 +567,8 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
              <WorkDetailsContent 
                 work={currentWork} 
                 guide={workGuide} 
-                onPrev={handlePrev} 
-                onNext={handleNext} 
+                onPrev={() => handlePrev(true)} 
+                onNext={() => handleNext(true)} 
                 hasPrev={currentWorkIndex > 0}
                 hasNext={currentWorkIndex < visitedWorks.length - 1}
                 onClose={() => {
@@ -577,18 +588,22 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
       <NavigationControlBar
         currentWorkIndex={currentWorkIndex}
         visitedWorks={visitedWorks}
-        onPrev={handlePrev}
-        onNext={handleNext}
+        onPrev={() => handlePrev(false)}
+        onNext={() => handleNext(false)}
         onEndVisit={handleEndVisit}
         onStartVisit={() => {
           setVisitBeginTime(Date.now());
           if (visitedWorks.length > 0) {
             setCurrentWorkIndex(0);
-            setDetailsWork(visitedWorks[0]);
+            setDetailsWork(null);
             if (hasMap) {
-              const result = selectSectionForWork(visitedWorks[0]);
-              if (result?.section) {
-                alert(`Si parte dalla sezione: ${result.section.name}`);
+              const startSection = sections.find(s => 
+                s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === visitedWorks[0]._id)
+              );
+              if (startSection) {
+                if (mapRef.current) mapRef.current.flyToSection(startSection);
+                else setSelectedSection(startSection);
+                alert(`Si parte dalla sezione: ${startSection.name}`);
               }
             }
             if (isSharedSession && isTeacher && socket) {
@@ -711,8 +726,8 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
             workGuide.handleStopAudio();
             setDetailsWork(null);
           }}
-          onPrev={handlePrev}
-          onNext={handleNext}
+          onPrev={() => handlePrev(true)}
+          onNext={() => handleNext(true)}
           hasPrev={currentWorkIndex > 0}
           hasNext={currentWorkIndex < visitedWorks.length - 1}
           socket={socket}
