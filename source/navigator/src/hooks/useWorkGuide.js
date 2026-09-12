@@ -203,6 +203,8 @@ export function useWorkGuide({
     currentAudioTextRef.current = textToRead;
     audioCharIndexRef.current = 0;
 
+    setAudioProgressRatio(0);
+
     // Calcolo durata stimata (circa 2.2 parole al secondo corrette per la velocità)
     const words = textToRead.trim().split(/\s+/).filter(Boolean).length || 1;
     const speed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;

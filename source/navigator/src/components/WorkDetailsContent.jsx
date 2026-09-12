@@ -96,7 +96,7 @@ export default function WorkDetailsContent({
   // 2. Azzera l'animazione al cambio opera o testo
   useEffect(() => {
     setInternalRatio(0);
-  }, [work, currentExpertise, currentLength]);
+  }, [work, currentExpertise, currentLength, authorSubTab]);
 
   // 3. Motore fluido: avanza in autonomia partendo dall'ultimo ratio noto se l'audio è in play
   useEffect(() => {
