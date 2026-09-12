@@ -1,4 +1,4 @@
-import { Play, Pause, Mic, X, Sparkles, RotateCcw, RotateCw, ChevronLeft, ChevronRight, User, Palette, Send, Loader2 } from "lucide-react";
+import { Play, Pause, Mic, X, Sparkles, RotateCcw, RotateCw, ChevronLeft, ChevronRight, User, Palette, Send, Loader2, BookOpen } from "lucide-react";
 import { useState, useEffect, useRef } from "react"; 
 import { createPortal } from "react-dom";
 
@@ -25,7 +25,7 @@ export default function WorkDetailsContent({
     speakText, handleStopAudio, handlePauseAudio, handleResumeAudio, handleSeekAudio,
     startListening, handleMoreDesc, handleLessDesc, handleHigherExper, handleLowerExper,
     handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase,
-    processUserCommand
+    processUserCommand, authorText, styleText, activeTab, setActiveTab, authorSubTab, setAuthorSubTab
   } = guide;
 
   // Notifica la dashboard dell'insegnante quando uno studente interagisce
@@ -46,9 +46,31 @@ export default function WorkDetailsContent({
   // saltare autonomamente a un'altra opera: la navigazione la guida solo
   // l'insegnante, esattamente come già succede in NavigationControlBar.
   const canNavigate = !(isSharedSession && !isTeacher);
-  
-  // STATO INTERNO DEL PLAYER AUDIO (Durata, Posizione in secondi e Play/Pausa reale)
-  const currentText = work?.description?.[currentExpertise]?.[currentLength] || "";
+
+  // Estraiamo i dati dell'autore per mostrare il testo visivo corretto
+  const currentMuseumId = localStorage.getItem('selected_museum_id');
+  const authorDataList = work?.author?.data || work?.authorId?.data || [];
+  const authorData = authorDataList.find(d => 
+    d.museumId && d.museumId.some(m => (m._id ? m._id.toString() : m.toString()) === currentMuseumId)
+  ) || authorDataList[0] || {};
+
+  // TESTO DINAMICO IN BASE AL TAB E SUB-TAB
+  let currentText = "";
+  let sectionTitle = "Descrizione";
+
+  if (activeTab === 'work') {
+    currentText = work?.description?.[currentExpertise]?.[currentLength] || "";
+    sectionTitle = "L'Opera";
+  } else if (activeTab === 'author') {
+    sectionTitle = "L'Autore";
+    if (authorSubTab === 'studies') currentText = authorData?.studies || "Non ho informazioni sugli studi dell'autore.";
+    else if (authorSubTab === 'works') currentText = authorData?.mainWorks || "Non ho informazioni sulle altre opere principali.";
+    else currentText = authorData?.bio || `Mi dispiace, non ho una biografia dettagliata per ${work?.authorName || "questo autore"}.`;
+  } else if (activeTab === 'style') {
+    currentText = styleText;
+    sectionTitle = "Lo Stile";
+  }
+
   const totalWords = currentText.trim().split(/\s+/).filter(Boolean).length || 1;
   const audioSpeed = parseFloat(localStorage.getItem('audioSpeed')) || 1.0;
   const [isPaused, setIsPaused] = useState(false);
@@ -62,6 +84,9 @@ export default function WorkDetailsContent({
   // Stati per l'inserimento testuale
   const [textCommand, setTextCommand] = useState("");
   const [isProcessingText, setIsProcessingText] = useState(false);
+
+  // Azzera il tab quando si cambia opera
+  useEffect(() => { setActiveTab('work'); }, [work]);
 
   // 1. Allinea il timer interno immediatamente quando il padre invia un salto (-5s/+5s) o un onboundary
   useEffect(() => {
@@ -226,19 +251,26 @@ export default function WorkDetailsContent({
                   </div>
                 )}
 
-                {/* PULSANTI: AUTORE E STILE */}
-                <div className="flex gap-2">
+                {/* SELETTORE A SCHEDE (TABS) */}
+                <div className="flex gap-1.5 bg-slate-900/50 p-1.5 border border-slate-800/80 rounded-2xl mb-2">
                   <button
                     type="button"
-                    onClick={() => { sendInteraction("Chi è l'artista?"); handleAuthorBio(); }}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-900/90 hover:bg-slate-800 border border-slate-800 rounded-xl text-amber-400 hover:text-amber-300 text-xs font-semibold active:scale-95 transition-all cursor-pointer"
+                    onClick={() => { setActiveTab('work'); sendInteraction("Apro Opera"); }}
+                    className={`flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-[10px] sm:text-xs font-bold transition-all cursor-pointer ${activeTab === 'work' ? 'bg-amber-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'}`}
+                  >
+                    <BookOpen size={14} /> Opera
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('author'); setAuthorSubTab('bio'); sendInteraction("Apro Autore"); }}
+                    className={`flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-[10px] sm:text-xs font-bold transition-all cursor-pointer ${activeTab === 'author' ? 'bg-amber-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'}`}
                   >
                     <User size={14} /> Autore
                   </button>
                   <button
                     type="button"
-                    onClick={() => { sendInteraction("Cos'è questo stile?"); handleAboutStyle(); }}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-900/90 hover:bg-slate-800 border border-slate-800 rounded-xl text-amber-400 hover:text-amber-300 text-xs font-semibold active:scale-95 transition-all cursor-pointer"
+                    onClick={() => { setActiveTab('style'); sendInteraction("Apro Stile"); }}
+                    className={`flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-[10px] sm:text-xs font-bold transition-all cursor-pointer ${activeTab === 'style' ? 'bg-amber-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'}`}
                   >
                     <Palette size={14} /> Stile
                   </button>
@@ -247,9 +279,11 @@ export default function WorkDetailsContent({
 
               {/* COLONNA DESTRA */}
               <div className="md:col-span-7 flex flex-col mt-4 md:mt-0">
-                <h6 className="text-white/50 uppercase tracking-wider mb-2 text-xs font-bold">Descrizione</h6>
-                <p className="leading-relaxed text-slate-300 text-sm mb-5 max-h-40 md:max-h-52 overflow-y-auto custom-scrollbar pr-1">
-                  {currentText || "Nessuna descrizione disponibile per quest'opera."}
+                <h6 className="text-white/50 uppercase tracking-wider mb-2 text-xs font-bold transition-all">
+                  {sectionTitle}
+                </h6>
+                <p className="leading-relaxed text-slate-300 text-sm mb-5 max-h-40 md:max-h-52 overflow-y-auto custom-scrollbar pr-1 animate-fadeIn">
+                  {currentText}
                 </p>
 
                 {showFunFact && work?.funFact && (
@@ -329,83 +363,98 @@ export default function WorkDetailsContent({
                   </div>
                 </div>
 
-                {/* CONTROLLI LUNGHEZZA, DIFFICOLTÀ E VOCALE */}
+                {/* CONTROLLI DINAMICI IN BASE AL TAB */}
                 <div className="flex flex-col gap-2.5">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => { sendInteraction("Dimmi di meno"); handleLessDesc(); }}
-                      className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer"
-                    >
-                      Dimmi di meno
-                    </button>
-                    <button
-                      onClick={() => { sendInteraction("Dimmi di più"); handleMoreDesc(); }}
-                      className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer"
-                    >
-                      Dimmi di più
-                    </button>
-                  </div>
+                  
+                  {/* PULSANTI OPERA */}
+                  {activeTab === 'work' && (
+                    <>
+                      <div className="flex gap-2">
+                        <button onClick={() => { sendInteraction("Dimmi di meno"); handleLessDesc(); }} className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer">
+                          Dimmi di meno
+                        </button>
+                        <button onClick={() => { sendInteraction("Dimmi di più"); handleMoreDesc(); }} className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer">
+                          Dimmi di più
+                        </button>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        <button onClick={() => { sendInteraction("Semplifica"); handleLowerExper(); }} className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer">
+                          Semplifica
+                        </button>
+                        <button onClick={() => { sendInteraction("Approfondisci"); handleHigherExper(); }} className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer">
+                          Approfondisci
+                        </button>
+                      </div>
+                    </>
+                  )}
 
-                  <div className="flex gap-2 items-center">
-                    <button
-                      onClick={() => { sendInteraction("Semplifica"); handleLowerExper(); }}
-                      className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer"
-                    >
-                      Semplifica
-                    </button>
-                    <button
-                      onClick={() => { sendInteraction("Approfondisci"); handleHigherExper(); }}
-                      className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-slate-800/40 hover:bg-slate-800 text-slate-300 py-2.5 transition-colors text-xs font-medium cursor-pointer"
-                    >
-                      Approfondisci
-                    </button>
+                  {/* PULSANTI AUTORE */}
+                  {activeTab === 'author' && (
+                    <>
+                      <div className="flex gap-2">
+                        <button onClick={() => { sendInteraction("Chi è l'artista?"); handleAuthorBio(); }} className={`flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 py-2.5 transition-colors text-xs font-medium cursor-pointer ${authorSubTab === 'bio' ? 'bg-amber-600/30 text-amber-400 border-amber-600/50' : 'bg-slate-800/40 hover:bg-slate-800 text-slate-300'}`}>
+                          Chi è?
+                        </button>
+                        <button onClick={() => { sendInteraction("Dove ha studiato?"); handleAuthorStudies(); }} className={`flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 py-2.5 transition-colors text-xs font-medium cursor-pointer ${authorSubTab === 'studies' ? 'bg-amber-600/30 text-amber-400 border-amber-600/50' : 'bg-slate-800/40 hover:bg-slate-800 text-slate-300'}`}>
+                          Studi
+                        </button>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        <button onClick={() => { sendInteraction("Opere principali"); handleAuthorWorks(); }} className={`w-full flex items-center justify-center gap-1.5 rounded-xl border border-white/10 py-2.5 transition-colors text-xs font-medium cursor-pointer ${authorSubTab === 'works' ? 'bg-amber-600/30 text-amber-400 border-amber-600/50' : 'bg-slate-800/40 hover:bg-slate-800 text-slate-300'}`}>
+                          Altre opere principali
+                        </button>
+                      </div>
+                    </>
+                  )}
+
+                  {/* BARRA DI TESTO E MICROFONO (Sempre visibili e compattati in una riga) */}
+                  <div className="flex gap-2 items-center mt-1">
+                    <div className="relative flex-1">
+                      <input 
+                        type="text" 
+                        value={textCommand}
+                        onChange={(e) => setTextCommand(e.target.value)}
+                        onKeyDown={async (e) => {
+                          if (e.key === 'Enter' && textCommand.trim()) {
+                            setIsProcessingText(true);
+                            await processUserCommand(textCommand);
+                            setIsProcessingText(false);
+                            setTextCommand('');
+                          }
+                        }}
+                        placeholder="Chiedi qualcosa..." 
+                        className="w-full bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-xl pl-4 pr-12 py-3 text-sm text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 shadow-inner transition-colors"
+                      />
+                      <button 
+                        type="button"
+                        onClick={async () => {
+                          if (textCommand.trim()) {
+                            setIsProcessingText(true);
+                            await processUserCommand(textCommand);
+                            setIsProcessingText(false);
+                            setTextCommand('');
+                          }
+                        }}
+                        disabled={isProcessingText || !textCommand.trim()}
+                        className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white rounded-lg transition-colors cursor-pointer"
+                      >
+                        {isProcessingText ? <Loader2 size={16} className="animate-spin text-white" /> : <Send size={16} />}
+                      </button>
+                    </div>
                     <button
                       onClick={startListening}
-                      className="w-11 h-11 flex items-center justify-center rounded-xl transition-all duration-300 shrink-0 cursor-pointer"
+                      className="w-[46px] h-[46px] flex items-center justify-center rounded-xl transition-all duration-300 shrink-0 cursor-pointer"
                       style={{ 
-                        backgroundColor: isListening ? "#ef4444" : "rgba(255,255,255,0.08)",
-                        color: isListening ? "white" : "#cbd5e1",
-                        boxShadow: isListening ? "0 0 15px rgba(239, 68, 68, 0.6)" : "none"
+                        backgroundColor: isListening ? "#ef4444" : "rgba(255,255,255,0.08)", 
+                        color: isListening ? "white" : "#cbd5e1", 
+                        boxShadow: isListening ? "0 0 15px rgba(239, 68, 68, 0.6)" : "none" 
                       }}
-                      title="Comandi vocali: 'dimmi di più', 'semplifica', ecc."
+                      title="Comandi vocali"
                     >
-                      <Mic size={18} />
+                      <Mic size={20} />
                     </button>
                   </div>
 
-                  {/* NUOVA BARRA DI TESTO */}
-                  <div className="relative w-full mt-1">
-                    <input 
-                      type="text" 
-                      value={textCommand}
-                      onChange={(e) => setTextCommand(e.target.value)}
-                      onKeyDown={async (e) => {
-                        if (e.key === 'Enter' && textCommand.trim()) {
-                          setIsProcessingText(true);
-                          await processUserCommand(textCommand);
-                          setIsProcessingText(false);
-                          setTextCommand('');
-                        }
-                      }}
-                      placeholder="Chiedi qualcosa..." 
-                      className="w-full bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-xl pl-4 pr-12 py-3 text-sm text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 shadow-inner transition-colors"
-                    />
-                    <button 
-                      type="button"
-                      onClick={async () => {
-                        if (textCommand.trim()) {
-                          setIsProcessingText(true);
-                          await processUserCommand(textCommand);
-                          setIsProcessingText(false);
-                          setTextCommand('');
-                        }
-                      }}
-                      disabled={isProcessingText || !textCommand.trim()}
-                      className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white rounded-lg transition-colors cursor-pointer"
-                    >
-                      {isProcessingText ? <Loader2 size={16} className="animate-spin text-white" /> : <Send size={16} />}
-                    </button>
-                  </div>
                 </div>
 
               </div>

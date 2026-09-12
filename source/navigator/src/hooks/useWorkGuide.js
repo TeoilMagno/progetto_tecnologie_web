@@ -20,6 +20,15 @@ export function useWorkGuide({
   useEffect(() => {
     setShowFunFact(false);
   }, [work]);
+
+  const [activeTab, setActiveTab] = useState('work');
+  const [authorSubTab, setAuthorSubTab] = useState('bio');
+
+  useEffect(() => {
+    setShowFunFact(false);
+    setActiveTab('work');
+    setAuthorSubTab('bio');
+  }, [work]);
   
   const [isListening, setIsListening] = useState(false);
   const [voiceToast, setVoiceToast] = useState("");
@@ -474,6 +483,7 @@ export function useWorkGuide({
 
 
   const handleMoreDesc = () => {
+    setActiveTab('work');
     const currentIndex = lengthLevels.indexOf(currentLength);
     if (currentIndex < lengthLevels.length - 1) {
       const nextLength = lengthLevels[currentIndex + 1];
@@ -486,6 +496,7 @@ export function useWorkGuide({
   };
 
   const handleLessDesc = () => {
+    setActiveTab('work');
     const currentIndex = lengthLevels.indexOf(currentLength);
     if (currentIndex > 0) {
       const prevLength = lengthLevels[currentIndex - 1];
@@ -498,6 +509,7 @@ export function useWorkGuide({
   };
 
   const handleHigherExper = () => {
+    setActiveTab('work');
     const currentIndex = expertiseLevels.indexOf(currentExpertise);
     if (currentIndex < expertiseLevels.length - 1) {
       const nextExpertise = expertiseLevels[currentIndex + 1];
@@ -510,6 +522,7 @@ export function useWorkGuide({
   };
 
   const handleLowerExper = () => {
+    setActiveTab('work');
     const currentIndex = expertiseLevels.indexOf(currentExpertise);
     if (currentIndex > 0) {
       const prevExpertise = expertiseLevels[currentIndex - 1];
@@ -522,6 +535,7 @@ export function useWorkGuide({
   };
 
   const handleFunFact = () => {
+    setActiveTab('work');
     if (work?.funFact) {
       setShowFunFact(true);
       if (playMode) speakText(`Ecco una curiosità su quest'opera: ${work.funFact}`);
@@ -531,6 +545,7 @@ export function useWorkGuide({
   };
 
   const handleParaphrase = () => {
+    setActiveTab('work');
     const text = work?.paraphrase || "La parafrasi non è disponibile per quest'opera.";
     speakText(text);
   };
@@ -563,28 +578,38 @@ export function useWorkGuide({
 
   // --- FUNZIONI DI LETTURA ---
   const handleAuthorBio = () => {
+    setActiveTab('author');
+    setAuthorSubTab('bio');
     const authorData = getAuthorData();
     const text = authorData?.bio || `Mi dispiace, non ho una biografia dettagliata per ${work?.authorName || "questo autore"}.`;
     speakText(text);
   };
 
   const handleAuthorStudies = () => {
+    setActiveTab('author');
+    setAuthorSubTab('studies');
     const authorData = getAuthorData();
     const text = authorData?.studies || "Non ho informazioni sugli studi dell'autore.";
     speakText(text);
   };
 
   const handleAuthorWorks = () => {
+    setActiveTab('author');
+    setAuthorSubTab('works');
     const authorData = getAuthorData();
     const text = authorData?.mainWorks || "Non ho informazioni sulle altre opere principali.";
     speakText(text);
   };
 
   const handleAboutStyle = () => {
+    setActiveTab('style');
     const styleData = getStyleData();
     const text = styleData?.description || `Mi dispiace, non ho approfondimenti sullo stile ${work?.styleName || "di quest'opera"}.`;
     speakText(text);
   };
+
+  const authorText = getAuthorData()?.bio || `Mi dispiace, non ho una biografia dettagliata per ${work?.authorName || "questo autore"}.`;
+  const styleText = getStyleData()?.description || `Mi dispiace, non ho approfondimenti sullo stile ${work?.styleName || "di quest'opera"}.`;
 
   return {
     playMode, currentExpertise, currentLength, audioProgressRatio, audioDuration,
@@ -593,6 +618,6 @@ export function useWorkGuide({
     speakText, handleStopAudio, handlePauseAudio, handleResumeAudio, handleSeekAudio,
     startListening, handleMoreDesc, handleLessDesc, handleHigherExper, handleLowerExper,
     handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase,
-    processUserCommand
+    processUserCommand, authorText, styleText, activeTab, setActiveTab, authorSubTab, setAuthorSubTab
   };
 }
