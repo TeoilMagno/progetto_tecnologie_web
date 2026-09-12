@@ -812,6 +812,22 @@ apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
   }
 });
 
+// Valuta e aggiorna dinamicamente il livello di expertise a fine visita
+apiRouter.post("/current-user/evaluate-expertise", auth.isLoggedIn, async (req, res) => {
+  try {
+    const { sessionExpertise } = req.body;
+    if (!sessionExpertise) {
+      return res.status(400).json({ error: "Livello di sessione mancante" });
+    }
+
+    const result = await userController.evaluateExpertiseLevel(req.user._id, sessionExpertise);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Errore valutazione expertise:", error);
+    res.status(500).json({ error: "Errore interno del server" });
+  }
+});
+
 // ----------------------- visits ----------------------------
 
 // recupera le visite create/comprate dallo user

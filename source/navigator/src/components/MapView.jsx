@@ -428,6 +428,21 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
       socket.emit("end_shared_visit", { roomCode });
     }
 
+    // --- Valutazione livello utente a fine visita ---
+    // Eseguito in background senza bloccare l'interfaccia
+    if (!isSharedSession || isTeacher) {
+      try {
+        await fetch(`${API_BASE_URL}/current-user/evaluate-expertise`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ sessionExpertise: workGuide.defaultExpertise })
+        });
+      } catch (error) {
+        console.error("Errore durante l'aggiornamento dell'expertise:", error);
+      }
+    }
+
     const endTime = Date.now();
     setVisitEndTime(endTime);
     const elapsedMilliseconds = endTime - visitBeginTime;

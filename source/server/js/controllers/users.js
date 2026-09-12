@@ -21,6 +21,42 @@ function hashPassword(password, salt) {
   });
 }
 
+exports.getAllUsers = async () => {
+  // Usiamo .lean() per ottenere oggetti JS puri dal DB
+  const users = await User.find({}).lean();
+  
+  return users.map(user => {
+    // Convertiamo esplicitamente i Buffer in stringhe Base64 per un JSON pulito
+    if (user.password) user.password = user.password.toString('base64');
+    if (user.salt) user.salt = user.salt.toString('base64');
+    
+    return user;
+  });
+};
+
+exports.uploadAllUsers = async (usersData) => {
+  await User.deleteMany({});
+  
+  const formattedUsers = usersData.map(user => {
+    // Ripristiniamo la stringa Base64 nel formato Buffer nativo richiesto da crypto
+    if (user.password) user.password = Buffer.from(user.password, 'base64');
+    if (user.salt) user.salt = Buffer.from(user.salt, 'base64');
+    
+    return user;
+  });
+
+  await User.insertMany(formattedUsers);
+};
+
+exports.getAllFederatedCredentials = async () => {
+  return await FederatedCredential.find({}).lean();
+};
+
+exports.uploadAllFederatedCredentials = async (credentialsData) => {
+  await FederatedCredential.deleteMany({});
+  await FederatedCredential.insertMany(credentialsData);
+};
+
 exports.createLocalUser = async ({ username, password, requestedRole }) => {
   const salt = crypto.randomBytes(16);
   const hash = await hashPassword(password, salt);
@@ -155,42 +191,55 @@ exports.deleteUserAccount = async (userId) => {
   return await User.findByIdAndDelete(user._id);
 };
 
-// Da aggiungere in fondo al file users.js
+exports.evaluateExpertiseLevel = async (userId, sessionExpertise) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("Utente non trovato");
 
-exports.getAllUsers = async () => {
-  // Usiamo .lean() per ottenere oggetti JS puri dal DB
-  const users = await User.find({}).lean();
+  const levels = ['simple', 'medium', 'professional', 'expert'];
+  const currentExpertise = user.preferences?.expertiseLevel || 'medium';
+
+  const currentIndex = levels.indexOf(currentExpertise);
+  const sessionIndex = levels.indexOf(sessionExpertise);
+
+  if (sessionIndex === -1) return { newExpertise: currentExpertise, hasChanged: false };
+
+  // Inizializzazione sicura se i campi mancano
+  if (!user.preferences) user.preferences = {};
+  if (!user.preferences.interactionsCount) {
+    user.preferences.interactionsCount = { simpler_requests: 0, deeper_requests: 0 };
+  }
+
+  let updated = false;
+
+  if (sessionIndex > currentIndex) {
+    user.preferences.interactionsCount.deeper_requests += 1;
+    user.preferences.interactionsCount.simpler_requests = 0; // Azzera l'altro contatore
+
+    if (user.preferences.interactionsCount.deeper_requests >= 2) {
+      user.preferences.expertiseLevel = levels[currentIndex + 1];
+      user.preferences.interactionsCount.deeper_requests = 0;
+      updated = true;
+    }
+  } else if (sessionIndex < currentIndex) {
+    user.preferences.interactionsCount.simpler_requests += 1;
+    user.preferences.interactionsCount.deeper_requests = 0; 
+
+    if (user.preferences.interactionsCount.simpler_requests >= 2) {
+      user.preferences.expertiseLevel = levels[currentIndex - 1];
+      user.preferences.interactionsCount.simpler_requests = 0;
+      updated = true;
+    }
+  } else {
+    // Stesso livello: l'utente si trova bene, azzeriamo i contatori per
+    // richiedere 2 salti consecutivi "puri" in futuro
+    user.preferences.interactionsCount.simpler_requests = 0;
+    user.preferences.interactionsCount.deeper_requests = 0;
+  }
+
+  await user.save();
   
-  return users.map(user => {
-    // Convertiamo esplicitamente i Buffer in stringhe Base64 per un JSON pulito
-    if (user.password) user.password = user.password.toString('base64');
-    if (user.salt) user.salt = user.salt.toString('base64');
-    
-    return user;
-  });
-};
-
-exports.uploadAllUsers = async (usersData) => {
-  await User.deleteMany({});
-  
-  const formattedUsers = usersData.map(user => {
-    // Ripristiniamo la stringa Base64 nel formato Buffer nativo richiesto da crypto
-    if (user.password) user.password = Buffer.from(user.password, 'base64');
-    if (user.salt) user.salt = Buffer.from(user.salt, 'base64');
-    
-    return user;
-  });
-
-  await User.insertMany(formattedUsers);
-};
-
-// Da aggiungere in fondo al file users.js (dopo la funzione uploadAllUsers)
-
-exports.getAllFederatedCredentials = async () => {
-  return await FederatedCredential.find({}).lean();
-};
-
-exports.uploadAllFederatedCredentials = async (credentialsData) => {
-  await FederatedCredential.deleteMany({});
-  await FederatedCredential.insertMany(credentialsData);
+  return {
+    newExpertise: user.preferences.expertiseLevel,
+    hasChanged: updated
+  };
 };

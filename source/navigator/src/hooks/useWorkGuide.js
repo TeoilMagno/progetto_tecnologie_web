@@ -44,11 +44,16 @@ export function useWorkGuide({
   const [preferAudio, setPreferAudio] = useState(false);
   const [aiResponse, setAiResponse] = useState(null);
 
+  // --- Stati per l'intelligenza del registro ---
+  const [defaultExpertise, setDefaultExpertise] = useState(initialExpertise);
+  const expertiseInteractions = useRef({ deeper: 0, simpler: 0 });
+
   useEffect(() => {
     setShowFunFact(false);
     setActiveTab('work');
     setAuthorSubTab('bio');
     setAiResponse(null);
+    setCurrentExpertise(defaultExpertise);
   }, [work]);
 
   // --- TRACCIAMENTO "INDIZI DI ASCOLTO" per la dashboard dell'insegnante ---
@@ -522,6 +527,18 @@ export function useWorkGuide({
       if (textToSpeak) {
         setCurrentExpertise(nextExpertise);
         if (preferAudio) speakText(textToSpeak);
+
+        // LOGICA DI APPRENDIMENTO: 2 click = alza il default della visita
+        expertiseInteractions.current.deeper += 1;
+        expertiseInteractions.current.simpler = 0;
+
+        if (expertiseInteractions.current.deeper >= 2) {
+          const defaultIndex = expertiseLevels.indexOf(defaultExpertise);
+          if (defaultIndex < expertiseLevels.length - 1) {
+            setDefaultExpertise(expertiseLevels[defaultIndex + 1]);
+          }
+          expertiseInteractions.current.deeper = 0; // Reset
+        }
       }
     }
   };
@@ -535,6 +552,19 @@ export function useWorkGuide({
       if (textToSpeak) {
         setCurrentExpertise(prevExpertise);
         if (preferAudio) speakText(textToSpeak);
+
+        // LOGICA DI APPRENDIMENTO: 2 click = abbassa il default della visita
+        expertiseInteractions.current.simpler += 1;
+        expertiseInteractions.current.deeper = 0;
+
+        if (expertiseInteractions.current.simpler >= 2) {
+          const defaultIndex = expertiseLevels.indexOf(defaultExpertise);
+          if (defaultIndex > 0) {
+            setDefaultExpertise(expertiseLevels[defaultIndex - 1]);
+            triggerToast("Livello base abbassato in automatico");
+          }
+          expertiseInteractions.current.simpler = 0; // Reset
+        }
       }
     }
   };
@@ -646,7 +676,7 @@ export function useWorkGuide({
   return {
     playMode, currentExpertise, currentLength, audioProgressRatio, audioDuration,
     isListening, voiceToast, showFunFact,
-    setCurrentExpertise, setCurrentLength,
+    setCurrentExpertise, setCurrentLength, defaultExpertise,
     speakText, handleStopAudio, handlePauseAudio, handleResumeAudio, handleSeekAudio,
     startListening, handleMoreDesc, handleLessDesc, handleHigherExper, handleLowerExper,
     handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase,
