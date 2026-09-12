@@ -172,7 +172,7 @@ async function getMuseumItems(museumId, isHistoryPop = false) {
     
     renderMuseumDashboard(museum);
   } catch (error) {
-    console.error("Errore in getMuseumItems: ", error);
+    alert("Impossibile caricare gli oggetti in vendita dei musei caricati: ", error);
     container.innerHTML = `<div class="alert alert-danger bg-transparent text-danger border-danger">Errore: ${error.message}</div>`;
   }
 }
@@ -390,7 +390,7 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
       if (editBshopBtn) editBshopBtn.classList.remove("d-none");
     }
   } catch (error) {
-    console.error("Errore verifica permessi:", error);
+    alert("Impossibile verificare i permessi per caricare i musei appartenenti a questo utente, riprpva più tardi", error);
   }
 }
 
@@ -470,7 +470,7 @@ async function fetchAndRenderWorks(museumId, isLoadMore = false) {
   
   try {
     const response = await fetch(`${API_BASE_URL}/museums/${museumId}/works?${params.toString()}`);
-    if (!response.ok) throw new Error("Errore caricamento opere");
+    if (!response.ok) throw new Error("il server non ha trovato le opere");
     const data = await response.json();
 
     totalWorkPages = data.totalPages;
@@ -513,7 +513,7 @@ async function fetchAndRenderWorks(museumId, isLoadMore = false) {
 
     setupWorksInfiniteScroll(museumId);
   } catch (error) {
-    console.error(error);
+    alert("Errore durante il caricamento delle opere di questo museo, riprovare più tardi", error);
     if (!isLoadMore) subContainer.innerHTML = `<div class="col-12 text-center text-danger small py-3">Errore: ${error.message}</div>`;
   } finally {
     isFetchingWorks = false;
@@ -535,7 +535,7 @@ async function fetchAndRenderItems(museumId, isLoadMore = false) {
   
   try {
     const response = await fetch(`${API_BASE_URL}/museums/${museumId}/items?${params.toString()}`);
-    if (!response.ok) throw new Error("Errore caricamento articoli");
+    if (!response.ok) throw new Error("Errore caricamento articoli in vendita");
     
     const data = await response.json();
     
@@ -554,7 +554,7 @@ async function fetchAndRenderItems(museumId, isLoadMore = false) {
       renderItemsList(initialChunk, false);
     }
   } catch (error) {
-    console.error(error);
+    alert(error);
     if (!isLoadMore) subContainer.innerHTML = `<div class="col-12 text-center text-danger small py-3">Errore: ${error.message}</div>`;
   } finally {
     isFetchingItems = false;
@@ -683,7 +683,7 @@ async function loadMuseumSubView(view, museumId) {
       }
     }
   } catch (error) {
-    console.error(error);
+    alert(error);
     subContainer.innerHTML = `<div class="col-12 text-center text-danger small py-3">Impossibile caricare i contenuti: ${error.message}</div>`;
   }
 }

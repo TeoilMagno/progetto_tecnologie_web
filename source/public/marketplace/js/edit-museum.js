@@ -169,7 +169,7 @@ async function loadMuseumDetails() {
     }
     await loadSectionsAndWorks();
   } catch (error) {
-    console.error("Errore caricamento:", error);
+    alert("Errore durante il caricamento delle informazioni del museo", error);
   }
 }
 
@@ -221,7 +221,7 @@ async function loadSectionsAndWorks() {
     });
 
   } catch (error) {
-    console.error("Errore sezioni:", error);
+    alert("Impossibile caricare le sezioni del museo, riprovare più tardi", error);
     container.innerHTML = `<div class="alert alert-danger">Errore caricamento struttura.</div>`;
   }
 }
@@ -378,7 +378,7 @@ async function saveSectionFromModal() {
       }
     }
   } catch (error) { 
-    console.error("Errore salvataggio sezione:", error); 
+    alert("Errore durante il salvataggio della sezione, ricontrolla i dati o riprova più tardi:", error); 
   }
 }
 
@@ -395,7 +395,7 @@ async function deleteSection(sectionId) {
       body: JSON.stringify({ museumId: currentMuseumId })
     });
     if (res.ok) loadSectionsAndWorks();
-  } catch (error) { console.error(error); }
+  } catch (error) { alert("Impossibile cancellare la sezione selezionata", error); }
 }
 
 // ------------------- GESTIONE OPERE -------------------
@@ -541,7 +541,7 @@ async function saveWorkFromModal() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ museumId: currentMuseumId })
-      }).catch(e => console.error("Errore adozione autore ignorato:", e));
+      }).catch(e => alert("Errore la selezione dell'autore, riprovare più tardi", e));
     }
 
     const styleDataInput = document.getElementById("work-style-data-id");
@@ -554,7 +554,7 @@ async function saveWorkFromModal() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ museumId: currentMuseumId })
-      }).catch(e => console.error("Errore adozione stile ignorato:", e));
+      }).catch(e => alert("Errore durante la selezione dello stile, riprova più tardi", e));
     }
 
     let res;
@@ -582,7 +582,7 @@ async function saveWorkFromModal() {
 
       // 3. ORA lanciamo l'IA in background usando l'ID corretto e sicuro
       if (!workId) {
-        console.log(`Nuova opera salvata con ID: ${finalWorkId}. Inizio generazione IA in background...`);
+        showToast(`Nuova opera salvata con ID: ${finalWorkId}. Generazione automatica dei dati dell'opera in corso...`);
         fetch(`${API_BASE_URL}/ai/generate-work-desc`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -613,7 +613,7 @@ async function saveWorkFromModal() {
       const errorData = await res.json();
       alert("Errore salvataggio: " + (errorData.error || "Riprova."));
     }
-  } catch (error) { console.error(error); }
+  } catch (error) { alert("Errore durante il salvataggio dell'opera, controllare i dati inseriti o riprovare più tardi", error); }
 }
 
 async function deleteWork(sectionId, workId) {
@@ -630,7 +630,7 @@ async function deleteWork(sectionId, workId) {
       body: JSON.stringify({ sectionId: sectionId, museumId: currentMuseumId })
     });
     if (res.ok) loadSectionsAndWorks();
-  } catch (error) { console.error(error); }
+  } catch (error) { alert("Impossibile cancellare l'opera selezionata:", error); }
 }
 
 // ------------------- SALVA E ELIMINA MUSEO -------------------
@@ -653,7 +653,7 @@ async function saveAllMuseumChanges() {
       alert("Errore nel salvataggio delle modifiche.");
     }
   } catch (e) {
-    console.error(e);
+    alert("Errore durante il salvataggio dei dati, ricontrollare i dati inseriti o riprovare più tardi", e);
   }
 }
 
@@ -749,7 +749,7 @@ async function confirmDeleteMuseum() {
       alert("Errore durante l'eliminazione del museo.");
     }
   } catch (error) {
-    console.error(error);
+    alert("Si è verificato un errore di connessione durante l'eleiminazione del museo, riprovare più tardi", error);
   }
 }
 
@@ -885,8 +885,7 @@ function initSortableWorks() {
                     
           itemEl.style.opacity = '1';
         } catch (error) {
-          console.error(error);
-          alert("Errore nello spostamento dell'opera.");
+          alert("Errore nello spostamento dell'opera:". error);
           loadSectionsAndWorks(); 
         }
       }
@@ -1046,7 +1045,7 @@ async function fetchGlobalCatalogChunk(museumId, isLoadMore = false) {
     }
 
   } catch (e) {
-    console.error("Errore fetch globale:", e);
+    alert("Errore durante il caricamento dei dati del museo", e);
   } finally {
     isFetchingGlobalWorks = false;
     updateGlobalCatalogSentinel();

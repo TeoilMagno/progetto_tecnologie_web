@@ -92,7 +92,7 @@ async function geocodeAddress(address) {
       };
     }
   } catch (error) {
-    console.error("Errore durante il geocoding dell'indirizzo:", error);
+    alert("Errore durante la geolocalizzazione dell'indirizzo:", error);
   }
   return { lat: null, lon: null };
 }

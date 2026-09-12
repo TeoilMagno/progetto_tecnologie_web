@@ -87,7 +87,7 @@ async function respondToRequest(userId, action) {
       loadPendingCurators(); // Ricarica la lista per far sparire l'utente
     } else {
       const err = await res.json();
-      alert(err.error || "Errore durante l'operazione.");
+      alert(err.error || "Errore durante l'operazione");
     }
   } catch (error) {
     console.error(error);

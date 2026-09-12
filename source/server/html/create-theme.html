@@ -966,10 +966,10 @@
           currentConfig = await response.json();
           applyConfigToPreview(currentConfig);
         } else {
-          console.error("Incapace di caricare la configurazione di default dal server.");
+          console.error("Impossibile caricare la configurazione di default per lo stile della pagina");
         }
       } catch (err) {
-        console.error("Errore durante il recupero della configurazione:", err);
+        console.error("Errore durante la richiesta del file di congigurazione per lo stile della pagina", err);
       }
     }
 

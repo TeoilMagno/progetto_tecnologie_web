@@ -24,7 +24,7 @@ async function initializeFiltersData(museums) {
     if (lat && lon) {
       museumCoordsMap[museum._id] = { lat, lon };
     } else {
-      console.log("ATTENZIONE: museo senza coordinate\n");
+      console.log("ATTENZIONE: museo senza coordinate\nImpossibile calcolare la distanza da questo museo");
     }
   }
 

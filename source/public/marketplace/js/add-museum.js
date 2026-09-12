@@ -49,13 +49,13 @@ async function museumHandleSave(event) {
       
     } else {
       const errorData = await response.json();
-      alert(`Errore: ${errorData.error}\nDettaglio: ${errorData.details}`);
+      alert(`Errore: ${errorData.error}\nDettaglio: ${errorData.details} ricontrollare i dati immessi prima di riprovare l'invio`);
       saveBtn.innerHTML = originalText;
       saveBtn.disabled = false;
     }
   } catch (error) {
-    console.error("Errore nell'invio:", error);
-    alert("Errore di connessione al server.");
+    console.error("Errore nell'invio dei dati:", error);
+    alert("Errore di connessione al server");
     saveBtn.innerHTML = originalText;
     saveBtn.disabled = false;
   }
