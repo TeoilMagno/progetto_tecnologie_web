@@ -41,6 +41,16 @@ export function useWorkGuide({
   const currentAudioTextRef = useRef("");
   const isAudioActiveRef = useRef(false);
 
+  const [preferAudio, setPreferAudio] = useState(false);
+  const [aiResponse, setAiResponse] = useState(null);
+
+  useEffect(() => {
+    setShowFunFact(false);
+    setActiveTab('work');
+    setAuthorSubTab('bio');
+    setAiResponse(null);
+  }, [work]);
+
   // --- TRACCIAMENTO "INDIZI DI ASCOLTO" per la dashboard dell'insegnante ---
   // Vive qui perché è l'hook, non il componente, a possedere davvero il
   // ciclo di vita dell'audio (onstart/onend/onerror, pause/resume/seek).
@@ -485,7 +495,7 @@ export function useWorkGuide({
       const textToSpeak = work?.description?.[currentExpertise]?.[nextLength];
       if (textToSpeak) {
         setCurrentLength(nextLength);
-        if (playMode) speakText(textToSpeak);
+        if (preferAudio) speakText(textToSpeak);
       }
     }
   };
@@ -498,7 +508,7 @@ export function useWorkGuide({
       const textToSpeak = work?.description?.[currentExpertise]?.[prevLength];
       if (textToSpeak) {
         setCurrentLength(prevLength);
-        if (playMode) speakText(textToSpeak);
+        if (preferAudio) speakText(textToSpeak);
       }
     }
   };
@@ -511,7 +521,7 @@ export function useWorkGuide({
       const textToSpeak = work?.description?.[nextExpertise]?.[currentLength];
       if (textToSpeak) {
         setCurrentExpertise(nextExpertise);
-        if (playMode) speakText(textToSpeak);
+        if (preferAudio) speakText(textToSpeak);
       }
     }
   };
@@ -524,25 +534,48 @@ export function useWorkGuide({
       const textToSpeak = work?.description?.[prevExpertise]?.[currentLength];
       if (textToSpeak) {
         setCurrentExpertise(prevExpertise);
-        if (playMode) speakText(textToSpeak);
+        if (preferAudio) speakText(textToSpeak);
       }
     }
   };
 
   const handleFunFact = () => {
     setActiveTab('work');
+    setAiResponse(null);
     if (work?.funFact) {
       setShowFunFact(true);
-      if (playMode) speakText(`Ecco una curiosità su quest'opera: ${work.funFact}`);
+      if (preferAudio) speakText(`Ecco una curiosità su quest'opera: ${work.funFact}`);
     } else {
-      speakText(`Mi dispiace, ma non ho curiosità extra registrate per quest'opera.`);
+      const msg = `Mi dispiace, ma non ho curiosità extra registrate per quest'opera.`;
+      setAiResponse(msg);
+      if (preferAudio) speakText(msg);
     }
   };
 
   const handleParaphrase = () => {
     setActiveTab('work');
     const text = work?.paraphrase || "La parafrasi non è disponibile per quest'opera.";
-    speakText(text);
+    setAiResponse(text);
+    if (preferAudio) speakText(text);
+  };
+
+  const handleLocation = (phrase = "") => {
+    setActiveTab('work');
+    let areaName = "una sezione adiacente";
+    
+    if (work && sections.length > 0) {
+      const section = sections.find(s => 
+        s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === work._id)
+      );
+      if (section) areaName = section.name;
+    }
+    
+    const isNext = phrase.includes("prossima") || phrase.includes("dopo") || phrase.includes("successiva");
+    const subject = isNext ? "La prossima opera" : "Quest'opera";
+    const msg = `${subject} si trova nella ${areaName}.`;
+    
+    setAiResponse(msg);
+    if (preferAudio) speakText(msg);
   };
 
   // --- HELPER PER PESCARE I DATI CORRETTI ---
@@ -575,51 +608,36 @@ export function useWorkGuide({
   const handleAuthorBio = () => {
     setActiveTab('author');
     setAuthorSubTab('bio');
+    setAiResponse(null);
     const authorData = getAuthorData();
-    const text = authorData?.bio || `Mi dispiace, non ho una biografia dettagliata per ${work?.authorName || "questo autore"}.`;
-    speakText(text);
+    const text = authorData?.bio || `Mi dispiace, non ho una biografia dettagliata.`;
+    if (preferAudio) speakText(text);
   };
 
   const handleAuthorStudies = () => {
     setActiveTab('author');
     setAuthorSubTab('studies');
+    setAiResponse(null);
     const authorData = getAuthorData();
     const text = authorData?.studies || "Non ho informazioni sugli studi dell'autore.";
-    speakText(text);
+    if (preferAudio) speakText(text);
   };
 
   const handleAuthorWorks = () => {
     setActiveTab('author');
     setAuthorSubTab('works');
+    setAiResponse(null);
     const authorData = getAuthorData();
     const text = authorData?.mainWorks || "Non ho informazioni sulle altre opere principali.";
-    speakText(text);
+    if (preferAudio) speakText(text);
   };
 
   const handleAboutStyle = () => {
     setActiveTab('style');
+    setAiResponse(null);
     const styleData = getStyleData();
-    const text = styleData?.description || `Mi dispiace, non ho approfondimenti sullo stile ${work?.styleName || "di quest'opera"}.`;
-    speakText(text);
-  };
-
-  const handleLocation = (phrase = "") => {
-    setActiveTab('work');
-    
-    let areaName = "una sezione adiacente";
-    
-    if (work && sections.length > 0) {
-      const section = sections.find(s => 
-        s.works && s.works.some(sw => (sw.workId?._id || sw.workId) === work._id)
-      );
-      if (section) areaName = section.name;
-    }
-    
-    // Controlla se la frase contiene la parola "prossima" o "dopo"
-    const isNext = phrase.includes("prossima") || phrase.includes("dopo") || phrase.includes("successiva");
-    const subject = isNext ? "La prossima opera" : "Quest'opera";
-    
-    speakText(`${subject} si trova nella ${areaName}.`);
+    const text = styleData?.description || `Mi dispiace, non ho approfondimenti sullo stile.`;
+    if (preferAudio) speakText(text);
   };
 
   const authorText = getAuthorData()?.bio || `Mi dispiace, non ho una biografia dettagliata per ${work?.authorName || "questo autore"}.`;
@@ -632,6 +650,7 @@ export function useWorkGuide({
     speakText, handleStopAudio, handlePauseAudio, handleResumeAudio, handleSeekAudio,
     startListening, handleMoreDesc, handleLessDesc, handleHigherExper, handleLowerExper,
     handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase,
-    processUserCommand, authorText, styleText, activeTab, setActiveTab, authorSubTab, setAuthorSubTab
+    processUserCommand, authorText, styleText, activeTab, setActiveTab, authorSubTab, setAuthorSubTab,
+    preferAudio, setPreferAudio, aiResponse, setAiResponse
   };
 }

@@ -25,7 +25,8 @@ export default function WorkDetailsContent({
     speakText, handleStopAudio, handlePauseAudio, handleResumeAudio, handleSeekAudio,
     startListening, handleMoreDesc, handleLessDesc, handleHigherExper, handleLowerExper,
     handleFunFact, handleAuthorBio, handleAuthorStudies, handleAuthorWorks, handleAboutStyle, handleParaphrase,
-    processUserCommand, authorText, styleText, activeTab, setActiveTab, authorSubTab, setAuthorSubTab
+    processUserCommand, authorText, styleText, activeTab, setActiveTab, authorSubTab, setAuthorSubTab,
+    preferAudio, setPreferAudio, aiResponse, setAiResponse
   } = guide;
 
   // Notifica la dashboard dell'insegnante quando uno studente interagisce
@@ -405,6 +406,24 @@ export default function WorkDetailsContent({
                         </button>
                       </div>
                     </>
+                  )}
+
+                  {/* RISPOSTA IA VISIVA (Mostrata quando l'IA fornisce dettagli estemporanei) */}
+                  {aiResponse && (
+                    <div className="bg-slate-800/90 border border-cyan-500/30 rounded-xl p-3.5 flex justify-between items-start gap-3 animate-fadeIn mt-1 shadow-lg relative">
+                      <div className="absolute top-0 right-0 p-3 opacity-10 pointer-events-none">
+                        <Sparkles size={40} />
+                      </div>
+                      <div className="relative z-10">
+                        <span className="flex items-center gap-1 text-cyan-400 text-[10px] font-bold uppercase tracking-wider mb-1">
+                          <Sparkles size={10} /> 
+                        </span>
+                        <p className="text-sm text-slate-200 leading-relaxed">{aiResponse}</p>
+                      </div>
+                      <button onClick={() => setAiResponse(null)} className="text-slate-500 hover:text-white shrink-0 mt-0.5 relative z-10">
+                        <X size={16} />
+                      </button>
+                    </div>
                   )}
 
                   {/* BARRA DI TESTO E MICROFONO (Sempre visibili e compattati in una riga) */}

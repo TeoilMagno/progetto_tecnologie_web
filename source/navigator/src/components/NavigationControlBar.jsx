@@ -67,9 +67,10 @@ export default function NavigationControlBar({
           <div className="flex overflow-hidden rounded-full border border-white/15 w-full md:w-auto">
             <button 
               type="button" 
-              className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors cursor-pointer ${guide.playMode === false ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
+              className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors cursor-pointer ${guide.preferAudio === false ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
               onClick={() => {
                 onReturnToCurrentWork?.();
+                guide.setPreferAudio(false);
                 guide.handleStopAudio();
               }}
             >
@@ -77,9 +78,10 @@ export default function NavigationControlBar({
             </button>
             <button 
               type="button" 
-              className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors cursor-pointer ${guide.playMode === true ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
+              className={`flex-1 flex justify-center items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold outline-none transition-colors cursor-pointer ${guide.preferAudio === true ? 'bg-cyan-400 text-slate-900' : 'bg-transparent text-slate-400 hover:text-white'}`}
               onClick={() => {
                 onReturnToCurrentWork?.();
+                guide.setPreferAudio(true);
                 guide.speakText(currentWork?.description?.[guide.currentExpertise]?.[guide.currentLength]);
               }}
             >
