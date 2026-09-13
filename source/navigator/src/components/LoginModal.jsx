@@ -60,7 +60,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, returnTo =
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fadeIn">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 custom-scrollbar animate-fadeIn">
       <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative">
         
         {/* Pulsante Chiudi */}

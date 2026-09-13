@@ -5,7 +5,7 @@ export default function QuizReviewModal({ isOpen, onClose, studentName, score, h
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] bg-slate-950 text-white flex flex-col p-4 overflow-y-auto animate-fadeIn">
+    <div className="fixed inset-0 z-[200] bg-slate-950 text-white flex flex-col p-4 overflow-y-auto custom-scrollbar animate-fadeIn">
       <div className="w-full max-w-lg mx-auto flex flex-col relative pb-8">
         
         {/* Header Fissato in alto */}

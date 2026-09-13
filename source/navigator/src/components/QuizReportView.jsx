@@ -36,7 +36,7 @@ export default function QuizReportView() {
   const quizData = report.visitId?.quiz || [];
 
   return (
-    <div className="min-h-[100dvh] bg-slate-950 text-white p-4 flex flex-col items-center overflow-y-auto">
+    <div className="min-h-[100dvh] bg-slate-950 text-white p-4 flex flex-col items-center overflow-y-auto custom-scrollbar">
       <div className="w-full max-w-2xl mt-4">
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 text-sm cursor-pointer">
           <ArrowLeft size={16} /> Indietro

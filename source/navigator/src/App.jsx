@@ -130,7 +130,7 @@ function AppLayout() {
       {/* --- MAIN CONTENT WRAPPER --- */}
       <div className="flex-1 flex flex-col relative w-full h-full overflow-hidden z-10">
         
-        <main ref={mainRef} className="flex-1 overflow-y-auto scroll-smooth w-full relative">
+        <main ref={mainRef} className="flex-1 overflow-y-auto custom-scrollbar scroll-smooth w-full relative">
 
           <Routes>
             <Route path="/" element={<HomePage config={config} />} />

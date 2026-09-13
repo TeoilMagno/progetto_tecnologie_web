@@ -408,7 +408,7 @@ export default function SettingsPage() {
 
       {/* --- MODALE PASSWORD --- */}
       {showPasswordModal && (
-        <div className="fixed inset-0 bg-black/80 z-[10000] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/80 z-[10000] flex items-center justify-center p-4 custom-scrollbar">
            <div className="w-full max-w-sm bg-[#121218] border border-white/10 rounded-3xl p-6 shadow-2xl relative">
               <h3 className="text-xl font-bold text-white mb-4">
                  {userData?.hasPassword !== false ? 'Modifica Password' : 'Crea Password'}
@@ -458,7 +458,7 @@ export default function SettingsPage() {
 
       {/* --- MODALE ELIMINA ACCOUNT --- */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/80 z-[10000] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/80 z-[10000] flex items-center justify-center p-4 custom-scrollbar">
            <div className="w-full max-w-sm bg-[#121218] border border-red-500/30 rounded-3xl p-6 shadow-2xl relative text-center">
               <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                  <AlertTriangle size={32} />

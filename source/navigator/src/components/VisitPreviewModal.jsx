@@ -42,7 +42,7 @@ export default function VisitPreviewModal({ visit, onClose, activeTab }) {
         </div>
 
         {/* Corpo Modale: Descrizione e Tappe */}
-        <div className="p-5 overflow-y-auto flex-1">
+        <div className="p-5 overflow-y-auto custom-scrollbar flex-1">
           <p className="text-slate-300 text-sm mb-6 leading-relaxed">
             {visit.description || 'Nessuna descrizione disponibile per questo percorso.'}
           </p>

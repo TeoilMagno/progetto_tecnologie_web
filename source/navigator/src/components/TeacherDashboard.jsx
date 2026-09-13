@@ -112,7 +112,7 @@ export default function TeacherDashboard({ isOpen, onClose, roomCode, classStatu
           <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
             <MessageSquare size={14} /> Feed Interazioni
           </h3>
-          <div className="flex-1 bg-slate-950 rounded-xl border border-slate-800 p-3 space-y-3 overflow-y-auto min-h-[200px]">
+          <div className="flex-1 bg-slate-950 rounded-xl border border-slate-800 p-3 space-y-3 overflow-y-auto custom-scrollbar min-h-[200px]">
             {interactionFeed.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-slate-600">
                 <AlertCircle size={24} className="mb-2 opacity-50" />
