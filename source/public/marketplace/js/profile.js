@@ -6,6 +6,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("deleteUserModal")) deleteUserModalInstance = new bootstrap.Modal(document.getElementById("deleteUserModal"));
   if (document.getElementById("passwordModal")) passwordModalInstance = new bootstrap.Modal(document.getElementById("passwordModal"));
 
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  });
+
   try {
     const res = await fetch(`${API_BASE_URL}/current-user`);
     if (res.ok) {

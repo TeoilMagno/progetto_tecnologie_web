@@ -22,6 +22,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderReportsList(cachedReports);
   });
 
+  const backBtns = document.querySelectorAll(".back-action-btn"); 
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  });
+
   try {
     const res = await fetch(`${API_BASE_URL}/my-quiz-results`);
     if (!res.ok) throw new Error("Errore nel caricamento");

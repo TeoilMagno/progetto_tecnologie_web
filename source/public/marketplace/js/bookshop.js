@@ -14,8 +14,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   currentView = 'items';
   
-  const backBtn = document.getElementById("back-to-museum-btn");
-  if (backBtn) backBtn.href = `/edit-museum?id=${currentMuseumId}`;
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  });
 
   if (typeof initImageWidget === 'function') {
     initImageWidget("edit-item-image-widget", "item-image", "Immagine Articolo");

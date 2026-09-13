@@ -104,6 +104,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderOrdersList(cachedOrders);
   });
 
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  });
+
   try {
     // Chiamiamo l'API del backend creata nello step precedente
     const res = await fetch(`${API_BASE_URL}/my-orders`);

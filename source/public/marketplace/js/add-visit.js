@@ -121,17 +121,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     fetchCatalogChunk(currentMuseumId, false);
   });
 
-  // Tasto Annulla: torna alla pagina precedente, o a "Le mie visite" se non c'è cronologia
-  const cancelBtn = document.getElementById("cancel-btn");
-  if (cancelBtn) {
-    cancelBtn.addEventListener("click", () => {
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
       if (window.history.length > 1) {
         window.history.back();
       } else {
-        window.location.href = "/my-visits";
+        window.location.href = "/";
       }
     });
-  }
+  });
 
   // Gestione bozza
   if (editingVisitId) {

@@ -277,17 +277,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 2. Load theme configuration and populate preview
   await loadThemeConfig();
 
-  // 2b. Tasto Annulla: torna alla pagina precedente, o alla home se non c'è cronologia
-  const cancelBtn = document.getElementById("cancel-btn");
-  if (cancelBtn) {
-    cancelBtn.addEventListener("click", () => {
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
       if (window.history.length > 1) {
         window.history.back();
       } else {
         window.location.href = "/";
       }
     });
-  }
+  });
 
   // 3. Fullscreen toggle logic
   const btnFullscreen = document.getElementById("btnFullscreen");

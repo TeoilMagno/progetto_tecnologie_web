@@ -1,4 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  });
+  
   buildScheduleForm();
 
   initImageWidget("edit-museum-image-widget", "museum-image", "Immagine di Copertina del Museo");

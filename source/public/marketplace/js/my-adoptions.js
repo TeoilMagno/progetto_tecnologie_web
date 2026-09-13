@@ -89,6 +89,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderAdoptionsList(cachedIncoming, document.getElementById("incoming-container"), true);
     renderAdoptionsList(cachedOutgoing, document.getElementById("outgoing-container"), false);
   });
+
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  });
 });
 
 // Carica tutte le adozioni dell'utente e le divide in Inviate e Ricevute

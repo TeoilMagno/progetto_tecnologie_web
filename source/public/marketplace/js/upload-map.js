@@ -11,13 +11,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     sectionModalInstance = new bootstrap.Modal(document.getElementById("sectionModal"));
   }
 
-  // INIZIALIZZAZIONE WIDGETS
-  if (typeof initImageWidget === "function") {
-    // Il parametro 'true' nasconde il tasto Wikimedia
-    initImageWidget("map-svg-widget-container", "map-svg-input", "Carica nuovo file Planimetria (SVG)", true);
-    
-    initImageWidget("edit-section-image-widget", "section-image-input", "Immagine della Sezione", true);
-  }
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  });
+
+  // Il parametro 'true' nasconde il tasto Wikimedia
+  initImageWidget("map-svg-widget-container", "map-svg-input", "Carica nuovo file Planimetria (SVG)", true);
+  initImageWidget("edit-section-image-widget", "section-image-input", "Immagine della Sezione", true);
 
   await loadCurrentMap(currentMuseumId);
   await loadMuseumSections(currentMuseumId);

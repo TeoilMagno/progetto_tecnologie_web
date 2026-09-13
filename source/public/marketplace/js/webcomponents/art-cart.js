@@ -49,6 +49,12 @@ class ArtCart extends HTMLElement {
     // 4. Inizializza l'UI e ascolta i cambiamenti del carrello per aggiornare il badge di QUESTO specifico bottone
     this.updateCartUI();
     
+    // Quando l'utente viene riconosciuto globalmente, sincronizza il carrello guest e aggiorna la UI
+    window.addEventListener('current-user-loaded', () => {
+      this.syncGuestCartToUser();
+      this.updateCartUI(); 
+    });
+
     window.addEventListener('cart-updated', (e) => {
       const badge = this.querySelector('.cart-badge');
       if (badge) {
@@ -77,12 +83,13 @@ class ArtCart extends HTMLElement {
     this.updateCartUI();
   }
 
-  syncGuestCartToUser() {
-    if (typeof window.currentUser === 'undefined' || !window.currentUser || !window.currentUser._id) return;
+ syncGuestCartToUser() {
+    // Rimosso window. per poter leggere il "let" globale di config.js
+    if (typeof currentUser === 'undefined' || !currentUser || !currentUser._id) return;
 
     const guestCart = JSON.parse(localStorage.getItem('artaround_cart_guest')) || [];
     if (guestCart.length > 0) {
-      const userKey = `artaround_cart_${window.currentUser._id}`;
+      const userKey = `artaround_cart_${currentUser._id}`;
       const userCart = JSON.parse(localStorage.getItem(userKey)) || [];
 
       guestCart.forEach(guestItem => {
