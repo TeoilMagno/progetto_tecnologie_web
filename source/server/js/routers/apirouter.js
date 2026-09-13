@@ -626,20 +626,16 @@ apiRouter.get("/museums/:id/map-svg", async (req, res) => {
   }
 
   try {
-    const svgPath = path.join(__dirname, '..', '..', '..', 'public', 'shared', 'maps', `${id}.svg`);
-    const svgString = await fs.readFile(svgPath, 'utf8');
+  const svgPath = path.join(__dirname, '..', '..', '..', 'public', 'shared', 'maps', `${id}.svg`);
+  const svgString = await fs.readFile(svgPath, 'utf8');
 
-    // Cache dedicata: cacheMiddleware non si applica qui perché intercetta
-    // solo res.json, mentre questa rotta risponde con res.send di testo puro.
-    // Così le invalidateCache già presenti su upload-map-svg e
-    // sections/bulk-update tornano ad avere effetto reale.
-    setCache(cacheKey, svgString, MAP_SVG_TTL_SECONDS);
-
-    res.status(200).send(svgString);
-  } catch (error) {
-    console.error("Errore lettura mappa SVG:", error);
-    res.status(500).json({ error: "Impossibile caricare la mappa" });
-  }
+  setCache(cacheKey, svgString, MAP_SVG_TTL_SECONDS);
+  res.status(200).send(svgString);
+} catch (error) {
+  // Se il file non esiste, il sistema lancia un errore che viene catturato qui.
+  // Un 404 è la risposta corretta per "Mappa non trovata".
+  res.status(404).json({ error: "Mappa non presente per questo museo" });
+}
 });
 
 // ------------- immagini ------------------------
