@@ -579,15 +579,6 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         <LogOut size={16} /> Esci
       </button>
 
-      {isSharedSession && isTeacher && (
-        <button 
-          onClick={() => setShowTeacherDashboard(true)} 
-          className="absolute top-4 left-4 z-[9999] flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 border border-purple-400/50 rounded-full text-white text-sm font-bold transition-colors shadow-lg cursor-pointer animate-pulse"
-        >
-          <Activity size={16} /> Radar Classe
-        </button>
-      )}
-
       {/* Mappa o Fallback */}
       <div className="w-full h-full relative overflow-hidden flex-1">
         {hasMap && svgMapString ? (
@@ -666,6 +657,7 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         isSharedSession={isSharedSession}
         isTeacher={isTeacher}
         onShowJoinModal={() => setShowJoinModal(true)}
+        onShowTeacherDashboard={() => setShowTeacherDashboard(true)}
         hasMap={hasMap}
         socket={socket}
         roomCode={roomCode}
