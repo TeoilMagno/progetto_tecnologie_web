@@ -198,6 +198,17 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
             } else {
               alert("Mappa SVG non trovata per questo museo.");
             }
+
+            // Salviamo la lista globale
+            try {
+              const worksResponse = await fetch(`${API_BASE_URL}/museums/${museumId}/works-list`, { credentials: 'include' });
+              if (worksResponse.ok) {
+                const worksArray = await worksResponse.json();
+                setAllMuseumWorks(worksArray || []);
+              }
+            } catch (e) {
+              console.error("Errore nel caricamento opere globali:", e);
+            }
           } catch (e) {
             alert("Errore nel caricamento dei dati mappa/opere del museo. Fallback attivato.", e);
             setSections([]);
@@ -472,6 +483,7 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
   const handleEndVisit = async () => {
     setShowEndModal(true);
     setSuggestedWorks([]);
+    setIsSuggestingWorks(false);
     workGuide.handleStopAudio();
     
     if (isSharedSession && isTeacher && socket) {
@@ -479,7 +491,6 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
     }
 
     // --- Valutazione livello utente a fine visita ---
-    // Eseguito in background senza bloccare l'interfaccia
     if (!isSharedSession || isTeacher) {
       try {
         await fetch(`${API_BASE_URL}/current-user/evaluate-expertise`, {
@@ -489,58 +500,73 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
           body: JSON.stringify({ sessionExpertise: workGuide.defaultExpertise })
         });
       } catch (error) {
-        alert("Errore durante l'aggiornamento del livello tecnico delle descrizioni");
+        console.error("Errore valutazione:", error);
       }
     }
 
+    setVisitEndTime(Date.now());
+  };
+
+  const handleRequestSuggestions = async () => {
+    setIsSuggestingWorks(true);
+    setSuggestedWorks([]);
+
     const endTime = Date.now();
-    setVisitEndTime(endTime);
-    const elapsedMilliseconds = endTime - visitBeginTime;
-    const elapsedMinutes = Math.floor(elapsedMilliseconds / 1000 / 60);
+    const actualBeginTime = visitBeginTime || (endTime - (visitedWorks.length * 3 * 60000));
+    const elapsedMilliseconds = endTime - actualBeginTime;
+    const elapsedMinutes = Math.max(1, Math.floor(elapsedMilliseconds / 1000 / 60));
+    
+    const remainingTime = maxDurationTime ? (maxDurationTime - elapsedMinutes) : 15;
     const remainingWorks = allMuseumWorks.filter(w => !visitedWorks.some(vw => vw._id === w._id));
 
-    if (remainingWorks.length > 0 && maxDurationTime) {
-      setIsSuggestingWorks(true);
-      const READING_TIMES = {
-        short: 3 / 60,
-        medium: 15 / 60,
-        long: 1,
-        exhaustive: 4
-      };
+    if (remainingWorks.length === 0) {
+      setIsSuggestingWorks(false);
+      alert("Non ci sono opere disponibili o non hai tempo sufficiente.");
+      return;
+    } else if(remainingTime <= 0) {
+      setIsSuggestingWorks(false);
+      return;
+    }
 
-      const payloadForAI = {
-        seen: visitedWorks.map(w => ({ name: w.name, author: w.authorName, style: w.styleName })),
-        available: remainingWorks.map(w => ({ id: w._id, name: w.name, author: w.authorName, style: w.styleName })),
-        remaining_time: maxDurationTime - elapsedMinutes,
-        duration: READING_TIMES[workGuide.currentLength]
-      };
+    const READING_TIMES = { short: 3 / 60, medium: 15 / 60, long: 1, exhaustive: 4 };
 
-      try {
-        const aiResponse = await fetch(`${API_BASE_URL}/ai/suggested-works`, {
+    const payloadForAI = {
+      seen: visitedWorks.map(w => ({ name: w.name, author: w.authorName })),
+      available: remainingWorks.map(w => ({ id: w._id, name: w.name, author: w.authorName })),
+      remaining_time: remainingTime,
+      duration: READING_TIMES[workGuide.currentLength] || 0.25
+    };
+
+    try {
+      const aiResponse = await fetch(`${API_BASE_URL}/ai/suggested-works`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payloadForAI })
+      });
+
+      if (!aiResponse.ok) throw new Error("Il server ha risposto con un errore");
+      
+      const suggestedWorksData = await aiResponse.json();
+      const recomendedIds = suggestedWorksData.works;
+      
+      if (recomendedIds && recomendedIds.length > 0) {
+        const detailsRes = await fetch(`${API_BASE_URL}/works/details`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ payloadForAI })
+          body: JSON.stringify({ ids: recomendedIds })
         });
-
-        if (!aiResponse.ok) throw new Error("Il server ha risposto con un errore");
         
-        const suggestedWorksData = await aiResponse.json();
-        const recomendedIds = suggestedWorksData.works;
-        const finalSuggestedWorks = remainingWorks.filter(work => 
-          recomendedIds.includes(work._id.toString())
-        );
-        
-        if (finalSuggestedWorks.length > 0) {
-          setVisitedWorks(prevWorks => [...prevWorks, ...finalSuggestedWorks]);
-          alert(`Dato che hai ancora ${maxDurationTime - elapsedMinutes} minuti prima della conclusione della visita, suggeriamo di visionare altre ${finalSuggestedWorks.length} opere inerenti alla visita eseguita. Premi "Prossima" per continuare!`);
-        } else {
-          alert('Siamo spiacenti, ma non abbiamo altre opere di cui consigliare la visione');
+        if (detailsRes.ok) {
+          const finalSuggestedWorks = await detailsRes.json();
+          setSuggestedWorks(finalSuggestedWorks); // Salva nello stato, la UI mostrerà il tasto
         }
-      } catch (error) {
-        alert("Non ci sono altre opere da vedere inerenti alla visita fatta. " + error.message);
+      } else {
+        alert("L'IA non ha trovato opere adatte al tempo rimasto.");
       }
-    } else {
-      alert("Complimenti! Hai visto tutte le opere del museo.");
+    } catch (error) {
+      console.error("Errore IA:", error);
+    } finally {
+      setIsSuggestingWorks(false);
     }
   };
 
@@ -691,7 +717,7 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
                  <div className="bg-slate-800/40 border border-slate-700 rounded-2xl p-5 mb-6 flex flex-col items-center animate-fadeIn">
                     <Loader2 size={28} className="animate-spin text-amber-500 mb-3" />
                     <p className="text-sm font-semibold text-white mb-1">Elaborazione in corso</p>
-                    <p className="text-xs text-slate-400">L'IA sta calcolando il tempo rimanente e analizzando i tuoi gusti...</p>
+                    <p className="text-xs text-slate-400">Stiamo analizzando i tuoi gusti per proporti nuove opere...</p>
                  </div>
               ) : suggestedWorks.length > 0 ? (
                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 mb-6 text-left relative overflow-hidden animate-fadeIn">
@@ -699,22 +725,42 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
                       <Sparkles size={64} />
                     </div>
                     <h4 className="text-amber-400 font-bold mb-1 flex items-center gap-2 relative z-10">
-                       <Sparkles size={16} /> Ti avanza del tempo!
+                       <Sparkles size={16} /> Abbiamo trovato altre opere!
                     </h4>
                     <p className="text-xs text-slate-300 mb-4 relative z-10">
-                      L'IA ha notato che hai ancora minuti a disposizione. Ti suggeriamo <strong>{suggestedWorks.length} opere extra</strong> basate sulle tue preferenze.
+                      Ti suggeriamo <strong>{suggestedWorks.length} opere extra</strong> in linea con i tuoi interessi.
                     </p>
                     <button
                        onClick={() => {
                           setVisitedWorks(prev => [...prev, ...suggestedWorks]);
                           setShowEndModal(false);
                        }}
-                       className="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-slate-900 font-bold py-2.5 rounded-xl transition-all text-sm relative z-10 cursor-pointer"
+                       className="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-slate-950 font-bold py-2.5 rounded-xl transition-all text-sm relative z-10 cursor-pointer"
                     >
                        Aggiungi opere e continua
                     </button>
                  </div>
-              ) : null}
+              ) : (
+                <>
+                  {/* Box "Stupiscimi" visibile solo se ci sono ancora opere disponibili e non è uno studente in sincro */}
+                  {!(isSharedSession && !isTeacher) && allMuseumWorks.filter(w => !visitedWorks.some(vw => vw._id === w._id)).length > 0 && (
+                    <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 mb-6 text-left relative overflow-hidden animate-fadeIn">
+                      <h4 className="text-amber-400 font-bold mb-1 flex items-center gap-2 relative z-10">
+                         Hai ancora tempo?
+                      </h4>
+                      <p className="text-xs text-slate-300 mb-4 relative z-10">
+                        Possiamo proporti altre opere in base ai tuoi gusti e al tuo tempo.
+                      </p>
+                      <button
+                         onClick={handleRequestSuggestions}
+                         className="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-slate-950 font-bold py-2.5 rounded-xl transition-all text-sm flex items-center justify-center gap-2 relative z-10 cursor-pointer"
+                      >
+                         <Sparkles size={16} /> Stupiscimi
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
 
               {isSharedSession && isTeacher ? (
                 <>

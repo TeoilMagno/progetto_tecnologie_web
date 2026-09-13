@@ -414,6 +414,23 @@ apiRouter.get("/museums/:id/works-list", cacheMiddleware(60), async (req, res) =
   }
 });
 
+// Restituisce i dettagli completi di una lista specifica di opere (Usato dall'IA)
+apiRouter.post("/works/details", async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids)) return res.status(400).json({ error: "IDs mancanti" });
+    
+    // Popoliamo come in getVisitById per avere author e style completi
+    const works = await Work.find({ _id: { $in: ids } })
+      .populate('author')
+      .populate('style');
+      
+    res.json(works);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // per la modifica di un'opera
 // * nel body deve esserci il museumId, potrei anche fare il controllo nel controller ma dovrei prendere l'oggetto dal db per poi dire che non
 apiRouter.put("/works/:id", [auth.isCurator,auth.isMuseumOwner], async (req, res) => {
