@@ -3,6 +3,7 @@
 .animated-bg {
   background: linear-gradient(-45deg, #0b0f19, #1a1625, #0f1c2e, #181124);
   background-size: 400% 400%;
+  background-attachment: fixed; /* Aggiunto per evitare tagli */
   animation: gradientBG 15s ease infinite;
 }
 @keyframes gradientBG {
@@ -66,7 +67,7 @@
 
 /* Decorative Blobs */
 .blob {
-  position: absolute;
+  position: fixed;
   border-radius: 50%;
   filter: blur(80px);
   z-index: 0;
