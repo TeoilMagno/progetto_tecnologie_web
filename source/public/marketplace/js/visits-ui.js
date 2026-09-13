@@ -26,6 +26,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener('search-cleared', () => {
     renderVisitsList(cachedVisits, "managed-visits-area");
   });
+
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  });
 });
 
 // intercetta il tasto "Indietro"

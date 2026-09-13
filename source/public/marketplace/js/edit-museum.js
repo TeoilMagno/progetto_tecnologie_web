@@ -39,6 +39,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     discardImage(document.getElementById("section-image-input")?.value);
   });
 
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  });
+
   await fetchCurrentUser();
 
   const urlParams = new URLSearchParams(window.location.search);

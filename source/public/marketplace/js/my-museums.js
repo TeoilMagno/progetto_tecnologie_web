@@ -126,6 +126,21 @@ function setupManagedMuseumsObserver(totalPages) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (!document.getElementById("managed-museums-area")) return;
+
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    });
+  });
+  
   await fetchCurrentUser();
   loadManagedMuseums();
 });

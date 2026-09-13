@@ -10,17 +10,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadPendingCurators();
 
-  // Tasto Indietro: torna alla pagina precedente, o alla home se non c'è cronologia
-  const backBtn = document.getElementById("back-btn");
-  if (backBtn) {
-    backBtn.addEventListener("click", () => {
+  // Tasti Indietro: torna alla pagina precedente, o alla home se non c'è cronologia
+  const backBtns = document.querySelectorAll(".back-action-btn");
+  
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      
       if (window.history.length > 1) {
         window.history.back();
       } else {
         window.location.href = "/";
       }
     });
-  }
+  });
 });
 
 async function loadPendingCurators() {
