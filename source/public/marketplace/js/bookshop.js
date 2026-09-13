@@ -132,7 +132,18 @@ function renderItemsList(itemsToRender, append = false) {
   if (!append) catalogArea.innerHTML = "";
 
   if (itemsToRender.length === 0 && !append) {
-    catalogArea.innerHTML = `<p class="text-secondary col-12 text-center mt-5">Nessun articolo corrispondente trovato.</p>`;
+    catalogArea.innerHTML = `
+      <div class="col-12 w-100 mx-auto d-flex flex-column align-items-center justify-content-center py-5 text-center" style="min-height: 40vh;">
+        <div class="mb-3">
+          <i class="bi bi-bag-x text-white-50 opacity-25" style="font-size: 4rem;"></i>
+        </div>
+        <h4 class="text-white mb-2">Nessun articolo trovato</h4>
+        <p class="text-secondary mb-4">Il catalogo è attualmente vuoto o nessun articolo corrisponde alla tua ricerca.</p>
+        <button class="btn btn-gradient px-4 py-2 rounded-pill shadow-lg" onclick="openItemModal()" style="font-size: 1.1rem;">
+          <i class="bi bi-plus-lg me-2"></i> Aggiungi Nuovo Articolo
+        </button>
+      </div>
+    `;
     return;
   }
 

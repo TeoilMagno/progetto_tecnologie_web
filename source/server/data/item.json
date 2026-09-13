@@ -106,7 +106,7 @@
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7OIkhBdylq00Sxp0z3HiyyMH1DVgZLXmB4FX9wYGITw&s=10",
     "category": "book",
     "targetAge": "kids",
-    "quantity": 40,
+    "quantity": 38,
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -194,7 +194,7 @@
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsK9oQd96K3zh3Qx8CNvVEb21LPAF86QBk-jsJjURCYA&s=10",
     "category": "book",
     "targetAge": "all",
-    "quantity": 100,
+    "quantity": 99,
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -227,7 +227,7 @@
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAnBeJAtRy2D8ZDpQnUgG9tKgObIWUEWjoRDCDxrcURA&s=10",
     "category": "book",
     "targetAge": "adults",
-    "quantity": 50,
+    "quantity": 46,
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -271,7 +271,7 @@
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLtgFpe6MOCo1EKIJsZTZew0ykCGrqLzjyl6jYyWsoyw&s=10",
     "category": "book",
     "targetAge": "adults",
-    "quantity": 30,
+    "quantity": 28,
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -293,7 +293,7 @@
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0bw4sM5dRZYKF8OBNz8xTdezrPKHNZTRQn0qmIE5urQ&s=10",
     "category": "stationery",
     "targetAge": "all",
-    "quantity": 200,
+    "quantity": 198,
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {

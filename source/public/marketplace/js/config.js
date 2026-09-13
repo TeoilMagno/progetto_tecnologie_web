@@ -344,14 +344,6 @@ function openWorkDetails(workId) {
                 <div class="mt-3 mb-4 pe-2" style="line-height: 1.8; font-size: 1.15rem; color: var(--text-primary); opacity: 0.9; max-height: 300px; overflow-y: auto;">
                   ${work.description.medium.medium}
                 </div>
-                
-                <!-- Bottone Azione (Crea Visita) -->
-                <div class="mt-auto d-flex flex-wrap gap-3 pt-3 border-top border-bottom-custom">
-                  <a href="/create-visit?museumId=${currentMuseumId}&addWork=${work._id}" class="btn btn-gradient rounded-pill px-4 py-2 mt-3 text-white text-decoration-none">
-                    <i class="bi bi-map-fill me-2 fs-5 align-middle"></i>Crea Visita con quest'opera
-                  </a>
-                </div>
-                
               </div>
             </div>
           </div>
