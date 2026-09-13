@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Compass, Clock, Globe, Palette, Loader2, AlertCircle, Sparkles, UserCheck, Heart } from 'lucide-react';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, BASE_URL } from '../config';
 
 import VisitPreviewModal from '../components/VisitPreviewModal';
 
@@ -169,9 +169,11 @@ export default function Visits({ selectedMuseum }) {
               >
                 {/* IMMAGINE DI COPERTINA */}
                 <div className="relative h-32 w-full bg-gradient-to-r from-slate-800 to-slate-900 overflow-hidden shrink-0">
-                  {visit.coverImage ? (
+                  {visit.coverImage || (visit.works && visit.works[0] && visit.works[0].image) ? (
                     <img 
-                      src={visit.coverImage.startsWith('http') ? visit.coverImage : `${API_BASE_URL}${visit.coverImage}`} 
+                      src={visit.coverImage 
+                        ? (visit.coverImage.startsWith('http') ? visit.coverImage : `${BASE_URL}${visit.coverImage}`) 
+                        : visit.works[0].image} 
                       alt={visit.title} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
