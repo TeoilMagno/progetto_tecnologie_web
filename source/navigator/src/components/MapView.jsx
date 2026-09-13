@@ -73,6 +73,43 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
     isTeacher: isTeacher
   });
 
+  // --- GESTIONE WAKE LOCK (Schermo sempre acceso) ---
+  const wakeLockRef = useRef(null);
+
+  useEffect(() => {
+    const requestWakeLock = async () => {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLockRef.current = await navigator.wakeLock.request('screen');
+          console.log('Wake Lock attivato: schermo acceso');
+        }
+      } catch (err) {
+        console.warn(`Wake Lock fallito: ${err.message}`);
+      }
+    };
+
+    // 1. Lo richiede subito appena si entra nella mappa
+    requestWakeLock();
+
+    // 2. Lo richiede di nuovo se l'utente esce e poi riapre il browser
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        requestWakeLock();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // 3. Pulisce tutto quando la visita finisce (o si esce dalla mappa)
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (wakeLockRef.current) {
+        wakeLockRef.current.release().then(() => {
+          wakeLockRef.current = null;
+        });
+      }
+    };
+  }, []);
+
   useEffect(() => {
     if (!roomCode || !socket) return;
 
