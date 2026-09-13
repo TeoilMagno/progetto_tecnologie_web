@@ -87,6 +87,8 @@ function AppLayout() {
             src={config && config.backgroundImage ? config.backgroundImage : "/shared/img/fallback-image.jpeg"} 
             alt="Background Museo" 
             className="w-full h-full object-cover"
+            fetchpriority="high"
+            loading="eager"
           />
           {/* Sfumatura scura graduale per leggibilità */}
           <div 

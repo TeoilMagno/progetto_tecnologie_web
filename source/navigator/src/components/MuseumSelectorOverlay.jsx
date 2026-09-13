@@ -82,7 +82,7 @@ export default function MuseumSelectorOverlay({ onSelect }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-xl p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-xl p-4 overflow-y-auto custom-scrollbar">
       <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl shadow-amber-500/5 flex flex-col items-center text-center">
         
         {/* ICONA LOGO */}

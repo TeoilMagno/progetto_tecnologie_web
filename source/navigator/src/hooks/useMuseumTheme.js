@@ -1,22 +1,43 @@
 import { useState, useEffect } from 'react';
 import { BASE_URL } from '../config';
 
-export default function useMuseumTheme(selectedMuseum) {
-  const [config, setConfig] = useState(null);
+const cacheKey = (museum) => `museum_config_${museum ? museum.name : 'default'}`;
 
-  // 1 e 2. Recupera la configurazione (specifica o default) direttamente dal database
+function readCache(museum) {
+  try {
+    const raw = localStorage.getItem(cacheKey(museum));
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+export default function useMuseumTheme(selectedMuseum) {
+  // Stato iniziale: se abbiamo già una config in cache per questo museo,
+  // la usiamo subito, senza aspettare la fetch.
+  const [config, setConfig] = useState(() => readCache(selectedMuseum));
+
   useEffect(() => {
+    // Se cambia museo, mostriamo subito la sua cache (se esiste) mentre
+    // la fetch fresca gira in background.
+    setConfig(readCache(selectedMuseum));
+
     async function fetchTheme() {
       try {
-        const endpoint = selectedMuseum 
+        const endpoint = selectedMuseum
           ? `${BASE_URL}/api/config/by-museum/${encodeURIComponent(selectedMuseum.name)}`
           : `${BASE_URL}/api/config/default`;
-          
+
         const response = await fetch(endpoint);
-        
+
         if (response.ok) {
           const data = await response.json();
           setConfig(data);
+          try {
+            localStorage.setItem(cacheKey(selectedMuseum), JSON.stringify(data));
+          } catch {
+            // storage pieno o non disponibile: non è critico, si ignora
+          }
         } else {
           console.error("Errore dal server durante il recupero del tema");
         }

@@ -4,7 +4,7 @@
     "title": "Robert Lehman Wing",
     "description": "",
     "museumId": "6a8879bfe6c216683b02eb70",
-    "creator": "6a95ec582eb2f2383178971b",
+    "creator": "6a95e72445123c6b58491f72",
     "works": [
       "6a98154923763fa5311eb67c",
       "6a98154923763fa5311eb67d",
@@ -141,7 +141,7 @@
     "title": "Nel Cuore dell'Antichità: Dalla Magna Grecia all'Impero Romano",
     "description": "Un percorso immersivo e cronologico attraverso l'intera sezione classica, esplorando la scultura, la ceramica e i reperti etruschi e romani senza uscire mai dalla stessa ala del museo.",
     "museumId": "6a8879bfe6c216683b02eb70",
-    "creator": "6a95ec582eb2f2383178971b",
+    "creator": "6a95e72445123c6b58491f72",
     "works": [
       "6a9824d8967dc7a9838a836c",
       "6a9824d8967dc7a9838a8362",
@@ -251,7 +251,7 @@
     "title": "Passione e Scultura",
     "description": "Un percorso intimo e focalizzato tra capolavori scultorei ed arti decorative europee, esplorando drammi mitologici, sentimenti e grandi opere d'autore in un'unica ala del museo.",
     "museumId": "6a8879bfe6c216683b02eb70",
-    "creator": "6a95ec582eb2f2383178971b",
+    "creator": "6a95e6fb45123c6b58491e1c",
     "works": [
       "6a982617967dc7a9838a838e",
       "6a982617967dc7a9838a838f",
@@ -392,5 +392,31 @@
     "updatedAt": "2026-09-12T16:17:04.072Z",
     "__v": 0,
     "coverImage": ""
+  },
+  {
+    "_id": "6aa6ba92cbb90735ff0708cd",
+    "title": "Visita libera",
+    "description": "Ingresso base con accesso a tutte le opere in esposizione.",
+    "museumId": "6aa6ba90cbb90735ff0708c4",
+    "creator": "6aa6b414eb36962b45cadf89",
+    "works": [],
+    "price": 30,
+    "isDraft": false,
+    "isPublic": true,
+    "duration": 0,
+    "maxDuration": 0,
+    "preferredLength": "medium",
+    "expertiseLevel": "medium",
+    "visitType": "standard",
+    "targetAudience": [
+      "all"
+    ],
+    "accessibility": [
+      "wheelchair_accessible"
+    ],
+    "quiz": [],
+    "createdAt": "2026-09-13T15:00:34.087Z",
+    "updatedAt": "2026-09-13T15:06:37.605Z",
+    "__v": 0
   }
 ]

@@ -184,7 +184,6 @@ export default function SettingsPage() {
               </button>
             </div>
           </section>
-        </div>
 
           {/* 1. SEZIONE: DATI PERSONALI */}
           {userData && (
@@ -398,6 +397,8 @@ export default function SettingsPage() {
               </div>
             </section>
           )}
+
+          </div>
 
         </div>
 

@@ -76,10 +76,13 @@ export default function Visits({ selectedMuseum }) {
       })
       .then((data) => {
         if (data) {
-          // Filtriamo le mie visite solo per il museo correntemente selezionato
+          // Filtriamo le mie visite solo per il museo correntemente selezionato ed escludiamo le bozze
           const filtered = data.filter((visit) => {
-            const visitMuseumId = visit.museumId?._id || visit.museumId;
-            return visitMuseumId === selectedMuseum._id;
+            // escludiamo le bozze
+            if (visit.isDraft) return false;
+            
+            const visitMuseumId = (visit.museumId?._id || visit.museumId)?.toString();
+            return visitMuseumId === selectedMuseum._id?.toString();
           });
           setMyVisits(filtered);
           setLoading(false);
