@@ -189,5 +189,333 @@
     "createdAt": "2026-09-12T12:04:50.976Z",
     "updatedAt": "2026-09-12T12:04:50.976Z",
     "__v": 0
+  },
+  {
+    "_id": "6aa6dde5d4422b22b92cbfab",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dc89de87815d86165b5e",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320310304-373127406.png",
+        "price": 12,
+        "quantity": 3,
+        "_id": "6aa6dde5d4422b22b92cbfac"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 36,
+    "status": "completed",
+    "createdAt": "2026-09-13T17:31:17.999Z",
+    "updatedAt": "2026-09-13T17:31:17.999Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e1ea358c7781fa8a95e5",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dea8d4422b22b92cbfc6",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320867264-620847654.png",
+        "price": 18,
+        "quantity": 2,
+        "_id": "6aa6e1ea358c7781fa8a95e6"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 36,
+    "status": "completed",
+    "createdAt": "2026-09-13T17:48:26.816Z",
+    "updatedAt": "2026-09-13T17:48:26.816Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e246739bac89e84cb8dc",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dda4d4422b22b92cbf9a",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320610003-169964772.png",
+        "price": 13,
+        "quantity": 2,
+        "_id": "6aa6e246739bac89e84cb8dd"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 26,
+    "status": "completed",
+    "createdAt": "2026-09-13T17:49:58.088Z",
+    "updatedAt": "2026-09-13T17:49:58.088Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e345f266af95b03b469d",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dda4d4422b22b92cbf9a",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320610003-169964772.png",
+        "price": 13,
+        "quantity": 1,
+        "_id": "6aa6e345f266af95b03b469e"
+      },
+      {
+        "itemId": "6aa6dea8d4422b22b92cbfc6",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320867264-620847654.png",
+        "price": 18,
+        "quantity": 1,
+        "_id": "6aa6e345f266af95b03b469f"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 31,
+    "status": "completed",
+    "createdAt": "2026-09-13T17:54:13.161Z",
+    "updatedAt": "2026-09-13T17:54:13.161Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e4af8a8195ed2dc93502",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dda4d4422b22b92cbf9a",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320610003-169964772.png",
+        "price": 13,
+        "quantity": 1,
+        "_id": "6aa6e4af8a8195ed2dc93503"
+      },
+      {
+        "itemId": "6aa6dea8d4422b22b92cbfc6",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320867264-620847654.png",
+        "price": 18,
+        "quantity": 1,
+        "_id": "6aa6e4af8a8195ed2dc93504"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 31,
+    "status": "completed",
+    "createdAt": "2026-09-13T18:00:15.531Z",
+    "updatedAt": "2026-09-13T18:00:15.531Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e4df8a8195ed2dc9353c",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dda4d4422b22b92cbf9a",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320610003-169964772.png",
+        "price": 13,
+        "quantity": 1,
+        "_id": "6aa6e4df8a8195ed2dc9353d"
+      },
+      {
+        "itemId": "6aa6dea8d4422b22b92cbfc6",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320867264-620847654.png",
+        "price": 18,
+        "quantity": 1,
+        "_id": "6aa6e4df8a8195ed2dc9353e"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 31,
+    "status": "completed",
+    "createdAt": "2026-09-13T18:01:03.041Z",
+    "updatedAt": "2026-09-13T18:01:03.041Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e5008a8195ed2dc93568",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dda4d4422b22b92cbf9a",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320610003-169964772.png",
+        "price": 13,
+        "quantity": 1,
+        "_id": "6aa6e5008a8195ed2dc93569"
+      },
+      {
+        "itemId": "6aa6dea8d4422b22b92cbfc6",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320867264-620847654.png",
+        "price": 18,
+        "quantity": 1,
+        "_id": "6aa6e5008a8195ed2dc9356a"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 31,
+    "status": "completed",
+    "createdAt": "2026-09-13T18:01:36.069Z",
+    "updatedAt": "2026-09-13T18:01:36.069Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e5398a8195ed2dc9358e",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dda4d4422b22b92cbf9a",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320610003-169964772.png",
+        "price": 13,
+        "quantity": 1,
+        "_id": "6aa6e5398a8195ed2dc9358f"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 13,
+    "status": "completed",
+    "createdAt": "2026-09-13T18:02:33.220Z",
+    "updatedAt": "2026-09-13T18:02:33.220Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e6b4c60f75c901fa4cc0",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dda4d4422b22b92cbf9a",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320610003-169964772.png",
+        "price": 13,
+        "quantity": 1,
+        "_id": "6aa6e6b4c60f75c901fa4cc1"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 13,
+    "status": "completed",
+    "createdAt": "2026-09-13T18:08:52.442Z",
+    "updatedAt": "2026-09-13T18:08:52.442Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e6bec60f75c901fa4cc2",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dda4d4422b22b92cbf9a",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320610003-169964772.png",
+        "price": 13,
+        "quantity": 1,
+        "_id": "6aa6e6bec60f75c901fa4cc3"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 13,
+    "status": "completed",
+    "createdAt": "2026-09-13T18:09:02.491Z",
+    "updatedAt": "2026-09-13T18:09:02.491Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e73f2ea0ea99ef1d27e7",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dda4d4422b22b92cbf9a",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320610003-169964772.png",
+        "price": 13,
+        "quantity": 1,
+        "_id": "6aa6e73f2ea0ea99ef1d27e8"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 13,
+    "status": "completed",
+    "createdAt": "2026-09-13T18:11:11.331Z",
+    "updatedAt": "2026-09-13T18:11:11.331Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e7d92ea0ea99ef1d2808",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dea8d4422b22b92cbfc6",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320867264-620847654.png",
+        "price": 18,
+        "quantity": 10,
+        "_id": "6aa6e7d92ea0ea99ef1d2809"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 180,
+    "status": "completed",
+    "createdAt": "2026-09-13T18:13:45.655Z",
+    "updatedAt": "2026-09-13T18:13:45.655Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6e981f5707c69c1a7fdd3",
+    "user": "6aa6b414eb36962b45cadf89",
+    "items": [
+      {
+        "itemId": "6aa6dea8d4422b22b92cbfc6",
+        "name": "Poster 3D Armatura Samurai 2",
+        "image": "/uploads/1789320867264-620847654.png",
+        "price": 18,
+        "quantity": 9,
+        "_id": "6aa6e981f5707c69c1a7fdd4"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 162,
+    "status": "completed",
+    "createdAt": "2026-09-13T18:20:49.665Z",
+    "updatedAt": "2026-09-13T18:20:49.665Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6efa5b2644f2099dabdcc",
+    "user": "6aa6b43ceb36962b45cadf8a",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6aa5619485d1d8268fcbd174",
+        "title": "Nel Cuore dell'Antichità: Dalla Magna Grecia all'Impero Romano",
+        "price": 30,
+        "_id": "6aa6efa5b2644f2099dabdcd"
+      }
+    ],
+    "totalAmount": 30,
+    "status": "completed",
+    "createdAt": "2026-09-13T18:47:01.542Z",
+    "updatedAt": "2026-09-13T18:47:01.542Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa6f48518e1182dae8eb50f",
+    "user": "6aa6b43ceb36962b45cadf8a",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6aa6eac6b2644f2099dabd09",
+        "title": "Visita libera",
+        "price": 70,
+        "_id": "6aa6f48518e1182dae8eb510"
+      }
+    ],
+    "totalAmount": 70,
+    "status": "completed",
+    "createdAt": "2026-09-13T19:07:49.954Z",
+    "updatedAt": "2026-09-13T19:07:49.954Z",
+    "__v": 0
   }
 ]

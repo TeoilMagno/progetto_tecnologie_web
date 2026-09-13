@@ -2,7 +2,7 @@
   {
     "_id": "6a98512ffeabf46b3904ef01",
     "title": "Robert Lehman Wing",
-    "description": "",
+    "description": "Sette secoli di storia dell'arte racchiusi in 33 minuti. Dal San Giovanni Evangelista del 1320 fino a Il Big Ben del 1906, esplora 12 capolavori della Robert Lehman Wing. Un percorso perfetto per ammirare l'evoluzione della pittura attraverso ritratti iconici, scene sacre e paesaggi indimenticabili.",
     "museumId": "6a8879bfe6c216683b02eb70",
     "creator": "6a95e72445123c6b58491f72",
     "works": [
@@ -38,103 +38,6 @@
     "targetAudience": [
       "all"
     ]
-  },
-  {
-    "_id": "6aa1cbae0b6193eebce169f1",
-    "title": "Visita prova acquisto",
-    "description": "Visita breve",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "creator": "6a95ec582eb2f2383178971b",
-    "works": [
-      "6a98154923763fa5311eb67c",
-      "6a98154923763fa5311eb67f",
-      "6a98154923763fa5311eb682"
-    ],
-    "isDraft": false,
-    "isPublic": true,
-    "duration": 9,
-    "maxDuration": 0,
-    "preferredLength": "medium",
-    "expertiseLevel": "medium",
-    "visitType": "custom",
-    "quiz": [],
-    "createdAt": "2026-09-09T21:12:14.092Z",
-    "updatedAt": "2026-09-09T21:13:03.464Z",
-    "__v": 0,
-    "coverImage": "/uploads/1788988358174-906891431.png",
-    "accessibility": [
-      "deaf_friendly"
-    ],
-    "price": 15,
-    "targetAudience": [
-      "all"
-    ]
-  },
-  {
-    "price": 0,
-    "targetAudience": [],
-    "accessibility": [],
-    "_id": "6aa3a9f127bf295bcb9ce5b1",
-    "title": "Visita prova insegnante",
-    "description": "",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "creator": "6a95ec582eb2f2383178971b",
-    "works": [
-      "6a98154923763fa5311eb67c",
-      "6a98154923763fa5311eb67d",
-      "6a98154923763fa5311eb67f"
-    ],
-    "isDraft": false,
-    "isPublic": false,
-    "duration": 9,
-    "maxDuration": 0,
-    "preferredLength": "medium",
-    "expertiseLevel": "medium",
-    "visitType": "custom",
-    "quiz": [
-      {
-        "question": "Deve andare",
-        "options": [
-          "si",
-          "no",
-          "forse",
-          "speriamo"
-        ],
-        "correctAnswerIndex": 3,
-        "_id": "6aa3aa1427bf295bcb9ce5b3"
-      }
-    ],
-    "createdAt": "2026-09-11T07:12:49.858Z",
-    "updatedAt": "2026-09-11T07:13:24.201Z",
-    "__v": 0,
-    "coverImage": ""
-  },
-  {
-    "price": 0,
-    "targetAudience": [],
-    "accessibility": [],
-    "_id": "6aa5331ff839a44909e4b71d",
-    "title": "Visita in sezioni diverse",
-    "description": "",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "creator": "6a95ec582eb2f2383178971b",
-    "works": [
-      "6a98154923763fa5311eb67c",
-      "6a981edd967dc7a9838a8344",
-      "6a9822be967dc7a9838a8356"
-    ],
-    "isDraft": false,
-    "isPublic": false,
-    "duration": 9,
-    "maxDuration": 0,
-    "preferredLength": "medium",
-    "expertiseLevel": "medium",
-    "visitType": "custom",
-    "quiz": [],
-    "createdAt": "2026-09-12T11:10:23.630Z",
-    "updatedAt": "2026-09-12T11:10:39.951Z",
-    "__v": 0,
-    "coverImage": ""
   },
   {
     "_id": "6aa5619485d1d8268fcbd174",
@@ -392,33 +295,5 @@
     "updatedAt": "2026-09-12T16:17:04.072Z",
     "__v": 0,
     "coverImage": ""
-  },
-  {
-    "_id": "6aa6ba92cbb90735ff0708cd",
-    "title": "Visita libera",
-    "description": "Ingresso base con accesso a tutte le opere in esposizione.",
-    "museumId": "6aa6ba90cbb90735ff0708c4",
-    "creator": "6aa6b414eb36962b45cadf89",
-    "works": [
-      "6aa6c52c67eb92dabd4c69db"
-    ],
-    "price": 30,
-    "isDraft": false,
-    "isPublic": true,
-    "duration": 0,
-    "maxDuration": 0,
-    "preferredLength": "medium",
-    "expertiseLevel": "medium",
-    "visitType": "standard",
-    "targetAudience": [
-      "all"
-    ],
-    "accessibility": [
-      "wheelchair_accessible"
-    ],
-    "quiz": [],
-    "createdAt": "2026-09-13T15:00:34.087Z",
-    "updatedAt": "2026-09-13T16:44:36.857Z",
-    "__v": 0
   }
 ]

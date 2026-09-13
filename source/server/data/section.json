@@ -10,209 +10,209 @@
     "name": "European Sculpture and Decorative Arts",
     "svgGroupId": "section-european-sculpture-and-decorative-arts",
     "rooms": [],
-    "image": "default-section.jpg",
+    "image": "https://cdn.sanity.io/images/cctd4ker/production/3a3aedf1cb18e18f262a7afa76111b5a73d3d9b4-5121x1707.jpg?w=1080&q=75&auto=format",
     "museumId": "6a8879bfe6c216683b02eb70",
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c11f8",
+        "_id": "6aa71e10a66cbba687e36410",
         "workId": "6a982617967dc7a9838a838e",
         "x": 100,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11f9",
+        "_id": "6aa71e10a66cbba687e36411",
         "workId": "6a982617967dc7a9838a838f",
         "x": 200,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11fa",
+        "_id": "6aa71e10a66cbba687e36412",
         "workId": "6a982617967dc7a9838a8390",
         "x": 300,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11fb",
+        "_id": "6aa71e10a66cbba687e36413",
         "workId": "6a982617967dc7a9838a8391",
         "x": 400,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11fc",
+        "_id": "6aa71e10a66cbba687e36414",
         "workId": "6a982617967dc7a9838a8392",
         "x": 500,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11fd",
+        "_id": "6aa71e10a66cbba687e36415",
         "workId": "6a982617967dc7a9838a8393",
         "x": 600,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11fe",
+        "_id": "6aa71e10a66cbba687e36416",
         "workId": "6a982617967dc7a9838a8394",
         "x": 100,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11ff",
+        "_id": "6aa71e10a66cbba687e36417",
         "workId": "6a982617967dc7a9838a8395",
         "x": 200,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1200",
+        "_id": "6aa71e10a66cbba687e36418",
         "workId": "6a982617967dc7a9838a8396",
         "x": 300,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1201",
+        "_id": "6aa71e10a66cbba687e36419",
         "workId": "6a982617967dc7a9838a8397",
         "x": 400,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1202",
+        "_id": "6aa71e10a66cbba687e3641a",
         "workId": "6a982617967dc7a9838a8398",
         "x": 500,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1203",
+        "_id": "6aa71e10a66cbba687e3641b",
         "workId": "6a982617967dc7a9838a8399",
         "x": 600,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1204",
+        "_id": "6aa71e10a66cbba687e3641c",
         "workId": "6a982617967dc7a9838a839a",
         "x": 100,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1205",
+        "_id": "6aa71e10a66cbba687e3641d",
         "workId": "6a982617967dc7a9838a839b",
         "x": 200,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1206",
+        "_id": "6aa71e10a66cbba687e3641e",
         "workId": "6a982617967dc7a9838a839c",
         "x": 300,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1207",
+        "_id": "6aa71e10a66cbba687e3641f",
         "workId": "6a982617967dc7a9838a839d",
         "x": 400,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1208",
+        "_id": "6aa71e10a66cbba687e36420",
         "workId": "6a982617967dc7a9838a839e",
         "x": 500,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1209",
+        "_id": "6aa71e10a66cbba687e36421",
         "workId": "6a982618967dc7a9838a839f",
         "x": 600,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120a",
+        "_id": "6aa71e10a66cbba687e36422",
         "workId": "6a982618967dc7a9838a83a0",
         "x": 100,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120b",
+        "_id": "6aa71e10a66cbba687e36423",
         "workId": "6a982618967dc7a9838a83a1",
         "x": 200,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120c",
+        "_id": "6aa71e10a66cbba687e36424",
         "workId": "6a982618967dc7a9838a83a2",
         "x": 300,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120d",
+        "_id": "6aa71e10a66cbba687e36425",
         "workId": "6a982618967dc7a9838a83a3",
         "x": 400,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120e",
+        "_id": "6aa71e10a66cbba687e36426",
         "workId": "6a982618967dc7a9838a83a4",
         "x": 500,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120f",
+        "_id": "6aa71e10a66cbba687e36427",
         "workId": "6a982618967dc7a9838a83a5",
         "x": 600,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1210",
+        "_id": "6aa71e10a66cbba687e36428",
         "workId": "6a982618967dc7a9838a83a6",
         "x": 100,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1211",
+        "_id": "6aa71e10a66cbba687e36429",
         "workId": "6a982618967dc7a9838a83a7",
         "x": 200,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1212",
+        "_id": "6aa71e10a66cbba687e3642a",
         "workId": "6a982618967dc7a9838a83a8",
         "x": 300,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1213",
+        "_id": "6aa71e10a66cbba687e3642b",
         "workId": "6a982618967dc7a9838a83a9",
         "x": 400,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1214",
+        "_id": "6aa71e10a66cbba687e3642c",
         "workId": "6a982618967dc7a9838a83aa",
         "x": 500,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1215",
+        "_id": "6aa71e10a66cbba687e3642d",
         "workId": "6a982618967dc7a9838a83ab",
         "x": 600,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1216",
+        "_id": "6aa71e10a66cbba687e3642e",
         "workId": "6a982618967dc7a9838a83ac",
         "x": 100,
         "y": 600
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1217",
+        "_id": "6aa71e10a66cbba687e3642f",
         "workId": "6a982618967dc7a9838a83ad",
         "x": 200,
         "y": 600
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1218",
+        "_id": "6aa71e10a66cbba687e36430",
         "workId": "6a982618967dc7a9838a83ae",
         "x": 300,
         "y": 600
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1219",
+        "_id": "6aa71e10a66cbba687e36431",
         "workId": "6a982618967dc7a9838a83af",
         "x": 400,
         "y": 600
@@ -231,7 +231,7 @@
     "svgGroupId": "section-grace-rainey-rogers-autirorium",
     "rooms": [],
     "works": [],
-    "image": "default-section.jpg",
+    "image": "https://cdn.sanity.io/images/cctd4ker/production/cc4c3e4279c82f03c2f3c1c26ea862a98fba41f5-720x400.jpg?w=720",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -247,121 +247,121 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c121a",
+        "_id": "6aa71e10a66cbba687e36432",
         "workId": "6a9824d8967dc7a9838a8362",
         "x": 100,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c121b",
+        "_id": "6aa71e10a66cbba687e36433",
         "workId": "6a9824d8967dc7a9838a8363",
         "x": 200,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c121c",
+        "_id": "6aa71e10a66cbba687e36434",
         "workId": "6a9824d8967dc7a9838a8364",
         "x": 300,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c121d",
+        "_id": "6aa71e10a66cbba687e36435",
         "workId": "6a9824d8967dc7a9838a8365",
         "x": 400,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c121e",
+        "_id": "6aa71e10a66cbba687e36436",
         "workId": "6a9824d8967dc7a9838a8366",
         "x": 500,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c121f",
+        "_id": "6aa71e10a66cbba687e36437",
         "workId": "6a9824d8967dc7a9838a8367",
         "x": 100,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1220",
+        "_id": "6aa71e10a66cbba687e36438",
         "workId": "6a9824d8967dc7a9838a8368",
         "x": 200,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1221",
+        "_id": "6aa71e10a66cbba687e36439",
         "workId": "6a9824d8967dc7a9838a8369",
         "x": 300,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1222",
+        "_id": "6aa71e10a66cbba687e3643a",
         "workId": "6a9824d8967dc7a9838a836a",
         "x": 400,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1223",
+        "_id": "6aa71e10a66cbba687e3643b",
         "workId": "6a9824d8967dc7a9838a836b",
         "x": 500,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1224",
+        "_id": "6aa71e10a66cbba687e3643c",
         "workId": "6a9824d8967dc7a9838a836c",
         "x": 100,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1225",
+        "_id": "6aa71e10a66cbba687e3643d",
         "workId": "6a9824d8967dc7a9838a836d",
         "x": 200,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1226",
+        "_id": "6aa71e10a66cbba687e3643e",
         "workId": "6a9824d8967dc7a9838a836e",
         "x": 300,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1227",
+        "_id": "6aa71e10a66cbba687e3643f",
         "workId": "6a9824d8967dc7a9838a836f",
         "x": 400,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1228",
+        "_id": "6aa71e10a66cbba687e36440",
         "workId": "6a9824d8967dc7a9838a8370",
         "x": 500,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1229",
+        "_id": "6aa71e10a66cbba687e36441",
         "workId": "6a9824d8967dc7a9838a8371",
         "x": 100,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c122a",
+        "_id": "6aa71e10a66cbba687e36442",
         "workId": "6a9824d9967dc7a9838a8372",
         "x": 200,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c122b",
+        "_id": "6aa71e10a66cbba687e36443",
         "workId": "6a9824d9967dc7a9838a8373",
         "x": 300,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c122c",
+        "_id": "6aa71e10a66cbba687e36444",
         "workId": "6a9824d9967dc7a9838a8374",
         "x": 400,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c122d",
+        "_id": "6aa71e10a66cbba687e36445",
         "workId": "6a9824d9967dc7a9838a8375",
         "x": 500,
         "y": 400
@@ -371,7 +371,7 @@
         "_id": "6a9834fefeabf46b3904ea8b"
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://cdn.sanity.io/images/cctd4ker/production/44a7ac025e44195f5daf788d6d563db040205206-5121x1707.jpg?w=1080&q=75&auto=format",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -386,7 +386,7 @@
     "svgGroupId": "section-the-great-hall",
     "rooms": [],
     "works": [],
-    "image": "default-section.jpg",
+    "image": "data:image/jpeg;base64,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",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -402,49 +402,49 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c122f",
+        "_id": "6aa71e10a66cbba687e36447",
         "workId": "6a98279e967dc7a9838a83b2",
         "x": 100,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1230",
+        "_id": "6aa71e10a66cbba687e36448",
         "workId": "6a98279e967dc7a9838a83b3",
         "x": 200,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1231",
+        "_id": "6aa71e10a66cbba687e36449",
         "workId": "6a98279e967dc7a9838a83b4",
         "x": 300,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1232",
+        "_id": "6aa71e10a66cbba687e3644a",
         "workId": "6a98279e967dc7a9838a83b5",
         "x": 100,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1233",
+        "_id": "6aa71e10a66cbba687e3644b",
         "workId": "6a98279e967dc7a9838a83b6",
         "x": 200,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1234",
+        "_id": "6aa71e10a66cbba687e3644c",
         "workId": "6a98279e967dc7a9838a83b7",
         "x": 300,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1235",
+        "_id": "6aa71e10a66cbba687e3644d",
         "workId": "6a98279e967dc7a9838a83b8",
         "x": 100,
         "y": 300
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://cdn.sanity.io/images/cctd4ker/production/e2eeb0bffc667d37a03c5b6e04a040de7622ff10-5121x1707.jpg?w=1080&q=75&auto=format",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -459,7 +459,7 @@
     "svgGroupId": "section-exhibition-gallery-199",
     "rooms": [],
     "works": [],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYvbKTkmR1hDlBth5voccY8HKsmWu6FjmZP_5kPU8I2g&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -475,193 +475,193 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c1236",
+        "_id": "6aa71e10a66cbba687e3644e",
         "workId": "6a982aaa967dc7a9838a83e6",
         "x": 100,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1237",
+        "_id": "6aa71e10a66cbba687e3644f",
         "workId": "6a982aaa967dc7a9838a83e7",
         "x": 200,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1238",
+        "_id": "6aa71e10a66cbba687e36450",
         "workId": "6a982aaa967dc7a9838a83e8",
         "x": 300,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1239",
+        "_id": "6aa71e10a66cbba687e36451",
         "workId": "6a982aaa967dc7a9838a83e9",
         "x": 400,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123a",
+        "_id": "6aa71e10a66cbba687e36452",
         "workId": "6a982aaa967dc7a9838a83ea",
         "x": 500,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123b",
+        "_id": "6aa71e10a66cbba687e36453",
         "workId": "6a982aaa967dc7a9838a83eb",
         "x": 600,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123c",
+        "_id": "6aa71e10a66cbba687e36454",
         "workId": "6a982aaa967dc7a9838a83ec",
         "x": 100,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123d",
+        "_id": "6aa71e10a66cbba687e36455",
         "workId": "6a982aaa967dc7a9838a83ed",
         "x": 200,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123e",
+        "_id": "6aa71e10a66cbba687e36456",
         "workId": "6a982aaa967dc7a9838a83ee",
         "x": 300,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123f",
+        "_id": "6aa71e10a66cbba687e36457",
         "workId": "6a982aaa967dc7a9838a83ef",
         "x": 400,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1240",
+        "_id": "6aa71e10a66cbba687e36458",
         "workId": "6a982aaa967dc7a9838a83f0",
         "x": 500,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1241",
+        "_id": "6aa71e10a66cbba687e36459",
         "workId": "6a982aab967dc7a9838a83f1",
         "x": 600,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1242",
+        "_id": "6aa71e10a66cbba687e3645a",
         "workId": "6a982aab967dc7a9838a83f2",
         "x": 100,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1243",
+        "_id": "6aa71e10a66cbba687e3645b",
         "workId": "6a982aab967dc7a9838a83f3",
         "x": 200,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1244",
+        "_id": "6aa71e10a66cbba687e3645c",
         "workId": "6a982aab967dc7a9838a83f4",
         "x": 300,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1245",
+        "_id": "6aa71e10a66cbba687e3645d",
         "workId": "6a982aab967dc7a9838a83f5",
         "x": 400,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1246",
+        "_id": "6aa71e10a66cbba687e3645e",
         "workId": "6a982aab967dc7a9838a83f6",
         "x": 500,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1247",
+        "_id": "6aa71e10a66cbba687e3645f",
         "workId": "6a982aab967dc7a9838a83f7",
         "x": 600,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1248",
+        "_id": "6aa71e10a66cbba687e36460",
         "workId": "6a982aab967dc7a9838a83f8",
         "x": 100,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1249",
+        "_id": "6aa71e10a66cbba687e36461",
         "workId": "6a982aab967dc7a9838a83f9",
         "x": 200,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124a",
+        "_id": "6aa71e10a66cbba687e36462",
         "workId": "6a982aab967dc7a9838a83fa",
         "x": 300,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124b",
+        "_id": "6aa71e10a66cbba687e36463",
         "workId": "6a982aab967dc7a9838a83fb",
         "x": 400,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124c",
+        "_id": "6aa71e10a66cbba687e36464",
         "workId": "6a982aab967dc7a9838a83fc",
         "x": 500,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124d",
+        "_id": "6aa71e10a66cbba687e36465",
         "workId": "6a982aab967dc7a9838a83fd",
         "x": 600,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124e",
+        "_id": "6aa71e10a66cbba687e36466",
         "workId": "6a982aab967dc7a9838a83fe",
         "x": 100,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124f",
+        "_id": "6aa71e10a66cbba687e36467",
         "workId": "6a982aab967dc7a9838a83ff",
         "x": 200,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1250",
+        "_id": "6aa71e10a66cbba687e36468",
         "workId": "6a982aab967dc7a9838a8400",
         "x": 300,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1251",
+        "_id": "6aa71e10a66cbba687e36469",
         "workId": "6a982aab967dc7a9838a8401",
         "x": 400,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1252",
+        "_id": "6aa71e10a66cbba687e3646a",
         "workId": "6a982aab967dc7a9838a8402",
         "x": 500,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1253",
+        "_id": "6aa71e10a66cbba687e3646b",
         "workId": "6a982aab967dc7a9838a8403",
         "x": 600,
         "y": 500
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1254",
+        "_id": "6aa71e10a66cbba687e3646c",
         "workId": "6a982aac967dc7a9838a8404",
         "x": 100,
         "y": 600
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3zUeEesxJTwH0uHaj6KvNGVgsy9N0oXOLmviFkJnbOg&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -677,67 +677,67 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c1255",
+        "_id": "6aa71e10a66cbba687e3646d",
         "workId": "6a98297c967dc7a9838a83dc",
         "x": 100,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1256",
+        "_id": "6aa71e10a66cbba687e3646e",
         "workId": "6a98297c967dc7a9838a83dd",
         "x": 200,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1257",
+        "_id": "6aa71e10a66cbba687e3646f",
         "workId": "6a98297c967dc7a9838a83de",
         "x": 300,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1258",
+        "_id": "6aa71e10a66cbba687e36470",
         "workId": "6a98297c967dc7a9838a83df",
         "x": 400,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1259",
+        "_id": "6aa71e10a66cbba687e36471",
         "workId": "6a98297c967dc7a9838a83e0",
         "x": 100,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c125a",
+        "_id": "6aa71e10a66cbba687e36472",
         "workId": "6a98297c967dc7a9838a83e1",
         "x": 200,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c125b",
+        "_id": "6aa71e10a66cbba687e36473",
         "workId": "6a98297c967dc7a9838a83e2",
         "x": 300,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c125c",
+        "_id": "6aa71e10a66cbba687e36474",
         "workId": "6a98297c967dc7a9838a83e3",
         "x": 400,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c125d",
+        "_id": "6aa71e10a66cbba687e36475",
         "workId": "6a98297c967dc7a9838a83e4",
         "x": 100,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c125e",
+        "_id": "6aa71e10a66cbba687e36476",
         "workId": "6a98297c967dc7a9838a83e5",
         "x": 200,
         "y": 300
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK__ZNJkYr5h185Sn6-Pi9ag8HXN85pWltFRvTV_gLuw&s",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -752,7 +752,7 @@
     "svgGroupId": "section-exhibition-gallery-099",
     "rooms": [],
     "works": [],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS0233JrL3VCghoKn2L0rN6WCiU1hv23X9rlD-bZDK2g&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -767,7 +767,7 @@
     "svgGroupId": "section-thomas-watson-library",
     "rooms": [],
     "works": [],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNDKlyzKA18TrbN4iZCtbIR2yP365xPanqjVOuYP41_w&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -781,95 +781,95 @@
     "name": "Modern and Contemporary Art",
     "svgGroupId": "section-modern-and-contemporary-art",
     "rooms": [],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStTPdzRGeO5ab-MqpKzCh50CW8czznKtAQcZvxljQmBg&s=10",
     "museumId": "6a8879bfe6c216683b02eb70",
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c125f",
+        "_id": "6aa71e10a66cbba687e36477",
         "workId": "6a981edd967dc7a9838a8344",
         "x": 100,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1260",
+        "_id": "6aa71e10a66cbba687e36478",
         "workId": "6a981edd967dc7a9838a8345",
         "x": 200,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1261",
+        "_id": "6aa71e10a66cbba687e36479",
         "workId": "6a981ede967dc7a9838a8346",
         "x": 300,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1262",
+        "_id": "6aa71e10a66cbba687e3647a",
         "workId": "6a981ede967dc7a9838a8347",
         "x": 400,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1263",
+        "_id": "6aa71e10a66cbba687e3647b",
         "workId": "6a981ede967dc7a9838a8348",
         "x": 100,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1264",
+        "_id": "6aa71e10a66cbba687e3647c",
         "workId": "6a981ede967dc7a9838a8349",
         "x": 200,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1265",
+        "_id": "6aa71e10a66cbba687e3647d",
         "workId": "6a981ede967dc7a9838a834a",
         "x": 300,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1266",
+        "_id": "6aa71e10a66cbba687e3647e",
         "workId": "6a981ede967dc7a9838a834b",
         "x": 400,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1267",
+        "_id": "6aa71e10a66cbba687e3647f",
         "workId": "6a981ede967dc7a9838a834c",
         "x": 100,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1268",
+        "_id": "6aa71e10a66cbba687e36480",
         "workId": "6a981ede967dc7a9838a834d",
         "x": 200,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1269",
+        "_id": "6aa71e10a66cbba687e36481",
         "workId": "6a981ede967dc7a9838a834e",
         "x": 300,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c126a",
+        "_id": "6aa71e10a66cbba687e36482",
         "workId": "6a981ede967dc7a9838a834f",
         "x": 400,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c126b",
+        "_id": "6aa71e10a66cbba687e36483",
         "workId": "6a981ede967dc7a9838a8350",
         "x": 100,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c126c",
+        "_id": "6aa71e10a66cbba687e36484",
         "workId": "6a981ede967dc7a9838a8351",
         "x": 200,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c126d",
+        "_id": "6aa71e10a66cbba687e36485",
         "workId": "6a981ede967dc7a9838a8352",
         "x": 300,
         "y": 400
@@ -889,61 +889,61 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c126e",
+        "_id": "6aa71e10a66cbba687e36486",
         "workId": "6a9822be967dc7a9838a8356",
         "x": 100,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c126f",
+        "_id": "6aa71e10a66cbba687e36487",
         "workId": "6a9822be967dc7a9838a8357",
         "x": 200,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1270",
+        "_id": "6aa71e10a66cbba687e36488",
         "workId": "6a9822be967dc7a9838a8358",
         "x": 300,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1271",
+        "_id": "6aa71e10a66cbba687e36489",
         "workId": "6a9822be967dc7a9838a8359",
         "x": 100,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1272",
+        "_id": "6aa71e10a66cbba687e3648a",
         "workId": "6a9822be967dc7a9838a835a",
         "x": 200,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1273",
+        "_id": "6aa71e10a66cbba687e3648b",
         "workId": "6a9822be967dc7a9838a835b",
         "x": 300,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1274",
+        "_id": "6aa71e10a66cbba687e3648c",
         "workId": "6a9822be967dc7a9838a835c",
         "x": 100,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1275",
+        "_id": "6aa71e10a66cbba687e3648d",
         "workId": "6a9822be967dc7a9838a835d",
         "x": 200,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1276",
+        "_id": "6aa71e10a66cbba687e3648e",
         "workId": "6a9822be967dc7a9838a835e",
         "x": 300,
         "y": 300
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTupryUzj7vwcToJ_FlsPUOXdfZWQLBIBgyGIDV49Ci_Q&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -957,107 +957,107 @@
     "name": "The American Wing",
     "svgGroupId": "section-the-american-wing",
     "rooms": [],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRilaCvgOhndsjenvw6ZRkv5T_dfW7_5IVyhKZZumZojw&s=10",
     "museumId": "6a8879bfe6c216683b02eb70",
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c1277",
+        "_id": "6aa71e10a66cbba687e3648f",
         "workId": "6a9828ac967dc7a9838a83c7",
         "x": 100,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1278",
+        "_id": "6aa71e10a66cbba687e36490",
         "workId": "6a9828ac967dc7a9838a83c8",
         "x": 200,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1279",
+        "_id": "6aa71e10a66cbba687e36491",
         "workId": "6a9828ac967dc7a9838a83c9",
         "x": 300,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127a",
+        "_id": "6aa71e10a66cbba687e36492",
         "workId": "6a9828ad967dc7a9838a83ca",
         "x": 400,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127b",
+        "_id": "6aa71e10a66cbba687e36493",
         "workId": "6a9828ad967dc7a9838a83cb",
         "x": 500,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127c",
+        "_id": "6aa71e10a66cbba687e36494",
         "workId": "6a9828ad967dc7a9838a83cc",
         "x": 100,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127d",
+        "_id": "6aa71e10a66cbba687e36495",
         "workId": "6a9828ad967dc7a9838a83cd",
         "x": 200,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127e",
+        "_id": "6aa71e10a66cbba687e36496",
         "workId": "6a9828ad967dc7a9838a83ce",
         "x": 300,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127f",
+        "_id": "6aa71e10a66cbba687e36497",
         "workId": "6a9828ad967dc7a9838a83cf",
         "x": 400,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1280",
+        "_id": "6aa71e10a66cbba687e36498",
         "workId": "6a9828ad967dc7a9838a83d0",
         "x": 500,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1281",
+        "_id": "6aa71e10a66cbba687e36499",
         "workId": "6a9828ad967dc7a9838a83d1",
         "x": 100,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1282",
+        "_id": "6aa71e10a66cbba687e3649a",
         "workId": "6a9828ad967dc7a9838a83d2",
         "x": 200,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1283",
+        "_id": "6aa71e10a66cbba687e3649b",
         "workId": "6a9828ad967dc7a9838a83d3",
         "x": 300,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1284",
+        "_id": "6aa71e10a66cbba687e3649c",
         "workId": "6a9828ad967dc7a9838a83d4",
         "x": 400,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1285",
+        "_id": "6aa71e10a66cbba687e3649d",
         "workId": "6a9828ad967dc7a9838a83d5",
         "x": 500,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1286",
+        "_id": "6aa71e10a66cbba687e3649e",
         "workId": "6a9828ad967dc7a9838a83d6",
         "x": 100,
         "y": 400
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1287",
+        "_id": "6aa71e10a66cbba687e3649f",
         "workId": "6a9828ad967dc7a9838a83d7",
         "x": 200,
         "y": 400
@@ -1077,98 +1077,85 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c1288",
+        "_id": "6aa71e10a66cbba687e364a0",
         "workId": "6a98154923763fa5311eb67c",
         "x": 100,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1289",
+        "_id": "6aa71e10a66cbba687e364a1",
         "workId": "6a98154923763fa5311eb67d",
         "x": 200,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128a",
+        "_id": "6aa71e10a66cbba687e364a2",
         "workId": "6a98154923763fa5311eb67e",
         "x": 300,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128b",
+        "_id": "6aa71e10a66cbba687e364a3",
         "workId": "6a98154923763fa5311eb67f",
         "x": 400,
         "y": 100
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128c",
+        "_id": "6aa71e10a66cbba687e364a4",
         "workId": "6a98154923763fa5311eb680",
         "x": 100,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128d",
+        "_id": "6aa71e10a66cbba687e364a5",
         "workId": "6a98154923763fa5311eb681",
         "x": 200,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128e",
+        "_id": "6aa71e10a66cbba687e364a6",
         "workId": "6a98154923763fa5311eb682",
         "x": 300,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128f",
+        "_id": "6aa71e10a66cbba687e364a7",
         "workId": "6a98154a23763fa5311eb683",
         "x": 400,
         "y": 200
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1290",
+        "_id": "6aa71e10a66cbba687e364a8",
         "workId": "6a98154a23763fa5311eb684",
         "x": 100,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1291",
+        "_id": "6aa71e10a66cbba687e364a9",
         "workId": "6a98154a23763fa5311eb685",
         "x": 200,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1292",
+        "_id": "6aa71e10a66cbba687e364aa",
         "workId": "6a98154a23763fa5311eb686",
         "x": 300,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1293",
+        "_id": "6aa71e10a66cbba687e364ab",
         "workId": "6a98154a23763fa5311eb687",
         "x": 400,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1294",
+        "_id": "6aa71e10a66cbba687e364ac",
         "workId": "6a98154a23763fa5311eb688",
         "x": 100,
         "y": 400
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR89WfEh0SCK75Tf_ZT-cqK_s4oGpypZNG5VupxeH6Hxw&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
-  },
-  {
-    "_id": "6aa6bc4c4d79d79603b4786e",
-    "name": "section-oshi-no-ko",
-    "image": "/uploads/1789312073051-3483154.gif",
-    "museumId": "6aa6ba90cbb90735ff0708c4",
-    "works": [
-      {
-        "workId": "6aa6c52c67eb92dabd4c69db",
-        "_id": "6aa6c52c67eb92dabd4c69dc"
-      }
-    ],
-    "__v": 0
   }
 ]
