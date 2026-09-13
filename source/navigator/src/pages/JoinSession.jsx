@@ -198,11 +198,15 @@ export default function JoinSession() {
 
     const code = generateRoomCode();
 
+    // Recuperiamo il titolo della visita selezionata prima di creare la stanza
+    const selectedVisit = availableVisits.find(v => v._id === selectedVisitId);
+    const visitTitle = selectedVisit ? selectedVisit.title : '';
+
     // Aspettiamo l'ack del server prima di mostrare la stanza come creata:
     // un codice, per quanto improbabile, potrebbe risultare già occupato
     // (vedi guard su create_room lato server), e in quel caso riproviamo
     // con un nuovo codice invece di procedere con uno stato inconsistente.
-    socket.emit('create_room', { roomCode: code, visitId: selectedVisitId }, (ack) => {
+    socket.emit('create_room', { roomCode: code, visitId: selectedVisitId, visitTitle: visitTitle }, (ack) => {
       if (ack?.error === 'room_code_taken') {
         handleCreateRoom(attempt + 1);
         return;
@@ -226,10 +230,14 @@ export default function JoinSession() {
     if (savedSession) {
       // Naviga direttamente usando i dati salvati!
       navigate(`/map?visitId=${savedSession.visitId}&roomCode=${savedSession.roomCode}&role=${savedSession.role}`);
-    } else if (roomCode.length === 6) {
+    } else if (roomCode.trim().length > 0) {
       const nameToUse = studentName.trim() || 'Ospite';
-      // Socket emit corretto
-      socket.emit('join_room', { roomCode, studentName: nameToUse });
+      
+      // Capiamo se l'utente ha inserito un codice esatto o il nome della visita
+      const isCode = /^[A-Z0-9]{6}$/i.test(roomCode.trim());
+      const finalRoomId = isCode ? roomCode.trim().toUpperCase() : roomCode.trim();
+      
+      socket.emit('join_room', { roomCode: finalRoomId, studentName: nameToUse });
     }
   };
 
@@ -616,23 +624,22 @@ export default function JoinSession() {
               <span className="h-[1px] bg-slate-800 flex-1"></span>
             </div>
 
-            {/* CAMPO CODICE STANZA */}
+            {/* CAMPO CODICE O NOME STANZA */}
             <div ref={joinSectionRef} className="w-full bg-[#1e293b]/40 backdrop-blur-md border border-slate-800 rounded-2xl p-5">
               <label className="block text-left text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-1">
-                Inserisci Codice Stanza
+                Inserisci Codice o Nome Percorso
               </label>
               <div className="flex gap-2 w-full">
                 <input
                   type="text"
-                  maxLength={6}
-                  placeholder="Esempio: ART452"
+                  placeholder="Es: ART452 oppure Rinascimento"
                   value={roomCode}
-                  onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                  className="flex-1 min-w-0 bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 text-center text-base font-extrabold tracking-widest uppercase focus:outline-none focus:border-amber-500 transition-all"
+                  onChange={(e) => setRoomCode(e.target.value)}
+                  className="flex-1 min-w-0 bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 text-center text-sm font-bold focus:outline-none focus:border-amber-500 transition-all"
                 />
                 <button 
                   onClick={handleJoinRoom}
-                  disabled={roomCode.length !== 6}
+                  disabled={roomCode.trim().length === 0}
                   className="shrink-0 flex items-center justify-center bg-amber-500 hover:bg-amber-600 disabled:bg-slate-800 text-slate-950 font-extrabold rounded-xl px-5 transition-all shadow-lg cursor-pointer"
                 >
                   <Send size={18} />

@@ -113,14 +113,14 @@ io.on('connection', (socket) => {
   }
 
   // Insegnante crea la stanza
-  socket.on('create_room', ({ roomCode, visitId }, callback) => {
+  socket.on('create_room', ({ roomCode, visitId, visitTitle }, callback) => {
     // Un roomCode già attivo NON va mai sovrascritto: altrimenti chiunque
     // conosca il codice (es. uno studente che si è appena unito) potrebbe
     // rifare 'create_room' con lo stesso codice e dirottare la sessione,
     // rubando teacherSocketId e teacherToken al vero insegnante.
     if (activeSessions[roomCode]) {
       console.warn(`create_room rifiutato: il codice ${roomCode} è già in uso (socket ${socket.id})`);
-      if (typeof callback === 'function') callback({ error: 'room_code_taken' });
+      callback({ error: 'room_code_taken' });
       return;
     }
 
@@ -132,6 +132,7 @@ io.on('connection', (socket) => {
         students: [],
         classStatus: {},
         visitId: visitId,
+        visitTitle: visitTitle,
         hasStarted: false
     };
     console.log(`L'insegnante ha creato la stanza: ${roomCode} per la visita ${visitId}`);
@@ -144,21 +145,33 @@ io.on('connection', (socket) => {
 
   // Studente si unisce
   socket.on('join_room', ({ roomCode, studentName }) => {
-    roomCode = roomCode.toUpperCase();
-    if (activeSessions[roomCode]) {
-      socket.join(roomCode);
+    let actualCode = roomCode.toUpperCase(); 
+
+    // Se non troviamo il codice diretto, cerchiamo per nome visita
+    if (!activeSessions[actualCode]) {
+      const foundSession = Object.entries(activeSessions).find(([code, session]) => 
+        session.visitTitle && session.visitTitle.toLowerCase() === roomCode.toLowerCase()
+      );
+      if (foundSession) {
+        actualCode = foundSession[0]; // Abbiamo trovato la stanza tramite il nome!
+      }
+    }
+
+    // Ora controlliamo se abbiamo trovato la stanza (tramite codice o nome)
+    if (activeSessions[actualCode]) {
+      socket.join(actualCode);
       const studentData = { id: socket.id, name: studentName };
-      activeSessions[roomCode].students.push(studentData);
+      activeSessions[actualCode].students.push(studentData);
       
       socket.emit('room_joined', { 
         success: true, 
-        roomCode,
-        hasStarted: activeSessions[roomCode].hasStarted,
-        visitId: activeSessions[roomCode].visitId
+        roomCode: actualCode, // Rimandiamo il vero codice a 6 lettere al frontend
+        hasStarted: activeSessions[actualCode].hasStarted,
+        visitId: activeSessions[actualCode].visitId
       });
-      io.to(activeSessions[roomCode].teacherSocketId).emit('student_joined', studentData);
+      io.to(activeSessions[actualCode].teacherSocketId).emit('student_joined', studentData);
     } else {
-      socket.emit('error', 'Stanza non trovata. Controlla il codice.');
+      socket.emit('error', 'Percorso non trovato. Controlla il codice o il nome.');
     }
   });
 

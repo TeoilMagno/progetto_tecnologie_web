@@ -34,5 +34,160 @@
     "createdAt": "2026-09-09T22:24:24.470Z",
     "updatedAt": "2026-09-09T22:24:24.470Z",
     "__v": 0
+  },
+  {
+    "_id": "6aa2f66c746cf6392552e2c6",
+    "user": "6a95ec582eb2f2383178971b",
+    "items": [
+      {
+        "itemId": "6a9da0530d88aca99bc6d61e",
+        "name": "Catalogo Ufficiale The MET",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAnBeJAtRy2D8ZDpQnUgG9tKgObIWUEWjoRDCDxrcURA&s=10",
+        "price": 45,
+        "quantity": 1,
+        "_id": "6aa2f66c746cf6392552e2c7"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 45,
+    "status": "completed",
+    "createdAt": "2026-09-10T18:26:52.389Z",
+    "updatedAt": "2026-09-10T18:26:52.389Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa2f681746cf6392552e2ca",
+    "user": "6a95ec582eb2f2383178971b",
+    "items": [
+      {
+        "itemId": "6a9da0530d88aca99bc6d61e",
+        "name": "Catalogo Ufficiale The MET",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAnBeJAtRy2D8ZDpQnUgG9tKgObIWUEWjoRDCDxrcURA&s=10",
+        "price": 45,
+        "quantity": 1,
+        "_id": "6aa2f681746cf6392552e2cb"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 45,
+    "status": "completed",
+    "createdAt": "2026-09-10T18:27:13.329Z",
+    "updatedAt": "2026-09-10T18:27:13.329Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa2f7248755c059e6e1a3bb",
+    "user": "6a95ec582eb2f2383178971b",
+    "items": [
+      {
+        "itemId": "6a9da0530d88aca99bc6d61e",
+        "name": "Catalogo Ufficiale The MET",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAnBeJAtRy2D8ZDpQnUgG9tKgObIWUEWjoRDCDxrcURA&s=10",
+        "price": 45,
+        "quantity": 1,
+        "_id": "6aa2f7248755c059e6e1a3bc"
+      }
+    ],
+    "visits": [],
+    "totalAmount": 45,
+    "status": "completed",
+    "createdAt": "2026-09-10T18:29:56.210Z",
+    "updatedAt": "2026-09-10T18:29:56.210Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa2fd29ba3cda98364144e2",
+    "user": "6a95ec582eb2f2383178971b",
+    "items": [
+      {
+        "itemId": "6a9da0530d88aca99bc6d61f",
+        "name": "Van Gogh: Le Lettere",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLtgFpe6MOCo1EKIJsZTZew0ykCGrqLzjyl6jYyWsoyw&s=10",
+        "price": 25.5,
+        "quantity": 2,
+        "_id": "6aa2fd29ba3cda98364144e3"
+      },
+      {
+        "itemId": "6a9da0530d88aca99bc6d61e",
+        "name": "Catalogo Ufficiale The MET",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAnBeJAtRy2D8ZDpQnUgG9tKgObIWUEWjoRDCDxrcURA&s=10",
+        "price": 45,
+        "quantity": 1,
+        "_id": "6aa2fd29ba3cda98364144e4"
+      },
+      {
+        "itemId": "6a9da0530d88aca99bc6d620",
+        "name": "L'Arte Egizia per Bambini",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7OIkhBdylq00Sxp0z3HiyyMH1DVgZLXmB4FX9wYGITw&s=10",
+        "price": 15,
+        "quantity": 2,
+        "_id": "6aa2fd29ba3cda98364144e5"
+      },
+      {
+        "itemId": "6a9da0530d88aca99bc6d623",
+        "name": "Set 10 Cartoline Capolavori",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0bw4sM5dRZYKF8OBNz8xTdezrPKHNZTRQn0qmIE5urQ&s=10",
+        "price": 9.9,
+        "quantity": 2,
+        "_id": "6aa2fd29ba3cda98364144e6"
+      },
+      {
+        "itemId": "6a9da0530d88aca99bc6d622",
+        "name": "Guida Tascabile: Impressionismo",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsK9oQd96K3zh3Qx8CNvVEb21LPAF86QBk-jsJjURCYA&s=10",
+        "price": 12,
+        "quantity": 1,
+        "_id": "6aa2fd29ba3cda98364144e7"
+      }
+    ],
+    "visits": [
+      {
+        "visitId": "6aa1cbae0b6193eebce169f1",
+        "title": "Visita prova acquisto",
+        "price": 15,
+        "_id": "6aa2fd29ba3cda98364144e8"
+      }
+    ],
+    "totalAmount": 172.8,
+    "status": "completed",
+    "createdAt": "2026-09-10T18:55:37.855Z",
+    "updatedAt": "2026-09-10T18:55:37.855Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa53efa50c724ea253c9067",
+    "user": "6a95ec582eb2f2383178971b",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6a98512ffeabf46b3904ef01",
+        "title": "Robert Lehman Wing",
+        "price": 0,
+        "_id": "6aa53efa50c724ea253c9068"
+      }
+    ],
+    "totalAmount": 0,
+    "status": "completed",
+    "createdAt": "2026-09-12T12:00:58.292Z",
+    "updatedAt": "2026-09-12T12:00:58.292Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aa53fe285d1d8268fcbd137",
+    "user": "6a95ec582eb2f2383178971b",
+    "items": [],
+    "visits": [
+      {
+        "visitId": "6a98512ffeabf46b3904ef01",
+        "title": "Robert Lehman Wing",
+        "price": 0,
+        "_id": "6aa53fe285d1d8268fcbd138"
+      }
+    ],
+    "totalAmount": 0,
+    "status": "completed",
+    "createdAt": "2026-09-12T12:04:50.976Z",
+    "updatedAt": "2026-09-12T12:04:50.976Z",
+    "__v": 0
   }
 ]

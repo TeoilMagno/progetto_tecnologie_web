@@ -40,30 +40,6 @@
     ]
   },
   {
-    "_id": "6a9f24be613d6e8ffaeed867",
-    "title": "Bozza in corso...",
-    "description": "",
-    "museumId": "6a8879bfe6c216683b02eb70",
-    "creator": "6a95ec582eb2f2383178971b",
-    "works": [
-      "6a98154923763fa5311eb67c"
-    ],
-    "price": 0,
-    "isDraft": true,
-    "isPublic": false,
-    "duration": 3,
-    "maxDuration": 0,
-    "preferredLength": "medium",
-    "expertiseLevel": "medium",
-    "visitType": "custom",
-    "targetAudience": [],
-    "accessibility": [],
-    "quiz": [],
-    "createdAt": "2026-09-07T20:55:26.683Z",
-    "updatedAt": "2026-09-07T20:55:26.683Z",
-    "__v": 0
-  },
-  {
     "_id": "6aa1cbae0b6193eebce169f1",
     "title": "Visita prova acquisto",
     "description": "Visita breve",
@@ -93,5 +69,328 @@
     "targetAudience": [
       "all"
     ]
+  },
+  {
+    "price": 0,
+    "targetAudience": [],
+    "accessibility": [],
+    "_id": "6aa3a9f127bf295bcb9ce5b1",
+    "title": "Visita prova insegnante",
+    "description": "",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "creator": "6a95ec582eb2f2383178971b",
+    "works": [
+      "6a98154923763fa5311eb67c",
+      "6a98154923763fa5311eb67d",
+      "6a98154923763fa5311eb67f"
+    ],
+    "isDraft": false,
+    "isPublic": false,
+    "duration": 9,
+    "maxDuration": 0,
+    "preferredLength": "medium",
+    "expertiseLevel": "medium",
+    "visitType": "custom",
+    "quiz": [
+      {
+        "question": "Deve andare",
+        "options": [
+          "si",
+          "no",
+          "forse",
+          "speriamo"
+        ],
+        "correctAnswerIndex": 3,
+        "_id": "6aa3aa1427bf295bcb9ce5b3"
+      }
+    ],
+    "createdAt": "2026-09-11T07:12:49.858Z",
+    "updatedAt": "2026-09-11T07:13:24.201Z",
+    "__v": 0,
+    "coverImage": ""
+  },
+  {
+    "price": 0,
+    "targetAudience": [],
+    "accessibility": [],
+    "_id": "6aa5331ff839a44909e4b71d",
+    "title": "Visita in sezioni diverse",
+    "description": "",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "creator": "6a95ec582eb2f2383178971b",
+    "works": [
+      "6a98154923763fa5311eb67c",
+      "6a981edd967dc7a9838a8344",
+      "6a9822be967dc7a9838a8356"
+    ],
+    "isDraft": false,
+    "isPublic": false,
+    "duration": 9,
+    "maxDuration": 0,
+    "preferredLength": "medium",
+    "expertiseLevel": "medium",
+    "visitType": "custom",
+    "quiz": [],
+    "createdAt": "2026-09-12T11:10:23.630Z",
+    "updatedAt": "2026-09-12T11:10:39.951Z",
+    "__v": 0,
+    "coverImage": ""
+  },
+  {
+    "_id": "6aa5619485d1d8268fcbd174",
+    "title": "Nel Cuore dell'Antichità: Dalla Magna Grecia all'Impero Romano",
+    "description": "Un percorso immersivo e cronologico attraverso l'intera sezione classica, esplorando la scultura, la ceramica e i reperti etruschi e romani senza uscire mai dalla stessa ala del museo.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "creator": "6a95ec582eb2f2383178971b",
+    "works": [
+      "6a9824d8967dc7a9838a836c",
+      "6a9824d8967dc7a9838a8362",
+      "6a9824d8967dc7a9838a8363",
+      "6a9824d8967dc7a9838a8368",
+      "6a9824d8967dc7a9838a8371",
+      "6a9824d8967dc7a9838a8369",
+      "6a9824d8967dc7a9838a8366",
+      "6a9824d8967dc7a9838a836b",
+      "6a9824d8967dc7a9838a8365",
+      "6a9824d9967dc7a9838a8373",
+      "6a9824d9967dc7a9838a8374",
+      "6a9824d8967dc7a9838a8370",
+      "6a9824d8967dc7a9838a8367",
+      "6a9824d9967dc7a9838a8372",
+      "6a9824d8967dc7a9838a8364",
+      "6a9824d8967dc7a9838a836d",
+      "6a9824d8967dc7a9838a836f",
+      "6a9824d8967dc7a9838a836e",
+      "6a9824d8967dc7a9838a836a",
+      "6a9824d9967dc7a9838a8375"
+    ],
+    "isDraft": false,
+    "isPublic": true,
+    "duration": 130,
+    "maxDuration": 0,
+    "preferredLength": "exhaustive",
+    "expertiseLevel": "medium",
+    "visitType": "custom",
+    "quiz": [],
+    "createdAt": "2026-09-12T14:28:36.502Z",
+    "updatedAt": "2026-09-12T14:34:19.048Z",
+    "__v": 0,
+    "coverImage": "",
+    "accessibility": [
+      "wheelchair_accessible"
+    ],
+    "price": 30,
+    "targetAudience": [
+      "adults",
+      "schools"
+    ]
+  },
+  {
+    "_id": "6aa5633b85d1d8268fcbd181",
+    "title": "I Misteri dell'Egitto Faraonico: Dalla Terra dei Templi all'Aldilà",
+    "description": "Un viaggio completo ed esaustivo nella grande sala della collezione egizia, partendo dall'architettura monumentale dei templi fino ai piccoli amuleti e ai corredi funerari legati al culto dei morti.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "creator": "6a95ec582eb2f2383178971b",
+    "works": [
+      "6a982aaa967dc7a9838a83e6",
+      "6a982aab967dc7a9838a83f7",
+      "6a982aaa967dc7a9838a83e8",
+      "6a982aaa967dc7a9838a83e9",
+      "6a982aaa967dc7a9838a83ee",
+      "6a982aab967dc7a9838a83fe",
+      "6a982aab967dc7a9838a83ff",
+      "6a982aaa967dc7a9838a83ed",
+      "6a982aaa967dc7a9838a83f0",
+      "6a982aaa967dc7a9838a83ef",
+      "6a982aab967dc7a9838a83f8",
+      "6a982aab967dc7a9838a83fc",
+      "6a982aaa967dc7a9838a83ea",
+      "6a982aaa967dc7a9838a83eb",
+      "6a982aaa967dc7a9838a83ec",
+      "6a982aab967dc7a9838a83f3",
+      "6a982aab967dc7a9838a83fb",
+      "6a982aaa967dc7a9838a83e7",
+      "6a982aab967dc7a9838a8400",
+      "6a982aab967dc7a9838a83f4",
+      "6a982aab967dc7a9838a83f1",
+      "6a982aab967dc7a9838a83f2",
+      "6a982aab967dc7a9838a8402",
+      "6a982aab967dc7a9838a8403",
+      "6a982aac967dc7a9838a8404",
+      "6a982aab967dc7a9838a83f9",
+      "6a982aab967dc7a9838a83fa",
+      "6a982aab967dc7a9838a8401"
+    ],
+    "isDraft": false,
+    "isPublic": true,
+    "duration": 182,
+    "maxDuration": 0,
+    "preferredLength": "exhaustive",
+    "expertiseLevel": "expert",
+    "visitType": "custom",
+    "quiz": [],
+    "createdAt": "2026-09-12T14:35:39.427Z",
+    "updatedAt": "2026-09-12T14:41:14.074Z",
+    "__v": 0,
+    "coverImage": "",
+    "accessibility": [
+      "wheelchair_accessible",
+      "blind_friendly"
+    ],
+    "price": 42,
+    "targetAudience": [
+      "families",
+      "adults"
+    ]
+  },
+  {
+    "price": 0,
+    "targetAudience": [],
+    "accessibility": [],
+    "_id": "6aa5666185d1d8268fcbd1e4",
+    "title": "Passione e Scultura",
+    "description": "Un percorso intimo e focalizzato tra capolavori scultorei ed arti decorative europee, esplorando drammi mitologici, sentimenti e grandi opere d'autore in un'unica ala del museo.",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "creator": "6a95ec582eb2f2383178971b",
+    "works": [
+      "6a982617967dc7a9838a838e",
+      "6a982617967dc7a9838a838f",
+      "6a982617967dc7a9838a8390",
+      "6a982617967dc7a9838a8391",
+      "6a982617967dc7a9838a8392",
+      "6a982617967dc7a9838a8393",
+      "6a982617967dc7a9838a8394",
+      "6a982617967dc7a9838a8395",
+      "6a982617967dc7a9838a8396",
+      "6a982617967dc7a9838a8397",
+      "6a982617967dc7a9838a8398",
+      "6a982617967dc7a9838a8399",
+      "6a982617967dc7a9838a839a",
+      "6a982617967dc7a9838a839b",
+      "6a982617967dc7a9838a839c"
+    ],
+    "isDraft": false,
+    "isPublic": false,
+    "duration": 42,
+    "maxDuration": 0,
+    "preferredLength": "medium",
+    "expertiseLevel": "medium",
+    "visitType": "custom",
+    "quiz": [
+      {
+        "question": "Quale celebre scultore francese dell'Ottocento è l'autore della drammatica opera \"I Borghesi di Calais\"?",
+        "options": [
+          "Gian Lorenzo Bernini",
+          "Auguste Rodin",
+          "Antonio Canova",
+          "Michelangelo Buonarroti"
+        ],
+        "correctAnswerIndex": 1,
+        "_id": "6aa56c6d85d1d8268fcbd1f0"
+      },
+      {
+        "question": "Nella scultura \"Piccola danzatrice di quattordici anni\", quale artista ha introdotto elementi reali come veri capelli e un tutu di tessuto?",
+        "options": [
+          "Edgar Degas",
+          "Auguste Renoir",
+          "Claude Monet",
+          "Camille Claudel"
+        ],
+        "correctAnswerIndex": 0,
+        "_id": "6aa56e6285d1d8268fcbd20e"
+      },
+      {
+        "question": "A quale episodio della Divina Commedia di Dante si ispira la tragica opera scultorea \"Ugolino e i suoi figli\"?",
+        "options": [
+          "Il canto di Francesca",
+          "La torre della fame",
+          "L'incontro con Ulisse",
+          "Il passaggio di Malebolge"
+        ],
+        "correctAnswerIndex": 1,
+        "_id": "6aa56e6285d1d8268fcbd20f"
+      },
+      {
+        "question": "Lo \"Studiolo dal Palazzo Ducale di Gubbio\" è celebre soprattutto per quale raffinata tecnica artistica decorativa delle pareti?",
+        "options": [
+          "Affresco a grottesche",
+          "Intarsio ligneo a trompe-l'œil",
+          "Mosaico bizantino",
+          "Stucchi barocchi"
+        ],
+        "correctAnswerIndex": 1,
+        "_id": "6aa56f6e85d1d8268fcbd23e"
+      },
+      {
+        "question": "Il soggetto rappresentato in \"Teseo che uccide il Minotauro\" fa parte di quale celebre ciclo mitologico?",
+        "options": [
+          "Le fatiche di Ercole",
+          "Il mito del labirinto di Creta",
+          "La guerra di Troia",
+          "Il viaggio degli Argonauti"
+        ],
+        "correctAnswerIndex": 1,
+        "_id": "6aa570997909f3af28cda314"
+      },
+      {
+        "question": "Nello \"Scrittoio meccanico di Maria Antonietta\", quale stile di ebanisteria e arti decorative di corte prevale tipicamente?",
+        "options": [
+          "Gotico fiorito",
+          "Rinascimento italiano",
+          "Neoclassicismo / Rococò",
+          "Art Nouveau"
+        ],
+        "correctAnswerIndex": 2,
+        "_id": "6aa576d1bf77e4a0343e8e7b"
+      },
+      {
+        "question": "Quale celebre filosofo dell'Illuminismo è raffigurato nel \"Busto di Voltaire con toga classica\"?",
+        "options": [
+          "Jean-Jacques Rousseau",
+          "François-Marie Arouet (Voltaire)",
+          "Denis Diderot",
+          "Montesquieu"
+        ],
+        "correctAnswerIndex": 1,
+        "_id": "6aa5777ebf77e4a0343e8eb2"
+      },
+      {
+        "question": "Nella mitologia classica, chi sono le figure allegoriche protagoniste dell'opera \"Flora e Zefiro\"?",
+        "options": [
+          "La ninfa della primavera e il vento dell'ovest",
+          "Il dio del sole e la luna",
+          "Due divinità della guerra",
+          "I custodi dell'oltretomba"
+        ],
+        "correctAnswerIndex": 0,
+        "_id": "6aa5777ebf77e4a0343e8eb3"
+      },
+      {
+        "question": "Il tema di Paolo e Francesca, ripreso nell'opera \"La tempesta\", trae origine da quale celebre canto dell'Inferno dantesco?",
+        "options": [
+          "Canto I",
+          "Canto V",
+          "Canto X",
+          "Canto XXXIII"
+        ],
+        "correctAnswerIndex": 1,
+        "_id": "6aa5777ebf77e4a0343e8eb4"
+      },
+      {
+        "question": "Quale creatura mitologica per metà uomo e per metà capra è protagonista dell'opera \"Fauno molestato da amorini\"?",
+        "options": [
+          "Un Centauro",
+          "Un Fauno o Satiro",
+          "Un Tritone",
+          "Un'Arpia"
+        ],
+        "correctAnswerIndex": 1,
+        "_id": "6aa5777ebf77e4a0343e8eb5"
+      }
+    ],
+    "createdAt": "2026-09-12T14:49:05.178Z",
+    "updatedAt": "2026-09-12T16:17:04.072Z",
+    "__v": 0,
+    "coverImage": ""
   }
 ]
