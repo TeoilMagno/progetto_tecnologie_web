@@ -116,7 +116,7 @@ function AppLayout() {
             >
               <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0 overflow-hidden">
                 <img 
-                  src={config && config.iconUrl ? config.iconUrl : "/img/logob.svg"} 
+                  src={config && config.iconUrl ? config.iconUrl : "/shared/img/artaround-logo.svg"} 
                   alt="Logo Museo" 
                   className="w-full h-full object-cover" 
                 />

@@ -110,6 +110,17 @@ async function getMyVisits() {
 function renderVisitsList(visits, containerId = "managed-visits-area") {
   const container = document.getElementById(containerId);
   if (!container) return;
+
+  // Stato Vuoto sobrio e lineare (stile my-museums)
+  if (!visits || visits.length === 0) {
+    container.innerHTML = `
+      <div class="col-12 text-center py-5">
+        <p class="text-secondary">Non hai ancora creato nessuna visita.</p>
+        <a href="/create-visit" class="btn btn-primary">Crea la tua prima visita</a>
+      </div>`;
+    return;
+  }
+
   let html = "";
 
   const targetMap = { kids: 'Bambini', families: 'Famiglie', adults: 'Adulti', schools: 'Scuole' };
