@@ -5,13 +5,18 @@ class ArtCart extends HTMLElement {
     const iconClass = this.getAttribute('icon-class') || 'bi bi-cart3 fs-4';
     const labelText = this.getAttribute('label') || '';
 
-    // 2. Renderizza IL BOTTONE (Trigger) esattamente dove hai messo il tag
+    // Controlliamo se è la versione inserita nella sidebar/menu mobile
+    const isMobileSidebar = this.hasAttribute('hide-badge');
+
+    // 2. Renderizza IL BOTTONE (Trigger)
     this.innerHTML = `
       <button type="button" class="${btnClass}" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
         <i class="${iconClass}"></i> ${labelText}
-        <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
-          0
-        </span>
+        ${isMobileSidebar ? '' : `
+          <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
+            0
+          </span>
+        `}
       </button>
     `;
 
