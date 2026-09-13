@@ -66,7 +66,7 @@ export default function MuseumSelectorOverlay({ onSelect }) {
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Fetch error:', err);
+        alert("Errore durante il caricamento della lista dei musei, riprova più tardi");
         setError(err.message);
         setLoading(false);
       });

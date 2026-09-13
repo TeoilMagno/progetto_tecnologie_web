@@ -51,6 +51,7 @@ exports.isMuseumOwner = async (req, res, next) => {
   if (!museumId) return res.status(400).json({ error: "ID museo non specificato per la verifica permessi" });
 
   try {
+    const userController = require("../controllers/users");
     const isOwner = await userController.isManagingMuseum(req.user._id, museumId);
     if (isOwner) return next();
     return res.status(403).json({ error: "Non sei autorizzato a gestire questo museo" });

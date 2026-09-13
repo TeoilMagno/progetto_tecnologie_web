@@ -53,7 +53,7 @@ export default function FreeVisitMap({ selectedMuseum }) {
           setSvgMapString(null);
         }
       } catch (error) {
-        console.error("Errore caricamento dati free-map:", error);
+        alert("Errore durante il caricamento dei dati per la visita lbera");
         if (isMounted) setApiError(true);
       } finally {
         if (isMounted) setLoading(false);
@@ -89,7 +89,7 @@ export default function FreeVisitMap({ selectedMuseum }) {
         });
       }
     } catch (err) {
-      console.error("Errore recupero opere sezione:", err);
+      alert("Errore durante ilc aricamento delle opere di questa sezione sezione");
     }
   };
 

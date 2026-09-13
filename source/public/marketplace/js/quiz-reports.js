@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     cachedReports = await res.json();
     renderReportsList(cachedReports);
   } catch (error) {
-    console.error(error);
+    alert("Errore durante il caricamento delle risposte del quiz, controlla di aver eseguito l'accesso correttamente, o riprova più tardi");
     container.innerHTML = `<div class="col-12 text-center text-danger">Impossibile caricare i report.</div>`;
   }
 });

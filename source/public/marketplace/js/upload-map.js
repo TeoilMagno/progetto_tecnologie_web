@@ -64,7 +64,7 @@ async function loadMuseumSections(museumId) {
     localSections = await response.json();
     renderSectionsList(); // Renderizza la UI
   } catch (error) {
-    console.error("Errore nel caricamento delle sezioni:", error);
+    alert("Errore nel caricamento delle sezioni:", error);
   }
 }
 
@@ -225,7 +225,6 @@ async function handleSaveMapAndSections(event) {
     alert("Configurazione mappa e sezioni salvata con successo!");
     window.location.reload();
   } catch (err) {
-    console.error(err);
     alert(`Salvataggio fallito: ${err.message}`);
   }
 }

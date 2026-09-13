@@ -16,7 +16,7 @@ export default function QuizReportsList() {
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
+        alert("Errore durante il caricamente delle risposte al quiz, riprova più tardi");
         setLoading(false);
       });
   }, []);

@@ -17,7 +17,8 @@
       },
       "expertiseLevel": "medium"
     },
-    "__v": 0
+    "__v": 1,
+    "managed_museums": []
   },
   {
     "_id": "6a95e70f45123c6b58491ec7",
@@ -45,7 +46,10 @@
     "role": "curator",
     "type": "none",
     "curator_status": "none",
-    "managed_museums": [],
+    "managed_museums": [
+      "6a8879bfe6c216683b02eb70",
+      "6a8dfae9a88f1bcdb73ec5e7"
+    ],
     "purchased_visits": [],
     "preferences": {
       "interactionsCount": {
@@ -64,7 +68,10 @@
     "role": "curator",
     "type": "none",
     "curator_status": "approved",
-    "managed_museums": [],
+    "managed_museums": [
+      "6a8dfae9a88f1bcdb73ec5e9",
+      "6a8dfae9a88f1bcdb73ec5e8"
+    ],
     "purchased_visits": [],
     "preferences": {
       "interactionsCount": {
@@ -81,11 +88,12 @@
     "password": "v4DN9vU6mRyoanWVhlv8j8B/DAqQk8lpwYW/8SOVmog=",
     "salt": "hWj0E03apfJlXagBsPyksg==",
     "role": "admin",
-    "type": "teacher",
+    "type": "student",
     "curator_status": "none",
     "managed_museums": [],
     "purchased_visits": [
-      "6a98512ffeabf46b3904ef01"
+      "6a98512ffeabf46b3904ef01",
+      "6aa1cbae0b6193eebce169f1"
     ],
     "preferences": {
       "interactionsCount": {
@@ -114,5 +122,45 @@
     "__v": 0,
     "password": "4rOpw/fAv1RI1pa2okJRPwCn1l1JTHjiuFOoS0kzh1g=",
     "salt": "RqbGzNtsmHGL0nS+g5rZTg=="
+  },
+  {
+    "_id": "6aa6b414eb36962b45cadf89",
+    "username": "Curatore1",
+    "password": "DiSMYSmrgez6bqXPKsoYnVpobkMq6SsrQ/guCkTvkzE=",
+    "salt": "/soCnDkibxGBuudyac0znA==",
+    "role": "curator",
+    "type": "none",
+    "curator_status": "approved",
+    "managed_museums": [
+      "6aa6ba90cbb90735ff0708c4"
+    ],
+    "purchased_visits": [],
+    "preferences": {
+      "interactionsCount": {
+        "simpler_requests": 0,
+        "deeper_requests": 0
+      },
+      "expertiseLevel": "medium"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "6aa6b43ceb36962b45cadf8a",
+    "username": "Curatore2",
+    "password": "kpKqRxK8UQBARCMIYAb9gMj4JpyeD0uSgbhoiGiTYvE=",
+    "salt": "bkTnFZY7vs3O/ERJ4nWwUQ==",
+    "role": "curator",
+    "type": "none",
+    "curator_status": "approved",
+    "managed_museums": [],
+    "purchased_visits": [],
+    "preferences": {
+      "interactionsCount": {
+        "simpler_requests": 0,
+        "deeper_requests": 0
+      },
+      "expertiseLevel": "medium"
+    },
+    "__v": 0
   }
 ]

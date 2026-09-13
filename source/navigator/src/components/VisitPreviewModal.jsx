@@ -123,8 +123,7 @@ export default function VisitPreviewModal({ visit, onClose, activeTab }) {
                       alert(data.error || "Si è verificato un errore durante l'acquisto.");
                     }
                   } catch (err) {
-                    console.error(err);
-                    alert("Errore di connessione al server.");
+                    alert("Errore durante la gestione dell'acquisto, riprovare più tardi");
                   }
                 }}
                 className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-purple-500/20 flex justify-center items-center gap-2 cursor-pointer"

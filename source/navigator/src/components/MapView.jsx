@@ -196,16 +196,16 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
               const textData = await mapResponse.text();
               setSvgMapString(textData);
             } else {
-              console.warn("Mappa SVG non trovata per questo museo.");
+              alert("Mappa SVG non trovata per questo museo.");
             }
           } catch (e) {
-            console.warn("Errore nel caricamento dei dati mappa/opere del museo. Fallback attivato.", e);
+            alert("Errore nel caricamento dei dati mappa/opere del museo. Fallback attivato.", e);
             setSections([]);
           }
         }
         setLoading(false);
       } catch (error) {
-        console.error("Errore critico:", error);
+        alert("Errore critico, impossibile caricare il museo, riprovare più tardi");
         setApiError(true);
         setLoading(false);
       }
@@ -489,7 +489,7 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
           body: JSON.stringify({ sessionExpertise: workGuide.defaultExpertise })
         });
       } catch (error) {
-        console.error("Errore durante l'aggiornamento dell'expertise:", error);
+        alert("Errore durante l'aggiornamento del livello tecnico delle descrizioni");
       }
     }
 

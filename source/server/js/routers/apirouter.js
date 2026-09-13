@@ -326,7 +326,6 @@ apiRouter.get("/sections/:id/works", cacheMiddleware(60 * 60 * 24), async (req, 
 
 // ritorna tutte le sezioni di un museo specifico
 apiRouter.get("/museums/:id/sections", cacheMiddleware(60 * 60 * 24), async (req, res) => {
-  res.set("Cache-Control", "public, max-age=86400");
   try {
     const sections = await sectionController.getSectionsByMuseum(req.params.id);
 
@@ -344,7 +343,7 @@ apiRouter.put("/sections/:id", [auth.isCurator, auth.isMuseumOwner], async (req,
     const { museumId, ...updateData } = req.body;
     const updatedSection = await sectionController.updateSectionById(req.params.id, updateData, museumId);
     
-    invalidateCache(["/sections"])
+    invalidateCache([`/museums/${museumId}/sections`])
 
     res.json({ message: "Sezione aggiornata", section: updatedSection });
   } catch (error) {
@@ -367,11 +366,12 @@ apiRouter.delete("/sections/:id", [auth.isCurator, auth.isMuseumOwner], async (r
       await museumController.removeSectionFromMuseum(museumId, sectionId);
     }
 
-    invalidateCache(["/sections"])
-    invalidateCache(["/works"])
+    invalidateCache([`/sections`])
+    invalidateCache([`/works`])
 
     res.json({ message: "Sezione eliminata con successo" });
   } catch (error) {
+    console.error(error)
     res.status(500).json({ error: error.message });
   }
 });
@@ -1193,6 +1193,7 @@ apiRouter.get("/styles/search", auth.isCurator, async (req, res) => {
     const styles = await styleController.searchStyles(req.query.q);
     res.json(styles);
   } catch (error) {
+    console.error(error);
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 });
@@ -1202,6 +1203,7 @@ apiRouter.get("/styles/:id", auth.isCurator, async (req, res) => {
     const style = await styleController.getStyleById(req.params.id);
     res.json(style);
   } catch (error) {
+    console.error(error);
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 });
@@ -1211,6 +1213,7 @@ apiRouter.post("/styles", auth.isCurator, async (req, res) => {
     const savedStyle = await styleController.createStyle(req.body);
     res.status(201).json(savedStyle);
   } catch (error) {
+    console.error(error);
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 });
@@ -1220,6 +1223,7 @@ apiRouter.put("/styles/:id/data", auth.isCurator, async (req, res) => {
     const updatedStyle = await styleController.addStyleData(req.params.id, req.body);
     res.json(updatedStyle);
   } catch (error) {
+    console.error(error);
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 });

@@ -119,7 +119,7 @@ async function saveSpecificText() {
     if (res.ok) alert("Testo salvato con successo!");
     else alert("Errore durante il salvataggio.");
   } catch (error) {
-    console.error(error);
+    alert("Impossibile salvare le modifiche apportate all'opera:", error);
   }
 }
 

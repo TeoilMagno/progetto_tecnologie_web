@@ -399,7 +399,9 @@
     "description": "Ingresso base con accesso a tutte le opere in esposizione.",
     "museumId": "6aa6ba90cbb90735ff0708c4",
     "creator": "6aa6b414eb36962b45cadf89",
-    "works": [],
+    "works": [
+      "6aa6c52c67eb92dabd4c69db"
+    ],
     "price": 30,
     "isDraft": false,
     "isPublic": true,
@@ -416,7 +418,7 @@
     ],
     "quiz": [],
     "createdAt": "2026-09-13T15:00:34.087Z",
-    "updatedAt": "2026-09-13T15:06:37.605Z",
+    "updatedAt": "2026-09-13T16:44:36.857Z",
     "__v": 0
   }
 ]

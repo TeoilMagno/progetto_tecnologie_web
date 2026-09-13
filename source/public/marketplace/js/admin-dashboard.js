@@ -72,11 +72,13 @@ async function loadPendingCurators() {
 }
 
 async function respondToRequest(userId, action) {
-  const confirmMsg = action === 'approve' 
-    ? "Vuoi approvare questo utente e dargli i permessi da Curatore?" 
-    : "Sei sicuro di voler rifiutare questa richiesta?";
+  const title = 'approve'
+  const message = 'Vuoi approvare questo utente e dargli i permessi da Curatore?'
+  const isDanger = false;
+
+  const isConfirmed = await window.showCustomConfirm(title, message, isDanger);
     
-  if (!confirm(confirmMsg)) return;
+  if (!isConfirmed) return;
 
   try {
     const res = await fetch(`${API_BASE_URL}/admin/curators/${userId}/respond`, {

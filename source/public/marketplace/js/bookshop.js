@@ -132,7 +132,18 @@ function renderItemsList(itemsToRender, append = false) {
   if (!append) catalogArea.innerHTML = "";
 
   if (itemsToRender.length === 0 && !append) {
-    catalogArea.innerHTML = `<p class="text-secondary col-12 text-center mt-5">Nessun articolo corrispondente trovato.</p>`;
+    catalogArea.innerHTML = `
+      <div class="col-12 w-100 mx-auto d-flex flex-column align-items-center justify-content-center py-5 text-center" style="min-height: 40vh;">
+        <div class="mb-3">
+          <i class="bi bi-bag-x text-white-50 opacity-25" style="font-size: 4rem;"></i>
+        </div>
+        <h4 class="text-white mb-2">Nessun articolo trovato</h4>
+        <p class="text-secondary mb-4">Il catalogo è attualmente vuoto o nessun articolo corrisponde alla tua ricerca.</p>
+        <button class="btn btn-gradient px-4 py-2 rounded-pill shadow-lg" onclick="openItemModal()" style="font-size: 1.1rem;">
+          <i class="bi bi-plus-lg me-2"></i> Aggiungi Nuovo Articolo
+        </button>
+      </div>
+    `;
     return;
   }
 
@@ -317,11 +328,25 @@ async function saveItem() {
   const itemId = document.getElementById("item-id").value;
   const name = document.getElementById("item-name").value.trim();
   const price = parseFloat(document.getElementById("item-price").value);
-  const category = document.getElementById("item-category").value;
+  const category = document.getElementById("item-category-checkbox").value;
   const description = document.getElementById("item-description").value.trim();
   const image = document.getElementById("item-image")?.value || "";
   
-  if (!name || isNaN(price)) return alert("Nome e Prezzo sono obbligatori.");
+  if (!name) {
+    return alert("Il nome dell'articolo è obbligatorio.");
+  }
+  if (isNaN(price) || price < 0) {
+    return alert("Inserisci un prezzo valido maggiore o uguale a zero.");
+  }
+  if (!category) {
+    return alert("Seleziona una categoria per l'articolo.");
+  }
+  if (!description) {
+    return alert("La descrizione dell'articolo è obbligatoria.");
+  }
+  if (!image) {
+    return alert("L'immagine dell'articolo è obbligatoria.");
+  }
 
   const payload = { name, price, category, description, image };
   if (!itemId) payload.quantity = parseInt(document.getElementById("item-qty").value) || 0;

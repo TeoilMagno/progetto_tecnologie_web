@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 window.addEventListener("pageshow", (event) => {
   // Se la pagina viene dalla cache (tasto indietro) E c'è il post-it di aggiornamento
   if (event.persisted && localStorage.getItem("visitsChanged") === "true") {
-      console.log("Rilevate nuove modifiche, aggiorno i dati...");
       getMyVisits(); 
       
       // Strappiamo il post-it, così se torna indietro un'altra volta non ricarica inutilmente!
@@ -103,7 +102,7 @@ async function getMyVisits() {
 
     renderVisitsList(cachedVisits, "managed-visits-area");
   } catch (error) {
-    console.error(error);
+    alert(error);
     container.innerHTML = `<div class="alert alert-danger bg-transparent text-danger border-danger">Errore caricamento dati. Il server è attivo?</div>`;
   }
 }
@@ -246,7 +245,6 @@ async function deleteVisit(visitId) {
     cachedVisits = cachedVisits.filter(v => v._id !== visitId);
     renderVisitsList(cachedVisits, "managed-visits-area");
   } catch (error) {
-    console.error("Errore eliminazione visita:", error);
     alert("Impossibile eliminare la visita: " + error.message);
   }
 }
