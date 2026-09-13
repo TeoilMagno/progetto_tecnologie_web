@@ -56,10 +56,11 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
   // Usati per visualizzazione mappa
   const [svgMapString, setSvgMapString] = useState(null);
   const [activeSectionId, setActiveSectionId] = useState(null);
+  const [hasMap, setHasMap] = useState(false);
 
   const isSharedSession = Boolean(roomCode);
   const currentWork = currentWorkIndex >= 0 ? visitedWorks[currentWorkIndex] : null;
-  const hasMap = sections && sections.length > 0;
+  //const hasMap = sections && sections.length > 0;
   
   const mapRef = useRef(null);
 
@@ -194,9 +195,15 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
 
             if (mapResponse.ok) {
               const textData = await mapResponse.text();
-              setSvgMapString(textData);
+              if (textData) {
+                setHasMap(true);
+                setSvgMapString(textData);
+              } else {
+                setHasMap(false);
+              }
             } else {
-              alert("Mappa SVG non trovata per questo museo.");
+              // La risposta è 404 (file non trovato), passiamo silenziosamente allo slideshow
+              setHasMap(false); 
             }
 
             // Salviamo la lista globale
@@ -644,6 +651,22 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         ) : hasMap && !svgMapString ? (
           <div className="w-full h-full flex items-center justify-center text-white">
               <Loader2 className="animate-spin text-cyan-400 mr-2" size={24} /> Caricamento planimetria...
+          </div>
+        ) : currentWorkIndex === -1 ? (
+          
+          /* --- NUOVA SCHERMATA DI BENVENUTO PER IL FALLBACK --- */
+          <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 animate-fadeIn">
+            <div className="w-24 h-24 bg-slate-800/50 rounded-full flex items-center justify-center mb-6 border border-slate-700 shadow-lg">
+              {/* Uso l'icona ImageIcon già importata nel tuo file */}
+              <ImageIcon size={40} className="text-slate-500 opacity-50" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-3">Planimetria non disponibile</h2>
+            <p className="text-slate-400 text-sm md:text-base max-w-md mb-8 leading-relaxed">
+              La mappa interattiva per questo museo non è stata configurata. Nessun problema: ti guideremo attraverso le opere tramite un comodo Slideshow guidato.
+            </p>
+            <div className="px-5 py-3 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-400 font-bold animate-pulse shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+              👇 Premi "Inizia Visita" in basso per cominciare!
+            </div>
           </div>
         ) : (
              <WorkDetailsContent 
