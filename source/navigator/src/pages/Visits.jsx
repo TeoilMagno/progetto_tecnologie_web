@@ -27,18 +27,15 @@ export default function Visits({ selectedMuseum }) {
         return res.json();
       })
       .then((data) => {
-        console.log('RAW DATA:', data);
-        console.log('selectedMuseum._id:', selectedMuseum._id, typeof selectedMuseum._id);
         const filtered = data.filter((visit) => {
           const visitMuseumId = (visit.museumId?._id || visit.museumId)?.toString();
-          console.log('confronto:', visitMuseumId, 'vs', selectedMuseum._id?.toString());
           return visitMuseumId === selectedMuseum._id?.toString();
         });
         setAllVisits(filtered);
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching all visits:', err);
+        alert('Errore durante il caricamento delle visite disponibili');
         setError(err.message);
         setLoading(false);
       });
@@ -86,7 +83,7 @@ export default function Visits({ selectedMuseum }) {
         }
       })
       .catch((err) => {
-        console.error('Error fetching my visits:', err);
+        alert('Errore durante il caricamento delle visite acquistate, riprova più tardi');
         setError(err.message);
         setLoading(false);
       });

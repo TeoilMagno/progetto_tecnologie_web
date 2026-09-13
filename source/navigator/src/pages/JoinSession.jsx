@@ -44,7 +44,7 @@ export default function JoinSession() {
       try {
         setSavedSession(JSON.parse(sessionStr));
       } catch (e) {
-        console.error("Errore nel leggere la sessione salvata");
+        alert("Impossibile trovare o continuare la sessione salvata");
       }
     }
   }, []);
@@ -151,7 +151,7 @@ export default function JoinSession() {
             setSelectedVisitId(activeVisits[0]._id);
           }
         })
-        .catch((err) => console.error("Errore caricamento visite insegnante:", err));
+        .catch((err) => alert("Errore caricamento visite insegnante:", err));
     }
   }, [userType, currentUser?._id]);
 
@@ -172,7 +172,7 @@ export default function JoinSession() {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ type }),
-      }).catch((err) => console.error('Error saving user type:', err));
+      }).catch((err) => console.error('Errore salvataggio ruolo utente', err));
     }
   };
 
@@ -332,7 +332,7 @@ export default function JoinSession() {
       }
       setCameraStatus('active');
     } catch (err) {
-      console.error('Errore avvio fotocamera:', err);
+      alert('Impossibile aprire la fotocamera, controlla i permessi nelle impostazioni e riprova');
       setCameraStatus('error');
       if (err?.name === 'NotAllowedError') {
         setCameraErrorMsg('Permesso fotocamera negato. Abilitalo dalle impostazioni del browser.');

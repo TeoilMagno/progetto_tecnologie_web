@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     renderReportDetails(currentReportData);
   } catch (error) {
-    console.error(error);
+    alert("Errore durante il caricamento dei risultati del quiz: ", error);
     document.getElementById("students-container").innerHTML = `<div class="text-danger text-center">Impossibile caricare il report.</div>`;
   }
 });

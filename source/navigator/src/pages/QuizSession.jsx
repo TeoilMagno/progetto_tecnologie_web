@@ -173,8 +173,7 @@ export default function QuizSession() {
                   alert("Si è verificato un errore nel salvataggio.");
                 }
               } catch (error) {
-                console.error(error);
-                alert("Errore di connessione.");
+                alert("Errore durante il caricamento dei risultati del quiz, riprovare più tardi");
               }
             }} 
             className="w-full mt-8 bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 rounded-xl transition-colors cursor-pointer"

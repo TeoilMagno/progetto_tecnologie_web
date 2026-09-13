@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // recuperiamo l'utente corrente
     let currentUser = null;
     if (userRes && userRes.ok) {
-      try { currentUser = await userRes.json(); } catch (e) { console.warn("Utente non autenticato", e); }
+      try { currentUser = await userRes.json(); } catch (e) { alert("Errore di autenticazione\ncontrolla di aver eseguito correttamente l'accesso, o riprova più tardi", e); }
     }
 
     // se l'utente è il creatore della visita o un admin, mostriamo il tasto Modifica
@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     timeline.innerHTML = html;
   } catch (error) {
-    console.error(error);
+    alert(error);
     document.getElementById("visit-main-title").innerText =
       "Errore di caricamento";
     document.getElementById("visit-timeline").innerHTML =

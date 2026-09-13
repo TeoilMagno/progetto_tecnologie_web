@@ -18,10 +18,10 @@ export default function useMuseumTheme(selectedMuseum) {
           const data = await response.json();
           setConfig(data);
         } else {
-          console.error("Errore dal server durante il recupero del tema");
+          alert("Errore dal server durante il recupero del tema");
         }
       } catch (err) {
-        console.error("Errore di rete durante il recupero del tema:", err);
+        alert("Errore di rete durante il recupero del tema:", err);
       }
     }
 

@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (res.ok) {
       currentUserData = await res.json();
       if (!currentUserData) return window.location.replace('/login');
-      console.log("Dati utente dal DB:", currentUserData);
       // 1. Gestione Nome ereditato (OAuth): Mostra la riga in sola lettura se il campo esiste
       if (currentUserData.name) {
         document.getElementById("social-name-row").classList.remove("d-none");
@@ -38,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderSecurityOptions();
     }
   } catch (error) {
-    console.error("Errore:", error);
+    alert("Errore durante il caricamento dei dati dell'utente\ncontrolla di aver eseguito l'accesso correttamente o riprova più tardi:", error);
   }
 });
 
@@ -66,7 +65,7 @@ async function updateExpertise() {
       body: JSON.stringify({ expertiseLevel })
     });
   } catch (e) {
-    console.error(e);
+    alert("Errore durante l'aggiornamento del livello tecinico selezionato",e);
   }
 }
 
@@ -246,7 +245,7 @@ async function updateUserType() {
       method: "PUT", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type })
     });
-  } catch (e) { console.error(e); }
+  } catch (e) { alert("Errore durante l'aggiornamento del ruolo scelto:", e); }
 }
 
 function renderCuratorStatus() {
@@ -301,7 +300,7 @@ async function requestCuratorRole() {
       body: JSON.stringify({ requestCurator: true })
     });
     if (res.ok) {
-      alert("Richiesta inviata con successo!");
+      showToast("Richiesta inviata con successo!");
       currentUserData.curator_status = 'pending';
       renderCuratorStatus(); // Aggiorna UI istantaneamente
     } else {

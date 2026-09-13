@@ -21,7 +21,7 @@ export default function QuizReportView() {
           setReport(data);
         }
       } catch (e) {
-        console.error(e);
+        alert("Errore durante il caricamento dei risultati del quiz\n controlla di aver eseguito correttamente l'accesso o riprova più tardi");
       } finally {
         setLoading(false);
       }

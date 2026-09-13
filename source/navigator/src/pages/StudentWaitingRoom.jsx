@@ -21,7 +21,7 @@ export default function StudentWaitingRoom() {
 
     // 2. Ascoltiamo il segnale di partenza dell'insegnante
     socket.on('session_started', ({ visitId }) => {
-      console.log("Visita condivisa avviata! ID:", visitId);
+      showToast("Visita condivisa avviata! ID:", visitId);
       localStorage.setItem('savedSession', JSON.stringify({
         roomCode: roomCode,
         visitId: visitId, // Se lo hai a disposizione in quel momento

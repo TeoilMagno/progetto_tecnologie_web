@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     renderOrdersList(cachedOrders);
   } catch (error) {
-    console.error("Errore nel caricamento ordini frontend:", error);
+    alert("Errore durante il caricamento dello storico degli acquisti, riprova più tardi", error);
     const container = document.getElementById("orders-container");
     if (container) {
       container.innerHTML = `<div class="text-danger text-center py-5">Impossibile caricare lo storico ordini.</div>`;
