@@ -123,6 +123,14 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
     });
   }, [roomCode, isTeacherRequested, socket]);
 
+  // Ogni volta che cambia roomCode (nuova stanza/sessione) ripartiamo puliti:
+  // altrimenti gli studenti della vecchia stanza restano "in cache" mescolati
+  // con quelli della stanza nuova.
+  useEffect(() => {
+    setClassStatus({});
+    setInteractionFeed([]);
+  }, [roomCode]);
+
   useEffect(() => {
     const fetchVisitData = async () => {
       try {
@@ -244,9 +252,14 @@ export default function MapView({ visitId, roomCode, isTeacher: isTeacherRequest
         if (payload.type === 'interaction') {
           setInteractionFeed(prev => [payload.data, ...prev].slice(0, 50));
         } else if (payload.type === 'status') {
+          // 1. Il Radar ignora gli eventi generati dall'insegnante stesso
+          if (payload.data.socketId === socket.id) return;
+          
+          // 2. Usiamo il NOME come chiave: se uno studente ricarica la pagina, 
+          // sovrascrive la sua vecchia presenza anziché creare un "clone fantasma"
           setClassStatus(prev => ({
             ...prev,
-            [payload.data.socketId]: payload.data
+            [payload.data.studentName]: payload.data
           }));
         }
       });

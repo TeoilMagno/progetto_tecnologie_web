@@ -247,17 +247,14 @@ io.on('connection', (socket) => {
   socket.on('student_interaction', ({ roomCode, studentName, interactionType, query }) => {
     if (!roomCode) return;
     const room = roomCode.toUpperCase();
-    
-    if (activeSessions[room] && activeSessions[room].teacherSocketId) {
-      io.to(activeSessions[room].teacherSocketId).emit('teacher_dashboard_update', {
+    const session = activeSessions[room];
+    if (!session) return;
+    if (session.teacherSocketId === socket.id) return;
+
+    if (session.teacherSocketId) {
+      io.to(session.teacherSocketId).emit('teacher_dashboard_update', {
         type: 'interaction',
-        data: {
-          id: Date.now().toString(), // ID univoco per la notifica
-          studentName,
-          interactionType, // es. 'voice', 'text'
-          query,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
+        data: { id: Date.now().toString(), studentName, interactionType, query, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
       });
     }
   });
@@ -266,17 +263,15 @@ io.on('connection', (socket) => {
   socket.on('student_status_update', ({ roomCode, studentName, currentArtworkId, status }) => {
     if (!roomCode) return;
     const room = roomCode.toUpperCase();
-    
-    if (activeSessions[room] && activeSessions[room].teacherSocketId) {
-      io.to(activeSessions[room].teacherSocketId).emit('teacher_dashboard_update', {
+    const session = activeSessions[room];
+    if (!session) return;
+
+    if (session.teacherSocketId === socket.id) return; // mai l'insegnante come studente
+
+    if (session.teacherSocketId) {
+      io.to(session.teacherSocketId).emit('teacher_dashboard_update', {
         type: 'status',
-        data: {
-          socketId: socket.id,
-          studentName,
-          currentArtworkId,
-          status, // es. 'active', 'lagging'
-          lastSeen: Date.now()
-        }
+        data: { socketId: socket.id, studentName, currentArtworkId, status, lastSeen: Date.now() }
       });
     }
   });
@@ -288,6 +283,9 @@ io.on('connection', (socket) => {
     if (!roomCode) return;
     const room = activeSessions[roomCode.toUpperCase()];
     if (!room) return;
+
+    // Chiude il buco indipendentemente da cosa fa il player audio lato client
+    if (room.teacherSocketId === socket.id) return;
 
     // Fallback difensivo: se per qualche motivo la stanza non ha ancora
     // classStatus (es. sessione creata prima di questo deploy), lo creiamo al volo
@@ -432,23 +430,25 @@ io.on('connection', (socket) => {
 
   // OPZIONALE: Qui potremmo cercare se il socket.id era uno studente o un prof e pulire activeSessions
   socket.on('disconnect', () => {
-    // Cerca in tutte le stanze se il socket disconnesso appartiene a uno studente
     for (const roomCode in activeSessions) {
       const session = activeSessions[roomCode];
       const studentIndex = session.students.findIndex(s => s.id === socket.id);
 
-      if (studentIndex !== -1 && session.teacherSocketId) {
-        // Avvisa il prof che lo studente ha perso la connessione di netto
-        io.to(session.teacherSocketId).emit('teacher_dashboard_update', {
-          type: 'status',
-          data: {
-            socketId: socket.id,
-            studentName: session.students[studentIndex].name,
-            status: 'offline', // Stato inequivocabile di disconnessione
-            lastSeen: Date.now()
-          }
-        });
-        break; // Trovato e segnalato, usciamo dal ciclo
+      if (studentIndex !== -1) {
+        const studentName = session.students[studentIndex].name;
+
+        session.students.splice(studentIndex, 1);
+        if (session.classStatus && session.classStatus[socket.id]) {
+          delete session.classStatus[socket.id];
+        }
+
+        if (session.teacherSocketId) {
+          io.to(session.teacherSocketId).emit('teacher_dashboard_update', {
+            type: 'status',
+            data: { socketId: socket.id, studentName, status: 'offline', lastSeen: Date.now() }
+          });
+        }
+        break;
       }
     }
   });
