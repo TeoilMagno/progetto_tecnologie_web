@@ -22,7 +22,7 @@ const HighlyOptimizedMapView = forwardRef(({
   });
   
   const zoomViewBox = activeSection?.viewBox 
-    ? `${activeSection.viewBox.x} ${activeSection.viewBox.y} ${activeSection.viewBox.width} ${activeSection.viewBox.height}`
+    ? `${activeSection.viewBox.x + (activeSection.viewBox.width * 0.1)} ${activeSection.viewBox.y + (activeSection.viewBox.height * 0.1)} ${activeSection.viewBox.width * 0.8} ${activeSection.viewBox.height * 0.8}`
     : "0 0 2000 1200";
 
   const modifiedSvgString = useMemo(
@@ -232,8 +232,9 @@ const HighlyOptimizedMapView = forwardRef(({
                       if (!coords) return null;
 
                       // Dimensioni dinamiche: più grandi per l'opera attiva, piccole per le altre
-                      const objWidth = isActive ? 130 : 35;
-                      const objHeight = isActive ? 150 : 35;
+                      // Dimensioni ingrandite per le inattive (48px) e strutturate per l'attiva
+                      const objWidth = isActive ? 130 : 48;
+                      const objHeight = isActive ? 150 : 56; // 48px immagine + 8px per la micro-punta del pin
 
                       return (
                         <foreignObject 
@@ -251,11 +252,11 @@ const HighlyOptimizedMapView = forwardRef(({
                               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end",
                               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                               zIndex: isActive ? 100 : 1,
-                              opacity: isActive ? 1 : 0.7
+                              opacity: isActive ? 1 : 0.85
                             }}
                           >
                             {isActive ? (
-                              // CARD OPERA ATTIVA
+                              // CARD OPERA ATTIVA (Invariata nella struttura, grande e con nome)
                               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
                                 <div style={{
                                   backgroundColor: "white",
@@ -283,16 +284,27 @@ const HighlyOptimizedMapView = forwardRef(({
                                 }} />
                               </div>
                             ) : (
-                              // MARKER OPERE INATTIVE
-                              <div style={{
-                                width: "35px", height: "35px",
-                                borderRadius: "50%",
-                                border: "2px solid white",
-                                overflow: "hidden",
-                                boxShadow: "0 2px 6px rgba(0,0,0,0.4)",
-                                backgroundColor: "#1e293b"
-                              }}>
-                                <img src={work.image} alt={work.name} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                              // MARKER INATTIVO MODERNO (A forma di pin squadrato con micro-punta)
+                              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                                <div style={{
+                                  width: "48px", height: "48px",
+                                  borderRadius: "12px", // Angoli smussati in stile app moderna
+                                  border: "2.5px solid white",
+                                  overflow: "hidden",
+                                  boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
+                                  backgroundColor: "#1e293b",
+                                  transition: "transform 0.2s ease",
+                                }}>
+                                  <img src={work.image} alt={work.name} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                </div>
+                                {/* Piccola punta del pin */}
+                                <div style={{
+                                  width: 0, height: 0,
+                                  borderLeft: "5px solid transparent",
+                                  borderRight: "5px solid transparent",
+                                  borderTop: "6px solid white",
+                                  marginTop: "-1px"
+                                }} />
                               </div>
                             )}
                           </div>
