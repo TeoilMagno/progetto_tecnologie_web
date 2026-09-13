@@ -200,7 +200,7 @@ apiRouter.delete("/museums/:id", [auth.isCurator, auth.isMuseumOwner], async (re
 apiRouter.get("/museums/:id/items", cacheMiddleware(60), async (req, res) => {
   res.set("Cache-Control", "public, max-age=60");
   try {
-   const { page = 1, limit = 12, search, category, targetAge, maxPrice } = req.query;
+    const { page = 1, limit = 12, search, category, targetAge, maxPrice } = req.query;
     const museumId = req.params.id;
 
     const response = await itemController.getMuseumItems(museumId, page, limit, search, category, targetAge, maxPrice);
@@ -1016,6 +1016,13 @@ apiRouter.post("/checkout", auth.isLoggedIn, async (req, res) => {
     });
   } catch (error) {
     console.error("Errore durante il checkout:", error);
+    
+    // RIMANDA AL CLIENT L'ERRORE CUSTOM (es. 400 - Quantità insufficiente)
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ error: error.message });
+    }
+    
+    // FALLBACK PER ERRORI GENERICI SERVER
     res.status(500).json({ error: "Errore interno durante il processamento dell'ordine" });
   }
 });

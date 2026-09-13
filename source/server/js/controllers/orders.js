@@ -1,6 +1,7 @@
 const Order = require('../models/orders');
 const Item = require('../models/items');
 const userController = require('./users')
+const { invalidateCache } = require('../utils/cache');
 
 exports.getAllOrders = async () => {
   try {
@@ -31,6 +32,23 @@ exports.uploadAllOrders = async (data) => {
 exports.processCheckout = async (userId, cartData) => {
   const { items, visits, totalAmount } = cartData;
 
+  // Guardia disponibilità magazzino
+  if (items && items.length > 0) {
+    const itemIds = items.map(i => i.itemId);
+    const dbItems = await Item.find({ _id: { $in: itemIds } });
+
+    for (const cartItem of items) {
+      const dbItem = dbItems.find(i => i._id.toString() === cartItem.itemId);
+      
+      // Se l'articolo è inesistente o la richiesta supera lo stock disponibile, blocca tutto
+      if (!dbItem || dbItem.quantity < cartItem.quantity) {
+        const error = new Error(`L'articolo "${cartItem.name}" non ha disponibilità sufficiente (Rimanenti: ${dbItem ? dbItem.quantity : 0}).`);
+        error.statusCode = 400; 
+        throw error;
+      }
+    }
+  }
+
   const newOrder = new Order({
     user: userId,
     items: items || [],
@@ -47,7 +65,18 @@ exports.processCheckout = async (userId, cartData) => {
         update: { $inc: { quantity: -cartItem.quantity } }
       }
     }));
-    if (bulkOps.length > 0) await Item.bulkWrite(bulkOps);
+    if (bulkOps.length > 0) {
+      await Item.bulkWrite(bulkOps);
+
+      // Invalidiamo solo la cache dei musei coinvolti in QUESTO acquisto,
+      // non l'intero catalogo globale di /items.
+      // const purchasedItems = await Item.find(
+      //   { _id: { $in: items.map(i => i.itemId) } },
+      //   'museumId'
+      // );
+      // const museumIds = [...new Set(purchasedItems.map(i => i.museumId.toString()))];
+      invalidateCache(['/items']);
+    }
   }
 
   if (visits && visits.length > 0) {
