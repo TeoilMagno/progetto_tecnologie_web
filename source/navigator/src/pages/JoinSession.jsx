@@ -726,13 +726,27 @@ export default function JoinSession() {
               </div>
             ) : (
               <div className="w-full space-y-5 animate-fadeIn">
-                <div className="w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col items-center text-center">
-                  <span className="text-[10px] font-extrabold tracking-widest text-slate-500 uppercase mb-1">CODICE STANZA</span>
-                  <h2 className="text-4xl font-black text-amber-500 tracking-widest uppercase font-mono mb-4">{teacherRoomCode}</h2>
-                  
-                  {/* GENERATORE QR CODE REALE */}
-                  <RoomQRCode roomCode={teacherRoomCode} />
-                  
+                <div className="relative w-full overflow-hidden bg-[#1e293b]/40 backdrop-blur-md border border-purple-500/20 rounded-3xl p-6 flex flex-col items-center text-center shadow-xl shadow-purple-500/5">
+
+                  <div className="absolute -top-20 -right-16 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                  <div className="absolute -bottom-20 -left-16 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                  {/* TITOLO DELLA VISITA SINCRONIZZATA */}
+                  <div className="relative z-10 mb-5">
+                    <span className="text-[11px] font-extrabold tracking-widest text-purple-400 uppercase block mb-1.5">Percorso Guidato</span>
+                    <h3 className="text-2xl sm:text-3xl font-black text-white px-2 leading-tight">
+                      {availableVisits.find(v => v._id === selectedVisitId)?.title || "Visita Guidata"}
+                    </h3>
+                  </div>
+
+                  <span className="relative z-10 text-[10px] font-extrabold tracking-widest text-slate-400 uppercase mb-1">Codice Stanza</span>
+                  <h2 className="relative z-10 text-4xl font-black text-amber-500 tracking-widest uppercase font-mono mb-5">{teacherRoomCode}</h2>
+
+                  {/* GENERATORE QR CODE */}
+                  <div className="relative z-10 bg-white p-3 rounded-2xl shadow-lg shadow-black/20">
+                    <RoomQRCode roomCode={teacherRoomCode} />
+                  </div>
+
                 </div>
 
                 <div className="w-full bg-[#1e293b]/40 backdrop-blur-md border border-slate-800 rounded-3xl p-5">
