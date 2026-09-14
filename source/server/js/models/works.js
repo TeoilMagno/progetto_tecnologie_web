@@ -97,7 +97,7 @@ const workSchema = new Schema({
     required: true
   },
 
-  adoptionId: {
+  adoptionId: { // id oggetto adozione; inesistente inizialmente, null a fine adozione
     type: Schema.Types.ObjectId,
     ref: 'Adoption'
   },

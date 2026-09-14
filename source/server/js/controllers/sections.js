@@ -142,7 +142,6 @@ exports.updateSections = async (museumId, sectionsData) => {
     }
   }
 
-  // AGGIORNIAMO IL MUSEO ALLA FINE
   await Museum.findByIdAndUpdate(museumId, {
     sections: validSectionIds
   });

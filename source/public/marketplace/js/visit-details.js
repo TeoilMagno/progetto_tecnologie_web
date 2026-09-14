@@ -264,7 +264,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         
       // LOGICA ADOZIONE: Mostriamo il warning se l'opera è in prestito o in transito
       let adoptionWarning = "";
-      const adoption = work.adoptionId || work.adoption; // Dipende da come lo popoli nel backend
+      const adoption = work.adoptionId || work.adoption;
       
       if (adoption && (adoption.status === 'accepted' || adoption.status === 'active')) {
         const beginDate = new Date(adoption.beginDate).toLocaleDateString('it-IT');

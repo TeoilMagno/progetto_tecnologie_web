@@ -2,13 +2,11 @@
 // per il modal "Opera" di edit-museum.js. Estratto dal core perché è un
 // blocco autonomo (potenzialmente riusabile altrove) e piuttosto corposo.
 //
-// Dipende da: currentMuseumId (dichiarata in config.js o in edit-museum.js core),
-// API_BASE_URL (config.js). Va caricato insieme a edit-museum.js nella pagina
-// edit-museum.html; l'ordine relativo tra i due file non conta.
-//
-// NOTA: adoptAuthorCard() è stata rimossa in questo refactor perché morta:
-// l'adozione della scheda autore/stile avviene già inline dentro
-// saveWorkFromModal() (in edit-museum.js) al salvataggio dell'opera.
+// il sistema pensato prevede una sorta di "condivisione" delle descrizioni tra i vari
+// musei: un museo puo' scegliere di adottare la descrizione esistente di uno stile/autore,
+// modificarla in parte, oppure riscriverla da 0 oppure ancora farla generare
+// per avere una dimostrazione pratica aggiungere un'opera > scegliere un autore esistente 
+// e compariranno le card delle descrizioni
 
 let currentFetchedAuthor = null;
 let currentFetchedStyle = null;
@@ -123,7 +121,7 @@ async function selectAuthor(authorId, authorName) {
     let preselectedDataId = "";
     if (author.data && author.data.length > 0) {
       
-      // 1. ORDINAMENTO DECRESCENTE per popolarità (numero di adozioni)
+      //  ORDINAMENTO DECRESCENTE per popolarità (numero di adozioni)
       author.data.sort((a, b) => {
         const countA = a.museumId ? a.museumId.length : 0;
         const countB = b.museumId ? b.museumId.length : 0;
@@ -192,10 +190,10 @@ async function selectAuthor(authorId, authorName) {
 
 // Gestisce il click visivo sulla card dell'autore
 function highlightAuthorCard(dataId) {
-  // 1. Salviamo la scelta nel campo nascosto
+  //  Salviamo la scelta nel campo nascosto
   document.getElementById("work-author-data-id").value = dataId;
   
-  // 2. Resettiamo tutte le card togliendo il verde
+  //  Resettiamo tutte le card togliendo il verde
   document.querySelectorAll('.author-card-item').forEach(card => {
     card.classList.remove('border-success', 'bg-success', 'bg-opacity-25');
     card.classList.add('border-secondary', 'bg-dark', 'bg-opacity-50');
@@ -203,7 +201,7 @@ function highlightAuthorCard(dataId) {
     if (icon) icon.remove();
   });
 
-  // 3. Illuminiamo solo la card cliccata
+  //  Illuminiamo solo la card cliccata
   const selectedCard = document.getElementById(`author-card-${dataId}`);
   if (selectedCard) {
     selectedCard.classList.remove('border-secondary', 'bg-dark', 'bg-opacity-50');
@@ -369,7 +367,7 @@ async function selectStyle(styleId, styleName) {
     let preselectedDataId = "";
     if (style.data && style.data.length > 0) {
       
-      // 1. ORDINAMENTO DECRESCENTE per popolarità
+      //  ORDINAMENTO DECRESCENTE per popolarità
       style.data.sort((a, b) => {
         const countA = a.museumId ? a.museumId.length : 0;
         const countB = b.museumId ? b.museumId.length : 0;
@@ -568,14 +566,14 @@ function editStyleData(dataId) {
   styleDataModalInstance.show();
 }
 
-// 2. Genera e riempie tutti i campi dell'Autore
+//  Genera e riempie tutti i campi dell'Autore
 async function generateAuthorBioWithAI() {
   const bioTextarea = document.getElementById("author-bio");
   const authorName = currentFetchedAuthor ? currentFetchedAuthor.name : document.getElementById("new-author-name-input").value;
   const userContext = bioTextarea.value.trim();
   
   // Rimosso il prompt inutile per le mainWorks
-  const prompt = `Crea scheda biografica per: "${authorName}". Appunti: "${userContext}". Istruzioni: 1. "bio": 2-3 paragrafi. 2. "bd": Date in formato "AAAA - AAAA". 3. "studies": Formazione. Restituisci SOLO un JSON valido: {"bio": "...", "bd": "...", "studies": "..."}. Non usare markdown.`;
+  const prompt = `Crea scheda biografica per: "${authorName}". Appunti: "${userContext}". Istruzioni:  "bio": 2-3 paragrafi.  "bd": Date in formato "AAAA - AAAA".  "studies": Formazione. Restituisci SOLO un JSON valido: {"bio": "...", "bd": "...", "studies": "..."}. Non usare markdown.`;
 
   bioTextarea.value = "Compilazione scheda in corso...";
   try {
@@ -597,7 +595,7 @@ async function generateAuthorBioWithAI() {
   }
 }
 
-// 3. Genera e riempie la descrizione dello Stile
+//  Genera e riempie la descrizione dello Stile
 async function generateStyleDescWithAI() {
   const descTextarea = document.getElementById("style-description");
   const styleName = currentFetchedStyle ? currentFetchedStyle.name : document.getElementById("new-style-name-input").value;

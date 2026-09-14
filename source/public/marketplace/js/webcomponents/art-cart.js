@@ -1,14 +1,11 @@
 class ArtCart extends HTMLElement {
   connectedCallback() {
-    // 1. Legge gli attributi custom per permetterti di stilizzarlo in HTML (Desktop vs Mobile)
     const btnClass = this.getAttribute('btn-class') || 'btn text-white position-relative me-3 d-none d-md-inline-block';
     const iconClass = this.getAttribute('icon-class') || 'bi bi-cart3 fs-4';
     const labelText = this.getAttribute('label') || '';
 
-    // Controlliamo se è la versione inserita nella sidebar/menu mobile
     const isMobileSidebar = this.hasAttribute('hide-badge');
 
-    // 2. Renderizza IL BOTTONE (Trigger)
     this.innerHTML = `
       <button type="button" class="${btnClass}" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
         <i class="${iconClass}"></i> ${labelText}
@@ -20,7 +17,6 @@ class ArtCart extends HTMLElement {
       </button>
     `;
 
-    // 3. Inietta l'Offcanvas nel DOM globale (body) UNA SOLA VOLTA
     if (!document.getElementById('cartOffcanvas')) {
       const offcanvasHTML = `
         <div class="offcanvas offcanvas-end glass-modal text-white" tabindex="-1" id="cartOffcanvas" style="background: rgba(20, 20, 30, 0.95);">
@@ -51,7 +47,7 @@ class ArtCart extends HTMLElement {
       window.removeCartItem = (id, type) => this.removeFromCart(id, type);
     }
 
-    // 4. Inizializza l'UI e ascolta i cambiamenti del carrello per aggiornare il badge di QUESTO specifico bottone
+    // Inizializza l'UI e ascolta i cambiamenti del carrello per aggiornare il badge di QUESTO specifico bottone
     this.updateCartUI();
     
     // Quando l'utente viene riconosciuto globalmente, sincronizza il carrello guest e aggiorna la UI
@@ -73,6 +69,7 @@ class ArtCart extends HTMLElement {
     });
   }
 
+  // ottiene la chiave di identificazione del carrello
   getCartKey() {
     return (typeof currentUser !== 'undefined' && currentUser?._id) 
       ? `artaround_cart_${currentUser._id}` 
@@ -240,11 +237,9 @@ class ArtCart extends HTMLElement {
         localStorage.removeItem(this.getCartKey()); 
         this.updateCartUI();
 
-        // Chiudiamo il pannello laterale del carrello
         const instance = bootstrap.Offcanvas.getInstance(document.getElementById('cartOffcanvas'));
         if (instance) instance.hide();
 
-        // Andiamo agli ordini per vedere il riepilogo
         window.location.href = "/my-orders";
 
       } else {

@@ -49,7 +49,7 @@ const HighlyOptimizedMapView = forwardRef(({
         return;
       }
 
-      // 1. Zoom out (esce dalla sezione attuale)
+      // Zoom out (esce dalla sezione attuale)
       setAnimationStyle({
         transformOrigin: 'center',
         transform: 'scale(0.8)',
@@ -61,7 +61,7 @@ const HighlyOptimizedMapView = forwardRef(({
       setTimeout(() => {
         onBack(); // Torna alla mappa globale
         
-        // 2. Prepara l'ingresso "dall'alto"
+        // Prepara l'ingresso "dall'alto"
         setAnimationStyle({
           transformOrigin: 'center',
           transform: 'scale(1.5)',
@@ -73,7 +73,7 @@ const HighlyOptimizedMapView = forwardRef(({
         setTimeout(() => {
           onSelectSection(targetSection); // Passa alla nuova sezione
           
-          // 3. Zoom in (entra nella nuova sezione)
+          // Zoom in (entra nella nuova sezione)
           setAnimationStyle({
             transformOrigin: 'center',
             transform: 'scale(1)',

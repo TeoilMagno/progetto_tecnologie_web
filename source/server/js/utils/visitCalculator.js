@@ -23,10 +23,10 @@ exports.calculateVisitDuration = (worksArray, preferredLength = 'medium') => {
   let totalMinutes = 0;
 
   for (let i = 0; i < worksArray.length; i++) {
-    // 1. Tempo per osservare l'opera e leggerne la descrizione
+    // Tempo per osservare l'opera e leggerne la descrizione
     totalMinutes += OBSERVATION_TIME + readTime;
 
-    // 2. Tempo di cammino per arrivare a quest'opera
+    // Tempo di cammino per arrivare a quest'opera
     if (i === 0) {
       // Per la prima opera calcoliamo l'ingresso nel museo/stanza
       totalMinutes += WALK_DIFF_SECTION; 
@@ -49,9 +49,7 @@ exports.calculateVisitDuration = (worksArray, preferredLength = 'medium') => {
 
 // TODO: se c'e' tempo (improbabile) si possono fare chiamate api per capire quali opere meritino di piu' e quali invece possono avere una descrizinoe sommaria
 /**
- * 2. Suggerisce la lunghezza della descrizione in base al tempo a disposizione
- * (In questo caso usiamo una media ponderata forfettaria per il tempo di cammino, 
- * es. 1 minuto medio, perché l'utente sta solo filtrando a monte)
+ * Suggerisce la lunghezza della descrizione in base al tempo a disposizione
  */
 exports.recommendLengthForTime = (worksCount, availableMinutes) => {
   if (!worksCount || worksCount === 0) return 'medium';

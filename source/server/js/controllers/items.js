@@ -44,7 +44,7 @@ exports.getMuseumItems = async (museumIdStr, page = 1, limit = 12, search = "", 
       query.category = { $in: category.split(',') };
     }
     if (targetAge) {
-      // Peschiamo l'età target esatta OPPURE gli articoli universali ('all')
+      // prendiamo l'età target esatta OPPURE gli articoli universali ('all')
       query.targetAge = { $in: [targetAge, 'all'] };
     }
     if (maxPrice && parseInt(maxPrice) < 100) {
@@ -91,8 +91,6 @@ exports.deleteItemById = async (itemId, museumId) => {
     throw error;
   }
 
-  // Se in futuro gli articoli avranno un'immagine locale caricata, questo la ripulisce già;
-  // se il campo non esiste sul modello, la condizione è semplicemente falsa e non fa nulla.
   if (deletedItem.image) {
     await deleteLocalFile(deletedItem.image);
   }

@@ -1,16 +1,11 @@
 // edit-museum.js — CORE della pagina di modifica museo.
-// Contiene SOLO: anagrafica museo, sezioni e opere (CRUD + drag&drop) ed eliminazione museo.
+// Contiene solo: dati anagrafici museo, sezioni e opere (CRUD + drag&drop) ed eliminazione museo.
 //
 // La ricerca/selezione/creazione di Autori e Stili (usata dal modal Opera) è in
 // author-style-picker.js. La gestione dei testi multi-registro dell'opera
 // ("Gestisci Testi") è in work-text-manager.js. Entrambi vanno caricati PRIMA
 // o dopo questo file, l'ordine non conta: le funzioni sono tutte nello stesso
 // scope globale e vengono chiamate solo dopo DOMContentLoaded.
-//
-// currentMuseumId: NON dichiarata qui di proposito. Se non è già una `let`/`var`
-// in config.js, aggiungila lì (è condivisa anche da author-style-picker.js e
-// work-text-manager.js) — non l'ho aggiunta qui per non rischiare una doppia
-// dichiarazione a runtime se config.js la definisce già.
 
 let currentMuseumData = null;
 let museumSections = [];
@@ -306,7 +301,7 @@ function renderWorksHTML(works, sectionId) {
   `).join('');
 }
 
-// ------------------- GESTIONE SEZIONI (Invariata) -------------------
+// ------------------- GESTIONE SEZIONI -------------------
 function openSectionModal(sectionId = null, currentName = "", currentImage = "") {
   document.getElementById("section-id-input").value = sectionId || "";
   document.getElementById("section-name-input").value = currentName;
@@ -322,7 +317,7 @@ function openSectionModal(sectionId = null, currentName = "", currentImage = "")
 }
 
 async function saveSectionFromModal() {
-  const form = document.getElementById("section-form"); // Assicurati che gli input siano dentro un <form id="section-form">
+  const form = document.getElementById("section-form"); 
   if (form) {
     if (!form.checkValidity()) {
       form.reportValidity();
@@ -343,7 +338,7 @@ async function saveSectionFromModal() {
   try {
     let res;
     if (sectionId) {
-      // 1. MODIFICA SEZIONE ESISTENTE
+      // modifica sezione esistente
       res = await fetch(`${API_BASE_URL}/sections/${sectionId}`, {
         method: "PUT", 
         headers: { "Content-Type": "application/json" },
@@ -359,14 +354,14 @@ async function saveSectionFromModal() {
           museumSections[secIndex].name = sectionName;
           museumSections[secIndex].image = sectionImage;
         }
-        // MODIFICA LIVE DEL DOM: Cambiamo solo il testo del bottone dell'accordion senza ricaricare nulla!
+        // cambia solo il testo del bottone dell'accordion senza ricaricare nulla!
         const accordionButton = document.querySelector(`#headingSection${secIndex} .accordion-button`);
         if (accordionButton) {
           accordionButton.innerHTML = `<i class="bi bi-folder2-open me-2 text-info"></i> ${sectionName} <span class="badge badge-tag ms-auto me-3">${museumSections[secIndex].works?.length || 0} opere</span>`;
         }
       }
     } else {
-      // 2. CREAZIONE NUOVA SEZIONE
+      // creazione nuova sezione
       res = await fetch(`${API_BASE_URL}/save-section`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
@@ -590,11 +585,11 @@ async function saveWorkFromModal() {
       // Estraiamo la risposta del server (che contiene i dati salvati dal DB)
       const responseData = await res.json();
       
-      // 2. Troviamo l'ID finale: 
-      // Se avevamo workId usiamo quello (modifica). Se non lo avevamo, lo peschiamo dalla risposta (nuova creazione).
+      // Troviamo l'ID finale: 
+      // Se avevamo workId usiamo quello (modifica). Se non lo avevamo, lo prendiamo dalla risposta (nuova creazione).
       const finalWorkId = workId || responseData.work?._id;
 
-      // 3. ORA lanciamo l'IA in background usando l'ID corretto e sicuro
+      // ora lanciamo l'IA in background usando l'ID corretto e sicuro
       if (!workId) {
         showToast(`Nuova opera salvata con ID: ${finalWorkId}. Generazione automatica dei dati dell'opera in corso...`);
         fetch(`${API_BASE_URL}/ai/generate-work-desc`, {
@@ -858,11 +853,11 @@ function initSortableWorks() {
     }
 
     container.sortableInstance = new Sortable(container, {
-      group: 'shared-works-group', // FONDAMENTALE: Dice a Sortable che le stanze possono scambiarsi le opere
+      group: 'shared-works-group', 
       handle: '.drag-handle',
       animation: 150,
       ghostClass: 'bg-dark',
-      fallbackOnBody: true,        // LA MAGIA: Fa galleggiare l'opera fuori dall'accordion!
+      fallbackOnBody: true,        
       swapThreshold: 0.65,
       onEnd: async function (evt) {
         const itemEl = evt.item;
@@ -1007,7 +1002,7 @@ async function fetchGlobalCatalogChunk(museumId, isLoadMore = false) {
   const techniqueCbs = Array.from(document.querySelectorAll('.technique-cb:checked')).map(cb => cb.value);
   const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
 
-  // FIX ALLA RADICE 1: Se tutti i filtri sono vuoti, blocchiamo la fetch globale 
+  //  Se tutti i filtri sono vuoti, blocchiamo la fetch globale 
   // e rimandiamo tutto allo stato base a stanze.
   if (!searchInput && authorCbs.length === 0 && techniqueCbs.length === 0 && styleCbs.length === 0) {
     isFetchingGlobalWorks = false;
@@ -1024,7 +1019,7 @@ async function fetchGlobalCatalogChunk(museumId, isLoadMore = false) {
     });
     document.querySelectorAll('.accordion-collapse').forEach(c => c.classList.remove('show'));
     
-    // NOVITÀ: Nascondi di default tutte le sezioni dell'accordion quando parte la ricerca
+    // Nasconde di default tutte le sezioni dell'accordion quando parte la ricerca
     document.querySelectorAll('.section-accordion-wrapper').forEach(w => w.classList.add('d-none'));
   }
 
@@ -1046,7 +1041,7 @@ async function fetchGlobalCatalogChunk(museumId, isLoadMore = false) {
     fetchedWorks.forEach(w => worksCache[w._id] = w);
     renderGlobalCatalog(fetchedWorks, isLoadMore);
 
-    // NOVITÀ: Scroll fluido alla prima stanza con risultati visibili
+    // Scroll fluido alla prima stanza con risultati visibili
     if (!isLoadMore) {
       setTimeout(() => {
         const firstVisible = document.querySelector('.section-accordion-wrapper:not(.d-none)');
@@ -1080,7 +1075,7 @@ function renderGlobalCatalog(works, isLoadMore) {
     const container = document.getElementById(`works-container-${sId}`);
     if (container) {
       
-      // NOVITÀ: Riaccendi la visibilità dell'intera sezione
+      // Riaccendi la visibilità dell'intera sezione
       const wrapper = document.getElementById(`wrapper-${sId}`);
       if (wrapper) wrapper.classList.remove('d-none');
 
@@ -1089,7 +1084,7 @@ function renderGlobalCatalog(works, isLoadMore) {
       
       const collapseEl = container.closest('.accordion-collapse');
       if (collapseEl && !collapseEl.classList.contains('show')) {
-        // FIX ALLA RADICE 2: Apriamo la stanza istantaneamente manipolando le classi.
+        // Apriamo la stanza istantaneamente manipolando le classi.
         // L'animazione di Bootstrap faceva accorciare la pagina facendo impazzire l'infinite scroll.
         collapseEl.classList.add('show');
         
@@ -1148,7 +1143,7 @@ function resetToLazyAccordion() {
   
   sectionPagination = {};
 
-  // FIX 1: Chiudi la sidebar dei filtri (se aperta)
+  // Chiude la sidebar dei filtri (se aperta)
   const sidebar = document.getElementById("filterSidebar");
   if (sidebar && sidebar.classList.contains('show')) {
     const bsOffcanvas = bootstrap.Offcanvas.getInstance(sidebar);

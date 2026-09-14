@@ -121,6 +121,7 @@ async function handleImageUpload(fileInput, targetId) {
   }
 }
 
+// gestisce la ricerca su wikimedia
 async function searchWikimediaForWidget(targetId) {
   const query = await window.showCustomPrompt("Cerca su Wikimedia", "Es. La Gioconda Leonardo...");
   if (!query || query.trim() === "") return;
@@ -180,6 +181,7 @@ function setFinalImage(targetId, finalUrl) {
   }
 }
 
+// resetta il widget
 async function clearImageWidget(targetId) {
   const hiddenInput = document.getElementById(targetId);
   const imageUrl = hiddenInput.value;

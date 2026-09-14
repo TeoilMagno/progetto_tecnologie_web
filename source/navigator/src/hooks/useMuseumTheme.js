@@ -49,7 +49,7 @@ export default function useMuseumTheme(selectedMuseum) {
     fetchTheme();
   }, [selectedMuseum]);
 
-  // 3. Applica dinamicamente le proprietà CSS personalizzate all'elemento :root
+  // Applica dinamicamente le proprietà CSS personalizzate all'elemento :root
   useEffect(() => {
     if (!config || !config.theme) return;
 

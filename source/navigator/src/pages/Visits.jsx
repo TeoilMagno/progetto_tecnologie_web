@@ -225,8 +225,6 @@ export default function Visits({ selectedMuseum }) {
                   <button 
                     onClick={() => {
                       if (visit.isGuestMock) {
-                        // TODO: mettere la seguente riga o una logica simile alla fine
-                        // alert("Questa è una visita dimostrativa. Accedi per creare e avviare itinerari reali sulla mappa!");
                         navigate(`/free-map?visitId=${visit._id}`);
                       } else {
                         // Puntiamo a /map, che caricherà MapView in modalità Visitatore Singolo

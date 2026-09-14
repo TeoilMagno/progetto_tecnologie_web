@@ -3,7 +3,6 @@ let cachedOrders = [];
 function renderOrdersList(ordersToRender) {
   const container = document.getElementById("orders-container");
   
-  // Stato Vuoto con stile Glass
   if (ordersToRender.length === 0) {
     container.innerHTML = `
       <div class="text-center py-5 text-secondary glass-modal rounded-4 border border-secondary border-opacity-25">
@@ -107,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const backBtns = document.querySelectorAll(".back-action-btn");
   backBtns.forEach(btn => {
     btn.addEventListener("click", (e) => {
-      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      e.preventDefault();
       
       if (window.history.length > 1) {
         window.history.back();
@@ -118,7 +117,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   try {
-    // Chiamiamo l'API del backend creata nello step precedente
     const res = await fetch(`${API_BASE_URL}/my-orders`);
     
     if (res.status === 401) {

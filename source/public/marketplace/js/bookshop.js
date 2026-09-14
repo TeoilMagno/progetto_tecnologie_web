@@ -28,14 +28,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  if (typeof initImageWidget === 'function') {
-    initImageWidget("edit-item-image-widget", "item-image", "Immagine Articolo");
-  }
+  initImageWidget("edit-item-image-widget", "item-image", "Immagine Articolo");
 
-  // 1. Popoliamo la barra dei filtri laterale sfruttando sidebar.js
-  if (typeof populateFilters === 'function') populateFilters("items");
+  //  Popoliamo la barra dei filtri laterale sfruttando sidebar.js
+  populateFilters("items");
 
-  // 2. Barra di ricerca (ora gestita dal web component <search-bar>)
+  //  Barra di ricerca (ora gestita dal web component <search-bar>)
   document.addEventListener('search-input', (e) => {
     clearTimeout(window.itemSearchTimeout);
     window.itemSearchTimeout = setTimeout(() => applyItemFilters(e.detail.query), 300);
@@ -139,7 +137,7 @@ function renderItemsList(itemsToRender, append = false) {
         </div>
         <h4 class="text-white mb-2">Nessun articolo trovato</h4>
         <p class="text-secondary mb-4">Il catalogo è attualmente vuoto o nessun articolo corrisponde alla tua ricerca.</p>
-        <button class="btn btn-gradient px-4 py-2 rounded-pill shadow-lg" onclick="openItemModal()" style="font-size: 1.1rem;">
+        <button class="btn btn-gradient px-4 py-2 rounded-pill shadow-lg" onclick="openItemModal()" style="font-size: 1rem;">
           <i class="bi bi-plus-lg me-2"></i> Aggiungi Nuovo Articolo
         </button>
       </div>

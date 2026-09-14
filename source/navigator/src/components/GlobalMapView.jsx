@@ -16,7 +16,6 @@ export default function GlobalMapView({ sections, parsedMapData, onSelectSection
         </g>
       );
     }
-    // ... gestisci rect, path, text ecc. (senza onClick)
     return <element.type key={element.props.id} {...element.props} />;
   };
 

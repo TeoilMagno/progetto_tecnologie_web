@@ -185,7 +185,7 @@ export default function SettingsPage() {
             </div>
           </section>
 
-          {/* 1. SEZIONE: DATI PERSONALI */}
+          {/* SEZIONE: DATI PERSONALI */}
           {userData && (
             <section>
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
@@ -223,7 +223,7 @@ export default function SettingsPage() {
             </section>
           )}
 
-          {/* 2. SEZIONE: SICUREZZA E ACCESSO */}
+          {/* SEZIONE: SICUREZZA E ACCESSO */}
           {userData && (
             <section>
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
@@ -257,7 +257,7 @@ export default function SettingsPage() {
             </section>
           )}
 
-          {/* 3. SEZIONE: PREFERENZE ESPERIENZA */}
+          {/* SEZIONE: PREFERENZE ESPERIENZA */}
           <section>
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
               <Headphones size={14} /> Preferenze Esperienza
@@ -312,7 +312,7 @@ export default function SettingsPage() {
             </div>
           </section>
 
-          {/* 4. SEZIONE: DATI E PRIVACY */}
+          {/* SEZIONE: DATI E PRIVACY */}
           <section>
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
               <Shield size={14} /> Dati e Privacy
@@ -350,7 +350,7 @@ export default function SettingsPage() {
             </div>
           </section>
 
-          {/* 5. SEZIONE: AREA CURATORE */}
+          {/* SEZIONE: AREA CURATORE */}
           {userData && (
             <section>
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">

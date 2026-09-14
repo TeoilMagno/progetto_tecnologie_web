@@ -152,7 +152,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }));
 
         // Se la bozza ha già un museo associato, lo impostiamo
-        // TODO: magari uniformare back end e front end?
         currentMuseumId = draft.museumId?._id || draft.museumId;
 
         renderVisitCart();
@@ -310,12 +309,7 @@ function escapeHtml(str) {
 
 function autoResizeTextarea(el) {
   if (!el) return;
-  
-  // 1. Collassiamo temporaneamente l'altezza a 1px (il min-height del CSS eviterà sfarfallii visivi).
-  // Questo forza il browser a scartare le vecchie dimensioni.
   el.style.height = "1px";
-  
-  // 2. Ora scrollHeight conterrà il valore perfetto (testo + padding). Aggiungiamo 2px per i bordi.
   el.style.height = (el.scrollHeight + 2) + "px";
 }
 
@@ -529,15 +523,13 @@ async function fetchCatalogChunk(museumId, isLoadMore = false) {
 
   const searchInput = document.getElementById("museum-search-input")?.value.trim().toLowerCase() || "";
   
-  // 1. LEGGIAMO LO STATO DEI FILTRI AVANZATI
   const authorCbs = Array.from(document.querySelectorAll('.author-cb:checked')).map(cb => cb.value);
   const techniqueCbs = Array.from(document.querySelectorAll('.technique-cb:checked')).map(cb => cb.value);
   const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
 
-  // 2. AGGIORNIAMO IL FLAG (Se c'è anche solo una spunta, siamo in modalità filtro)
   const hasFilters = searchInput !== "" || authorCbs.length > 0 || techniqueCbs.length > 0 || styleCbs.length > 0;
 
-  // 3. Filtraggio Locale Ultra-Veloce (Se il DB è interamente in RAM)
+  // Filtraggio Locale
   if (isEntireWorksDbInCache && hasFilters && !isLoadMore) {
     let filtered = pristineWorksCache.filter(work => {
       let match = true;
@@ -557,7 +549,7 @@ async function fetchCatalogChunk(museumId, isLoadMore = false) {
     return;
   }
 
-  // 4. Fetch dal Server (Se il DB non è in memoria)
+  // Fetch dal Server (Se il DB non è in memoria)
   if (isLoadMore) globalSentinel.classList.remove("d-none");
 
   // Costruiamo i parametri per il backend nativo
@@ -587,7 +579,7 @@ async function fetchCatalogChunk(museumId, isLoadMore = false) {
       if (!hasFilters) {
         pristineWorksCache = [...allMuseumWorks];
         currentWorks = [...pristineWorksCache];
-        // Popoliamo i filtri SOLO se non stiamo attualmente filtrando!
+        // Popoliamo i filtri SOLO se non stiamo attualmente filtrando
         initializeWorkFiltersData(pristineWorksCache);
       }
       renderCatalog(allMuseumWorks, false);
@@ -650,7 +642,7 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
         svgEl.style.width = "100%";
         svgEl.style.height = "100%";
 
-        // 2. Ricerca della Stanza e Tolleranza (Fallback)
+        // Ricerca della Stanza e Tolleranza (Fallback)
         const normalizedId = "section-" + secName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
         let targetGroup = svgEl.querySelector(`#${normalizedId}`);
         
@@ -661,7 +653,7 @@ function renderCatalog(worksToRender = allMuseumWorks, append = false) {
            targetGroup = Array.from(allSections).find(g => keywords.some(k => g.id.includes(k)));
         }
 
-        // 3. Accensione e Ordine di Sovrapposizione
+        // Accensione e Ordine di Sovrapposizione
         if (targetGroup) {
             targetGroup.classList.add("active-section");
             // Spostiamo il gruppo alla fine del documento SVG per farlo renderizzare visivamente "sopra" agli altri
@@ -815,20 +807,18 @@ function renderVisitCart() {
   const emptyMsg = document.getElementById("empty-cart-msg");
   const saveBtn = document.getElementById("save-visit-btn");
 
-  // 1. Aggiorna sempre il contatore del bottone mobile fisso
+  // Aggiorna sempre il contatore del bottone mobile fisso
   const mobileCartCount = document.getElementById("mobile-cart-count");
   if (mobileCartCount) {
     mobileCartCount.innerHTML = `<i class="bi bi-cart me-2"></i>${currentVisitCart.length} opere`;
   }
 
-  // 2. Se il carrello è vuoto, ferma la renderizzazione ma NON nascondere il bottone
+  // Se il carrello è vuoto, ferma la renderizzazione ma NON nascondere il bottone
   if (currentVisitCart.length === 0) {
     cartList.innerHTML = "";
     emptyMsg.classList.remove("d-none");
     saveBtn.classList.add("disabled");
     if (allMuseumWorks.length > 0) renderCatalog();
-    
-    // RISOLTO ALLA RADICE: Rimossa l'istruzione che applicava d-none al bottone mobile
     return;
   }
 
@@ -905,7 +895,6 @@ async function submitVisit(isSavingAsDraft = false) {
   const durationBadgeText = document.getElementById("tour-duration-badge")?.innerText || "0";
   const durationNum = parseInt(durationBadgeText) || 0;
 
-  // LA MAGIA DEI 3 STATI:
   // Se premo "Salva Bozza", forziamo isPublic a false.
   // Altrimenti, dipende dalla spunta della checkbox.
   const isPublic = isSavingAsDraft

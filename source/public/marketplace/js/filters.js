@@ -1,7 +1,5 @@
-// ==========================================
-// MODULO FILTRI AVANZATI (Booking Style)
-// ==========================================
-// Usato da: marketplace.js (home + dashboard museo). Non serve a my-museums.js.
+// MODULO FILTRI  
+// Usato da: marketplace.js (home + dashboard museo), add-visit.js, bookshop.js
 
 function initializeWorkFiltersDataFromApi(metadata) {
   if (!metadata) return;
@@ -10,15 +8,15 @@ function initializeWorkFiltersDataFromApi(metadata) {
   renderDynamicCheckboxes("filter-workstyle-list", metadata.uniqueStyles.sort(), "workstyle");
 }
 
-// 1. Inizializza i dati in background appena i musei sono caricati
+// Inizializza i dati in background appena i musei sono caricati
 async function initializeFiltersData(museums) {
   const tagsSet = new Set();
 
   for (const museum of museums) {
-    // A. Raccogliamo tutti gli stili/tag univoci
+    // Raccogliamo tutti gli stili/tag univoci
     if (museum.tags) museum.tags.forEach(t => tagsSet.add(t));
 
-    // B. Geocoding dell'indirizzo (Simulato/Esterno) in background
+    // Geocoding dell'indirizzo (Simulato/Esterno) in background
     const lat = museum.latitude;
     const lon = museum.longitude;
     if (lat && lon) {
@@ -32,7 +30,7 @@ async function initializeFiltersData(museums) {
   renderStyleFilters(Array.from(tagsSet).sort());
 }
 
-// 2. Disegna le opzioni per gli stili come Checkbox
+// Disegna le opzioni per gli stili come Checkbox
 function renderStyleFilters(tags) {
   const list = document.getElementById("filter-style-list");
   if (!list) return;
@@ -56,7 +54,7 @@ function renderStyleFilters(tags) {
   }).join('');
 }
 
-// 3. APPLICA I FILTRI (Dialoga col Server Backend)
+// applica i filtri (dialoga col server backend)
 async function applyMuseumFilters(isLoadMore = false) {
   if (currentMuseumId !== null) return; 
   if (isFetchingMuseums) return;
@@ -90,10 +88,10 @@ async function applyMuseumFilters(isLoadMore = false) {
   const selectedDay = document.getElementById("filter-day-select")?.value;
   const search = document.getElementById("museum-search-input")?.value.trim() || ""; 
 
-  // 1. Verifichiamo se c'è almeno un filtro attivo
+  // Verifichiamo se c'è almeno un filtro attivo
   const hasFilters = search !== "" || selectedStyles.length > 0 || freeEntryOnly || maxPrice < 50 || selectedServices.length > 0 || selectedDay !== "" || userCoords !== null;
 
-  // 2. INTERCETTAZIONE: Se azzeriamo i filtri e abbiamo la cache piena...
+  // INTERCETTAZIONE: Se azzeriamo i filtri e abbiamo la cache piena...
   if (!hasFilters && !isLoadMore && pristineMuseumsCache.length > 0) {
     cachedMuseums = [...pristineMuseumsCache]; 
     currentMuseumPage = pristineCurrentPage;   
@@ -109,8 +107,8 @@ async function applyMuseumFilters(isLoadMore = false) {
     return; // Stop! Nessuna chiamata API necessaria!
   }
 
-  // 3. ADAPTIVE FETCHING: Se abbiamo scaricato l'intero DB in RAM e stiamo applicando filtri...
-  // Filtriamo localmente invece di disturbare il server! (Prestazioni da urlo)
+  // Se abbiamo scaricato l'intero DB in RAM e stiamo applicando filtri filtriamo localmente invece di disturbare il server
+  // (impratico in realta' ma per questo progetto abbiamo pochi musei-opere-visite)
   if (isEntireDbInCache && hasFilters && !isLoadMore) {
     let localFiltered = pristineMuseumsCache.filter(museum => {
       const mPrice = museum.ticketPrice || 0;
@@ -142,7 +140,6 @@ async function applyMuseumFilters(isLoadMore = false) {
 
     cachedMuseums = localFiltered;
     currentMuseumPage = 1;
-    // Disegna solo il primo chunk dei risultati filtrati localmente
     const renderLimit = typeof RENDER_CHUNK !== 'undefined' ? RENDER_CHUNK : 3;
     renderedMuseumsCount = Math.min(renderLimit, cachedMuseums.length);
     const initialChunk = cachedMuseums.slice(0, renderedMuseumsCount);
@@ -150,7 +147,7 @@ async function applyMuseumFilters(isLoadMore = false) {
     renderMuseumsList(initialChunk, "content-area", false);
     isFetchingMuseums = false;
     updateSentinelVisibility();
-    return; // STOP! Salta completamente la fetch API!
+    return; 
   }
 
   // Geolocalizzazione se richiesta testualmente
@@ -168,7 +165,7 @@ async function applyMuseumFilters(isLoadMore = false) {
   // COSTRUZIONE URL API
   const params = new URLSearchParams();
   params.append("page", currentMuseumPage);
-  params.append("limit", 16); // Carica a blocchi di 16 (perfetto per righe da 3 o 4)
+  params.append("limit", 16); // Carica a blocchi di 16 
   
   if (search) params.append("search", search);
   if (selectedStyles.length > 0) params.append("tags", selectedStyles.join(","));
@@ -196,7 +193,7 @@ async function applyMuseumFilters(isLoadMore = false) {
       if (!hasFilters) {
         pristineMuseumsCache = [...cachedMuseums];
         pristineCurrentPage = currentMuseumPage;
-        // FIX: riassegnato sempre (non solo impostato a true) per evitare che il flag
+        // riassegnato sempre (non solo impostato a true) per evitare che il flag
         // resti "vero" in modo scorretto se in futuro la cache viene invalidata altrove.
         isEntireDbInCache = pristineMuseumsCache.length >= data.total;
       }
@@ -211,7 +208,6 @@ async function applyMuseumFilters(isLoadMore = false) {
         pristineMuseumsCache = [...cachedMuseums];
         pristineCurrentPage = currentMuseumPage;
         pristineTotalPages = totalMuseumPages;
-        // FIX: vedi commento sul ramo isLoadMore qui sopra.
         isEntireDbInCache = pristineMuseumsCache.length >= data.total;
       }
       
@@ -292,7 +288,7 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 
 // Collega gli eventi 
 function attachMuseumFilterEvents() {
-  // 3. Ricerca interna tra le checkbox degli stili
+  // Ricerca interna tra le checkbox degli stili
   const styleSearch = document.getElementById("filter-style-search");
   if (styleSearch) {
     styleSearch.addEventListener("input", (e) => {
@@ -315,7 +311,6 @@ function attachMuseumFilterEvents() {
   const geoBtn = document.getElementById("btn-geolocate");
   if (geoBtn) {
     geoBtn.addEventListener("click", (e) => {
-      // FONDAMENTALE: Evita che il bottone causi il ricaricamento della pagina!
       e.preventDefault(); 
       
       geoBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Ricerca...`;
@@ -330,7 +325,6 @@ function attachMuseumFilterEvents() {
           geoBtn.innerHTML = `<i class="bi bi-geo-alt-fill text-success me-1"></i> Posizione GPS Attiva`;
           geoBtn.classList.replace("btn-outline-info", "btn-outline-success");
 
-          // UX TOP: Applica i filtri automaticamente appena il GPS ti trova!
           applyMuseumFilters();
         },
         (err) => {
@@ -384,12 +378,12 @@ async function applyItemFilters(searchQuery = null) {
 
   const hasFilters = search !== "" || selectedCategories.length > 0 || selectedAge !== "" || maxPrice < 100;
 
-  // 1. Nessun filtro attivo: ripristina la cache pulita
+  // Nessun filtro attivo: ripristina la cache pulita
   if (!hasFilters && typeof pristineItemsCache !== 'undefined' && pristineItemsCache.length > 0) {
     currentItems = [...pristineItemsCache];
     currentItemsPage = pristineItemsPage;
     
-    // FIX: Ripristiniamo anche il limite totale delle pagine altrimenti l'observer si ferma
+    // Ripristiniamo anche il limite totale delle pagine altrimenti l'observer si ferma
     if (typeof pristineTotalItemsPages !== 'undefined') {
       totalItemsPages = pristineTotalItemsPages;
     }
@@ -397,11 +391,11 @@ async function applyItemFilters(searchQuery = null) {
     renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK || 12, currentItems.length);
     renderItemsList(currentItems.slice(0, renderedItemsCount), false);
     
-    if (typeof updateItemsSentinelVisibility === 'function') updateItemsSentinelVisibility();
+    updateItemsSentinelVisibility();
     return;
   }
 
-  // 2. Filtraggio Locale (Latenza Zero): se tutto il DB è in RAM
+  // Filtraggio Locale (Latenza Zero): se tutto il DB è in RAM
   if (typeof isEntireItemsDbInCache !== 'undefined' && isEntireItemsDbInCache && hasFilters) {
     let filtered = pristineItemsCache.filter(item => {
       // Testo
@@ -427,7 +421,7 @@ async function applyItemFilters(searchQuery = null) {
     return;
   }
 
-  // 3. Server-side Filtering: Interroga Mongoose API
+  // Server-side Filtering: Interroga Mongoose API
   currentItemsPage = 1;
   renderedItemsCount = 0;
   await fetchAndRenderItems(currentMuseumId, false);
@@ -475,14 +469,14 @@ function attachItemFilterEvents() {
 // MODULO FILTRI OPERE (Works)
 // ==========================================
 
-// 1. Estrae i dati univoci dalle opere correnti e popola le liste
+// Estrae i dati univoci dalle opere correnti e popola le liste
 function initializeWorkFiltersData(works) {
   const authorsSet = new Set();
   const techniquesSet = new Set();
   const stylesSet = new Set();
 
   works.forEach(work => {
-    // ESTRAZIONE BLINDATA: Cerca il nome in tutti i campi possibili, scartando gli ID di Mongoose (24 caratteri)
+    // Cerca il nome in tutti i campi possibili, scartando gli ID di Mongoose (24 caratteri)
     const authorName = work.authorName || work.author?.name || (typeof work.author === 'string' && work.author.length !== 24 ? work.author : null);
     const styleName = work.styleName || work.style?.name || (typeof work.style === 'string' && work.style.length !== 24 ? work.style : null);
     const techniqueName = work.technique;
@@ -520,14 +514,14 @@ function renderDynamicCheckboxes(containerId, items, prefix) {
   }).join('');
 }
 
-// 2. Applica i filtri controllando le checkbox spuntate
+// Applica i filtri controllando le checkbox spuntate
 async function applyWorkFilters() {
   const authorCbs = Array.from(document.querySelectorAll('.author-cb:checked')).map(cb => cb.value);
   const techniqueCbs = Array.from(document.querySelectorAll('.technique-cb:checked')).map(cb => cb.value);
   const styleCbs = Array.from(document.querySelectorAll('.workstyle-cb:checked')).map(cb => cb.value);
   const hasFilters = authorCbs.length > 0 || techniqueCbs.length > 0 || styleCbs.length > 0;
 
-  // 1. CACHE PULITA: Se azzeriamo i filtri e abbiamo la cache
+  // Se azzeriamo i filtri e abbiamo la cache
   if (!hasFilters && pristineWorksCache.length > 0) {
     currentWorks = [...pristineWorksCache];
     currentWorkPage = pristineWorkPage;
@@ -540,7 +534,7 @@ async function applyWorkFilters() {
     return;
   }
 
-  // 2. ADAPTIVE FETCHING: Se tutto il DB delle opere è in cache, filtriamo localmente a zero latenza!
+  // Se tutto il DB delle opere è in cache, filtriamo localmente 
   if (isEntireWorksDbInCache && hasFilters) {
     let filtered = pristineWorksCache.filter(work => {
       const authorName = work.authorName || "";
@@ -561,13 +555,13 @@ async function applyWorkFilters() {
     return;
   }
 
-  // 3. SEVER-SIDE FILTERING: Altrimenti chiediamo al server con i parametri di filtro
+  // server-side filtering
   currentWorkPage = 1;
   renderedWorksCount = 0;
   await fetchAndRenderWorks(currentMuseumId, false);
 }
 
-// 3. Resetta filtri e input di ricerca
+// Resetta filtri e input di ricerca
 function resetWorkFilters() {
   ['author', 'technique', 'workstyle'].forEach(prefix => {
     const searchInput = document.getElementById(`filter-${prefix}-search`);
@@ -579,7 +573,7 @@ function resetWorkFilters() {
   applyWorkFilters();
 }
 
-// 4. Associa le funzioni di ricerca (fuzzy search) ai 3 campi di input
+// Associa le funzioni di ricerca (fuzzy search) ai 3 campi di input
 function attachWorkFilterEvents() {
   const categories = ['author', 'technique', 'workstyle'];
 
@@ -612,7 +606,7 @@ function attachWorkFilterEvents() {
 function applyVisitFilters() {
   if (!currentVisits || currentVisits.length === 0) return;
 
-  // 1. Raccogliamo i valori
+  // Raccogliamo i valori
   const freeEntryOnly = document.getElementById("filter-visit-free")?.checked;
   const maxPrice = parseInt(document.getElementById("visit-price-slider")?.value || 100);
   const maxDuration = parseInt(document.getElementById("visit-duration-slider")?.value || 180);
@@ -620,26 +614,26 @@ function applyVisitFilters() {
   const accCbs = Array.from(document.querySelectorAll('.visit-acc-cb:checked')).map(cb => cb.value);
   const targetCbs = Array.from(document.querySelectorAll('.visit-target-cb:checked')).map(cb => cb.value);
 
-  // 2. Filtriamo l'array corrente delle visite
+  // Filtriamo l'array corrente delle visite
   let filtered = currentVisits.filter(visit => {
     const price = visit.price || 0;
     const duration = visit.duration || 0;
 
-    // A. Filtro Costo
+    // Filtro Costo
     if (freeEntryOnly && price > 0) return false;
     if (!freeEntryOnly && maxPrice < 100 && price > maxPrice) return false;
 
-    // B. Filtro Durata
+    // Filtro Durata
     if (maxDuration < 180 && duration > maxDuration) return false;
 
-    // C. Filtro Accessibilità (L'utente spunta di cosa ha bisogno, la visita deve averlo)
+    // Filtro Accessibilità (L'utente spunta di cosa ha bisogno, la visita deve averlo)
     if (accCbs.length > 0) {
       if (!visit.accessibility || !accCbs.some(acc => visit.accessibility.includes(acc))) {
         return false;
       }
     }
 
-    // D. Filtro Pubblico Consigliato
+    // Filtro Pubblico Consigliato
     if (targetCbs.length > 0) {
       // Se la visita è adatta "a tutti" (all), passa il filtro a prescindere
       const isForAll = visit.targetAudience && visit.targetAudience.includes('all');
@@ -653,7 +647,7 @@ function applyVisitFilters() {
     return true;
   });
 
-  // 3. Renderizziamo i risultati usando la funzione di marketplace.js
+  // Renderizziamo i risultati usando la funzione di marketplace.js
   renderVisitsListForMuseum(filtered);
 }
 
@@ -712,11 +706,6 @@ function attachVisitFilterEvents() {
 // ==========================================
 // MODULO FILTRI LE MIE VISITE (My Visits)
 // ==========================================
-// ATTENZIONE: questo modulo presuppone che getMyVisits() (in visits-ui.js)
-// salvi l'elenco grezzo delle visite in una variabile globale chiamata
-// "allMyVisits" e che esista una funzione "renderManagedVisitsList(list)"
-// che disegna le card dentro #managed-visits-area. Se in visits-ui.js i nomi
-// sono diversi, sostituiscili qui sotto (sono usati in 3 punti in tutto).
 
 let filterMyTypeInstance = null;
 let filterMyDateDirInstance = null;
@@ -796,7 +785,6 @@ function applyMyVisitsFilters() {
   const typeFilter = document.getElementById("filter-my-type")?.value || "all";
   
   // Data target e direzione
-  // Data target e direzione
   const dateInput = document.getElementById("filter-my-date")?.value;
   const dateDir = document.getElementById("filter-my-date-dir")?.value || "after";
   
@@ -813,14 +801,14 @@ function applyMyVisitsFilters() {
   let filtered = cachedVisits.filter(visit => {
     if (!visit) return false;
 
-    // 1. Ricerca Fuzzy Search su Titolo o Museo
+    // Ricerca Fuzzy Search su titolo o museo
     if (searchQuery !== "") {
       const titleMatch = fuzzySearch(searchQuery, visit.title || "");
       const museumMatch = fuzzySearch(searchQuery, visit.museumId?.name || "");
       if (!titleMatch && !museumMatch) return false;
     }
 
-    // 2. Filtro Data f
+    // Filtro Data
     if (targetDate) {
       const visitDate = new Date(visit.sortDate || visit.updatedAt || visit.createdAt || 0).getTime();
       if (dateDir === "after" && visitDate < targetDate) return false;
@@ -840,14 +828,13 @@ function applyMyVisitsFilters() {
     return true;
   });
 
-  // 4. Ordinamento da switch
   filtered.sort((a, b) => {
     return sortNewestFirst ? b.sortDate - a.sortDate : a.sortDate - b.sortDate;
   });
 
   renderVisitsList(filtered, "managed-visits-area");
 
-  // --- AGGIUNTO: Aggiorna dinamicamente le opzioni del search (opzioni rimanenti) ---
+  // --- Aggiorna dinamicamente le opzioni del search (opzioni rimanenti) ---
   if (filterMySearchInstance) {
     const currentVal = filterMySearchInstance.getValue();
     const newOptions = new Set();

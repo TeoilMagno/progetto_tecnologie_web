@@ -111,13 +111,13 @@ exports.addAuthorData = async (authorId, newData) => {
 
 // Aggiunge il museo corrente all'array museumId di una specifica card esistente (permette di utilizzare una descrizione esistente)
 exports.adoptAuthorData = async (authorId, dataId, museumId) => {
-  // 1. Rimuove il museo da qualsiasi altra descrizione di questo autore
+  // Rimuove il museo da qualsiasi altra descrizione di questo autore
   await Author.updateOne(
     { _id: authorId },
     { $pull: { "data.$[].museumId": museumId } }
   );
 
-  // 2. Aggiunge il museo alla descrizione scelta senza innescare la validazione globale
+  // Aggiunge il museo alla descrizione scelta senza innescare la validazione globale
   const updatedAuthor = await Author.findOneAndUpdate(
     { _id: authorId, "data._id": dataId },
     { $addToSet: { "data.$.museumId": museumId } },

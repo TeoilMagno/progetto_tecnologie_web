@@ -80,7 +80,7 @@ export default function JoinSession() {
     };
   }, [socket]);
 
-  // 1. Fetch utente unico all'avvio
+  // Fetch utente unico all'avvio
   useEffect(() => {
     let isMounted = true;
     fetch(`${API_BASE_URL}/current-user`, { credentials: 'include' })
@@ -106,7 +106,7 @@ export default function JoinSession() {
     return () => { isMounted = false; };
   }, []);
 
-  // 2. Salvataggio nome locale sicuro
+  // Salvataggio nome locale sicuro
   useEffect(() => {
     if (studentName) {
       localStorage.setItem('student_name', studentName);
@@ -120,7 +120,7 @@ export default function JoinSession() {
     }
   }, [currentUser]);
 
-  // 3. Fetch visite insegnante protetto (usa l'ID utente come dipendenza fissa)
+  // Fetch visite insegnante protetto (usa l'ID utente come dipendenza fissa)
   useEffect(() => {
     if (userType === 'teacher' && currentUser?._id) {
       // Usiamo /my-visits per recuperare le visite personali/private del docente loggato
@@ -176,7 +176,7 @@ export default function JoinSession() {
     }
   };
 
-  // 3. Quando crea la stanza, passiamo al server o salviamo anche la visita scelta
+  // Quando crea la stanza, passiamo al server o salviamo anche la visita scelta
   const generateRoomCode = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code = '';
@@ -432,7 +432,7 @@ export default function JoinSession() {
           </div>
         )}
 
-        {/* 1. SELEZIONE RUOLO */}
+        {/* SELEZIONE RUOLO */}
         {userType === 'none' && (
           <div className="w-full space-y-4 mt-4 animate-fadeIn">
             <p className="text-slate-400 text-sm text-center mb-6">
@@ -469,7 +469,7 @@ export default function JoinSession() {
           </div>
         )}
 
-        {/* 2. INTERFACCIA STUDENTE */}
+        {/* INTERFACCIA STUDENTE */}
         {userType === 'student' && (
           <div className="w-full space-y-6 animate-fadeIn">
             <div className="flex items-center justify-between w-full">
@@ -649,7 +649,7 @@ export default function JoinSession() {
           </div>
         )}
 
-        {/* 3. INTERFACCIA INSEGNANTE */}
+        {/* INTERFACCIA INSEGNANTE */}
         {userType === 'teacher' && (
           <div className="w-full space-y-6 animate-fadeIn">
             <div className="flex items-center justify-between w-full">

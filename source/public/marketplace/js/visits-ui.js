@@ -79,23 +79,21 @@ async function getMyVisits() {
     if (!response.ok) throw new Error("Errore server");
     cachedVisits = await response.json();
 
-    // 2. Ordinamento "Ibrido" Intelligente
+    // Ordinamento "Ibrido" (per le visite acquistate) Intelligente
     cachedVisits.forEach((visit, index) => {
       const creatorId = visit.creator?._id || visit.creator;
       const isPurchased = currentUser && creatorId && (creatorId.toString() !== currentUser._id.toString());
 
       if (isPurchased) {
-        // TRUCCO: Le visite acquistate arrivano dal backend nello stesso ordine in cui le hai comprate.
-        // Assegniamo loro la data di "Adesso" aggiungendo un millisecondo per ogni indice.
-        // Così l'ultima comprata avrà la data più alta e finirà prima in classifica!
+        // Le visite acquistate arrivano dal backend nello stesso ordine in cui sono state comprate.
         visit.sortDate = new Date(Date.now() + index * 1000);
       } else {
-        // Le visite create da te usano la loro vera data di aggiornamento/creazione
+        // Le visite create dallo user usano la loro vera data di aggiornamento/creazione
         visit.sortDate = new Date(visit.updatedAt || visit.createdAt || 0);
       }
     });
 
-    // 3. Ordina usando il nuovo campo temporaneo
+    // ordinamento
     cachedVisits.sort((a, b) => b.sortDate - a.sortDate);
     
     window.populateFilters('my-visits');
@@ -111,7 +109,6 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  // Stato Vuoto sobrio e lineare (stile my-museums)
   if (!visits || visits.length === 0) {
     container.innerHTML = `
       <div class="col-12 text-center py-5">
@@ -133,7 +130,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
     let actionButton = "";
     let deleteButtonHtml = "";
 
-    // 1. Verifichiamo se la visita NON è stata creata dall'utente corrente
+    // Verifichiamo se la visita NON è stata creata dall'utente corrente
     const creatorId = visit.creator?._id || visit.creator;
     const isPurchased = currentUser && creatorId && (creatorId.toString() !== currentUser._id.toString());
 
@@ -234,7 +231,7 @@ function renderVisitsList(visits, containerId = "managed-visits-area") {
   container.innerHTML = html;
 }
 
-// 1. Ora deleteVisit è correttamente ASINCRONA
+// funzione asincrona per eliminare una visita
 async function deleteVisit(visitId) {
   const isConfirmed = await window.showCustomConfirm(
     "Conferma Eliminazione",

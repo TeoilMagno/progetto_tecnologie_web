@@ -1,6 +1,5 @@
 /*
   Js contenente il router.
-  Middleware tra client e server
 
   Gestore della navigazione
 */

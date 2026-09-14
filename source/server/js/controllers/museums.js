@@ -35,7 +35,7 @@ async function geocodeAddress(address) {
   return { lat: null, lon: null };
 }
 
-// AGGIUNTA: Formula di Haversine in fondo al file
+// Formula di Haversine in fondo al file
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   if (!lat1 || !lon1 || !lat2 || !lon2) return 9999;
   const R = 6371; // Raggio della Terra in km
@@ -56,7 +56,7 @@ exports.getAllMuseums = async () => {
 
 // funzione getMuseums scalabile
 exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=null, services=null, day=null, lat=null, lon=null, maxDistance=null, page = 1, limit = 20) => {
-  // 2. Costruiamo dinamicamente la query di MongoDB
+  // Costruiamo dinamicamente la query di MongoDB
   const query = {};
 
   // Ricerca Testuale (Nome o Indirizzo)
@@ -95,14 +95,8 @@ exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=nul
   let museums = [];
     let total = 0;
 
-    // 3. Logica di Distanza (Geolocalizzazione)
+    // Logica di distanza (geolocalizzazione)
     if (lat && lon) {
-      /* 
-         APPROCCIO IBRIDO SICURO: Per non forzarti a ristrutturare il database 
-         inserendo indici geospaziali 2dsphere (che richiedono un formato GeoJSON rigido),
-         usiamo una query classica e poi calcoliamo la distanza sui risultati in memoria.
-         (Su qualche migliaio di musei è fulmineo).
-      */
       const allFiltered = await Museum.find(query).lean(); // Mongoose model (es. Museum)
       const userLat = parseFloat(lat);
       const userLon = parseFloat(lon);
@@ -122,10 +116,7 @@ exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=nul
       museums = sorted.slice(startIndex, startIndex + Number(limit));
 
     } else {
-      /*
-         APPROCCIO SCALABILE PURO: Se non c'è il GPS attivo, deleghiamo la paginazione 
-         direttamente a MongoDB (altamente scalabile, regge milioni di record).
-      */
+      //Se non c'è il GPS attivo, deleghiamo la paginazione direttamente a MongoDB
       total = await Museum.countDocuments(query);
       museums = await Museum.find(query)
                             .sort({ createdAt: -1, _id: 1 }) // AGGIUNTO IL TIE-BREAKER!
@@ -134,7 +125,7 @@ exports.getMuseums = async (search=null, tags=null, freeEntry=null, maxPrice=nul
                             .lean();
     }
 
-    // 4. Risposta al frontend con metadati per l'infinite scroll
+    // Risposta al frontend con metadati per l'infinite scroll
     return({
       museums,
       total,
@@ -164,7 +155,7 @@ exports.uploadAllMuseums = async (data) => {
 exports.saveMuseum = async (museumData, userId) => {
   const { name, address, contact_email, contact_phone, image, tags, ticketPrice, schedule, services, accessibility } = museumData;
 
-  // 1. Validazione del modello solo con i dati base
+  // Validazione del modello solo con i dati base
   const museumToValidate = new Museum({
     name, address, contact_email, contact_phone, image,
     tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags,
@@ -174,16 +165,15 @@ exports.saveMuseum = async (museumData, userId) => {
   
   await museumToValidate.validate();
 
-  // 2. Conversione indirizzo a coordinate tramite OpenStreetMap
+  // Conversione indirizzo a coordinate tramite OpenStreetMap
   const coords = await geocodeAddress(museumData.address);
   museumToValidate.latitude = coords.lat;
   museumToValidate.longitude = coords.lon;
 
-  // 3. Salvataggio reale del museo
   const museumResult = await museumToValidate.save();
   const museumId = museumResult._id;
 
-  // 4. Creiamo la visita libera associata (con array opere vuoto, verranno aggiunte dopo)
+  // Creiamo la visita libera associata (con array opere vuoto, verranno aggiunte dopo)
   const standardVisit = new (require("../models/visits"))({
     title: "Visita libera",
     description: "Ingresso base con accesso a tutte le opere in esposizione.",
@@ -199,7 +189,7 @@ exports.saveMuseum = async (museumData, userId) => {
   });
   await standardVisit.save();
 
-  // 5. Assegniamo il museo al curatore
+  // Assegniamo il museo al curatore
   if (userId) {
     const { User } = require("../models/users");
     await User.findByIdAndUpdate(userId, { $push: { managed_museums: museumId } });
@@ -257,8 +247,7 @@ exports.deleteMuseumById = async (museumId) => {
   if (museum.image) await deleteLocalFile(museum.image);
 
   // Le sezioni sono indipendenti tra loro: le eliminiamo in parallelo.
-  // allSettled invece di all() perché, come nel codice originale, il fallimento
-  // di una sezione non deve bloccare l'eliminazione delle altre.
+  // allSettled perché il fallimento di una sezione non deve bloccare l'eliminazione delle altre.
   if (museum.sections && museum.sections.length > 0) {
     const results = await Promise.allSettled(
       museum.sections.map(sectionId => deleteSectionById(sectionId, museumId))

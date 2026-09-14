@@ -355,7 +355,7 @@ export function useWorkGuide({
 
     let mapped = null;
 
-    // 1. Ricerca dinamica e flessibile nel dizionario locale
+    // Ricerca dinamica e flessibile nel dizionario locale
     if (commandsMap) {
       for (const [key, action] of Object.entries(commandsMap)) {
         // Usiamo includes() per mantenere la flessibilità (es. "per favore dimmi di più")
@@ -366,7 +366,7 @@ export function useWorkGuide({
       }
     }
     
-    // 2. Se non c'è nel dizionario, delega l'interpretazione all'IA
+    // Se non c'è nel dizionario, delega l'interpretazione all'IA
     if (!mapped) {
       try {
         const aiResponse = await fetch(`${API_BASE_URL}/ai/map-request`, {
@@ -384,7 +384,7 @@ export function useWorkGuide({
       }
     }
 
-    // 3. Esegui l'azione mappata
+    // Esegui l'azione mappata
     switch (mapped) {
       case "PLAY":
         speakText(work?.description?.[currentExpertise]?.[currentLength]);

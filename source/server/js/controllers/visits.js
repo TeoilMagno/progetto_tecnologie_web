@@ -126,10 +126,10 @@ exports.getVisits = async (userId) => {
 };
 
 exports.getVisitById = async (visitId, user, isShared = false, isNavigator = false) => {
-  // 1. Array di popolamento dinamico: adoptionId serve sempre per i warning nel marketplace
+  // Array di popolamento dinamico: adoptionId serve sempre per i warning nel marketplace
   const worksPopulate = [{ path: 'adoptionId' }];
   
-  // 2. Aggiungiamo i dati pesanti di Autore e Stile SOLO per il Navigator (IA e Assistente)
+  // Aggiungiamo i dati pesanti di Autore e Stile SOLO per il Navigator (IA e Assistente)
   if (isNavigator) {
     worksPopulate.push({ path: 'author' });
     worksPopulate.push({ path: 'style' });
@@ -219,7 +219,7 @@ exports.editVisitById = async (visitId, payload, user) => {
     throw error;
   }
 
-  // AGGIUNTO: Aggiorniamo le preferenze globali dell'utente
+  // Aggiorniamo le preferenze globali dell'utente
   if (payload.expertiseLevel && user._id && user.preferences.expertiseLevel !== payload.expertiseLevel) {
     await User.findByIdAndUpdate(user._id, { 
       $set: { 'preferences.expertiseLevel': payload.expertiseLevel } 
