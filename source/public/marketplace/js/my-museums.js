@@ -1,13 +1,3 @@
-// Pagina "I miei musei" (curatore/admin).
-// Le variabili globali condivise (API_BASE_URL, RENDER_CHUNK, cachedMuseums,
-// globalSentinel, isFetchingMuseums...) restano in config.js.
-//
-// NOTA: renderManagedMuseumsList è una versione volutamente semplificata di
-// renderMuseumsList (marketplace.js): qui il click porta sempre alla pagina
-// pubblica del museo (/marketplace?museumId=...), non apre la dashboard inline,
-// quindi non serve gestire il branch "isMarketplace" né riposizionare la
-// sentinella dentro alla lista (ci pensa loadManagedMuseums subito dopo).
-
 async function loadManagedMuseums(isLoadMore = false) {
   const container = document.getElementById("managed-museums-area");
   if (!container) return;
@@ -34,8 +24,8 @@ async function loadManagedMuseums(isLoadMore = false) {
       return;
     }
 
-    // FIX CACHE: Iniettiamo i musei recuperati nella Cache Globale (condivisa con la home
-    // del marketplace), così se l'utente clicca su un museo la dashboard non deve rifetchare.
+    // Iniettiamo i musei recuperati nella Cache Globale (condivisa con la home
+    // del marketplace), così se l'utente clicca su un museo la dashboard non deve fare fetch di nuovo.
     if (fetchedMuseums && fetchedMuseums.length > 0) {
       fetchedMuseums.forEach(newMus => {
         if (!newMus) return;

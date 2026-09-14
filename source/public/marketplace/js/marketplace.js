@@ -8,7 +8,7 @@
 // Tutto ciò che riguarda i filtri (musei, opere, items, visite) è in filters.js
 // Tutto ciò che riguarda il bookshop manager (CRUD articoli) è in bookshop-manager.js
 
-// 1. INIZIALIZZAZIONE
+
 document.addEventListener("DOMContentLoaded", async () => {
   // Gestione del tasto indietro del browser
   window.addEventListener('popstate', (event) => {
@@ -38,9 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const museumToOpen = urlParams.get("museumId");
 
   if (museumToOpen && document.getElementById("content-area")) {
-    // Se ci hanno passato un ID e siamo nella home, prima carichiamo i dati...
     await getMuseums();
-    // ...poi apriamo il museo!
     getMuseumItems(museumToOpen);
   } else {
     // Comportamento normale
@@ -111,7 +109,7 @@ function updateSentinelVisibility() {
   }
 }
 
-// 3. LOGICA API (FETCH)
+// LOGICA FETCH
 
 async function getMuseums(isHistoryPop = false) {
   const container = document.getElementById("content-area");
@@ -132,7 +130,7 @@ async function getMuseums(isHistoryPop = false) {
   // Innesca la prima chiamata API tramite la logica dei filtri!
   await applyMuseumFilters(false);
   
-  setupInfiniteScroll(); // Attiva il guardiano dello scroll in fondo
+  setupInfiniteScroll(); // Attiva la global sentinel in fondo
 
   if (!isHistoryPop) {
     history.pushState({ view: 'home' }, "", "/marketplace");
@@ -154,7 +152,7 @@ async function getMuseumItems(museumId, isHistoryPop = false) {
     </div>`;
 
   try {
-    // FIX: Ricerca sicura nella cache globale (previene il crash _id)
+    // Ricerca sicura nella cache globale 
     let museum = cachedMuseums.find((m) => m && m._id === museumId);
     
     // Se non lo troviamo (es. atterriamo diretti da I Miei Musei), lo scarichiamo E lo mettiamo in cache
@@ -186,18 +184,16 @@ function renderMuseumsList(museums, containerId = "content-area", append = false
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  // 1. FONDAMENTALE: Svuotiamo il contenitore SOLO se non stiamo aggiungendo in coda!
   if (!append) {
     container.innerHTML = "";
   }
 
-  // 2. Messaggio se non ci sono risultati (e non stiamo scrollando)
+  // Messaggio se non ci sono risultati (e non stiamo scrollando)
   if (museums.length === 0 && !append) {
     container.innerHTML = '<div class="col-12 text-center text-secondary py-5">Nessun museo trovato con questi filtri.</div>';
     return;
   }
 
-  // 3. Costruiamo tutto il nuovo blocco HTML in memoria (più veloce)
   let htmlString = ""; 
 
   museums.forEach((museum) => {
@@ -243,7 +239,7 @@ function renderMuseumDashboard(museumInfo) {
   if (museumInfo) {
     const priceText = museumInfo.ticketPrice > 0 ? `€ ${museumInfo.ticketPrice.toFixed(2)}` : `<span class="text-success">Gratis</span>`;
     
-    // --- MAGIA DEL MENU A TENDINA PER GLI ORARI ---
+    // --- MENU A TENDINA PER GLI ORARI ---
     let hoursDropdownHtml = `<span><i class="bi bi-clock me-1 text-info"></i> Orari non configurati</span>`;
     
     if (museumInfo.schedule) {
@@ -277,9 +273,7 @@ function renderMuseumDashboard(museumInfo) {
         </div>
       `;
     }
-    // --- FINE LOGICA TENDINA ---
     
-   // Assembliamo la stringa finale 
     museumExtraInfo = `
       <div class="d-flex flex-wrap gap-4 mt-2 small align-items-center" style="font-size: 0.9rem; -webkit-text-fill-color: initial; text-transform: none; font-weight: normal; letter-spacing: normal;">
         <div style="-webkit-text-fill-color: currentColor;">${hoursDropdownHtml}</div>
@@ -377,7 +371,7 @@ async function checkIfMuseumIsManaged(currentMuseumId) {
       else return;
     }
     
-    // FIX _id CRASH: Assicuriamoci che 'museum' esista prima di leggere l'ID
+    // Assicuriamoci che 'museum' esista prima di leggere l'ID
     const isManaged = myManagedMuseumsCache.some(museum => {
        return museum && (museum._id === currentMuseumId || museum === currentMuseumId);
     });
@@ -423,7 +417,7 @@ function switchMuseumView(view, museumId) {
   }
 
   // Cambia la sidebar in base alla tab selezionata
-  if (typeof populateFilters === 'function') populateFilters(view);
+  populateFilters(view);
   
   loadMuseumSubView(view, museumId); //
 }
@@ -482,7 +476,7 @@ async function fetchAndRenderWorks(museumId, isLoadMore = false) {
       if (noFiltersActive) {
         pristineWorksCache = [...currentWorks];
         pristineWorkPage = currentWorkPage;
-        // FIX: riassegnata sempre (non solo quando true), altrimenti il flag resta
+        // riassegnata sempre (non solo quando true), altrimenti il flag resta
         // "vero" da un museo precedente più piccolo anche quando qui non è più valido.
         isEntireWorksDbInCache = pristineWorksCache.length >= data.total;
       }
@@ -497,7 +491,6 @@ async function fetchAndRenderWorks(museumId, isLoadMore = false) {
         pristineWorksCache = [...currentWorks];
         pristineWorkPage = currentWorkPage;
         pristineTotalWorkPages = totalWorkPages;
-        // FIX: vedi commento sopra, stesso bug di invalidazione cache.
         isEntireWorksDbInCache = pristineWorksCache.length >= data.total;
       }
 
@@ -562,7 +555,6 @@ async function fetchAndRenderItems(museumId, isLoadMore = false) {
   }
 }
 
-// setupItemsInfiniteScroll — riga 530, sostituisci tutto il blocco
 function setupItemsInfiniteScroll(museumId) {
   const sentinel = document.getElementById("global-infinite-sentinel");
   if (!sentinel) return;
@@ -594,7 +586,6 @@ function updateItemsSentinelVisibility() {
   }
 }
 
-// setupWorksInfiniteScroll — riga 562, sostituisci tutto il blocco
 function setupWorksInfiniteScroll(museumId) {
   const sentinel = document.getElementById("global-infinite-sentinel");
   if (!sentinel) return;
@@ -653,7 +644,6 @@ async function loadMuseumSubView(view, museumId) {
       renderVisitsListForMuseum(currentVisits);
     } else {
       if (view === 'works') {
-        // FIX _id CRASH: Optional Chaining aggiunto (currentWorks[0]?.museumId)
         if (currentWorks && currentWorks.length > 0 && currentWorks[0]?.museumId === museumId) {
            currentWorkPage = 1;
            renderedWorksCount = Math.min(WORK_RENDER_CHUNK, currentWorks.length);
@@ -667,7 +657,6 @@ async function loadMuseumSubView(view, museumId) {
         renderedWorksCount = 0;
         await fetchAndRenderWorks(museumId, false);
       } else {
-        // FIX _id CRASH per gli Articoli Bookshop
         if (currentItems && currentItems.length > 0 && (currentItems[0]?.museumId === museumId || currentItems[0]?.museumId?._id === museumId)) {
            currentItemsPage = 1;
            renderedItemsCount = Math.min(ITEMS_RENDER_CHUNK, currentItems.length);

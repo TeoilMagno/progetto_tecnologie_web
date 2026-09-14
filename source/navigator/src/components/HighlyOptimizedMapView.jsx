@@ -22,7 +22,7 @@ const HighlyOptimizedMapView = forwardRef(({
   });
   
   const zoomViewBox = activeSection?.viewBox 
-    ? `${activeSection.viewBox.x} ${activeSection.viewBox.y} ${activeSection.viewBox.width} ${activeSection.viewBox.height}`
+    ? `${activeSection.viewBox.x + (activeSection.viewBox.width * 0.1)} ${activeSection.viewBox.y + (activeSection.viewBox.height * 0.1)} ${activeSection.viewBox.width * 0.8} ${activeSection.viewBox.height * 0.8}`
     : "0 0 2000 1200";
 
   const modifiedSvgString = useMemo(
@@ -49,7 +49,7 @@ const HighlyOptimizedMapView = forwardRef(({
         return;
       }
 
-      // 1. Zoom out (esce dalla sezione attuale)
+      // Zoom out (esce dalla sezione attuale)
       setAnimationStyle({
         transformOrigin: 'center',
         transform: 'scale(0.8)',
@@ -61,7 +61,7 @@ const HighlyOptimizedMapView = forwardRef(({
       setTimeout(() => {
         onBack(); // Torna alla mappa globale
         
-        // 2. Prepara l'ingresso "dall'alto"
+        // Prepara l'ingresso "dall'alto"
         setAnimationStyle({
           transformOrigin: 'center',
           transform: 'scale(1.5)',
@@ -73,7 +73,7 @@ const HighlyOptimizedMapView = forwardRef(({
         setTimeout(() => {
           onSelectSection(targetSection); // Passa alla nuova sezione
           
-          // 3. Zoom in (entra nella nuova sezione)
+          // Zoom in (entra nella nuova sezione)
           setAnimationStyle({
             transformOrigin: 'center',
             transform: 'scale(1)',
@@ -231,24 +231,82 @@ const HighlyOptimizedMapView = forwardRef(({
                       });
                       if (!coords) return null;
 
+                      // Dimensioni dinamiche: più grandi per l'opera attiva, piccole per le altre
+                      // Dimensioni ingrandite per le inattive (48px) e strutturate per l'attiva
+                      const objWidth = isActive ? 130 : 48;
+                      const objHeight = isActive ? 150 : 56; // 48px immagine + 8px per la micro-punta del pin
+
                       return (
-                        <foreignObject key={work._id} x={coords.x} y={coords.y} width="120" height="220" style={{ overflow: "visible", pointerEvents: "auto" }}>
+                        <foreignObject 
+                          key={work._id} 
+                          x={coords.x - (objWidth / 2)} 
+                          y={coords.y - objHeight} 
+                          width={objWidth} 
+                          height={objHeight} 
+                          style={{ overflow: "visible", pointerEvents: "auto" }}
+                        >
                           <div
                             onClick={() => onWorkClick(work)}
                             style={{
-                              cursor: "pointer", width: "100%", height: "fit-content",
-                              backgroundColor: isActive ? "rgba(126, 20, 255, 0.1)" : "white",
-                              border: isActive ? "3px solid #7e14ff" : "1px solid #ccc",
-                              borderRadius: "6px", display: "flex", flexDirection: "column", alignItems: "center",
-                              boxShadow: isActive ? "0 0 20px rgba(126, 20, 255, 0.6)" : "0 2px 4px rgba(0,0,0,0.1)",
-                              transform: isActive ? "scale(1.1)" : "scale(1)", transition: "all 0.3s ease",
-                              zIndex: isActive ? 100 : 1
+                              cursor: "pointer", width: "100%", height: "100%",
+                              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end",
+                              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                              zIndex: isActive ? 100 : 1,
+                              opacity: isActive ? 1 : 0.85
                             }}
                           >
-                            <img src={work.image} alt={work.name} loading="lazy" style={{ width: "100%", height: "100px", objectFit: "cover" }} />
-                            <div style={{ padding: "6px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                              <strong style={{ fontSize: "11px", textAlign: "center", lineHeight: "1.2", color: isActive ? "#fff" : "#000" }}>{work.name}</strong>
-                            </div>
+                            {isActive ? (
+                              // CARD OPERA ATTIVA (Invariata nella struttura, grande e con nome)
+                              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                                <div style={{
+                                  backgroundColor: "white",
+                                  border: "3px solid #7e14ff",
+                                  borderRadius: "8px",
+                                  display: "flex", flexDirection: "column", alignItems: "center",
+                                  boxShadow: "0 0 20px rgba(126, 20, 255, 0.6)",
+                                  width: "100%",
+                                  overflow: "hidden"
+                                }}>
+                                  <img src={work.image} alt={work.name} loading="lazy" style={{ width: "100%", height: "85px", objectFit: "cover" }} />
+                                  <div style={{ padding: "8px 6px", width: "100%", backgroundColor: "white" }}>
+                                    <strong style={{ fontSize: "11px", textAlign: "center", lineHeight: "1.2", color: "#000", display: "block" }}>
+                                      {work.name}
+                                    </strong>
+                                  </div>
+                                </div>
+                                {/* Puntina verso il basso */}
+                                <div style={{
+                                  width: 0, height: 0,
+                                  borderLeft: "8px solid transparent",
+                                  borderRight: "8px solid transparent",
+                                  borderTop: "10px solid #7e14ff",
+                                  marginTop: "-1px"
+                                }} />
+                              </div>
+                            ) : (
+                              // MARKER INATTIVO MODERNO (A forma di pin squadrato con micro-punta)
+                              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                                <div style={{
+                                  width: "48px", height: "48px",
+                                  borderRadius: "12px", // Angoli smussati in stile app moderna
+                                  border: "2.5px solid white",
+                                  overflow: "hidden",
+                                  boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
+                                  backgroundColor: "#1e293b",
+                                  transition: "transform 0.2s ease",
+                                }}>
+                                  <img src={work.image} alt={work.name} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                </div>
+                                {/* Piccola punta del pin */}
+                                <div style={{
+                                  width: 0, height: 0,
+                                  borderLeft: "5px solid transparent",
+                                  borderRight: "5px solid transparent",
+                                  borderTop: "6px solid white",
+                                  marginTop: "-1px"
+                                }} />
+                              </div>
+                            )}
                           </div>
                         </foreignObject>
                       );

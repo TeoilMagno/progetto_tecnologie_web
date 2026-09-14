@@ -1,198 +1,79 @@
 [
   {
-    "_id": "6a89a91ef5fa15eb5648c08b",
-    "visitId": "6a85716e177aaad0085d9936",
-    "guideId": "6a6dab11ccd4a931660f74e4",
-    "roomCode": "YVY794",
+    "_id": "6aa741016e259c5e6e6580a8",
+    "visitId": "6aa5666185d1d8268fcbd1e4",
+    "guideId": "6a95e6fb45123c6b58491e1c",
+    "roomCode": "0PZ1MR",
     "results": [
       {
-        "studentName": "Bro",
-        "score": 1,
-        "answers": [
-          {
-            "qIndex": 0,
-            "selectedOption": 2,
-            "isCorrect": true,
-            "_id": "6a89a91ef5fa15eb5648c08d"
-          }
-        ],
-        "_id": "6a89a91ef5fa15eb5648c08c"
-      }
-    ],
-    "date": "2026-08-22T13:50:22.445Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a89db17fd8da65f2c6d7cfb",
-    "visitId": "6a85716e177aaad0085d9936",
-    "guideId": "6a6dab11ccd4a931660f74e4",
-    "roomCode": "LQG4KI",
-    "results": [
-      {
-        "studentName": "bro",
-        "score": 1,
-        "answers": [
-          {
-            "qIndex": 0,
-            "selectedOption": 2,
-            "isCorrect": true,
-            "_id": "6a89db17fd8da65f2c6d7cfd"
-          }
-        ],
-        "_id": "6a89db17fd8da65f2c6d7cfc"
-      }
-    ],
-    "date": "2026-08-22T17:23:35.751Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a89e7cf289692d5b12da023",
-    "visitId": "6a85716e177aaad0085d9936",
-    "guideId": "6a6dab11ccd4a931660f74e4",
-    "roomCode": "Y9HQZ9",
-    "results": [
-      {
-        "studentName": "Bro",
-        "score": 1,
-        "answers": [
-          {
-            "qIndex": 0,
-            "selectedOption": 2,
-            "isCorrect": true,
-            "_id": "6a89e7cf289692d5b12da025"
-          },
-          {
-            "qIndex": 1,
-            "selectedOption": 0,
-            "isCorrect": false,
-            "_id": "6a89e7cf289692d5b12da026"
-          }
-        ],
-        "_id": "6a89e7cf289692d5b12da024"
-      }
-    ],
-    "date": "2026-08-22T18:17:51.203Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a89e922e53eed234bb111b6",
-    "visitId": "6a85716e177aaad0085d9936",
-    "guideId": "6a6dab11ccd4a931660f74e4",
-    "roomCode": "P9VBJI",
-    "results": [
-      {
-        "studentName": "Bro",
-        "score": 1,
-        "answers": [
-          {
-            "qIndex": 0,
-            "selectedOption": 2,
-            "isCorrect": true,
-            "_id": "6a89e922e53eed234bb111b8"
-          },
-          {
-            "qIndex": 1,
-            "selectedOption": 0,
-            "isCorrect": false,
-            "_id": "6a89e922e53eed234bb111b9"
-          }
-        ],
-        "_id": "6a89e922e53eed234bb111b7"
-      }
-    ],
-    "date": "2026-08-22T18:23:30.640Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a9039e444806e3f60646e0a",
-    "visitId": "6a886eb71d635be0b862425d",
-    "guideId": "6a6dab11ccd4a931660f74e4",
-    "roomCode": "EVJA5M",
-    "results": [
-      {
-        "studentName": "Bro loggato",
-        "score": 0,
+        "studentName": "visitatore2",
+        "score": 8,
         "answers": [
           {
             "qIndex": 0,
             "selectedOption": 1,
-            "isCorrect": false,
-            "_id": "6a9039e444806e3f60646e0c"
-          }
-        ],
-        "_id": "6a9039e444806e3f60646e0b"
-      }
-    ],
-    "date": "2026-08-27T13:21:40.389Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a92fe6ccdf5678fd59915da",
-    "visitId": "6a886eb71d635be0b862425d",
-    "guideId": "6a6dab11ccd4a931660f74e4",
-    "roomCode": "XOJRNG",
-    "results": [
-      {
-        "studentName": "studente_1",
-        "score": 1,
-        "answers": [
+            "isCorrect": true,
+            "_id": "6aa741016e259c5e6e6580aa"
+          },
           {
-            "qIndex": 0,
+            "qIndex": 1,
+            "selectedOption": 0,
+            "isCorrect": true,
+            "_id": "6aa741016e259c5e6e6580ab"
+          },
+          {
+            "qIndex": 2,
+            "selectedOption": 3,
+            "isCorrect": false,
+            "_id": "6aa741016e259c5e6e6580ac"
+          },
+          {
+            "qIndex": 3,
+            "selectedOption": 1,
+            "isCorrect": true,
+            "_id": "6aa741016e259c5e6e6580ad"
+          },
+          {
+            "qIndex": 4,
+            "selectedOption": 1,
+            "isCorrect": true,
+            "_id": "6aa741016e259c5e6e6580ae"
+          },
+          {
+            "qIndex": 5,
             "selectedOption": 2,
             "isCorrect": true,
-            "_id": "6a92fe6ccdf5678fd59915dc"
-          }
-        ],
-        "_id": "6a92fe6ccdf5678fd59915db"
-      }
-    ],
-    "date": "2026-08-29T15:44:44.507Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a930aadbf500363eae5437b",
-    "visitId": "6a886eb71d635be0b862425d",
-    "guideId": "6a6dab11ccd4a931660f74e4",
-    "roomCode": "L34NYA",
-    "results": [
-      {
-        "studentName": "studente_1",
-        "score": 0,
-        "answers": [
+            "_id": "6aa741016e259c5e6e6580af"
+          },
           {
-            "qIndex": 0,
-            "selectedOption": 0,
-            "isCorrect": false,
-            "_id": "6a930aadbf500363eae5437d"
-          }
-        ],
-        "_id": "6a930aadbf500363eae5437c"
-      }
-    ],
-    "date": "2026-08-29T16:37:01.497Z",
-    "__v": 0
-  },
-  {
-    "_id": "6a930d8cbf500363eae5471f",
-    "visitId": "6a930b94bf500363eae5456b",
-    "guideId": "6a6dab11ccd4a931660f74e4",
-    "roomCode": "SRCB11",
-    "results": [
-      {
-        "studentName": "studente_1",
-        "score": 0,
-        "answers": [
+            "qIndex": 6,
+            "selectedOption": 1,
+            "isCorrect": true,
+            "_id": "6aa741016e259c5e6e6580b0"
+          },
           {
-            "qIndex": 0,
-            "selectedOption": 0,
+            "qIndex": 7,
+            "selectedOption": 2,
             "isCorrect": false,
-            "_id": "6a930d8cbf500363eae54721"
+            "_id": "6aa741016e259c5e6e6580b1"
+          },
+          {
+            "qIndex": 8,
+            "selectedOption": 1,
+            "isCorrect": true,
+            "_id": "6aa741016e259c5e6e6580b2"
+          },
+          {
+            "qIndex": 9,
+            "selectedOption": 1,
+            "isCorrect": true,
+            "_id": "6aa741016e259c5e6e6580b3"
           }
         ],
-        "_id": "6a930d8cbf500363eae54720"
+        "_id": "6aa741016e259c5e6e6580a9"
       }
     ],
-    "date": "2026-08-29T16:49:16.130Z",
+    "date": "2026-09-14T00:34:09.474Z",
     "__v": 0
   }
 ]

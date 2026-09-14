@@ -4,19 +4,17 @@ const Author = require('../models/author');
 const Style = require('../models/style');  
 const Item = require('../models/items');
 
-// Inizializziamo il client usando la chiave segreta dal file .env
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const AImodel = "gemini-3.5-flash-lite";
 
 exports.generateContent = async (prompt) => {
   try {
-    // Usiamo il modello "flash" che è velocissimo e gratuito per i test
+    // Usiamo il modello "flash" che è gratuito per i test
     const model = genAI.getGenerativeModel({ model: AImodel });
     
-    // Invia il prompt a Google e aspetta la magia
     const result = await model.generateContent(prompt);
     
-    // Estrae solo il testo pulito dalla risposta complessa di Google
+    // Estrae solo il testo pulito dalla risposta
     return result.response.text();
   } catch (error) {
     console.error("Errore fatale con Gemini API:", error);
@@ -66,12 +64,11 @@ exports.generateAndSaveWorkDescriptions = async (workId, workName, userDescripti
     `;
 
     const result = await model.generateContent(prompt);
-    // Non serve più il regex replace, l'API restituisce JSON puro!
     const aiData = JSON.parse(result.response.text());
 
     await Work.findByIdAndUpdate(workId, {
       description: aiData.descriptions,
-      funFact: aiData.funFact, // Ho corretto l'uso del camelCase (prima era funfact)
+      funFact: aiData.funFact, 
       paraphrase: aiData.paraphrase
     });
 
@@ -179,12 +176,10 @@ exports.generateAndSaveItemTargetAge = async (itemId, itemName, itemDescription)
   try {
     const model = genAI.getGenerativeModel({ 
       model: AImodel,
-      // 1. Rimosso "Array JSON" dalle istruzioni di sistema
       systemInstruction: "Sei un analista di marketing per bookshop museali. Determina il target di età dei prodotti. Rispondi esclusivamente in formato JSON strutturato.",
       generationConfig: { responseMimeType: "application/json" }
     });
 
-    // 2. Chiesto esplicitamente un oggetto JSON per evitare ambiguità
     const prompt = `
       Nome Articolo: ${itemName}
       Descrizione: ${itemDescription}
@@ -196,7 +191,6 @@ exports.generateAndSaveItemTargetAge = async (itemId, itemName, itemDescription)
 
     const result = await model.generateContent(prompt);
     
-    // 3. Estraiamo la stringa dall'oggetto JSON
     const parsedData = JSON.parse(result.response.text());
     const finalTargetAge = parsedData.targetAge;
 
@@ -213,7 +207,6 @@ exports.mapRequest = async (prompt) => {
     const dictionary = require('../../../navigator/src/data/dictionary.json');
     const validActions = [...new Set(Object.values(dictionary))];
     
-    // Usiamo il modello "flash" che è velocissimo e gratuito per i test
     const model = genAI.getGenerativeModel({
       model: AImodel,
       systemInstruction: `
@@ -251,14 +244,9 @@ exports.mapRequest = async (prompt) => {
         }
       }
     });
-    //
-    // Invia il prompt a Google e aspetta la magia
     const result = await model.generateContent(prompt);
-
-    // parso la risposta in JSON
     const aiResponse = JSON.parse(result.response.text());
     
-    // Estrae solo il testo pulito dalla risposta complessa di Google
     return aiResponse;
   } catch (error) {
     console.error("Errore fatale con Gemini API:", error);
@@ -280,7 +268,6 @@ exports.suggestWorks = async (payload) => {
       
       generationConfig: {
         responseMimeType: "application/json",
-        // Schema corretto per Gemini
         responseSchema: {
           type: "OBJECT",
           properties: {
@@ -297,7 +284,7 @@ exports.suggestWorks = async (payload) => {
       }
     });
 
-    // Costruiamo il prompt con i dati convertiti in stringhe leggibili!
+    // Costruiamo il prompt con i dati convertiti in stringhe leggibili
     const prompt = `
       Opere già visitate:
       ${JSON.stringify(payload.seen, null, 2)}
@@ -306,10 +293,7 @@ exports.suggestWorks = async (payload) => {
       ${JSON.stringify(payload.available, null, 2)}
     `;
 
-    // Invia il prompt a Google e aspetta la magia
     const result = await model.generateContent(prompt);
-
-    // Parso la risposta in JSON
     const aiResponse = JSON.parse(result.response.text());
     
     // L'output sarà un oggetto del tipo: { works: ["id_1", "id_2"] }

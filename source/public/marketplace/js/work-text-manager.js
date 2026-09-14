@@ -1,11 +1,6 @@
 // work-text-manager.js — Modulo "Gestisci Testi" per l'opera: i vari registri
 // linguistici (semplice/medio/professionale/esperto, + curiosità/parafrasi)
-// mostrati nel modal "textManagerModal", scorporato dal core perché lavora
-// su un concetto diverso dall'anagrafica dell'opera.
-//
-// Dipende da: worksCache, currentMuseumId, API_BASE_URL (definite/gestite
-// in edit-museum.js core / config.js). openTextManager() è chiamata dal
-// bottone "Gestisci Testi" generato in renderSectionAccordionItem (edit-museum.js).
+// mostrati nel modal "textManagerModal"
 
 let tmCurrentWork = null;
 
@@ -19,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Apre la modale ricevendo l'ID dell'opera
 function openTextManager(workId) {
-  // Peschiamo l'opera direttamente dalla cache usando l'ID come chiave!
+  // Prendiamo l'opera direttamente dalla cache usando l'ID come chiave
   tmCurrentWork = worksCache[workId];
   
   if (!tmCurrentWork) {
@@ -59,7 +54,7 @@ function handleTextTypeChange() {
   loadSpecificText();
 }
 
-// 1. Cerca la stringa corretta nel database e la stampa
+// Cerca la stringa corretta nel database e la stampa
 function loadSpecificText() {
   const aud = document.getElementById("tm-audience").value; // simple, medium, professional, expert, funFact, paraphrase
   const len = document.getElementById("tm-length").value;   // short, medium, long, exhaustive
@@ -69,10 +64,10 @@ function loadSpecificText() {
 
   if (tmCurrentWork) {
     if (aud === 'funFact' || aud === 'paraphrase') {
-      // Se stiamo cercando Curiosità o Parafrasi, peschiamo dal primo livello dell'oggetto!
+      // Se stiamo cercando Curiosità o Parafrasi, prendiamo dal primo livello dell'oggetto
       if (tmCurrentWork[aud]) textarea.value = tmCurrentWork[aud];
     } else {
-      // Altrimenti peschiamo dal registro nidificato (description.simple.short)
+      // Altrimenti prendiamo dal registro nidificato (description.simple.short)
       if (tmCurrentWork.description && tmCurrentWork.description[aud] && tmCurrentWork.description[aud][len]) {
         textarea.value = tmCurrentWork.description[aud][len];
       } else if (typeof tmCurrentWork.description === 'string' && aud === 'medium' && len === 'medium') {
@@ -82,7 +77,7 @@ function loadSpecificText() {
   }
 }
 
-// 2. Salva la modifica manuale nel database (accetta tutte le opzioni)
+// Salva la modifica manuale nel database (accetta tutte le opzioni)
 async function saveSpecificText() {
   const aud = document.getElementById("tm-audience").value;
   const len = document.getElementById("tm-length").value;
@@ -123,7 +118,7 @@ async function saveSpecificText() {
   }
 }
 
-// 3. Genera il testo per UNA SINGOLA Cella (Risparmio Token!)
+// genera testo specifico in base al contesto
 async function generateSpecificTextWithAI() {
   const aud = document.getElementById("tm-audience").value;
   const len = document.getElementById("tm-length").value;
@@ -131,7 +126,7 @@ async function generateSpecificTextWithAI() {
 
   if (!tmCurrentWork) return;
 
-  // Peschiamo il contesto inserito nel form principale (se presente)
+  // prendiamo il contesto inserito nel form principale (se presente)
   const baseContext = document.getElementById("work-description")?.value || "Basati sulle tue conoscenze storiche.";
   let prompt = "";
 

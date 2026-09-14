@@ -43,13 +43,11 @@ const { deleteLocalFile } = require('../utils/file-helper');
 const auth = require("../middleware/roles");
 const { cacheMiddleware, invalidateCache, getCache, setCache } = require("../utils/cache");
 
-// Il dizionario dei comandi vocali è statico: lo carichiamo una sola volta
-// all'avvio del server invece di rileggerlo da disco ad ogni /visits/:id
-// (Node cachea automaticamente i moduli richiesti con require).
+// Dizionario dei comandi (per mappatura domande navigator)
 const commandsDictionary = require(path.join(__dirname, '..', '..', '..', 'navigator', 'src', 'data', 'dictionary.json'));
 
 // Gestione immagini
-// 1. Configurazione Multer per i caricamenti locali
+// Configurazione Multer per i caricamenti locali
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     const dir = path.join(__dirname, '..', '..', '..', 'public', 'uploads');
@@ -66,15 +64,12 @@ const upload = multer({ storage: storage });
 
 const mapStorage = multer.diskStorage({
   destination: async (req, file, cb) => {
-    // Il tuo percorso specifico per le mappe!
     const dir = path.join(__dirname, '..', '..', '..', 'public', 'shared', 'maps');
     
-    // Crea la cartella se non esiste (usando la stessa logica della tua compagna)
     await fs.mkdir(dir, { recursive: true }).catch(console.error);
     cb(null, dir);
   },
   filename: (req, file, cb) => {
-    // Prendiamo l'ID del museo direttamente dai parametri della rotta
     const museumId = req.params.id; 
     // Salviamo il file forzando il nome ID_MUSEO.svg
     cb(null, `${museumId}.svg`);
@@ -84,7 +79,7 @@ const mapStorage = multer.diskStorage({
 // Creiamo un middleware separato per le mappe
 const uploadMap = multer({ 
   storage: mapStorage,
-  // Aggiungiamo un filtro per sicurezza: accettiamo solo SVG!
+  // Aggiungiamo un filtro per sicurezza: accettiamo solo svg
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'image/svg+xml') {
       cb(null, true);
@@ -98,7 +93,7 @@ const apiRouter = express.Router();
 
 //--------------- museums -----------------------
 
-// ritorna tutti i musei del db
+// ritorna i musei del db con un limite per evitare di richiedere migliaia di musei
 apiRouter.get("/museums", cacheMiddleware(60), async (req, res) => {
   res.set("Cache-Control", "public, max-age=60");
   try {
@@ -118,12 +113,10 @@ apiRouter.get("/museums", cacheMiddleware(60), async (req, res) => {
   }
 });
 
-// Ritorna SOLO id e nome di tutti i musei (Ottimizzato per i menu a tendina)
+// Ritorna solo id e nome di tutti i musei (Ottimizzato per i menu a tendina)
 apiRouter.get("/museums-list",cacheMiddleware(60), async (req, res) => {
   res.set("Cache-Control", "public, max-age=60");
   try {
-    // Il secondo parametro di find() seleziona i campi da restituire. 
-    // sort({ name: 1 }) li mette in ordine alfabetico
     const museumsList = await Museum.find({}, '_id name').sort({ name: 1 });
     res.status(200).json(museumsList);
   } catch (error) {
@@ -235,7 +228,7 @@ apiRouter.put("/items/:id", auth.isCurator, async (req, res) => {
   }
 });
 
-// 1. Aggiungi o rimuovi quantità dallo stock di un item esistente
+// Aggiunge o rimuove quantità dallo stock di un item esistente
 apiRouter.put("/items/:id/add-stock", auth.isCurator, async (req, res) => {
   try {
     const { changeAmount } = req.body; // Rinominato per chiarezza (può essere negativo)
@@ -262,7 +255,7 @@ apiRouter.put("/items/:id/add-stock", auth.isCurator, async (req, res) => {
   }
 });
 
-// 2. Crea un nuovo articolo nel bookshop del museo
+// Crea un nuovo articolo nel bookshop del museo
 apiRouter.post("/museums/:museumId/items", auth.isCurator, async (req, res) => {
   try {
     const { museumId } = req.params;
@@ -270,7 +263,7 @@ apiRouter.post("/museums/:museumId/items", auth.isCurator, async (req, res) => {
 
     const newItem = new Item({
       ...itemData,
-      museumId: museumId, // Lo agganciamo forzatamente al museo corrente
+      museumId: museumId, 
       quantity: itemData.quantity || 1
     });
 
@@ -289,7 +282,6 @@ apiRouter.post("/museums/:museumId/items", auth.isCurator, async (req, res) => {
 apiRouter.delete("/items/:id", auth.isCurator, async (req, res) => {
   try {
     const itemId = req.params.id;
-    // Il frontend passerà il museumId nel body per i controlli di sicurezza
     const { museumId } = req.body; 
 
     await itemController.deleteItemById(itemId, museumId);
@@ -378,7 +370,6 @@ apiRouter.delete("/sections/:id", [auth.isCurator, auth.isMuseumOwner], async (r
 
 //--------------- works -----------------------
 
-// ? ha senso dato che c'e' gia' la rotta per ottenere le opere di ogni sezione e ogni sezione di un museo
 // ottiene le opere di un museo
 apiRouter.get("/museums/:id/works", cacheMiddleware(60), async (req, res) => {
   res.set("Cache-Control", "public, max-age=60");
@@ -401,7 +392,7 @@ apiRouter.get("/museums/:id/works", cacheMiddleware(60), async (req, res) => {
   }
 });
 
-// Ritorna SOLO info base delle opere (Ottimizzato per le tendine delle adozioni)
+// Ritorna solo info base delle opere (Ottimizzato per i menu delle adozioni)
 apiRouter.get("/museums/:id/works-list", cacheMiddleware(60), async (req, res) => {
   res.set("Cache-Control", "public, max-age=60");
   try {
@@ -420,7 +411,6 @@ apiRouter.post("/works/details", async (req, res) => {
     const { ids } = req.body;
     if (!ids || !Array.isArray(ids)) return res.status(400).json({ error: "IDs mancanti" });
     
-    // Popoliamo come in getVisitById per avere author e style completi
     const works = await Work.find({ _id: { $in: ids } })
       .populate('author')
       .populate('style');
@@ -475,16 +465,14 @@ apiRouter.put("/works/:id/move", [auth.isCurator, auth.isMuseumOwner], async (re
     const workId = req.params.id;
     const { museumId, oldSectionId, newSectionId } = req.body;
 
-    // 1. Aggiorna la stanza nell'opera tramite il controller (grazie al fix di prima, l'immagine è salva!)
+    // Aggiorna la stanza nell'opera tramite il controller
     await workController.updateWorkById(workId, { sectionId: newSectionId }, museumId);
 
-    // 2. Se l'opera è stata trascinata in un'altra SEZIONE, spostiamo il suo ID nei rispettivi array
     if (oldSectionId !== newSectionId) {
       await sectionController.removeWorkFromSection(oldSectionId, workId);
       await sectionController.addWorkToSection(newSectionId, workId);
     }
 
-    // ? va messo ?
     invalidateCache(["/works"]);
 
     res.json({ message: "Opera spostata con successo" });
@@ -513,7 +501,7 @@ apiRouter.post("/add-work", [auth.isCurator, auth.isMuseumOwner], async (req, re
     await Visit.findOneAndUpdate(
       { 
         museumId: savedWork.museumId, 
-        visitType: 'standard' // Troviamo la visita libera di QUESTO museo
+        visitType: 'standard' // Troviamo la visita libera di questo museo
       },
       { 
         $push: { works: savedWork._id } // Inseriamo l'ID della nuova opera
@@ -657,11 +645,11 @@ apiRouter.get("/museums/:id/map-svg", async (req, res) => {
 
 // ------------- immagini ------------------------
 
-// 1. Upload File Locale
+// Upload File Locale
 apiRouter.post("/upload-image", auth.isLoggedIn, upload.single('image'), (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Nessun file caricato" });
-    // Restituisce il percorso relativo per il frontend
+
     const imageUrl = `/uploads/${req.file.filename}`;
     res.json({ url: imageUrl });
   } catch (error) {
@@ -669,7 +657,7 @@ apiRouter.post("/upload-image", auth.isLoggedIn, upload.single('image'), (req, r
   }
 });
 
-// 2. Cerca Immagini su Wikimedia Commons
+// Cerca Immagini su Wikimedia Commons
 apiRouter.get("/search-wikimedia", auth.isLoggedIn, async (req, res) => {
   try {
     const query = req.query.q;
@@ -684,7 +672,6 @@ apiRouter.get("/search-wikimedia", auth.isLoggedIn, async (req, res) => {
       }
     });
     
-    // CORREZIONE: Con fetch dobbiamo parsare il JSON esplicitamente
     const data = await response.json(); 
     
     const pages = data.query?.pages || {};
@@ -700,7 +687,7 @@ apiRouter.get("/search-wikimedia", auth.isLoggedIn, async (req, res) => {
   }
 });
 
-// 4. Elimina fisicamente un'immagine dal disco (chiamato dal widget)
+// Elimina fisicamente un'immagine dal disco (chiamato dal widget)
 apiRouter.delete("/delete-image", auth.isLoggedIn, async (req, res) => {
   try {
     const { imageUrl } = req.body;
@@ -776,11 +763,9 @@ apiRouter.put("/current-user/type", auth.isLoggedIn, async (req, res) => {
 // Aggiorna nome utente o password
 apiRouter.put("/current-user/profile", auth.isLoggedIn, async (req, res) => {
   try {
-    // Passiamo tutto l'onere al controller
     const user = await userController.updateUserProfile(req.user._id, req.body);
     res.json({ message: "Profilo aggiornato.", user });
   } catch (error) {
-    // Intercettiamo lo status generato nel controller, di default 500
     const status = error.status || 500;
     res.status(status).json({ error: error.message || "Errore durante l'aggiornamento." });
   }
@@ -792,7 +777,6 @@ apiRouter.delete("/current-user/profile", auth.isLoggedIn, async (req, res) => {
     // Il controller si occupa in autonomia di TUTTI i drop a cascata
     await userController.deleteUserAccount(req.user._id);
     
-    // Gestione unicamente legata alla sessione HTTP
     req.logout((err) => {
       if (err) throw err;
       res.json({ message: "Account eliminato definitivamente." });
@@ -809,7 +793,7 @@ apiRouter.get("/my-museums", auth.isCurator, async (req, res) => {
   try {
     // Se è Admin, restituiamo TUTTI i musei del DB
     if (req.user.role === "admin") {
-      const allMuseums = await museumController.getMuseums(null, null, null, null, null, null, null, null, null);
+      const allMuseums = await museumController.getMuseums(null, null, null, null, null, null, null, null, null); // non scalabile ma necessario per il debug
       return res.json(allMuseums);
     }
 
@@ -887,7 +871,7 @@ apiRouter.post("/visits", auth.isLoggedIn, async (req, res) => {
   }
 });
 
-// Recupera tutte le visite **pubbliche** per il marketplace
+// Recupera tutte le visite pubbliche per il marketplace
 apiRouter.get("/visits", cacheMiddleware(60), async (req, res) => {
   try {
     const visits = await visitController.getPublicVisits();
@@ -928,11 +912,6 @@ apiRouter.get("/visits/:id", async (req, res) => {
 
     if(!visit) return res.status(404).json({ error: "visita non trovata" });
 
-    // NB: niente fs.readFile qui, il dizionario è già in memoria (vedi require
-    // in cima al file). E NB: questa rotta non va MAI messa dietro
-    // cacheMiddleware: la risposta include req.user e lo stato live della
-    // sessione condivisa, quindi cachearla per URL mescolerebbe i dati di
-    // utenti diversi che aprono la stessa visita.
     const visitObj = visit.toObject ? visit.toObject() : visit;
     visitObj.canStart = visit._doc.canStart;
 
@@ -948,7 +927,7 @@ apiRouter.get("/visits/:id", async (req, res) => {
       visit: visitObj,
       commands_map: commandsDictionary,
       user: userData,
-      currentArtworkId: currentArtworkId // <-- Invia l'opera corrente attiva
+      currentArtworkId: currentArtworkId // opera corrente attiva
     });
   } catch (error) {
     const status = error.statusCode || 500;
@@ -1287,10 +1266,9 @@ apiRouter.post("/ai/generate-work-desc", auth.isCurator, async (req, res) => {
     return res.status(400).json({ error: "Dati mancanti" });
   }
 
-  // Rispondiamo SUBITO al frontend per non bloccare l'interfaccia
   res.status(202).json({ message: "Generazione avviata in background..." });
 
-  // MA lanciamo la funzione senza l'await, così il server ci lavora in parallelo!
+  // lanciamo la funzione senza l'await, così il server ci lavora in parallelo
   aiController.generateAndSaveWorkDescriptions(workId, workName, userDescription);
 });
 
@@ -1354,7 +1332,6 @@ apiRouter.post('/quiz-results', auth.isLoggedIn, async (req, res) => {
   try {
     const { visitId, roomCode, results } = req.body;
 
-    // Trasformiamo il dizionario React (oggetto) in un Array piatto per Mongoose
     const resultsArray = Object.keys(results).map(studentId => ({
       studentName: results[studentId].name,
       score: results[studentId].score,
@@ -1414,11 +1391,9 @@ apiRouter.get("/downloadDB", auth.isAdmin, async (req, res) => {
   try {
     console.log("Inizio esportazione di tutto il DB...");
     
-    // Costruiamo il percorso assoluto alla cartella 'data' in modo sicuro
-    // (Aggiusta i '..' in base a dove si trova questo file router)
     const dataFolder = path.join(__dirname, '..', '..', 'data');
 
-    // 1. Recupero di tutti i dati dai controller
+    // Recupero di tutti i dati dai controller
     const collections = {
       'museum.json': await museumController.getAllMuseums(),
       'item.json': await itemController.getAllItems(),
@@ -1435,18 +1410,17 @@ apiRouter.get("/downloadDB", auth.isAdmin, async (req, res) => {
       'config.json': await mongoose.connection.db.collection('config').find({}).toArray(),
     };
 
-    // 2. Scrittura dinamica di tutti i file
+    // Scrittura dinamica di tutti i file
     for (const [filename, data] of Object.entries(collections)) {
       const filePath = path.join(dataFolder, filename);
       
-      // Trasformiamo i dati in formato JSON ben formattato (null, 2 serve per l'indentazione)
       const jsonData = JSON.stringify(data, null, 2);
       
       await fs.writeFile(filePath, jsonData, 'utf8');
       console.log(`${filename} scritto con successo!`);
     }
 
-    // 3. Comunichiamo al client che abbiamo finito
+    // Comunichiamo al client che abbiamo finito
     res.status(200).json({ message: "Backup completo del database eseguito con successo!" });
 
   } catch (e) {
@@ -1498,21 +1472,15 @@ apiRouter.post('/uploadDB', auth.isAdmin, async (req,res) => {
       const filePath = path.join(dataFolder, task.file);
 
       try {
-        // 1. Legge il file dalla cartella come stringa di testo
         const rawData = await fs.readFile(filePath, 'utf8');
-
-        // 2. Trasforma la stringa in un vero array/oggetto JavaScript
         const parsedData = JSON.parse(rawData);
 
-        // 3. Passa i dati convertiti alla funzione del tuo controller
         await task.uploadFunction(parsedData);
 
         console.log(`${task.file} caricato con successo!`);
       } catch (fileError) {
         // Gestiamo l'errore del singolo file senza bloccare necessariamente gli altri
         console.error(`Errore durante il caricamento di ${task.file}:`, fileError.message);
-        // Se preferisci che l'intera rotta si blocchi al primo errore, de-commenta la riga sotto:
-        // throw fileError; 
       }
     }
 

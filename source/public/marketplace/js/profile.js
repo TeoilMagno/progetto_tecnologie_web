@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   backBtns.forEach(btn => {
     btn.addEventListener("click", (e) => {
-      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      e.preventDefault(); 
       
       if (window.history.length > 1) {
         window.history.back();
@@ -25,17 +25,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (res.ok) {
       currentUserData = await res.json();
       if (!currentUserData) return window.location.replace('/login');
-      // 1. Gestione Nome ereditato (OAuth): Mostra la riga in sola lettura se il campo esiste
+      // Gestione Nome ereditato (OAuth): Mostra la riga in sola lettura se il campo esiste
       if (currentUserData.name) {
         document.getElementById("social-name-row").classList.remove("d-none");
         document.getElementById("profile-real-name").value = currentUserData.name;
       }
       
-      // 2. Gestione Username: Popola se esiste, altrimenti invita a crearlo
+      // Gestione Username: Popola se esiste, altrimenti invita a crearlo
       document.getElementById("profile-username").value = currentUserData.username || "";
       document.getElementById("profile-username").placeholder = "Crea Username";
       
-      // 3. Gestione Preferenze
+      // Gestione Preferenze
       if (currentUserData.expertiseLevel) {
         document.getElementById("profile-expertise").value = currentUserData.expertiseLevel;
       }
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       renderCuratorStatus(); // Avvia il render del blocco curatore
 
-      // 4. Gestione Password: La funzione valuta in automatico se c'è già una password
+      // Gestione Password: La funzione valuta in automatico se c'è già una password
       // per mostrare il bottone "Cambia Password" o "Aggiungi Password"
       renderSecurityOptions();
     }

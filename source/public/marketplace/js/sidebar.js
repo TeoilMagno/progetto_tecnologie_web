@@ -13,12 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `;
 
-  // Passaggio di testimone hamburger -> filtri (solo mobile): due offcanvas
-  // Bootstrap aperti anche solo per un istante si contendono lo stesso
-  // backdrop e vanno in conflitto (uno dei due lampeggia apri/chiudi).
-  // Il bottone "Filtri" dentro l'hamburger ha solo data-bs-dismiss (chiude
-  // #mobileMenu): apriamo #filterSidebar SOLO dopo che #mobileMenu si e'
-  // chiuso davvero (evento hidden.bs.offcanvas), mai in contemporanea.
+  // Passaggio di testimone hamburger -> filtri (solo mobile)
   const mobileFilterBtn = document.getElementById("mobile-filtri-btn");
   const mobileMenuEl = document.getElementById("mobileMenu");
   if (mobileFilterBtn && mobileMenuEl) {

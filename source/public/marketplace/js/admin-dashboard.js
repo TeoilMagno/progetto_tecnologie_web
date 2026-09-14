@@ -1,3 +1,5 @@
+// admin-dashboard principalmente utilizzata per approvare/rifiutare richieste curatore
+
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchCurrentUser();
   

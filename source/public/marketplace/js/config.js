@@ -1,6 +1,6 @@
 // config.js -> modifiche alla porta o all'url non saranno da modificare in 20 file diversi
 // window.location.origin prende automaticamente 'http://localhost:8000' in locale 
-// e 'https://www.tuosito.com' in produzione!
+// e 'https://site242550.tw.cs.unibo.it' in produzione
 const API_BASE_URL = window.location.origin + "/api";
 
 // ==========================================
@@ -380,15 +380,11 @@ async function fetchCurrentUser() {
     detail: { user: currentUser }
   }));
 
-  if (typeof window.syncGuestCartToUser === 'function') {
-    window.syncGuestCartToUser();
-  }
+  window.syncGuestCartToUser();
 
   renderUserArea();
 
-  if (typeof window.updateCartUI === 'function') {
-    window.updateCartUI();
-  }
+  window.updateCartUI();
 }
 
 function renderUserArea() {

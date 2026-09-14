@@ -5,11 +5,11 @@ export default function QuizReviewModal({ isOpen, onClose, studentName, score, h
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] bg-slate-950 text-white flex flex-col p-4 overflow-y-auto custom-scrollbar animate-fadeIn">
-      <div className="w-full max-w-lg mx-auto flex flex-col relative pb-8">
+    <div className="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-sm text-white flex justify-center p-4 overflow-y-auto custom-scrollbar animate-fadeIn">
+  <div className="w-full max-w-lg mx-auto flex flex-col relative my-16 bg-slate-950 border border-slate-800 rounded-3xl p-6 shadow-2xl h-fit">
         
         {/* Header Fissato in alto */}
-        <div className="sticky top-0 bg-slate-950/90 backdrop-blur-md pt-4 pb-4 border-b border-slate-800 mb-6 flex justify-between items-center z-10">
+        <div className="sticky top-0 bg-slate-950/95 backdrop-blur-md pb-4 border-b border-slate-800 mb-6 flex justify-between items-center z-10">
           <div>
             <h2 className="text-lg font-bold text-cyan-400">{studentName}</h2>
             <p className="text-xs text-slate-400">Punteggio: {score} / {quizData.length}</p>

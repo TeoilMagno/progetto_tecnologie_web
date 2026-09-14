@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   backBtns.forEach(btn => {
     btn.addEventListener("click", (e) => {
-      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      e.preventDefault();
       
       if (window.history.length > 1) {
         window.history.back();

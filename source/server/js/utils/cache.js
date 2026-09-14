@@ -1,4 +1,3 @@
-// utils/cache.js
 const NodeCache = require("node-cache");
 
 // stdTTL in secondi, checkperiod = ogni quanto pulisce le entry scadute

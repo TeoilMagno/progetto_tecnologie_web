@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   backBtns.forEach(btn => {
     btn.addEventListener("click", (e) => {
-      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      e.preventDefault(); 
       
       if (window.history.length > 1) {
         window.history.back();
@@ -170,7 +170,7 @@ function renderAdoptionsList(list, container, isIncoming) {
     // BOTTONI DI AZIONE
     let actionButtons = "";
     if (isIncoming && a.status === 'pending') {
-      // 1. Chi RICEVE la richiesta (Proprietario) decide se accettare o rifiutare
+      // Chi RICEVE la richiesta (proprietario) decide se accettare o rifiutare
       actionButtons = `
         <div class="d-flex gap-2 mt-3 pt-2 border-top border-secondary border-opacity-25">
           <button class="btn btn-sm btn-success flex-grow-1" onclick="respondAdoption('${a._id}', 'accepted')">
@@ -181,7 +181,7 @@ function renderAdoptionsList(list, container, isIncoming) {
           </button>
         </div>`;
     } else if (!isIncoming && a.status === 'accepted') {
-      // 2. Chi ha INVIATO la richiesta (Richiedente), quando il proprietario accetta, conferma l'arrivo
+      // Chi ha INVIATO la richiesta (Richiedente), quando il proprietario accetta, conferma l'arrivo
       actionButtons = `
         <div class="mt-3 pt-2 border-top border-secondary border-opacity-25">
           <button class="btn btn-sm btn-info w-100 text-dark fw-bold" onclick="confirmArrival('${a._id}')">
@@ -189,7 +189,7 @@ function renderAdoptionsList(list, container, isIncoming) {
           </button>
         </div>`;
     } else if (a.status === 'active') {
-      // 3. Quando è attiva, si può procedere alla restituzione
+      // Quando è attiva, si può procedere alla restituzione
       actionButtons = `
         <div class="mt-3 pt-2 border-top border-secondary border-opacity-25">
           <button class="btn btn-sm btn-outline-info w-100" onclick="completeAdoption('${a._id}')">
@@ -288,13 +288,13 @@ async function openNewAdoptionModal() {
   sectionTs.clear(); sectionTs.clearOptions();
 
   try {
-    // 1. Musei totali per la fonte
+    // Musei totali per la fonte
     const allMuseumsRes = await fetch(`${API_BASE_URL}/museums-list`);
     const allMuseums = await allMuseumsRes.json();
     sourceTs.addOptions(allMuseums);
     sourceTs.control_input.placeholder = "Cerca un museo...";
 
-    // 2. I miei musei per la destinazione
+    // I miei musei per la destinazione
     const myMuseumsRes = await fetch(`${API_BASE_URL}/my-museums`);
     const myMuseums = await myMuseumsRes.json();
     targetTs.addOptions(myMuseums);
@@ -402,7 +402,6 @@ async function submitAdoptionRequest() {
   }
 
   // ORA CONVERTIAMO NEL FORMATO YYYY-MM-DD DA MANDARE AL BACKEND
-  // Questo perché il DB apprezza le stringhe ISO o comunque formattate in standard americano
   const beginDate = beginDateNr.toISOString().split('T')[0];
   const endDate = endDateNr.toISOString().split('T')[0];
 

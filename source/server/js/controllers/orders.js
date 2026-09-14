@@ -68,13 +68,6 @@ exports.processCheckout = async (userId, cartData) => {
     if (bulkOps.length > 0) {
       await Item.bulkWrite(bulkOps);
 
-      // Invalidiamo solo la cache dei musei coinvolti in QUESTO acquisto,
-      // non l'intero catalogo globale di /items.
-      // const purchasedItems = await Item.find(
-      //   { _id: { $in: items.map(i => i.itemId) } },
-      //   'museumId'
-      // );
-      // const museumIds = [...new Set(purchasedItems.map(i => i.museumId.toString()))];
       invalidateCache(['/items']);
     }
   }

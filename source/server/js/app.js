@@ -21,11 +21,11 @@ const PORT = 8000;
 
 connectDB();
 
-const app = express(); // Inizializza Express subito!
+const app = express();
 
 app.set('trust proxy', 1);
 
-// --- 3. CREAZIONE SERVER HTTP E SOCKET.IO ---
+// --- CREAZIONE SERVER HTTP E SOCKET.IO ---
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -33,8 +33,7 @@ const io = new Server(server, {
   }
 });
 
-// ─── Security Headers (Trasformati in Middleware Express) ──────────────────
-// Invece di metterli nel createServer, li facciamo applicare ad Express per TUTTE le rotte
+// ─── Security Headers ──────────────────
 app.use((req, res, next) => {
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -52,11 +51,7 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-// I file compilati da Vite hanno nomi hashati (es. index-a1b2c3.js): a parità
-// di URL il contenuto non cambia mai, quindi possiamo cachearli in modo
-// aggressivo e "immutable". Va registrato PRIMA dello static generico qui
-// sotto, altrimenti quest'ultimo servirebbe gli stessi file senza header di
-// cache dedicati.
+
 app.use('/navigator/assets', express.static(
   path.join(__dirname, '..', '..', 'public', 'navigator', 'assets'),
   { maxAge: '1y', immutable: true }
@@ -70,10 +65,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    // Assicurati che questo URI sia uguale a quello che usi in db.js per connetterti
     mongoUrl: process.env.DB_URI, 
-    collectionName: 'sessions', // Creerà automaticamente una collezione 'sessions' nel DB
-    autoRemove: 'native' // Rimuove automaticamente le sessioni scadute
+    collectionName: 'sessions', 
+    autoRemove: 'native' 
   }),
   cookie: {
     maxAge: 7 * 24 * 60 * 60 * 1000, // La sessione dura 1 settimana
@@ -153,7 +147,7 @@ io.on('connection', (socket) => {
         session.visitTitle && session.visitTitle.toLowerCase() === roomCode.toLowerCase()
       );
       if (foundSession) {
-        actualCode = foundSession[0]; // Abbiamo trovato la stanza tramite il nome!
+        actualCode = foundSession[0];
       }
     }
 
@@ -175,7 +169,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Master (Insegnante) cambia opera
+  // Insegnante cambia opera
   socket.on('change_artwork', (data) => {
     if (!data || !data.roomCode) return;
     const room = data.roomCode.toUpperCase();
@@ -186,14 +180,14 @@ io.on('connection', (socket) => {
       return;
     }
     
-    // 1. SALVIAMO LO STATO: Ci ricordiamo l'opera per chi entra in ritardo
+    //  Ci ricordiamo l'opera per chi entra in ritardo
     session.currentArtworkId = data.artworkId;
     
-    // 2. Inoltriamo L'INTERO pacchetto (incluso il roomCode) usando l'evento corretto!
+    // Inoltriamo l'intero pacchetto 
     socket.to(room).emit('change_artwork', data);
   });
 
-  // Client (Studente o Insegnante) che si ri-unisce caricando la Mappa
+  // Client (studente o insegnante) che si ri-unisce caricando la mappa
   socket.on('rejoin_room', ({ roomCode, role, teacherToken }, callback) => {
     if (!roomCode) return;
     roomCode = roomCode.toUpperCase();
@@ -223,7 +217,6 @@ io.on('connection', (socket) => {
         
       // Se la lezione è già iniziata, allineiamo il ritardatario/chi rientra
       if (room.currentArtworkId) {
-        // Aspettiamo 800ms per dare il tempo al MapView di scaricare le opere dal DB
         setTimeout(() => {
           socket.emit('change_artwork', { 
             roomCode: roomCode,
@@ -233,7 +226,7 @@ io.on('connection', (socket) => {
       }
     }
 
-    // Risposta AUTORITATIVA: il client non deve fidarsi di ciò che ha
+    // il client non deve fidarsi di ciò che ha
     // dichiarato lui stesso, solo di questo. isTeacher è vero SOLO se
     // room.teacherSocketId è davvero questo socket in questo momento.
     if (typeof callback === 'function') {
@@ -259,7 +252,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // 2. Ping periodico o cambio opera dello studente (per la griglia)
+  // 2. Ping periodico o cambio opera dello studente (per la dashboard)
   socket.on('student_status_update', ({ roomCode, studentName, currentArtworkId, status }) => {
     if (!roomCode) return;
     const room = roomCode.toUpperCase();
@@ -288,7 +281,7 @@ io.on('connection', (socket) => {
     if (room.teacherSocketId === socket.id) return;
 
     // Fallback difensivo: se per qualche motivo la stanza non ha ancora
-    // classStatus (es. sessione creata prima di questo deploy), lo creiamo al volo
+    // classStatus (es. sessione creata prima di questo deploy), lo creiamo 
     if (!room.classStatus) room.classStatus = {};
 
     // L'entry dovrebbe già esistere da 'student_joined'; la creiamo per sicurezza
@@ -331,9 +324,6 @@ io.on('connection', (socket) => {
   
     student.lastEventAt = timestamp;
   
-    // Stesso canale già usato per lo stato attivo/inattivo: un solo listener
-    // lato client, nessuna modifica a MapView.jsx. Mandiamo SOLO al docente
-    // della stanza (mai broadcast) l'oggetto studente completo.
     if (room.teacherSocketId) {
       io.to(room.teacherSocketId).emit('teacher_dashboard_update', {
         type: 'status',
@@ -342,7 +332,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Master (Insegnante) lancia il quiz
+  // Insegnante lancia il quiz
   socket.on('start_quiz', ({ roomCode, quizData }) => {
     if (!roomCode) return;
     const room = roomCode.toUpperCase();
@@ -353,8 +343,8 @@ io.on('connection', (socket) => {
     socket.to(room).emit('quiz_started', quizData);
   });
 
-  // Slave (Studente) risponde al quiz
-// Lo studente consegna l'intero quiz al termine
+  // Studente risponde al quiz
+  // Lo studente consegna l'intero quiz al termine
   socket.on('submit_quiz', (data) => {
     console.log(">>> RICEVUTA CONSEGNA QUIZ DAL CLIENT:", data);
     if (!data || !data.roomCode) return;
@@ -374,7 +364,6 @@ io.on('connection', (socket) => {
             score 
         };
 
-        // DOPPIO INVIO BLINDATO: sia alla stanza generale che al socket specifico del prof
         io.to(roomCode).emit('student_quiz_submitted', payload);
         
         if (session.teacherSocketId) {
@@ -428,7 +417,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // OPZIONALE: Qui potremmo cercare se il socket.id era uno studente o un prof e pulire activeSessions
   socket.on('disconnect', () => {
     for (const roomCode in activeSessions) {
       const session = activeSessions[roomCode];
@@ -455,10 +443,6 @@ io.on('connection', (socket) => {
 });
 
 // Navigator
-// L'index.html va preso da dove vite.config.js scrive davvero la build
-// (outDir: '../public/navigator/', relativo a source/navigator) — NON da
-// source/navigator/dist, che era il vecchio outDir di default e non viene
-// più aggiornato da nessuna build.
 // Cache-Control esplicito: questo file referenzia i nomi hashati dei bundle
 // (cachati sopra in modo aggressivo), quindi DEVE essere sempre rivalidato,
 // altrimenti dopo un deploy il browser continuerebbe a servire una index.html

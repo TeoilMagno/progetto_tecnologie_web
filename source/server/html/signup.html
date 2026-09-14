@@ -6,11 +6,16 @@
   <title>ArtAround - Registrati</title>
   <link rel="icon" type="image/svg+xml" href="/shared/img/artaround-logo.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="/marketplace/css/style.css"/>
   <link rel="stylesheet" href="/marketplace/css/forms-style.css"/>
 </head>
 <body class="artaround-theme d-flex align-items-center justify-content-center" style="min-height: 100vh">
   <div class="glass-panel mx-3 mx-sm-0" style="width: 100%; max-width: 400px">
+    <a href="#" class="back-action-btn text-secondary text-decoration-none d-inline-flex align-items-center mb-3 small">
+      <i class="bi bi-arrow-left me-1"></i> Indietro
+    </a>
+
     <h2 class="aura-title text-center">Registrati</h2>
 
     <div id="alert-container" class="mb-3"></div>
@@ -80,6 +85,20 @@
           </div>
         `;
       }
+
+      const backBtns = document.querySelectorAll(".back-action-btn");
+    
+      backBtns.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+          
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            window.location.href = "/";
+          }
+        });
+      });
     });
 
     document.getElementById('role-toggle').addEventListener('change', function(e) {

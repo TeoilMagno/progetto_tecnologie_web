@@ -89,17 +89,17 @@ export default function WorkDetailsContent({
   // Azzera il tab quando si cambia opera
   useEffect(() => { setActiveTab('work'); }, [work]);
 
-  // 1. Allinea il timer interno immediatamente quando il padre invia un salto (-5s/+5s) o un onboundary
+  // Allinea il timer interno immediatamente quando il padre invia un salto (-5s/+5s) o un onboundary
   useEffect(() => {
     setInternalRatio(audioProgressRatio);
   }, [audioProgressRatio]);
 
-  // 2. Azzera l'animazione al cambio opera o testo
+  // Azzera l'animazione al cambio opera o testo
   useEffect(() => {
     setInternalRatio(0);
   }, [work, currentExpertise, currentLength, authorSubTab]);
 
-  // 3. Motore fluido: avanza in autonomia partendo dall'ultimo ratio noto se l'audio è in play
+  // Motore fluido: avanza in autonomia partendo dall'ultimo ratio noto se l'audio è in play
   useEffect(() => {
     let timer = null;
     if (playMode && totalDuration > 0) {

@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Lock, User, ArrowLeft, AlertCircle, Github } from 'lucide-react';
 import { BASE_URL, API_BASE_URL } from '../config';
 
-// Piccolo logo Google inline (il classico marchio a 4 colori): non è testo/arte
-// copiata da terzi, è il marchio funzionale standard usato per i bottoni
-// "Continua con Google" — nessuna libreria di icone open source lo include.
+// Piccolo logo Google inline (il classico marchio a 4 colori)
 function GoogleIcon({ size = 18 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 18 18" aria-hidden="true">

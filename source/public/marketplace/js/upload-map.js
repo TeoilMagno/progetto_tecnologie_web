@@ -1,5 +1,5 @@
 let sectionModalInstance = null;
-let localSections = []; // Teniamo in memoria l'array delle sezioni!
+let localSections = []; // array delle sezioni
 
 document.addEventListener("DOMContentLoaded", async () => {
   const pathSegments = window.location.pathname.split('/');
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   backBtns.forEach(btn => {
     btn.addEventListener("click", (e) => {
-      e.preventDefault(); // Fondamentale per evitare salti pagina se usi tag <a> con href="#"
+      e.preventDefault(); // Fondamentale per evitare salti pagina 
       
       if (window.history.length > 1) {
         window.history.back();
@@ -128,7 +128,7 @@ function openSectionModal(index = -1) {
     document.getElementById("sec-v-w").value = 2000;
     document.getElementById("sec-v-h").value = 1200;
 
-    if (typeof clearImageWidget === 'function') clearImageWidget("section-image-input");
+    clearImageWidget("section-image-input");
   }
 
   sectionModalInstance.show();

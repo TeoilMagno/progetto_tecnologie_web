@@ -16,15 +16,14 @@ export default function StudentWaitingRoom() {
       return;
     }
 
-    // 1. Ci assicuriamo che lo studente sia EFFETTIVAMENTE nella stanza lato server
+    // Ci assicuriamo che lo studente sia effettivamente nella stanza lato server
     socket.emit('rejoin_room', { roomCode: roomCode.toUpperCase() });
 
-    // 2. Ascoltiamo il segnale di partenza dell'insegnante
+    // Ascoltiamo il segnale di partenza dell'insegnante
     socket.on('session_started', ({ visitId }) => {
-      showToast("Visita condivisa avviata! ID:", visitId);
       localStorage.setItem('savedSession', JSON.stringify({
         roomCode: roomCode,
-        visitId: visitId, // Se lo hai a disposizione in quel momento
+        visitId: visitId,
         role: 'student' // o 'teacher'
       }));
       navigate(`/map?visitId=${visitId}&roomCode=${roomCode}&role=student`);

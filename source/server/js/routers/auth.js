@@ -1,3 +1,7 @@
+/**
+ * Router per le rotte di autenticazione
+ */
+
 const express = require('express');
 const passport = require('passport');
 const path = require('path');
@@ -22,7 +26,7 @@ function saveReturnTo(req) {
 router.get('/login', (req, res, next) => {  
   saveReturnTo(req);
   
-  // FORZATURA: Scriviamo comunque un dato nella sessione per obbligare
+  // Scriviamo comunque un dato nella sessione per obbligare
   // express-session a generare e inviare il cookie connect.sid al browser,
   // anche se il Referer era assente o bloccato.
   req.session.isInitialized = true; 
@@ -49,7 +53,7 @@ router.get('/signup', (req, res, next) => {
 
 // ─── Local login ──────────────────────────────────────────────────────────
 router.post('/login/password', (req, res, next) => {
-  // SALVATAGGIO PREVENTIVO: Estraiamo il returnTo PRIMA che Passport rigeneri la sessione
+  // Estraiamo il returnTo prima che Passport rigeneri la sessione
   const redirectTo = req.session.returnTo || '/';
 
   passport.authenticate('local', (err, user, info) => {
@@ -62,7 +66,7 @@ router.post('/login/password', (req, res, next) => {
       if (err) return next(err);
       
       delete req.session.returnTo; 
-      // Usiamo la variabile salvata in memoria, immune alla rigenerazione
+
       return res.redirect(redirectTo);
     });
   })(req, res, next);
@@ -89,11 +93,7 @@ router.post('/signup', async (req, res, next) => {
 });
 
 // ─── Google ───────────────────────────────────────────────────────────────
-// Standard passport per il login con Google
 router.get('/login/federated/google', (req, res, next) => {
-  console.log('\n--- 1. INIZIO LOGIN GOOGLE ---');
-  console.log('Query returnTo frontend:', req.query.returnTo);
-  
   saveReturnTo(req);
   req.session.isInitialized = true;
   
@@ -102,27 +102,20 @@ router.get('/login/federated/google', (req, res, next) => {
       console.error('--- ERRORE SALVATAGGIO SESSIONE:', err);
       return next(err);
     }
-    console.log('--- 2. SESSIONE SALVATA. ID:', req.sessionID);
-    console.log('--- 3. CHIAMO PASSPORT AUTHENTICATE ---');
     passport.authenticate('google')(req, res, next);
   });
 });
 
 router.get('/oauth2/redirect/google', (req, res, next) => {
-  console.log('\n--- 4. HIT CALLBACK GOOGLE ---');
   const redirectTo = req.session.returnTo || '/';
-  console.log('Session ID al ritorno:', req.sessionID);
-  console.log('RedirectTo estratto:', redirectTo);
 
   passport.authenticate('google', (err, user, info) => {
-    console.log('--- 5. DENTRO PASSPORT CALLBACK ---');
     if (err) console.error('Errore Passport:', err);
     if (!user) console.log('Utente non trovato, info:', info);
     else console.log('Utente autenticato con successo:', user.username || user._id);
 
     if (err) return next(err);
     if (!user) {
-       console.log('--- 6. FAIL: REDIRECT FORZATO A /LOGIN ---');
        return res.redirect('/login');
     }
     
@@ -132,7 +125,6 @@ router.get('/oauth2/redirect/google', (req, res, next) => {
         return next(err);
       }
       delete req.session.returnTo;
-      console.log('--- 7. SUCCESS: REDIRECT A:', redirectTo);
       return res.redirect(redirectTo);
     });
   })(req, res, next);

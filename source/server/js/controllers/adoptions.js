@@ -75,8 +75,7 @@ exports.createAdoptionRequest = async (data, requestingUser) => {
   const work = await Work.findById(workId);
   if (!work) throw new Error("Opera non trovata");
 
-  // La provenienza dell'opera NON deve mai arrivare dal client:
-  // la ricaviamo dal documento Work, che è la fonte di verità su dove si trova l'opera ora.
+  // ricaviamo la provenienza dal documento Work, che è la fonte di verità su dove si trova l'opera ora
   const fromMuseumId = work.museumId;
   const fromSectionId = work.sectionId;
 

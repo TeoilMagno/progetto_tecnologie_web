@@ -10,212 +10,212 @@
     "name": "European Sculpture and Decorative Arts",
     "svgGroupId": "section-european-sculpture-and-decorative-arts",
     "rooms": [],
-    "image": "default-section.jpg",
+    "image": "https://cdn.sanity.io/images/cctd4ker/production/3a3aedf1cb18e18f262a7afa76111b5a73d3d9b4-5121x1707.jpg?w=1080&q=75&auto=format",
     "museumId": "6a8879bfe6c216683b02eb70",
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c11f8",
+        "_id": "6aa753fc2ac944c6903a14b0",
         "workId": "6a982617967dc7a9838a838e",
-        "x": 100,
-        "y": 100
+        "x": 430,
+        "y": 350
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11f9",
+        "_id": "6aa753fc2ac944c6903a14b1",
         "workId": "6a982617967dc7a9838a838f",
-        "x": 200,
-        "y": 100
+        "x": 490,
+        "y": 350
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11fa",
+        "_id": "6aa753fc2ac944c6903a14b2",
         "workId": "6a982617967dc7a9838a8390",
-        "x": 300,
-        "y": 100
+        "x": 550,
+        "y": 350
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11fb",
+        "_id": "6aa753fc2ac944c6903a14b3",
         "workId": "6a982617967dc7a9838a8391",
-        "x": 400,
-        "y": 100
+        "x": 610,
+        "y": 350
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11fc",
+        "_id": "6aa753fc2ac944c6903a14b4",
         "workId": "6a982617967dc7a9838a8392",
-        "x": 500,
-        "y": 100
+        "x": 670,
+        "y": 350
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11fd",
+        "_id": "6aa753fc2ac944c6903a14b5",
         "workId": "6a982617967dc7a9838a8393",
-        "x": 600,
-        "y": 100
+        "x": 730,
+        "y": 350
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11fe",
+        "_id": "6aa753fc2ac944c6903a14b6",
         "workId": "6a982617967dc7a9838a8394",
-        "x": 100,
-        "y": 200
+        "x": 790,
+        "y": 350
       },
       {
-        "_id": "6aa6d985c2cb1229c86c11ff",
+        "_id": "6aa753fc2ac944c6903a14b7",
         "workId": "6a982617967dc7a9838a8395",
-        "x": 200,
-        "y": 200
+        "x": 430,
+        "y": 410
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1200",
+        "_id": "6aa753fc2ac944c6903a14b8",
         "workId": "6a982617967dc7a9838a8396",
-        "x": 300,
-        "y": 200
+        "x": 490,
+        "y": 410
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1201",
+        "_id": "6aa753fc2ac944c6903a14b9",
         "workId": "6a982617967dc7a9838a8397",
-        "x": 400,
-        "y": 200
+        "x": 550,
+        "y": 410
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1202",
+        "_id": "6aa753fc2ac944c6903a14ba",
         "workId": "6a982617967dc7a9838a8398",
-        "x": 500,
-        "y": 200
+        "x": 610,
+        "y": 410
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1203",
+        "_id": "6aa753fc2ac944c6903a14bb",
         "workId": "6a982617967dc7a9838a8399",
-        "x": 600,
-        "y": 200
+        "x": 670,
+        "y": 410
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1204",
+        "_id": "6aa753fc2ac944c6903a14bc",
         "workId": "6a982617967dc7a9838a839a",
-        "x": 100,
-        "y": 300
+        "x": 730,
+        "y": 410
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1205",
+        "_id": "6aa753fc2ac944c6903a14bd",
         "workId": "6a982617967dc7a9838a839b",
-        "x": 200,
-        "y": 300
+        "x": 790,
+        "y": 410
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1206",
+        "_id": "6aa753fc2ac944c6903a14be",
         "workId": "6a982617967dc7a9838a839c",
-        "x": 300,
-        "y": 300
+        "x": 430,
+        "y": 470
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1207",
+        "_id": "6aa753fc2ac944c6903a14bf",
         "workId": "6a982617967dc7a9838a839d",
-        "x": 400,
-        "y": 300
+        "x": 490,
+        "y": 470
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1208",
+        "_id": "6aa753fc2ac944c6903a14c0",
         "workId": "6a982617967dc7a9838a839e",
-        "x": 500,
-        "y": 300
+        "x": 550,
+        "y": 470
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1209",
+        "_id": "6aa753fc2ac944c6903a14c1",
         "workId": "6a982618967dc7a9838a839f",
-        "x": 600,
-        "y": 300
+        "x": 610,
+        "y": 470
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120a",
+        "_id": "6aa753fc2ac944c6903a14c2",
         "workId": "6a982618967dc7a9838a83a0",
-        "x": 100,
-        "y": 400
+        "x": 670,
+        "y": 470
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120b",
+        "_id": "6aa753fc2ac944c6903a14c3",
         "workId": "6a982618967dc7a9838a83a1",
-        "x": 200,
-        "y": 400
+        "x": 730,
+        "y": 470
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120c",
+        "_id": "6aa753fc2ac944c6903a14c4",
         "workId": "6a982618967dc7a9838a83a2",
-        "x": 300,
-        "y": 400
+        "x": 790,
+        "y": 470
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120d",
+        "_id": "6aa753fc2ac944c6903a14c5",
         "workId": "6a982618967dc7a9838a83a3",
-        "x": 400,
-        "y": 400
+        "x": 430,
+        "y": 530
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120e",
+        "_id": "6aa753fc2ac944c6903a14c6",
         "workId": "6a982618967dc7a9838a83a4",
-        "x": 500,
-        "y": 400
+        "x": 490,
+        "y": 530
       },
       {
-        "_id": "6aa6d985c2cb1229c86c120f",
+        "_id": "6aa753fc2ac944c6903a14c7",
         "workId": "6a982618967dc7a9838a83a5",
-        "x": 600,
-        "y": 400
+        "x": 550,
+        "y": 530
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1210",
+        "_id": "6aa753fc2ac944c6903a14c8",
         "workId": "6a982618967dc7a9838a83a6",
-        "x": 100,
-        "y": 500
+        "x": 610,
+        "y": 530
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1211",
+        "_id": "6aa753fc2ac944c6903a14c9",
         "workId": "6a982618967dc7a9838a83a7",
-        "x": 200,
-        "y": 500
+        "x": 670,
+        "y": 530
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1212",
+        "_id": "6aa753fc2ac944c6903a14ca",
         "workId": "6a982618967dc7a9838a83a8",
-        "x": 300,
-        "y": 500
+        "x": 730,
+        "y": 530
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1213",
+        "_id": "6aa753fc2ac944c6903a14cb",
         "workId": "6a982618967dc7a9838a83a9",
-        "x": 400,
-        "y": 500
+        "x": 790,
+        "y": 530
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1214",
+        "_id": "6aa753fc2ac944c6903a14cc",
         "workId": "6a982618967dc7a9838a83aa",
-        "x": 500,
-        "y": 500
+        "x": 430,
+        "y": 590
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1215",
+        "_id": "6aa753fc2ac944c6903a14cd",
         "workId": "6a982618967dc7a9838a83ab",
-        "x": 600,
-        "y": 500
+        "x": 490,
+        "y": 590
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1216",
+        "_id": "6aa753fc2ac944c6903a14ce",
         "workId": "6a982618967dc7a9838a83ac",
-        "x": 100,
-        "y": 600
+        "x": 550,
+        "y": 590
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1217",
+        "_id": "6aa753fc2ac944c6903a14cf",
         "workId": "6a982618967dc7a9838a83ad",
-        "x": 200,
-        "y": 600
+        "x": 610,
+        "y": 590
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1218",
+        "_id": "6aa753fc2ac944c6903a14d0",
         "workId": "6a982618967dc7a9838a83ae",
-        "x": 300,
-        "y": 600
+        "x": 670,
+        "y": 590
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1219",
+        "_id": "6aa753fc2ac944c6903a14d1",
         "workId": "6a982618967dc7a9838a83af",
-        "x": 400,
-        "y": 600
+        "x": 730,
+        "y": 590
       }
     ]
   },
@@ -231,7 +231,7 @@
     "svgGroupId": "section-grace-rainey-rogers-autirorium",
     "rooms": [],
     "works": [],
-    "image": "default-section.jpg",
+    "image": "https://cdn.sanity.io/images/cctd4ker/production/cc4c3e4279c82f03c2f3c1c26ea862a98fba41f5-720x400.jpg?w=720",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -247,131 +247,133 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c121a",
+        "_id": "6aa753fc2ac944c6903a14d2",
         "workId": "6a9824d8967dc7a9838a8362",
-        "x": 100,
-        "y": 100
+        "x": 150,
+        "y": 910
       },
       {
-        "_id": "6aa6d985c2cb1229c86c121b",
+        "_id": "6aa753fc2ac944c6903a14d3",
         "workId": "6a9824d8967dc7a9838a8363",
-        "x": 200,
-        "y": 100
+        "x": 230,
+        "y": 910
       },
       {
-        "_id": "6aa6d985c2cb1229c86c121c",
+        "_id": "6aa753fc2ac944c6903a14d4",
         "workId": "6a9824d8967dc7a9838a8364",
-        "x": 300,
-        "y": 100
+        "x": 310,
+        "y": 910
       },
       {
-        "_id": "6aa6d985c2cb1229c86c121d",
+        "_id": "6aa753fc2ac944c6903a14d5",
         "workId": "6a9824d8967dc7a9838a8365",
-        "x": 400,
-        "y": 100
+        "x": 390,
+        "y": 910
       },
       {
-        "_id": "6aa6d985c2cb1229c86c121e",
+        "_id": "6aa753fc2ac944c6903a14d6",
         "workId": "6a9824d8967dc7a9838a8366",
-        "x": 500,
-        "y": 100
+        "x": 470,
+        "y": 910
       },
       {
-        "_id": "6aa6d985c2cb1229c86c121f",
+        "_id": "6aa753fc2ac944c6903a14d7",
         "workId": "6a9824d8967dc7a9838a8367",
-        "x": 100,
-        "y": 200
+        "x": 550,
+        "y": 910
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1220",
+        "_id": "6aa753fc2ac944c6903a14d8",
         "workId": "6a9824d8967dc7a9838a8368",
-        "x": 200,
-        "y": 200
+        "x": 630,
+        "y": 910
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1221",
+        "_id": "6aa753fc2ac944c6903a14d9",
         "workId": "6a9824d8967dc7a9838a8369",
-        "x": 300,
-        "y": 200
+        "x": 150,
+        "y": 960
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1222",
+        "_id": "6aa753fc2ac944c6903a14da",
         "workId": "6a9824d8967dc7a9838a836a",
-        "x": 400,
-        "y": 200
+        "x": 230,
+        "y": 960
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1223",
+        "_id": "6aa753fc2ac944c6903a14db",
         "workId": "6a9824d8967dc7a9838a836b",
-        "x": 500,
-        "y": 200
+        "x": 310,
+        "y": 960
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1224",
+        "_id": "6aa753fc2ac944c6903a14dc",
         "workId": "6a9824d8967dc7a9838a836c",
-        "x": 100,
-        "y": 300
+        "x": 390,
+        "y": 960
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1225",
+        "_id": "6aa753fc2ac944c6903a14dd",
         "workId": "6a9824d8967dc7a9838a836d",
-        "x": 200,
-        "y": 300
+        "x": 470,
+        "y": 960
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1226",
+        "_id": "6aa753fc2ac944c6903a14de",
         "workId": "6a9824d8967dc7a9838a836e",
-        "x": 300,
-        "y": 300
+        "x": 550,
+        "y": 960
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1227",
+        "_id": "6aa753fc2ac944c6903a14df",
         "workId": "6a9824d8967dc7a9838a836f",
-        "x": 400,
-        "y": 300
+        "x": 630,
+        "y": 960
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1228",
+        "_id": "6aa753fc2ac944c6903a14e0",
         "workId": "6a9824d8967dc7a9838a8370",
-        "x": 500,
-        "y": 300
+        "x": 150,
+        "y": 1010
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1229",
+        "_id": "6aa753fc2ac944c6903a14e1",
         "workId": "6a9824d8967dc7a9838a8371",
-        "x": 100,
-        "y": 400
+        "x": 230,
+        "y": 1010
       },
       {
-        "_id": "6aa6d985c2cb1229c86c122a",
+        "_id": "6aa753fc2ac944c6903a14e2",
         "workId": "6a9824d9967dc7a9838a8372",
-        "x": 200,
-        "y": 400
+        "x": 310,
+        "y": 1010
       },
       {
-        "_id": "6aa6d985c2cb1229c86c122b",
+        "_id": "6aa753fc2ac944c6903a14e3",
         "workId": "6a9824d9967dc7a9838a8373",
-        "x": 300,
-        "y": 400
+        "x": 390,
+        "y": 1010
       },
       {
-        "_id": "6aa6d985c2cb1229c86c122c",
+        "_id": "6aa753fc2ac944c6903a14e4",
         "workId": "6a9824d9967dc7a9838a8374",
-        "x": 400,
-        "y": 400
+        "x": 470,
+        "y": 1010
       },
       {
-        "_id": "6aa6d985c2cb1229c86c122d",
+        "_id": "6aa753fc2ac944c6903a14e5",
         "workId": "6a9824d9967dc7a9838a8375",
-        "x": 500,
-        "y": 400
+        "x": 550,
+        "y": 1010
       },
       {
+        "_id": "6aa753fc2ac944c6903a14e6",
         "workId": "6a9834fdfeabf46b3904ea8a",
-        "_id": "6a9834fefeabf46b3904ea8b"
+        "x": 630,
+        "y": 1010
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://cdn.sanity.io/images/cctd4ker/production/44a7ac025e44195f5daf788d6d563db040205206-5121x1707.jpg?w=1080&q=75&auto=format",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -386,7 +388,7 @@
     "svgGroupId": "section-the-great-hall",
     "rooms": [],
     "works": [],
-    "image": "default-section.jpg",
+    "image": "data:image/jpeg;base64,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",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -402,49 +404,49 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c122f",
+        "_id": "6aa753fc2ac944c6903a14e7",
         "workId": "6a98279e967dc7a9838a83b2",
-        "x": 100,
-        "y": 100
+        "x": 860,
+        "y": 450
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1230",
+        "_id": "6aa753fc2ac944c6903a14e8",
         "workId": "6a98279e967dc7a9838a83b3",
-        "x": 200,
-        "y": 100
+        "x": 940,
+        "y": 450
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1231",
+        "_id": "6aa753fc2ac944c6903a14e9",
         "workId": "6a98279e967dc7a9838a83b4",
-        "x": 300,
-        "y": 100
+        "x": 860,
+        "y": 520
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1232",
+        "_id": "6aa753fc2ac944c6903a14ea",
         "workId": "6a98279e967dc7a9838a83b5",
-        "x": 100,
-        "y": 200
+        "x": 940,
+        "y": 520
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1233",
+        "_id": "6aa753fc2ac944c6903a14eb",
         "workId": "6a98279e967dc7a9838a83b6",
-        "x": 200,
-        "y": 200
+        "x": 860,
+        "y": 590
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1234",
+        "_id": "6aa753fc2ac944c6903a14ec",
         "workId": "6a98279e967dc7a9838a83b7",
-        "x": 300,
-        "y": 200
+        "x": 940,
+        "y": 590
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1235",
+        "_id": "6aa753fc2ac944c6903a14ed",
         "workId": "6a98279e967dc7a9838a83b8",
-        "x": 100,
-        "y": 300
+        "x": 900,
+        "y": 660
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://cdn.sanity.io/images/cctd4ker/production/e2eeb0bffc667d37a03c5b6e04a040de7622ff10-5121x1707.jpg?w=1080&q=75&auto=format",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -459,7 +461,7 @@
     "svgGroupId": "section-exhibition-gallery-199",
     "rooms": [],
     "works": [],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYvbKTkmR1hDlBth5voccY8HKsmWu6FjmZP_5kPU8I2g&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -475,193 +477,193 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c1236",
+        "_id": "6aa753fc2ac944c6903a14ee",
         "workId": "6a982aaa967dc7a9838a83e6",
-        "x": 100,
-        "y": 100
+        "x": 1100,
+        "y": 900
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1237",
+        "_id": "6aa753fc2ac944c6903a14ef",
         "workId": "6a982aaa967dc7a9838a83e7",
-        "x": 200,
-        "y": 100
+        "x": 1180,
+        "y": 900
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1238",
+        "_id": "6aa753fc2ac944c6903a14f0",
         "workId": "6a982aaa967dc7a9838a83e8",
-        "x": 300,
-        "y": 100
+        "x": 1260,
+        "y": 900
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1239",
+        "_id": "6aa753fc2ac944c6903a14f1",
         "workId": "6a982aaa967dc7a9838a83e9",
-        "x": 400,
-        "y": 100
+        "x": 1340,
+        "y": 900
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123a",
+        "_id": "6aa753fc2ac944c6903a14f2",
         "workId": "6a982aaa967dc7a9838a83ea",
-        "x": 500,
-        "y": 100
+        "x": 1420,
+        "y": 900
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123b",
+        "_id": "6aa753fc2ac944c6903a14f3",
         "workId": "6a982aaa967dc7a9838a83eb",
-        "x": 600,
-        "y": 100
+        "x": 1500,
+        "y": 900
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123c",
+        "_id": "6aa753fc2ac944c6903a14f4",
         "workId": "6a982aaa967dc7a9838a83ec",
-        "x": 100,
-        "y": 200
+        "x": 1580,
+        "y": 900
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123d",
+        "_id": "6aa753fc2ac944c6903a14f5",
         "workId": "6a982aaa967dc7a9838a83ed",
-        "x": 200,
-        "y": 200
+        "x": 1660,
+        "y": 900
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123e",
+        "_id": "6aa753fc2ac944c6903a14f6",
         "workId": "6a982aaa967dc7a9838a83ee",
-        "x": 300,
-        "y": 200
+        "x": 1740,
+        "y": 900
       },
       {
-        "_id": "6aa6d985c2cb1229c86c123f",
+        "_id": "6aa753fc2ac944c6903a14f7",
         "workId": "6a982aaa967dc7a9838a83ef",
-        "x": 400,
-        "y": 200
+        "x": 1100,
+        "y": 950
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1240",
+        "_id": "6aa753fc2ac944c6903a14f8",
         "workId": "6a982aaa967dc7a9838a83f0",
-        "x": 500,
-        "y": 200
+        "x": 1180,
+        "y": 950
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1241",
+        "_id": "6aa753fc2ac944c6903a14f9",
         "workId": "6a982aab967dc7a9838a83f1",
-        "x": 600,
-        "y": 200
+        "x": 1260,
+        "y": 950
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1242",
+        "_id": "6aa753fc2ac944c6903a14fa",
         "workId": "6a982aab967dc7a9838a83f2",
-        "x": 100,
-        "y": 300
+        "x": 1340,
+        "y": 950
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1243",
+        "_id": "6aa753fc2ac944c6903a14fb",
         "workId": "6a982aab967dc7a9838a83f3",
-        "x": 200,
-        "y": 300
+        "x": 1420,
+        "y": 950
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1244",
+        "_id": "6aa753fc2ac944c6903a14fc",
         "workId": "6a982aab967dc7a9838a83f4",
-        "x": 300,
-        "y": 300
+        "x": 1500,
+        "y": 950
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1245",
+        "_id": "6aa753fc2ac944c6903a14fd",
         "workId": "6a982aab967dc7a9838a83f5",
-        "x": 400,
-        "y": 300
+        "x": 1580,
+        "y": 950
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1246",
+        "_id": "6aa753fc2ac944c6903a14fe",
         "workId": "6a982aab967dc7a9838a83f6",
-        "x": 500,
-        "y": 300
+        "x": 1660,
+        "y": 950
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1247",
+        "_id": "6aa753fc2ac944c6903a14ff",
         "workId": "6a982aab967dc7a9838a83f7",
-        "x": 600,
-        "y": 300
+        "x": 1740,
+        "y": 950
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1248",
+        "_id": "6aa753fc2ac944c6903a1500",
         "workId": "6a982aab967dc7a9838a83f8",
-        "x": 100,
-        "y": 400
+        "x": 1100,
+        "y": 1000
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1249",
+        "_id": "6aa753fc2ac944c6903a1501",
         "workId": "6a982aab967dc7a9838a83f9",
-        "x": 200,
-        "y": 400
+        "x": 1180,
+        "y": 1000
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124a",
+        "_id": "6aa753fc2ac944c6903a1502",
         "workId": "6a982aab967dc7a9838a83fa",
-        "x": 300,
-        "y": 400
+        "x": 1260,
+        "y": 1000
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124b",
+        "_id": "6aa753fc2ac944c6903a1503",
         "workId": "6a982aab967dc7a9838a83fb",
-        "x": 400,
-        "y": 400
+        "x": 1340,
+        "y": 1000
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124c",
+        "_id": "6aa753fc2ac944c6903a1504",
         "workId": "6a982aab967dc7a9838a83fc",
-        "x": 500,
-        "y": 400
+        "x": 1420,
+        "y": 1000
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124d",
+        "_id": "6aa753fc2ac944c6903a1505",
         "workId": "6a982aab967dc7a9838a83fd",
-        "x": 600,
-        "y": 400
+        "x": 1500,
+        "y": 1000
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124e",
+        "_id": "6aa753fc2ac944c6903a1506",
         "workId": "6a982aab967dc7a9838a83fe",
-        "x": 100,
-        "y": 500
+        "x": 1580,
+        "y": 1000
       },
       {
-        "_id": "6aa6d985c2cb1229c86c124f",
+        "_id": "6aa753fc2ac944c6903a1507",
         "workId": "6a982aab967dc7a9838a83ff",
-        "x": 200,
-        "y": 500
+        "x": 1660,
+        "y": 1000
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1250",
+        "_id": "6aa753fc2ac944c6903a1508",
         "workId": "6a982aab967dc7a9838a8400",
-        "x": 300,
-        "y": 500
+        "x": 1740,
+        "y": 1000
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1251",
+        "_id": "6aa753fc2ac944c6903a1509",
         "workId": "6a982aab967dc7a9838a8401",
-        "x": 400,
-        "y": 500
+        "x": 1450,
+        "y": 1070
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1252",
+        "_id": "6aa753fc2ac944c6903a150a",
         "workId": "6a982aab967dc7a9838a8402",
-        "x": 500,
-        "y": 500
+        "x": 1530,
+        "y": 1070
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1253",
+        "_id": "6aa753fc2ac944c6903a150b",
         "workId": "6a982aab967dc7a9838a8403",
-        "x": 600,
-        "y": 500
+        "x": 1610,
+        "y": 1070
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1254",
+        "_id": "6aa753fc2ac944c6903a150c",
         "workId": "6a982aac967dc7a9838a8404",
-        "x": 100,
-        "y": 600
+        "x": 1690,
+        "y": 1070
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3zUeEesxJTwH0uHaj6KvNGVgsy9N0oXOLmviFkJnbOg&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -677,67 +679,67 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c1255",
+        "_id": "6aa753fc2ac944c6903a150d",
         "workId": "6a98297c967dc7a9838a83dc",
-        "x": 100,
-        "y": 100
+        "x": 1240,
+        "y": 580
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1256",
+        "_id": "6aa753fc2ac944c6903a150e",
         "workId": "6a98297c967dc7a9838a83dd",
-        "x": 200,
-        "y": 100
+        "x": 1290,
+        "y": 580
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1257",
+        "_id": "6aa753fc2ac944c6903a150f",
         "workId": "6a98297c967dc7a9838a83de",
-        "x": 300,
-        "y": 100
+        "x": 1340,
+        "y": 580
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1258",
+        "_id": "6aa753fc2ac944c6903a1510",
         "workId": "6a98297c967dc7a9838a83df",
-        "x": 400,
-        "y": 100
+        "x": 1390,
+        "y": 580
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1259",
+        "_id": "6aa753fc2ac944c6903a1511",
         "workId": "6a98297c967dc7a9838a83e0",
-        "x": 100,
-        "y": 200
+        "x": 1440,
+        "y": 580
       },
       {
-        "_id": "6aa6d985c2cb1229c86c125a",
+        "_id": "6aa753fc2ac944c6903a1512",
         "workId": "6a98297c967dc7a9838a83e1",
-        "x": 200,
-        "y": 200
+        "x": 1240,
+        "y": 650
       },
       {
-        "_id": "6aa6d985c2cb1229c86c125b",
+        "_id": "6aa753fc2ac944c6903a1513",
         "workId": "6a98297c967dc7a9838a83e2",
-        "x": 300,
-        "y": 200
+        "x": 1290,
+        "y": 650
       },
       {
-        "_id": "6aa6d985c2cb1229c86c125c",
+        "_id": "6aa753fc2ac944c6903a1514",
         "workId": "6a98297c967dc7a9838a83e3",
-        "x": 400,
-        "y": 200
+        "x": 1340,
+        "y": 650
       },
       {
-        "_id": "6aa6d985c2cb1229c86c125d",
+        "_id": "6aa753fc2ac944c6903a1515",
         "workId": "6a98297c967dc7a9838a83e4",
-        "x": 100,
-        "y": 300
+        "x": 1390,
+        "y": 650
       },
       {
-        "_id": "6aa6d985c2cb1229c86c125e",
+        "_id": "6aa753fc2ac944c6903a1516",
         "workId": "6a98297c967dc7a9838a83e5",
-        "x": 200,
-        "y": 300
+        "x": 1440,
+        "y": 650
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK__ZNJkYr5h185Sn6-Pi9ag8HXN85pWltFRvTV_gLuw&s",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -752,7 +754,7 @@
     "svgGroupId": "section-exhibition-gallery-099",
     "rooms": [],
     "works": [],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS0233JrL3VCghoKn2L0rN6WCiU1hv23X9rlD-bZDK2g&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -767,7 +769,7 @@
     "svgGroupId": "section-thomas-watson-library",
     "rooms": [],
     "works": [],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNDKlyzKA18TrbN4iZCtbIR2yP365xPanqjVOuYP41_w&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -781,98 +783,98 @@
     "name": "Modern and Contemporary Art",
     "svgGroupId": "section-modern-and-contemporary-art",
     "rooms": [],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStTPdzRGeO5ab-MqpKzCh50CW8czznKtAQcZvxljQmBg&s=10",
     "museumId": "6a8879bfe6c216683b02eb70",
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c125f",
+        "_id": "6aa753fc2ac944c6903a1517",
         "workId": "6a981edd967dc7a9838a8344",
-        "x": 100,
-        "y": 100
+        "x": 130,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1260",
+        "_id": "6aa753fc2ac944c6903a1518",
         "workId": "6a981edd967dc7a9838a8345",
-        "x": 200,
-        "y": 100
+        "x": 180,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1261",
+        "_id": "6aa753fc2ac944c6903a1519",
         "workId": "6a981ede967dc7a9838a8346",
-        "x": 300,
-        "y": 100
+        "x": 230,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1262",
+        "_id": "6aa753fc2ac944c6903a151a",
         "workId": "6a981ede967dc7a9838a8347",
-        "x": 400,
-        "y": 100
+        "x": 280,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1263",
+        "_id": "6aa753fc2ac944c6903a151b",
         "workId": "6a981ede967dc7a9838a8348",
-        "x": 100,
-        "y": 200
+        "x": 330,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1264",
+        "_id": "6aa753fc2ac944c6903a151c",
         "workId": "6a981ede967dc7a9838a8349",
-        "x": 200,
-        "y": 200
+        "x": 130,
+        "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1265",
+        "_id": "6aa753fc2ac944c6903a151d",
         "workId": "6a981ede967dc7a9838a834a",
-        "x": 300,
-        "y": 200
+        "x": 180,
+        "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1266",
+        "_id": "6aa753fc2ac944c6903a151e",
         "workId": "6a981ede967dc7a9838a834b",
-        "x": 400,
-        "y": 200
+        "x": 230,
+        "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1267",
+        "_id": "6aa753fc2ac944c6903a151f",
         "workId": "6a981ede967dc7a9838a834c",
-        "x": 100,
+        "x": 280,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1268",
+        "_id": "6aa753fc2ac944c6903a1520",
         "workId": "6a981ede967dc7a9838a834d",
-        "x": 200,
+        "x": 330,
         "y": 300
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1269",
+        "_id": "6aa753fc2ac944c6903a1521",
         "workId": "6a981ede967dc7a9838a834e",
-        "x": 300,
-        "y": 300
+        "x": 130,
+        "y": 380
       },
       {
-        "_id": "6aa6d985c2cb1229c86c126a",
+        "_id": "6aa753fc2ac944c6903a1522",
         "workId": "6a981ede967dc7a9838a834f",
-        "x": 400,
-        "y": 300
+        "x": 180,
+        "y": 380
       },
       {
-        "_id": "6aa6d985c2cb1229c86c126b",
+        "_id": "6aa753fc2ac944c6903a1523",
         "workId": "6a981ede967dc7a9838a8350",
-        "x": 100,
-        "y": 400
+        "x": 230,
+        "y": 380
       },
       {
-        "_id": "6aa6d985c2cb1229c86c126c",
+        "_id": "6aa753fc2ac944c6903a1524",
         "workId": "6a981ede967dc7a9838a8351",
-        "x": 200,
-        "y": 400
+        "x": 280,
+        "y": 380
       },
       {
-        "_id": "6aa6d985c2cb1229c86c126d",
+        "_id": "6aa753fc2ac944c6903a1525",
         "workId": "6a981ede967dc7a9838a8352",
-        "x": 300,
-        "y": 400
+        "x": 330,
+        "y": 380
       }
     ]
   },
@@ -889,61 +891,61 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c126e",
+        "_id": "6aa753fc2ac944c6903a1526",
         "workId": "6a9822be967dc7a9838a8356",
         "x": 100,
-        "y": 100
+        "y": 600
       },
       {
-        "_id": "6aa6d985c2cb1229c86c126f",
+        "_id": "6aa753fc2ac944c6903a1527",
         "workId": "6a9822be967dc7a9838a8357",
         "x": 200,
-        "y": 100
+        "y": 600
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1270",
+        "_id": "6aa753fc2ac944c6903a1528",
         "workId": "6a9822be967dc7a9838a8358",
         "x": 300,
-        "y": 100
+        "y": 600
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1271",
+        "_id": "6aa753fc2ac944c6903a1529",
         "workId": "6a9822be967dc7a9838a8359",
         "x": 100,
-        "y": 200
+        "y": 700
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1272",
+        "_id": "6aa753fc2ac944c6903a152a",
         "workId": "6a9822be967dc7a9838a835a",
         "x": 200,
-        "y": 200
+        "y": 700
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1273",
+        "_id": "6aa753fc2ac944c6903a152b",
         "workId": "6a9822be967dc7a9838a835b",
         "x": 300,
-        "y": 200
+        "y": 700
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1274",
+        "_id": "6aa753fc2ac944c6903a152c",
         "workId": "6a9822be967dc7a9838a835c",
         "x": 100,
-        "y": 300
+        "y": 800
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1275",
+        "_id": "6aa753fc2ac944c6903a152d",
         "workId": "6a9822be967dc7a9838a835d",
         "x": 200,
-        "y": 300
+        "y": 800
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1276",
+        "_id": "6aa753fc2ac944c6903a152e",
         "workId": "6a9822be967dc7a9838a835e",
         "x": 300,
-        "y": 300
+        "y": 800
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTupryUzj7vwcToJ_FlsPUOXdfZWQLBIBgyGIDV49Ci_Q&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
@@ -957,110 +959,110 @@
     "name": "The American Wing",
     "svgGroupId": "section-the-american-wing",
     "rooms": [],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRilaCvgOhndsjenvw6ZRkv5T_dfW7_5IVyhKZZumZojw&s=10",
     "museumId": "6a8879bfe6c216683b02eb70",
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c1277",
+        "_id": "6aa753fc2ac944c6903a152f",
         "workId": "6a9828ac967dc7a9838a83c7",
-        "x": 100,
-        "y": 100
+        "x": 1250,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1278",
+        "_id": "6aa753fc2ac944c6903a1530",
         "workId": "6a9828ac967dc7a9838a83c8",
-        "x": 200,
-        "y": 100
+        "x": 1330,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1279",
+        "_id": "6aa753fc2ac944c6903a1531",
         "workId": "6a9828ac967dc7a9838a83c9",
-        "x": 300,
-        "y": 100
+        "x": 1410,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127a",
+        "_id": "6aa753fc2ac944c6903a1532",
         "workId": "6a9828ad967dc7a9838a83ca",
-        "x": 400,
-        "y": 100
+        "x": 1490,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127b",
+        "_id": "6aa753fc2ac944c6903a1533",
         "workId": "6a9828ad967dc7a9838a83cb",
-        "x": 500,
-        "y": 100
+        "x": 1570,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127c",
+        "_id": "6aa753fc2ac944c6903a1534",
         "workId": "6a9828ad967dc7a9838a83cc",
-        "x": 100,
-        "y": 200
+        "x": 1650,
+        "y": 220
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127d",
+        "_id": "6aa753fc2ac944c6903a1535",
         "workId": "6a9828ad967dc7a9838a83cd",
-        "x": 200,
-        "y": 200
+        "x": 1250,
+        "y": 320
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127e",
+        "_id": "6aa753fc2ac944c6903a1536",
         "workId": "6a9828ad967dc7a9838a83ce",
-        "x": 300,
-        "y": 200
+        "x": 1330,
+        "y": 320
       },
       {
-        "_id": "6aa6d985c2cb1229c86c127f",
+        "_id": "6aa753fc2ac944c6903a1537",
         "workId": "6a9828ad967dc7a9838a83cf",
-        "x": 400,
-        "y": 200
+        "x": 1410,
+        "y": 320
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1280",
+        "_id": "6aa753fc2ac944c6903a1538",
         "workId": "6a9828ad967dc7a9838a83d0",
-        "x": 500,
-        "y": 200
+        "x": 1490,
+        "y": 320
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1281",
+        "_id": "6aa753fc2ac944c6903a1539",
         "workId": "6a9828ad967dc7a9838a83d1",
-        "x": 100,
-        "y": 300
+        "x": 1570,
+        "y": 320
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1282",
+        "_id": "6aa753fc2ac944c6903a153a",
         "workId": "6a9828ad967dc7a9838a83d2",
-        "x": 200,
-        "y": 300
+        "x": 1650,
+        "y": 320
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1283",
+        "_id": "6aa753fc2ac944c6903a153b",
         "workId": "6a9828ad967dc7a9838a83d3",
-        "x": 300,
-        "y": 300
+        "x": 1250,
+        "y": 420
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1284",
+        "_id": "6aa753fc2ac944c6903a153c",
         "workId": "6a9828ad967dc7a9838a83d4",
-        "x": 400,
-        "y": 300
+        "x": 1330,
+        "y": 420
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1285",
+        "_id": "6aa753fc2ac944c6903a153d",
         "workId": "6a9828ad967dc7a9838a83d5",
-        "x": 500,
-        "y": 300
+        "x": 1410,
+        "y": 420
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1286",
+        "_id": "6aa753fc2ac944c6903a153e",
         "workId": "6a9828ad967dc7a9838a83d6",
-        "x": 100,
-        "y": 400
+        "x": 1490,
+        "y": 420
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1287",
+        "_id": "6aa753fc2ac944c6903a153f",
         "workId": "6a9828ad967dc7a9838a83d7",
-        "x": 200,
-        "y": 400
+        "x": 1570,
+        "y": 420
       }
     ]
   },
@@ -1077,96 +1079,96 @@
     "rooms": [],
     "works": [
       {
-        "_id": "6aa6d985c2cb1229c86c1288",
+        "_id": "6aa753fc2ac944c6903a1540",
         "workId": "6a98154923763fa5311eb67c",
-        "x": 100,
-        "y": 100
+        "x": 800,
+        "y": 60
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1289",
+        "_id": "6aa753fc2ac944c6903a1541",
         "workId": "6a98154923763fa5311eb67d",
-        "x": 200,
-        "y": 100
+        "x": 880,
+        "y": 60
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128a",
+        "_id": "6aa753fc2ac944c6903a1542",
         "workId": "6a98154923763fa5311eb67e",
-        "x": 300,
-        "y": 100
+        "x": 960,
+        "y": 60
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128b",
+        "_id": "6aa753fc2ac944c6903a1543",
         "workId": "6a98154923763fa5311eb67f",
-        "x": 400,
-        "y": 100
+        "x": 800,
+        "y": 120
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128c",
+        "_id": "6aa753fc2ac944c6903a1544",
         "workId": "6a98154923763fa5311eb680",
-        "x": 100,
-        "y": 200
+        "x": 880,
+        "y": 120
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128d",
+        "_id": "6aa753fc2ac944c6903a1545",
         "workId": "6a98154923763fa5311eb681",
-        "x": 200,
-        "y": 200
+        "x": 960,
+        "y": 120
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128e",
+        "_id": "6aa753fc2ac944c6903a1546",
         "workId": "6a98154923763fa5311eb682",
-        "x": 300,
-        "y": 200
+        "x": 800,
+        "y": 180
       },
       {
-        "_id": "6aa6d985c2cb1229c86c128f",
+        "_id": "6aa753fc2ac944c6903a1547",
         "workId": "6a98154a23763fa5311eb683",
-        "x": 400,
-        "y": 200
+        "x": 880,
+        "y": 180
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1290",
+        "_id": "6aa753fc2ac944c6903a1548",
         "workId": "6a98154a23763fa5311eb684",
-        "x": 100,
-        "y": 300
+        "x": 960,
+        "y": 180
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1291",
+        "_id": "6aa753fc2ac944c6903a1549",
         "workId": "6a98154a23763fa5311eb685",
-        "x": 200,
-        "y": 300
+        "x": 800,
+        "y": 240
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1292",
+        "_id": "6aa753fc2ac944c6903a154a",
         "workId": "6a98154a23763fa5311eb686",
-        "x": 300,
-        "y": 300
+        "x": 880,
+        "y": 240
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1293",
+        "_id": "6aa753fc2ac944c6903a154b",
         "workId": "6a98154a23763fa5311eb687",
-        "x": 400,
-        "y": 300
+        "x": 960,
+        "y": 240
       },
       {
-        "_id": "6aa6d985c2cb1229c86c1294",
+        "_id": "6aa753fc2ac944c6903a154c",
         "workId": "6a98154a23763fa5311eb688",
-        "x": 100,
-        "y": 400
+        "x": 880,
+        "y": 300
       }
     ],
-    "image": "default-section.jpg",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR89WfEh0SCK75Tf_ZT-cqK_s4oGpypZNG5VupxeH6Hxw&s=10",
     "museumId": "6a8879bfe6c216683b02eb70"
   },
   {
-    "_id": "6aa6bc4c4d79d79603b4786e",
-    "name": "section-oshi-no-ko",
-    "image": "/uploads/1789312073051-3483154.gif",
-    "museumId": "6aa6ba90cbb90735ff0708c4",
+    "_id": "6aa73ac816920f84465c5a67",
+    "name": "Frontiere della Robotica e dell'IA",
+    "image": "/uploads/1789344453699-390232747.jpeg",
+    "museumId": "6a8dfae9a88f1bcdb73ec5e9",
     "works": [
       {
-        "workId": "6aa6c52c67eb92dabd4c69db",
-        "_id": "6aa6c52c67eb92dabd4c69dc"
+        "workId": "6aa73ba816920f84465c5a7d",
+        "_id": "6aa73ba816920f84465c5a7e"
       }
     ],
     "__v": 0
