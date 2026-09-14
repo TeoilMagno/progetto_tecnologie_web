@@ -8,14 +8,15 @@
     "type": "teacher",
     "curator_status": "none",
     "purchased_visits": [
-      "6aa1cbae0b6193eebce169f1"
+      "6aa1cbae0b6193eebce169f1",
+      "6aa5619485d1d8268fcbd174"
     ],
     "preferences": {
       "interactionsCount": {
         "simpler_requests": 0,
         "deeper_requests": 0
       },
-      "expertiseLevel": "medium"
+      "expertiseLevel": "professional"
     },
     "__v": 1,
     "managed_museums": []
@@ -27,16 +28,19 @@
     "salt": "lJqQyKHmvb4trpLph9gI1A==",
     "role": "visitor",
     "type": "none",
-    "curator_status": "none",
-    "purchased_visits": [],
+    "curator_status": "pending",
+    "purchased_visits": [
+      "6aa5633b85d1d8268fcbd181"
+    ],
     "preferences": {
       "interactionsCount": {
         "simpler_requests": 0,
         "deeper_requests": 0
       },
-      "expertiseLevel": "medium"
+      "expertiseLevel": "professional"
     },
-    "__v": 0
+    "__v": 1,
+    "managed_museums": []
   },
   {
     "_id": "6a95e72445123c6b58491f72",
@@ -56,7 +60,7 @@
         "simpler_requests": 0,
         "deeper_requests": 0
       },
-      "expertiseLevel": "medium"
+      "expertiseLevel": "simple"
     },
     "__v": 0
   },

@@ -285,7 +285,7 @@ async function updateStock(itemId, action) {
     // Rollback
     stockValEl.innerText = currentQty;
     if (index !== -1) currentItems[index].quantity = currentQty;
-    if (typeof window.showToast === 'function') window.showToast("Errore di sincronizzazione.", "error");
+    window.showToast("Errore di sincronizzazione.", "error");
   }
 }
 
@@ -306,7 +306,7 @@ function openItemModal(itemId = null) {
     document.getElementById("item-description").value = item.description || "";
     document.getElementById("qty-container").style.display = "none";
     
-    if (item.image && typeof setFinalImage === 'function') {
+    if (item.image) {
       setFinalImage("item-image", item.image);
     } else if (typeof clearImageWidget === 'function') {
       clearImageWidget("item-image");
@@ -316,7 +316,7 @@ function openItemModal(itemId = null) {
     document.getElementById("save-item-btn").innerText = "Salva";
     document.getElementById("item-id").value = "";
     document.getElementById("qty-container").style.display = "block";
-    if (typeof clearImageWidget === 'function') clearImageWidget("item-image");
+    clearImageWidget("item-image");
   }
   
   itemModalInstance.show();
@@ -391,7 +391,7 @@ async function saveItem() {
       }
 
       renderItemsList(currentItems, false);
-      if (typeof window.showToast === 'function') window.showToast("Articolo salvato con successo!", "success");
+      window.showToast("Articolo salvato con successo!", "success");
 
     } else {
       const errorData = await res.json();
@@ -424,7 +424,7 @@ async function deleteItem(itemId) {
       currentItems = currentItems.filter(i => i._id !== itemId);
       pristineItemsCache = pristineItemsCache.filter(i => i._id !== itemId);
       renderItemsList(currentItems, false);
-      if (typeof window.showToast === 'function') window.showToast("Articolo eliminato.", "success");
+      window.showToast("Articolo eliminato.", "success");
     } else {
       if (cardEl) cardEl.style.opacity = '1';
       alert("Errore durante l'eliminazione.");

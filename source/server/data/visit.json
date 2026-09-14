@@ -93,7 +93,7 @@
     "title": "I Misteri dell'Egitto Faraonico: Dalla Terra dei Templi all'Aldilà",
     "description": "Un viaggio completo ed esaustivo nella grande sala della collezione egizia, partendo dall'architettura monumentale dei templi fino ai piccoli amuleti e ai corredi funerari legati al culto dei morti.",
     "museumId": "6a8879bfe6c216683b02eb70",
-    "creator": "6a95ec582eb2f2383178971b",
+    "creator": "6a95e72445123c6b58491f72",
     "works": [
       "6a982aaa967dc7a9838a83e6",
       "6a982aab967dc7a9838a83f7",
@@ -293,6 +293,35 @@
     ],
     "createdAt": "2026-09-12T14:49:05.178Z",
     "updatedAt": "2026-09-12T16:17:04.072Z",
+    "__v": 0,
+    "coverImage": ""
+  },
+  {
+    "price": 0,
+    "targetAudience": [],
+    "accessibility": [],
+    "_id": "6aa7389016920f84465c595c",
+    "title": "Stile moderno",
+    "description": "",
+    "museumId": "6a8879bfe6c216683b02eb70",
+    "creator": "6a95e72445123c6b58491f72",
+    "works": [
+      "6a981edd967dc7a9838a8344",
+      "6a981ede967dc7a9838a8347",
+      "6a981ede967dc7a9838a834a",
+      "6a981ede967dc7a9838a834d",
+      "6a981ede967dc7a9838a8350"
+    ],
+    "isDraft": false,
+    "isPublic": false,
+    "duration": 33,
+    "maxDuration": 0,
+    "preferredLength": "exhaustive",
+    "expertiseLevel": "simple",
+    "visitType": "custom",
+    "quiz": [],
+    "createdAt": "2026-09-13T23:58:08.823Z",
+    "updatedAt": "2026-09-14T00:00:17.539Z",
     "__v": 0,
     "coverImage": ""
   }

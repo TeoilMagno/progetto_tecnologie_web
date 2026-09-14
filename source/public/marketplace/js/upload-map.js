@@ -128,7 +128,7 @@ function openSectionModal(index = -1) {
     document.getElementById("sec-v-w").value = 2000;
     document.getElementById("sec-v-h").value = 1200;
 
-    if (typeof clearImageWidget === 'function') clearImageWidget("section-image-input");
+    clearImageWidget("section-image-input");
   }
 
   sectionModalInstance.show();

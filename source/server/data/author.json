@@ -1582,5 +1582,22 @@
       }
     ],
     "__v": 0
+  },
+  {
+    "_id": "6aa73b2816920f84465c5a75",
+    "name": "Laboratorio di Robotica Avanza",
+    "data": [
+      {
+        "museumId": [
+          "6a8dfae9a88f1bcdb73ec5e9"
+        ],
+        "bio": "Il Laboratorio di Robotica Avanzata rappresenta un'avanguardia multidisciplinare che ridefinisce il confine tra tecnologia, scienza e creazione artistica. Operando nel contesto contemporaneo della Quarta Rivoluzione Industriale, questo collettivo e centro di ricerca si inserisce nel movimento della Media Art e della Robotic Art, esplorando le infinite possibilità espressive derivanti dall'interazione tra intelligenza artificiale, ingegneria meccanica e sensibilità estetica.\n\nL'impatto di queste ricerche nel mondo dell'arte è dirompente: mettendo in discussione il concetto tradizionale di autorialità, il laboratorio trasforma la macchina da semplice strumento a soggetto attivo e co-creatore. Le loro installazioni interattive e cinetiche stimolano una riflessione profonda sul futuro della condizione umana, sul rapporto simbiotico tra uomo e tecnologia e sulla percezione dello spazio e del movimento nella società digitalizzata.",
+        "bd": "2000 - Oggi",
+        "studies": "Il percorso formativo del laboratorio affonda le sue radici nella ricerca scientifica d'eccellenza, unendo competenze avanzate in ingegneria meccatronica, informatica e design industriale. La formazione dei suoi membri e ricercatori si nutre della contaminazione continua tra i dipartimenti accademici di robotica avanzata e le più importanti istituzioni di sperimentazione visiva contemporanea.",
+        "mainWorks": "Tra i progetti più significativi spiccano installazioni robotiche in grado di dipingere in tempo reale interpretando gli stimoli ambientali e sculture cinetiche autonome che rispondono alla presenza umana. Queste opere ridefiniscono lo spazio espositivo trasformandolo in un ecosistema vivente e reattivo.",
+        "_id": "6aa73b2816920f84465c5a76"
+      }
+    ],
+    "__v": 0
   }
 ]

@@ -692,5 +692,19 @@
       }
     ],
     "__v": 0
+  },
+  {
+    "_id": "6aa73b3c16920f84465c5a79",
+    "name": "Tecnologia interattiva",
+    "data": [
+      {
+        "museumId": [
+          "6a8dfae9a88f1bcdb73ec5e9"
+        ],
+        "description": "La Net Art e l'arte della tecnologia interattiva emergono tra la fine degli anni Ottanta e i primi anni Novanta, in concomitanza con la diffusione globale di Internet e lo sviluppo dei personal computer. Questo movimento nasce dal desiderio di ridefinire il concetto stesso di opera d'arte, sottraendola agli spazi espositivi tradizionali come musei e gallerie per immetterla nel flusso digitale e globale delle reti telematiche. Gli artisti iniziano a utilizzare codici informatici, interfacce web, software e hardware come veri e propri materiali espressivi, trasformando lo spettatore da fruitore passivo a co-creatore dell'esperienza artistica.\n\nDal punto di vista visivo, questa corrente si muove tra l'estetica del codice sorgente, i glitch visivi, le interfacce ipertestuali e le installazioni immersive che reagiscono ai movimenti, ai suoni o ai dati biometrici del pubblico. Non esiste più un'immagine fissa e definitiva, ma un processo in continua evoluzione che muta in tempo reale grazie all'input umano o algoritmico. I temi fondanti ruotano attorno al rapporto tra uomo e macchina, alla sorveglianza digitale, alla dematerializzazione dell'oggetto artistico, alla decentralizzazione dell'informazione e alla creazione di nuove forme di comunità virtuali, anticipando le complesse questioni legate all'era contemporanea dei big data e dell'intelligenza artificiale.",
+        "_id": "6aa73b3c16920f84465c5a7a"
+      }
+    ],
+    "__v": 0
   }
 ]

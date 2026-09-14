@@ -464,7 +464,7 @@ async function openWorkModal(sectionId, workId = null) {
 
     if (w.image) {
       safeSetValue("work-image-url-input", w.image);
-      if (typeof setFinalImage === 'function') setFinalImage("work-image", w.image);
+      setFinalImage("work-image", w.image);
     }
   } else {
     const labelEl = document.getElementById("workModalLabel");
@@ -488,7 +488,7 @@ async function openWorkModal(sectionId, workId = null) {
     const styleContainer = document.getElementById("style-cards-container");
     if (styleContainer) styleContainer.style.display = "none";
 
-    if (typeof clearImageWidget === 'function') clearImageWidget("work-image"); 
+    clearImageWidget("work-image"); 
   }
   
   if (workModalInstance) workModalInstance.show();

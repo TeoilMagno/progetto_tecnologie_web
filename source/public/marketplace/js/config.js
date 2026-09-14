@@ -380,15 +380,11 @@ async function fetchCurrentUser() {
     detail: { user: currentUser }
   }));
 
-  if (typeof window.syncGuestCartToUser === 'function') {
-    window.syncGuestCartToUser();
-  }
+  window.syncGuestCartToUser();
 
   renderUserArea();
 
-  if (typeof window.updateCartUI === 'function') {
-    window.updateCartUI();
-  }
+  window.updateCartUI();
 }
 
 function renderUserArea() {

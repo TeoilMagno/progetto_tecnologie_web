@@ -633,7 +633,8 @@
     "paraphrase": "Una donna affascinante e malinconica con un collo lunghissimo siede tranquilla con le mani intrecciate.",
     "museumId": "6a8879bfe6c216683b02eb70",
     "sectionId": "6a97e2036658a8fbf46a0e38",
-    "license": "CC BY-NC 4.0"
+    "license": "CC BY-NC 4.0",
+    "adoptionId": null
   },
   {
     "_id": "6a981ede967dc7a9838a8346",
@@ -6435,5 +6436,48 @@
     "museumId": "6a8879bfe6c216683b02eb70",
     "sectionId": "6a97e2036658a8fbf46a0e44",
     "license": "CC BY-NC 4.0"
+  },
+  {
+    "_id": "6aa73ba816920f84465c5a7d",
+    "name": "ICARO-1: Il Robot Collaborativo",
+    "license": "CC BY-NC 4.0",
+    "author": "6aa73b2816920f84465c5a75",
+    "authorName": "Laboratorio di Robotica Avanza",
+    "technique": "Installazione robotica interattiva / Intelligenza Artificiale",
+    "style": "6aa73b3c16920f84465c5a79",
+    "styleName": "Tecnologia interattiva",
+    "year": "2025",
+    "image": "https://media-assets.wired.it/photos/635aafa866928bc4fdef610b/3:2/w_4902,h_3268,c_limit/GettyImages-1240596010.jpg",
+    "museumId": "6a8dfae9a88f1bcdb73ec5e9",
+    "sectionId": "6aa73ac816920f84465c5a67",
+    "__v": 0,
+    "description": {
+      "simple": {
+        "short": "ICARO-1 è un robot intelligente che parla e gioca con te!",
+        "medium": "ICARO-1 è un robot speciale che vive nel museo. È capace di parlare, muoversi e interagire in tempo reale con chiunque vada a trovarlo.",
+        "long": "Benvenuti nel futuro! ICARO-1 è un robot intelligente che vi accoglierà durante la vostra visita al museo. Non è una semplice macchina statica: grazie a sensori speciali e a un cervello elettronico, può percepire la vostra presenza, ascoltare quello che dite e rispondervi in tempo reale.\n\nQuesto robot simpatico e curioso rappresenta il punto d'incontro tra l'arte e la tecnologia moderna. È stato progettato per fare amicizia con i visitatori, dimostrando che la scienza può essere divertente e amichevole. Giocate con lui e scoprite come la tecnologia può sorprendervi!",
+        "exhaustive": "Ecco a voi ICARO-1, un'opera d'arte e di ingegneria davvero speciale! Questo robot intelligente è stato creato per interagire direttamente con tutti i visitatori del museo, dai più grandi ai più piccoli.\n\nImmaginate un robot che non si limita a stare fermo su un piedistallo, ma che si muove, vi guarda e chiacchiera con voi. ICARO-1 usa occhi elettronici e orecchie speciali per capire cosa succede intorno a lui. Quando vi avvicinate, lui se ne accorge e può iniziare una conversazione, raccontarvi una storia o fare dei movimenti divertenti.\n\nGli artisti e gli ingegneri che lo hanno costruito volevano dimostrare che i robot non sono freddi e spaventosi, ma possono essere compagni di gioco intelligenti. ICARO-1 unisce il mondo dei computer a quello della creatività artistica.\n\nOgni volta che qualcuno parla a ICARO-1, lui pensa velocemente e risponde subito, proprio come farebbe un amico umano. Questo scambio in tempo reale rende ogni visita unica e irripetibile, perché il robot cambia comportamento a seconda di chi ha davanti.\n\nAttraverso ICARO-1, il museo diventa un luogo vivo dove la tecnologia non si guarda solo da lontano, ma si tocca, si vive e si sperimenta insieme. Preparatevi a fare amicizia con il robot più tecnologico e affascinante del mondo dell'arte!"
+      },
+      "medium": {
+        "short": "ICARO-1 è un robot intelligente che parla e gioca con te!",
+        "medium": "ICARO-1 è un'installazione interattiva che esplora il rapporto uomo-macchina. Questo robot intelligente dialoga e si muove in tempo reale con i visitatori.",
+        "long": "ICARO-1 ridefinisce il concetto di fruizione museale attraverso l'uso della robotica avanzata. L'opera consiste in un sistema robotico intelligente programmato per interagire dinamicamente con il pubblico in tempo reale, abbattendo la tradizionale barriera tra opera d'arte passiva e osservatore.\n\nGrazie a una complessa rete di sensori e algoritmi di intelligenza artificiale, ICARO-1 riconosce la presenza umana, elabora gli stimoli esterni e modula le sue risposte verbali e motorie. Questa installazione invita a riflettere sul futuro della coesistenza tra esseri umani e intelligenze artificiali, trasformando il visitatore da semplice spettatore a co-protagonista dell'esperienza artistica.",
+        "exhaustive": "ICARO-1 rappresenta una delle frontiere più avanzate dell'arte interattiva e della robotica applicata agli spazi culturali. L'installazione si presenta come un agente cibernetico autonomo, capace di instaurare un dialogo empatico e cognitivo con chiunque attraversi lo spazio espositivo.\n\nIl progetto affonda le sue radici nella ricerca estetica sulla cibernetica iniziata nella seconda metà del XX secolo, evolvendosi grazie alle moderne tecnologie di machine learning e computer vision. ICARO-1 non è semplicemente un supporto tecnologico, ma un'entità scultorea cinetica e reattiva che possiede una propria agentività all'interno del contesto museale.\n\nL'aspetto più rilevante dell'opera risiede nella sua temporalità: l'interazione in tempo reale azzera la distanza tra opera e fruitore. Il robot analizza le espressioni, i movimenti e le parole del pubblico, restituendo risposte elaborate sul momento. Questo processo genera un'opera d'arte fluida, caleidoscopica e irripetibile, che muta continuamente a seconda del flusso dei visitatori.\n\nIn conclusione, ICARO-1 interroga lo spettatore sul nostro futuro imminente, dominato dalla commistione tra biologia e sintesi digitale. L'opera ci costringe a ripensare l'empatia, ponendo le basi per un nuovo umanesimo tecnologico in cui la macchina diventa specchio e interlocutore della sensibilità umana."
+      },
+      "professional": {
+        "short": "ICARO-1 è un robot intelligente che parla e gioca con te!",
+        "medium": "ICARO-1 è un'installazione di arte cibernetica che sfrutta algoritmi reattivi per interagire in tempo reale con il pubblico.",
+        "long": "ICARO-1 si inserisce nel solco della media art e della scultura cibernetica, esplorando le potenzialità espressive dell'intelligenza artificiale incorporata (embodied AI). L'opera si compone di un'unità robotica antropomorfa dotata di sistemi di percezione ambientale e di elaborazione dati in tempo reale. \n\nIl fulcro concettuale dell'installazione risiede nella ridefinizione della spazialità museale attraverso l'interazione simbiotica. ICARO-1 non si limita a reagire agli input esterni, ma adatta la propria condotta euristica in base al flusso conversazionale e prossemico dei visitatori, ponendo interrogativi cruciali sulla agency delle macchine nel contemporaneo.",
+        "exhaustive": "L'opera ICARO-1 costituisce un caso di studio paradigmatico nell'ambito della digital art e della robotica interattiva contemporanea. Sviluppata all'intersezione tra ingegneria meccatronica e teoria estetica post-mediale, l'installazione impiega un'architettura hardware e software complessa per abilitare una comunicazione bidirezionale, sincrona e adattiva tra entità organiche e sintetiche.\n\nDa un punto de vista fenomenologico, ICARO-1 decostruisce il paradigma della contemplazione estetica tradizionale. L'oggettualità artistica cede il passo a un processo relazionale in cui l'opera d'arte coincide con l'evento interattivo stesso. L'impiego di modelli linguistici avanzati e di sensori di tracciamento spaziale consente al robot di modulare la propria espressione cinetica e verbale, generando un feedback loop continuo con l'osservatore.\n\nStoricamente, l'opera dialoga con le ricerche pionieristiche di artisti come Nicolas Schöffer e Cybernetic Serendipity, attualizzandole alla luce del machine learning contemporaneo. La figura mitologica di Icaro, richiamata nel titolo, assume qui una valenza ironica e ammonitrice rispetto alla hybris tecnologica odierna, pur celebrando al contempo la tensione ascensionale dell'innovazione scientifica verso nuove forme di coscienza estetica e relazionale."
+      },
+      "expert": {
+        "short": "ICARO-1 è un robot intelligente che parla e gioca con te!",
+        "medium": "ICARO-1 è un agente cibernetico reattivo che decostruisce il confine ontologico tra opera e spettatore tramite l'interazione sinergica in tempo reale.",
+        "long": "ICARO-1 opera una radicale ricalibrazione del regime scopico museale attraverso l'implementazione di un'architettura di intelligenza artificiale relazionale. L'installazione si configura come un dispositivo post-umano in cui l'agentività non è più prerogativa esclusiva del soggetto biologico, ma viene delegata a un'entità meccatronica capace di autopoiesi comportamentale in tempo reale.\n\nAttraverso l'impiego di reti neurali e sistemi di visione computazionale, ICARO-1 mappa e interpreta i vettori prossemici e discorsivi del pubblico, generando una performance estetica contingente che problematizza la nozione stessa di autorialità e di opera chiusa nell'era digitale.",
+        "exhaustive": "ICARO-1 rappresenta un apice critico nell'evoluzione della net-art e della robotica applicata ai beni culturali, ponendosi come un manifesto vivente delle teorie post-umaniste e della filosofia della tecnologia contemporanea. L'installazione articola un discorso complesso sullo statuto ontologico dell'oggetto artistico nel momento in cui questo si dissolve in favore di un processo relazionale algoritmico.\n\nDal punto di vista tecnico-critico, l'opera sfrutta paradigmi di embodied cognition e di machine ethics. ICARO-1 non agisce come un semplice automa deterministico, bensì come un sistema complesso adattivo (CAS) capace di apprendere e rimodulare le proprie risposte semiotiche durante l'interazione con il fruitore. Questo meccanismo di co-costruzione del senso sovverte la gerarchia tradizionale tra creatore, opera e pubblico, inaugurando una spazialità liminale in cui il confine tra organico e inorganico si fa poroso.\n\nTheorizzando la figura di Icaro attraverso il filtro della cibernetica di secondo ordine, l'opera riflette sull'inevitabilità del feedback e sulla circolarità dei sistemi osservanti. Il robot diviene così uno specchio critico delle nostre ansie e fascinazioni tecnologiche, interrogando lo spettatore sulla natura della coscienza, sull'empatia sintetica e sulla ridefinizione dei confini dell'agentività estetica nel ventunesimo secolo."
+      }
+    },
+    "funFact": "Nonostante si chiami Icaro, i programmatori hanno assicurato che questo robot non rischia di sciogliersi se si avvicina troppo... alle luci del museo!",
+    "paraphrase": "ICARO-1 è un robot moderno che usa la tecnologia per chiacchierare e interagire con le persone, trasformando il museo in un luogo vivo dove la macchina e l'uomo dialogano alla pari."
   }
 ]

@@ -417,7 +417,7 @@ function switchMuseumView(view, museumId) {
   }
 
   // Cambia la sidebar in base alla tab selezionata
-  if (typeof populateFilters === 'function') populateFilters(view);
+  populateFilters(view);
   
   loadMuseumSubView(view, museumId); //
 }
